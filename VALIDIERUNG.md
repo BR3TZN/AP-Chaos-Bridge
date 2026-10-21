@@ -33,7 +33,7 @@ Der Bestandsprüfer führt keine APworld-Module aus und generiert keinen Archipe
 
 - Kein echter Twitch-Konto-Login, keine Spende und kein echter Spieleffekt wurden ausgelöst.
 - Die neuen Oberflächenabläufe wurden mit JSDOM und der echten lokalen API geprüft. Diese Version wurde nicht zusätzlich in einem interaktiven Chromium-Browser geprüft.
-- Die Windows-Startdateien sind enthalten; diese Ausführung erfolgte unter Linux.
+- Der Release-Workflow führt die automatisierten Tests zusätzlich unter Windows und Linux aus. Das manuelle Öffnen der Windows-Startdatei wurde hier nicht geprüft.
 - Core-Spiele ohne eigenständige APworld benötigen eine zusätzliche Integration für den Einstellungseditor.
 - APworld-Import erzeugt keine universellen Live-Aktionen und keine Run-Reset-Funktion.
 

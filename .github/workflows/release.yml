@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches: [main]
-    paths: [package.json]
+    paths: [package.json, .github/workflows/release.yml]
   workflow_dispatch:
 permissions:
   contents: read
@@ -20,6 +20,12 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Ausgewählten Python-Interpreter verwenden
+        shell: python
+        run: |
+          import os, sys
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as output:
+              output.write('AP_BRIDGE_PYTHON=' + sys.executable + '\n')
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
@@ -42,6 +48,12 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Ausgewählten Python-Interpreter verwenden
+        shell: python
+        run: |
+          import os, sys
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as output:
+              output.write('AP_BRIDGE_PYTHON=' + sys.executable + '\n')
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
