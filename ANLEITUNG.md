@@ -1,11 +1,11 @@
-# AP Chaos Bridge 0.3.1 · Einrichtung
+# AP Chaos Bridge 0.3.2 · Einrichtung
 
 ## Start und Update
 
 1. ZIP vollständig entpacken. Für ein Update die neue Version über den bisherigen Programmordner kopieren und **`data` beibehalten**. Die laufende Bridge vorher unter Einrichtung beenden.
 2. [Node.js 22 oder neuer](https://nodejs.org/en/download) installieren. Die npm-Pakete liegen bereits bei.
 3. `Start.cmd` öffnen. Oberfläche: **http://127.0.0.1:17381**. Nach einem Update mit Strg+F5 neu laden.
-4. Für das Einlesen neuer `.apworld`-Dateien zusätzlich [Python 3.10 oder neuer](https://www.python.org/downloads/windows/) installieren und bei der Installation zu PATH hinzufügen. Bereits vorhandenes Python wird über `py -3`, `python` oder `python3` erkannt. Anschließend die Bridge neu starten.
+4. Vorbereitete APworld-Versionen einschließlich der sieben Nutzerdateien funktionieren ohne Python, auch in einem eigenen Ordner. Für bisher unbekannte Versionen zusätzlich [Python 3.10 oder neuer](https://www.python.org/downloads/windows/) installieren und bei der Installation zu PATH hinzufügen. Bereits vorhandenes Python wird über `py -3`, `python` oder `python3` erkannt. Anschließend die Bridge neu starten.
 
 ## Räume und mehrere Spieler
 

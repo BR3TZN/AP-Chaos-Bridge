@@ -10,7 +10,7 @@ import { readZip } from '../lib/zip.mjs';
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const cache = JSON.parse(readFileSync(join(root, 'assets/apworld-settings.json')));
 const manifest = JSON.parse(readFileSync(join(root, 'assets/apworld-downloads.json')));
-const provenance = new Map(manifest.entries.flatMap(row => row.files || []).map(file => [file.file, file]));
+const provenance = new Map([...manifest.entries.flatMap(row => row.files || []), ...(manifest.userImports || [])].map(file => [file.file, file]));
 const library = new GameLibrary('.', root, { memory: true });
 const report = { checkedAt: new Date().toISOString(), files: 0, variants: 0, exportedGames: 0, errors: [], parserErrors: cache.errors };
 const games = new Set(), compatibilityChecks = [];

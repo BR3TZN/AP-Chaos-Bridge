@@ -1,0 +1,153 @@
+{
+  "archipelagoCommit": "debe4cf035c7c15efe6fb95f72343af0d420c68c",
+  "scope": "Generate.roll_settings and optional options.validate; no seed fill or ROM patches",
+  "worlds": [
+    {
+      "archipelagoVersion": "0.6.7",
+      "worldVersion": "0.8.2",
+      "apworldSha256": "0c4f813b955fd58830075b5d5c7659ea1a9f051d81d72da2f066feb63e903085",
+      "results": [
+        {
+          "file": "bloonstd6.apworld.yaml",
+          "game": "Bloons TD6",
+          "player": "Validation",
+          "options": 43,
+          "valid": true
+        },
+        {
+          "file": "bloonstd6.apworld-custom.yaml",
+          "game": "Bloons TD6",
+          "player": "Custom",
+          "options": 43,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "archipelagoVersion": "0.6.7",
+      "worldVersion": "0.7.0",
+      "apworldSha256": "c1b87cae1a4fb599954c84d81fc82c95f4e5eba46873c6ed57d8761e83ce2b1e",
+      "results": [
+        {
+          "file": "cyberpunk2077.apworld.yaml",
+          "game": "Cyberpunk 2077",
+          "player": "Validation",
+          "options": 49,
+          "valid": true
+        },
+        {
+          "file": "cyberpunk2077.apworld-custom.yaml",
+          "game": "Cyberpunk 2077",
+          "player": "Custom",
+          "options": 49,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "archipelagoVersion": "0.6.7",
+      "worldVersion": "0.16.11",
+      "apworldSha256": "c792d00ba102180ad6f53612c5ced4d04a7002c2911a51ec9db3e222bd66b56f",
+      "results": [
+        {
+          "file": "kh3.apworld.yaml",
+          "game": "Kingdom Hearts III",
+          "player": "Validation",
+          "options": 113,
+          "valid": true
+        },
+        {
+          "file": "kh3.apworld-custom.yaml",
+          "game": "Kingdom Hearts III",
+          "player": "Custom",
+          "options": 113,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "archipelagoVersion": "0.6.7",
+      "worldVersion": "2.2.0",
+      "apworldSha256": "a204e6f5438797038986cdfa4c995587f7d0f415f1af88fe7afc71a1c35c7a18",
+      "results": [
+        {
+          "file": "minecraft.apworld.yaml",
+          "game": "Minecraft",
+          "player": "Validation",
+          "options": 27,
+          "valid": true
+        },
+        {
+          "file": "minecraft.apworld-custom.yaml",
+          "game": "Minecraft",
+          "player": "Custom",
+          "options": 27,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "archipelagoVersion": "0.6.7",
+      "worldVersion": "0.2.2",
+      "apworldSha256": "56c3e0b16c244642779475db25de9cd0b513b6a9a6eeef7532744c99c5a0e0cf",
+      "results": [
+        {
+          "file": "pokemon_platinum.apworld.yaml",
+          "game": "Pokemon Platinum",
+          "player": "Validation",
+          "options": 99,
+          "valid": true
+        },
+        {
+          "file": "pokemon_platinum.apworld-custom.yaml",
+          "game": "Pokemon Platinum",
+          "player": "Custom",
+          "options": 99,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "archipelagoVersion": "0.6.7",
+      "worldVersion": null,
+      "apworldSha256": "1943f7c44e62ec53d13999f7194edbd2ad8299bf62d23aa0522227b0c38a24e9",
+      "results": [
+        {
+          "file": "rac2.apworld.yaml",
+          "game": "Ratchet & Clank 2",
+          "player": "Validation",
+          "options": 27,
+          "valid": true
+        },
+        {
+          "file": "rac2.apworld-custom.yaml",
+          "game": "Ratchet & Clank 2",
+          "player": "Custom",
+          "options": 27,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "archipelagoVersion": "0.6.7",
+      "worldVersion": "0.4.3",
+      "apworldSha256": "cc3a539ad57aaf3dc669135fd9cfbfa7aceac9f1635cfab48b0e8883f3057011",
+      "results": [
+        {
+          "file": "tboir.apworld.yaml",
+          "game": "The Binding of Isaac Repentance",
+          "player": "Validation",
+          "options": 52,
+          "valid": true
+        },
+        {
+          "file": "tboir.apworld-custom.yaml",
+          "game": "The Binding of Isaac Repentance",
+          "player": "Custom",
+          "options": 52,
+          "valid": true
+        }
+      ]
+    }
+  ]
+}

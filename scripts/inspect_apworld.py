@@ -8,7 +8,8 @@ UNKNOWN = object()
 BUILTINS = {
     'Toggle': ('toggle', False), 'DefaultOnToggle': ('toggle', True), 'DeathLink': ('toggle', False),
     'Choice': ('choice', 0), 'TextChoice': ('textchoice', 0), 'Range': ('range', 0), 'NamedRange': ('range', 0),
-    'OptionDict': ('dict', {}), 'ItemDict': ('dict', {}), 'OptionList': ('list', []), 'ItemLinks': ('list', []),
+    'OptionDict': ('dict', {}), 'OptionCounter': ('dict', {}), 'ItemDict': ('dict', {}), 'OptionList': ('list', []), 'ItemLinks': ('list', []),
+    'FreeText': ('text', ''),
     'OptionSet': ('set', []), 'ItemSet': ('set', []), 'LocationSet': ('set', []),
     'StartInventory': ('dict', {}), 'StartInventoryPool': ('dict', {}), 'LocalItems': ('set', []),
     'NonLocalItems': ('set', []), 'StartHints': ('set', []), 'StartLocationHints': ('set', []),
@@ -153,6 +154,9 @@ def inspect(files):
                         try: return dict(value)
                         except (TypeError, ValueError): return UNKNOWN
                     return list(value)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr in ('keys', 'values') and not node.args and not node.keywords:
+            value = literal(node.func.value, module, env, depth + 1)
+            if isinstance(value, dict): return list(value.keys() if node.func.attr == 'keys' else value.values())
         return UNKNOWN
 
     def details(ref, trail=(), depth=0):
@@ -244,6 +248,10 @@ def inspect(files):
                 if default is not UNKNOWN and not ((isinstance(default, int) and (low <= default <= high or default in option['specialValues'])) or (isinstance(default, str) and (default in special or default.startswith('random')))): default = UNKNOWN
             elif kind == 'toggle':
                 default = bool(default) if default is not UNKNOWN else UNKNOWN
+            elif kind == 'text':
+                # Some worlds subclass FreeText with scalar presets of another type.
+                # Keep the declared value instead of inventing a string conversion.
+                if default is not UNKNOWN and not isinstance(default, str): option.update(kind='json')
             elif kind in ('set', 'list', 'dict'):
                 if kind in ('set', 'list') and isinstance(default, dict): default = list(default)
                 if default is not UNKNOWN and not isinstance(default, dict if kind == 'dict' else list): option.update(kind='json', collectionKind=kind)

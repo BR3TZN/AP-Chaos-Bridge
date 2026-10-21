@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.3.1
+# AP Chaos Bridge 0.3.2
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und erzeugen zusätzliche AP-Items oder einen DeathLink an die eigene Teamgruppe.
 
@@ -14,11 +14,13 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.3.1
+## Update auf 0.3.2
 
-Bridge über **Einrichtung → Tool beenden** schließen. Neue Dateien über den bisherigen Programmordner kopieren; den bestehenden Ordner **`data` beibehalten**. Anschließend `Start.cmd` öffnen und die Oberfläche mit **Strg+F5** neu laden. Das Update-Paket enthält keine persönlichen Daten.
+Ab Version 0.3.1 unter **Einrichtung → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-Neu: Spielerliste mit **+ Spieler**, Zufall aus einer ausgewählten Gruppe, APworlds aus dem verlinkten Katalog, vorbereitete Einstellungsformulare mit Dropdowns, rekursiver APworld-Ordner und archivierte oder löschbare Räume. Fehlende Downloads und Grenzen stehen in **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)**. Der Einstellungseditor liest ausschließlich APworlds; frühere YAML-Vorlagen werden nicht mehr als Spieleinstellungen übernommen. Bestehende Regeln und Räume bleiben erhalten.
+Neu in 0.3.2: Vorbereitete APworld-Versionen funktionieren ohne Python auch beim Hochladen, Umbenennen und in eigenen Ordnern. Unterstützt werden alle sieben bereitgestellten Dateien einschließlich **Kingdom Hearts III 0.16.11** und **Bloons TD6 0.8.2**. Bereits identische Dateien werden wiederverwendet. Trap-Gewichtungen und Freitextfelder wie die Platin-DeathLink-Gruppe sind ergänzt.
+
+Außerdem enthalten: Spielerliste mit **+ Spieler**, Zufall aus einer ausgewählten Gruppe, APworlds aus dem verlinkten Katalog, vorbereitete Einstellungsformulare mit Dropdowns, rekursiver APworld-Ordner und archivierte oder löschbare Räume. Fehlende Downloads und Grenzen stehen in **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)**. Der Einstellungseditor liest ausschließlich APworlds; frühere YAML-Vorlagen werden nicht mehr als Spieleinstellungen übernommen. Bestehende Regeln und Räume bleiben erhalten.
 
 Kurze Anleitung inklusive Twitch-Setup: **[ANLEITUNG.md](ANLEITUNG.md)**.
 
@@ -26,7 +28,7 @@ Kurze Anleitung inklusive Twitch-Setup: **[ANLEITUNG.md](ANLEITUNG.md)**.
 
 Unter **Einrichtung → Programmupdates** nach stabilen GitHub-Releases suchen. Die Bridge prüft beim normalen Start und alle zwölf Stunden automatisch. **Update herunterladen** lädt das vollständige ZIP und prüft SHA-256 sowie sämtliche Dateien. **Installieren & neu starten** pausiert die Ausführung, sichert Programmdateien und Daten und startet die neue Version im Testmodus. Bei Installations- oder Startfehlern wird die vorherige Version einschließlich ihrer Daten wiederhergestellt. Räume, Verbindungen und eigene APworlds bleiben erhalten. Sicherungen und Protokolle liegen unter `data/updates/`.
 
-Für das private Repo unter **GitHub-Zugang für private Repositories** einen [Fine-grained Token](https://github.com/settings/personal-access-tokens/new) für `BR3TZN/AP-Chaos-Bridge` mit **Contents: Read-only** speichern. Der GitHub-Login im Browser wird nicht an den lokalen Updater übergeben. Für öffentliche Repositories ist kein Token erforderlich. Tokens bleiben lokal verschlüsselt und werden nicht exportiert.
+Das Repository `BR3TZN/AP-Chaos-Bridge` ist öffentlich; Updates benötigen **keinen Token**. Nur bei einer privaten Kopie unter **GitHub-Zugang für private Repositories** einen [Fine-grained Token](https://github.com/settings/personal-access-tokens/new) für `BR3TZN/AP-Chaos-Bridge` mit **Contents: Read-only** speichern. Der GitHub-Login im Browser wird nicht an den lokalen Updater übergeben. Für öffentliche Repositories ist kein Token erforderlich. Tokens bleiben lokal verschlüsselt und werden nicht exportiert.
 
 Auf älteren Versionen die Updatefunktion einmal mit dem vollständigen neuen ZIP manuell einspielen und `data` beibehalten. GitHubs automatische „Source code“-Downloads enthalten keine Laufzeitpakete und sind keine Updatepakete.
 
@@ -116,7 +118,7 @@ Der **Spielekatalog** enthält ausschließlich eingelesene APworlds. Die Referen
 
 Im Katalog ein Spiel suchen und **Einstellungen & YAML** öffnen. Choice- und Toggle-Optionen erscheinen als Dropdown; kleine Zahlenbereiche ebenfalls. Größere Bereiche erlauben eigene Werte und Zufallsbereiche. Bekannte Set-Werte bieten eine Mehrfachauswahl; freie Dictionaries und andere komplexe Angaben bleiben strukturierte Eingaben. Ein Slotname pro Zeile erzeugt eine YAML pro Spieler, mehrere Spieler werden als ZIP exportiert. Einstellungen und Namen bleiben pro Raum gespeichert.
 
-Eigene `.apworld`-Dateien in **`apworlds/`** oder einen Unterordner legen und **Ordner neu einlesen** wählen. Alternativ über **APworld hinzufügen** hochladen. Beim Start wird ebenfalls gescannt. Eigene Dateien direkt im APworld-Ordner haben Vorrang vor mitgelieferten Varianten in Unterordnern. YAML-Dateien werden in diesem Ordner nicht eingelesen. Für neue APworlds wird **Python 3.10 oder neuer** benötigt, automatisch über `py -3`, `python` oder `python3` erkannt. Bei Bedarf gibt `AP_BRIDGE_PYTHON` den vollständigen Pfad vor. Die mitgelieferten Metadaten sind bereits vorbereitet und werden nur bei passenden Datei-Prüfsummen verwendet.
+Eigene `.apworld`-Dateien in **`apworlds/`** oder einen Unterordner legen und **Ordner neu einlesen** wählen. Alternativ über **APworld hinzufügen** hochladen. Beim Start wird ebenfalls gescannt. Eigene Dateien direkt im APworld-Ordner haben Vorrang vor mitgelieferten Varianten in Unterordnern. YAML-Dateien werden in diesem Ordner nicht eingelesen. Vorbereitete APworld-Versionen werden am Dateiinhalt erkannt und benötigen auch nach Umbenennen oder in eigenen Ordnern **kein Python**. Für bisher unbekannte Versionen wird **Python 3.10 oder neuer** benötigt, automatisch über `py -3`, `python` oder `python3` erkannt. Bei Bedarf gibt `AP_BRIDGE_PYTHON` den vollständigen Pfad vor. Die mitgelieferten Metadaten sind bereits vorbereitet und werden nur bei passenden Datei-Prüfsummen verwendet.
 
 Die Dateien liegen nach Quelle und Hash in Unterordnern; ihre **Originalnamen bleiben erhalten**. Für die eigentliche Archipelago-Generierung die gewünschte Datei in Archipelagos `custom_worlds` installieren. Abweichende Installationsnamen einzelner Entwicklerpakete stehen in der manuellen Liste. Nicht alle mitgelieferten Versionen gleichzeitig in Archipelago installieren. Den verwendeten Dateipfad zeigt der Editor als Quelle an.
 

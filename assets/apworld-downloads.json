@@ -23599,5 +23599,63 @@
       "reason": "Download nur über Discord verlinkt",
       "status": "manual"
     }
+  ],
+  "userImports": [
+    {
+      "game": "Bloons TD6",
+      "file": "github-com-Matt41321/0c4f813b/bloonstd6.apworld",
+      "originalName": "bloonstd6.apworld",
+      "sha256": "0c4f813b955fd58830075b5d5c7659ea1a9f051d81d72da2f066feb63e903085",
+      "bytes": 27033,
+      "source": "Nutzer-Upload vom 22.10.2026"
+    },
+    {
+      "game": "Cyberpunk 2077",
+      "file": "github-com-247Tossing/c1b87cae/cyberpunk2077.apworld",
+      "originalName": "cyberpunk2077.apworld",
+      "sha256": "c1b87cae1a4fb599954c84d81fc82c95f4e5eba46873c6ed57d8761e83ce2b1e",
+      "bytes": 46749,
+      "source": "Nutzer-Upload vom 22.10.2026"
+    },
+    {
+      "game": "Kingdom Hearts III",
+      "file": "user-provided/c792d00b/kh3.apworld",
+      "originalName": "kh3.apworld",
+      "sha256": "c792d00ba102180ad6f53612c5ced4d04a7002c2911a51ec9db3e222bd66b56f",
+      "bytes": 3644013,
+      "source": "Nutzer-Upload vom 22.10.2026"
+    },
+    {
+      "game": "Minecraft",
+      "file": "github-com-qixils/a204e6f5/minecraft.apworld",
+      "originalName": "minecraft.apworld",
+      "sha256": "a204e6f5438797038986cdfa4c995587f7d0f415f1af88fe7afc71a1c35c7a18",
+      "bytes": 61212,
+      "source": "Nutzer-Upload vom 22.10.2026"
+    },
+    {
+      "game": "Pokemon Platinum",
+      "file": "github-com-ljtpetersen/56c3e0b1/pokemon_platinum.apworld",
+      "originalName": "pokemon_platinum.apworld",
+      "sha256": "56c3e0b16c244642779475db25de9cd0b513b6a9a6eeef7532744c99c5a0e0cf",
+      "bytes": 1330044,
+      "source": "Nutzer-Upload vom 22.10.2026"
+    },
+    {
+      "game": "Ratchet & Clank 2",
+      "file": "github-com-evilwb/1943f7c4/rac2.apworld",
+      "originalName": "rac2.apworld",
+      "sha256": "1943f7c44e62ec53d13999f7194edbd2ad8299bf62d23aa0522227b0c38a24e9",
+      "bytes": 83992,
+      "source": "Nutzer-Upload vom 22.10.2026"
+    },
+    {
+      "game": "The Binding of Isaac Repentance",
+      "file": "github-com-NaveTK/cc3a539a/tboir.apworld",
+      "originalName": "tboir.apworld",
+      "sha256": "cc3a539ad57aaf3dc669135fd9cfbfa7aceac9f1635cfab48b0e8883f3057011",
+      "bytes": 429427,
+      "source": "Nutzer-Upload vom 22.10.2026"
+    }
   ]
 }

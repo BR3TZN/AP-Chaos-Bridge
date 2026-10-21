@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-21T21:52:36.855Z",
-  "files": 765,
-  "variants": 779,
-  "exportedGames": 756,
+  "checkedAt": "2026-10-21T23:32:48.202Z",
+  "files": 767,
+  "variants": 781,
+  "exportedGames": 757,
   "errors": [],
   "parserErrors": [
     {
@@ -19,9 +19,9 @@
     }
   ],
   "yamlSchema": "1.1",
-  "yamlRoundTrips": 779,
+  "yamlRoundTrips": 781,
   "pythonYaml": {
-    "checked": 779,
+    "checked": 781,
     "loader": "PyYAML 6.0.3",
     "errors": []
   }

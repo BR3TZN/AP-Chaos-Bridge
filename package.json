@@ -1,9 +1,9 @@
 {
   "name": "ap-chaos-bridge",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "type": "module",
-  "description": "Lokale Charity-Royale- und Twitch-Bridge für Archipelago",
+  "description": "Lokale Charity-Royale- und Twitch-Bridge f\u00fcr Archipelago",
   "engines": {
     "node": ">=22"
   },
