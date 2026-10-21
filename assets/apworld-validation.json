@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-21T13:59:17.387Z",
+  "checkedAt": "2026-10-21T21:52:36.855Z",
   "files": 765,
   "variants": 779,
   "exportedGames": 756,
@@ -17,5 +17,12 @@
       "file": "github-com-Z11Coding/65070658/APAPI.apworld",
       "error": "Kein statisch deklarierter World-Spielname gefunden"
     }
-  ]
+  ],
+  "yamlSchema": "1.1",
+  "yamlRoundTrips": 779,
+  "pythonYaml": {
+    "checked": 779,
+    "loader": "PyYAML 6.0.3",
+    "errors": []
+  }
 }
