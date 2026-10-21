@@ -131,7 +131,10 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         return json(res, { game, items: Object.keys(ap.items(game)).sort(), candidates, demo: ap.demo });
       }
       if (req.method === 'GET' && path === '/apworlds-manual') { res.writeHead(200, { 'Content-Type': 'text/markdown; charset=utf-8', 'Content-Disposition': 'attachment; filename=APWORLDS-MANUELL.md' }); res.end(readFileSync(join(root, 'APWORLDS-MANUELL.md'))); return; }
-      if (req.method === 'GET' && path === '/api/game-index') return json(res, gameIndex);
+      if (req.method === 'GET' && path === '/api/game-index') {
+        const references = new Map(gameIndex.games.map(game => [game.game, game]));
+        return json(res, { ...gameIndex, games: library.list().games.filter(game => game.kind === 'apworld').map(game => ({ ...references.get(game.game), game: game.game, kind: 'apworld', source: game.source })) });
+      }
       if (req.method === 'GET' && path === '/api/game-library') return json(res, library.list());
       if (req.method === 'GET' && path === '/api/game-settings') return json(res, library.get(url.searchParams.get('game')));
       if (req.method === 'GET' && path === '/api/export') {

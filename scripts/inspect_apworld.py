@@ -38,13 +38,15 @@ def assignments(body):
 
 
 def inspect(files):
-    modules, classes, warnings, traps, manifests = {}, {}, [], set(), {}
+    modules, classes, warnings, traps, manifests, manifest_details = {}, {}, [], set(), {}, {}
     for file in sorted(files, key=lambda f: f['name']):
         filename = file['name']
         if filename.rsplit('/', 1)[-1] == 'archipelago.json':
             try:
                 data = json.loads(file['text'])
-                if isinstance(data.get('game'), str): manifests[filename.split('/')[0] if '/' in filename else ''] = data['game']
+                if isinstance(data.get('game'), str):
+                    package_root = filename.split('/')[0] if '/' in filename else ''
+                    manifests[package_root] = data['game']; manifest_details[package_root] = data
             except (ValueError, TypeError, AttributeError): pass
         if not filename.endswith('.py'): continue
         try: tree = ast.parse(file['text'].lstrip('\ufeff'), filename=filename)
@@ -250,7 +252,13 @@ def inspect(files):
             else: option['default'] = default
             options = [o for o in options if o['key'] != key] + [option]
         if not option_fields: unresolved.append('Options-Dataclass konnte nicht statisch aufgelöst werden')
-        worlds.append({'game': game, 'options': options, 'unresolved': unresolved, 'traps': sorted(traps), 'parser': 'Python AST · kein Import', 'sourceFile': entry['file']})
+        manifest = manifest_details.get(entry['module'].split('.')[0], manifest_details.get('', {}))
+        info = {}
+        for source_key, target_key in [('minimum_ap_version', 'minimumAPVersion'), ('world_version', 'worldVersion')]:
+            value = manifest.get(source_key)
+            if isinstance(value, str): info[target_key] = value[:200]
+            elif isinstance(value, list) and len(value) == 3 and all(isinstance(part, int) and part >= 0 for part in value): info[target_key] = '.'.join(map(str, value))
+        worlds.append({'game': game, 'options': options, 'unresolved': unresolved, 'traps': sorted(traps), 'parser': 'Python AST · kein Import', 'sourceFile': entry['file'], **info})
     return {'worlds': worlds, 'warnings': warnings}
 
 if __name__ == '__main__':
