@@ -12,6 +12,7 @@ import { Rooms } from './lib/rooms.mjs';
 import { GameLibrary } from './lib/game-library.mjs';
 import { writeZip } from './lib/zip.mjs';
 import { connectionConfig } from './lib/address.mjs';
+import { Updater } from './lib/updater.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const secretEquals = (a, b) => typeof a === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b));
@@ -40,7 +41,7 @@ function cleanConfig(old, raw) {
   return c;
 }
 
-export async function createApp({ directory = join(root, 'data'), port = 17381, memory = false, fetchImpl = fetch, worldsDirectory, twitchSocketUrl } = {}) {
+export async function createApp({ directory = join(root, 'data'), port = 17381, memory = false, fetchImpl = fetch, worldsDirectory, twitchSocketUrl, updateRestart = false, updateRoot = root } = {}) {
   const store = new Store(Rooms.initialDirectory(directory, { memory }), { memory }); const session = randomBytes(32).toString('hex');
   const rooms = new Rooms(store, directory, { memory }), vault = new Vault(directory, { memory });
   const library = new GameLibrary(directory, root, { memory, folder: worldsDirectory });
@@ -51,6 +52,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   let engine; const listeners = new Set(); let updateTimer, pendingOAuth;
   const changed = () => { if (!updateTimer) updateTimer = setTimeout(() => { updateTimer = null; for (const response of listeners) response.write('event: change\ndata: {}\n\n'); }, 50); };
   const log = (level, message) => { store.log(level, message); changed(); };
+  const updater = new Updater({ root: updateRoot, directory, fetchImpl, getToken: () => vault.get('__application_updates__').githubToken || '', changed, allowInstall: updateRestart });
   const ap = new Archipelago({ log, changed, uuid: store.state.installationId, unsafe: () => engine?.pause() });
   engine = new Engine(store, ap); engine.onChange = changed;
   const ingest = event => engine.ingest(event);
@@ -89,7 +91,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   function snapshot() {
     const s = store.state;
     return { name: 'AP Chaos Bridge', version: VERSION, session, config: s.config, ap: ap.status(), charity: charity.status(), twitch: twitch.status(),
-      rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
+      updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
       rooms: rooms.list(), savedCredentials: vault.status(rooms.id), playerProfiles: s.players, yamlPresets: s.yamlPresets,
       gameLibrary: { folder: library.data.folder, games: Object.values(library.data.games).map(g => ({ game: g.game, kind: g.kind, source: g.source, optionCount: g.options.length, unresolved: g.unresolved })) },
       queue: s.queue, events: s.events, logs: s.logs, profiles: PROFILES, yamlProfiles: s.yamlProfiles, twitchEvents: TWITCH_EVENTS,
@@ -158,6 +160,17 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (isExternal) {
           if (!data.id || !Number.isFinite(data.timestamp)) throw new Error('Externe Ereignisse benötigen id und timestamp (Unix-Millisekunden).');
           return json(res, engine.ingest({ ...data, source: 'external' }));
+        }
+        if (path === '/api/updates/check') return json(res, await updater.check());
+        if (path === '/api/updates/download') return json(res, updater.startDownload());
+        if (path === '/api/updates/token') {
+          updater.assertIdle(); const token = vault.resolve('__application_updates__', 'githubToken', data.token).trim();
+          if (/\s/.test(token)) throw new Error('GitHub-Token darf keine Leerzeichen enthalten.');
+          vault.update('__application_updates__', { githubToken: token }); changed(); return json(res, { ok: true });
+        }
+        if (path === '/api/updates/install') {
+          engine.pause(); if (engine.busy) throw new Error('Ein Versand läuft noch. Nach dessen Abschluss erneut installieren.');
+          const status = await updater.install({ port: actualPort }); json(res, status); setTimeout(() => close(), 200); return;
         }
         if (path === '/api/config') {
           const next = cleanConfig(store.state.config, data);
@@ -274,7 +287,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         store.save(); changed(); return json(res, { ok: true });
       }
       if (req.method === 'GET') {
-        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
+        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
         const file = staticFiles[path];
         if (file) { const type = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' }[extname(file)]; res.writeHead(200, { 'Content-Type': type }); res.end(readFileSync(join(root, file))); return; }
       }
@@ -285,21 +298,26 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   const tick = setInterval(() => { engine.tick().catch(e => { store.state.config.paused = true; console.error('Warteschlange angehalten:', e.message); }); }, 250);
   tick.unref?.();
   const close = () => {
-    clearInterval(tick); clearTimeout(updateTimer); charity.disconnect(); twitch.disconnect(); ap.disconnect();
+    clearInterval(tick); clearTimeout(updateTimer); clearTimeout(updateCheck); clearInterval(updateChecks); updater.close(); charity.disconnect(); twitch.disconnect(); ap.disconnect();
     for (const response of listeners) response.end(); listeners.clear(); server.close(); server.closeIdleConnections();
   };
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', resolve); });
+  let updateCheck, updateChecks;
+  if (!memory && updateRestart) {
+    const check = () => { if (!updater.busy && updater.state.phase !== 'ready') void updater.check().catch(() => {}); };
+    updateCheck = setTimeout(check, 3000); updateCheck.unref(); updateChecks = setInterval(check, 12 * 60 * 60 * 1000); updateChecks.unref();
+  }
   if (!memory) {
     void resumeConnections();
     void library.scan().then(report => { for (const e of report.errors) log('warn', 'Spielekatalog · ' + e.file + ': ' + e.error); changed(); }).catch(e => log('warn', 'Spielekatalog: ' + e.message));
   }
-  return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, url: `http://127.0.0.1:${server.address().port}` };
+  return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, updater, url: `http://127.0.0.1:${server.address().port}` };
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const port = Number(process.env.AP_BRIDGE_PORT || 17381);
   if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('AP_BRIDGE_PORT muss zwischen 1024 und 65535 liegen.');
-  createApp({ port }).then(app => {
+  createApp({ port, updateRestart: true }).then(app => {
     console.log(`AP Chaos Bridge ${VERSION}\nOberfläche: ${app.url}\nStart: Testmodus, Warteschlange pausiert.\nBeenden: Strg+C oder Einstellungen > Tool beenden.`);
     process.on('SIGINT', () => app.close()); process.on('SIGTERM', () => app.close());
   }).catch(error => { console.error(error.code === 'EADDRINUSE' ? 'Port bereits belegt. Läuft die Bridge schon? http://127.0.0.1:' + port : error.message); process.exitCode = 1; });

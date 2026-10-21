@@ -11,12 +11,12 @@ for (const p of files.filter(p => /\.(m?js)$/.test(p))) {
   if (result.status !== 0) { console.error(result.stderr); process.exit(1); }
 }
 for (const p of files.filter(p => /\.json$/.test(p))) JSON.parse(readFileSync(p, 'utf8'));
-const localRoutes = { '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth.js': 'public/oauth.js' };
+const localRoutes = { '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth.js': 'public/oauth.js' };
 for (const p of files.filter(p => p.endsWith('.html'))) {
   const html = readFileSync(p, 'utf8');
   for (const match of html.matchAll(/(?:src|href)="(\/[^"#]*)"/g)) if (localRoutes[match[1]] && !existsSync(join(root, localRoutes[match[1]]))) throw new Error('Fehlendes Asset: ' + match[1]);
   if (/<script(?![^>]*\bsrc=)[^>]*>[^<]/i.test(html)) throw new Error('Inline-Skript passt nicht zur CSP: ' + p);
   if (/(?:onclick|onchange|onsubmit)=/i.test(html)) throw new Error('Inline-Handler passt nicht zur CSP: ' + p);
 }
-for (const name of ['ws', 'yaml']) if (!existsSync(join(root, 'node_modules', name, 'package.json'))) throw new Error('Paket fehlt: ' + name);
+for (const name of ['ws', 'yaml', 'yauzl']) if (!existsSync(join(root, 'node_modules', name, 'package.json'))) throw new Error('Paket fehlt: ' + name);
 console.log(`${files.filter(p => /\.(m?js)$/.test(p)).length} JavaScript-Dateien syntaxgeprüft; JSON, HTML-Assets und Paketabhängigkeiten geprüft.`);

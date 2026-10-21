@@ -15,9 +15,9 @@ async function until(predicate, message, timeout = 1800) {
   }
 }
 
-async function ui(t) {
+async function ui(t, options = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'ap-chaos-ui-'));
-  const app = await createApp({ directory, worldsDirectory: join(directory, 'worlds'), port: 0 });
+  const app = await createApp({ directory, worldsDirectory: join(directory, 'worlds'), port: 0, ...options });
   app.library.importWorld(writeZip([{ name: 'ui/__init__.py', content: `class Health(Range):\n range_start = 1\n range_end = 9\n default = 3\nclass UIOptions(PerGameCommonOptions):\n health: Health\nclass UIWorld(World):\n game = 'UI Fixture'\n options_dataclass = UIOptions` }]), 'ui.apworld');
   const dom = new JSDOM(readFileSync(new URL('../public/index.html', import.meta.url), 'utf8'), { url: app.url + '/#regeln', runScripts: 'outside-only' });
   const { window } = dom;
@@ -31,7 +31,7 @@ async function ui(t) {
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   window.scrollTo = () => {};
-  window.eval(readFileSync(new URL('../public/studio.js', import.meta.url), 'utf8') + '\n' + readFileSync(new URL('../public/app.js', import.meta.url), 'utf8') + '\nwindow.__bridgeRefresh = refresh;');
+  window.eval(readFileSync(new URL('../public/studio.js', import.meta.url), 'utf8') + '\n' + readFileSync(new URL('../public/updates.js', import.meta.url), 'utf8') + '\n' + readFileSync(new URL('../public/app.js', import.meta.url), 'utf8') + '\nwindow.__bridgeRefresh = refresh;');
   await until(() => window.document.querySelector('[data-action="new-rule"]'), 'Regelseite wurde nicht geladen.');
   t.after(() => { dom.window.close(); app.close(); rmSync(directory, { recursive: true, force: true }); });
   return { app, window, document: window.document, requests, directory };
