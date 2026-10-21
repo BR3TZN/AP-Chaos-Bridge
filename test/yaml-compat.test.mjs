@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parse } from 'yaml';
+import { spawnSync } from 'node:child_process';
 import { GameLibrary } from '../lib/game-library.mjs';
 import { writeZip } from '../lib/zip.mjs';
 import { createApp } from '../server.mjs';
@@ -15,7 +16,7 @@ const archive = writeZip([
  option_itempool = 1
  default = 0
 class OptionsDict(OptionDict):
- default = {'battle_scene': 'on', 'off': 'no', 'text': 'yes', 'nested': ['on', 'off', 'no', '0123', '2026-10-21']}
+ default = {'battle_scene': 'on', 'off': 'no', 'text': 'yes', 'pollution_factor': 9e-7, 'nested': ['on', 'off', 'no', '0123', '2026-10-21']}
 class FixtureOptions(PerGameCommonOptions):
  hm_reader: HMReader
  game_options: OptionsDict
@@ -51,4 +52,13 @@ test('the catalog endpoint exposes only imported APworld games and excludes shee
   app.library.importWorld(archive, 'fixture.apworld');
   const index = await fetch(app.url + '/api/game-index').then(response => response.json());
   assert.deepEqual(index.games.map(game => game.game), ['YAML Fixture']); assert(index.games.every(game => game.kind === 'apworld'));
+});
+
+
+test('PyYAML preserves choice words and scientific numbers in generated documents', () => {
+  const library = new GameLibrary('.', process.cwd(), { memory: true }); library.importWorld(archive, 'fixture.apworld');
+  const entry = library.get('YAML Fixture'), yaml = library.generate({ game: entry.game, players: ['Daniel'] })[0].content;
+  const python = library.pythonCommand();
+  const result = spawnSync(python[0], [...python.slice(1), 'scripts/validate_yaml_compat.py'], { input: JSON.stringify([{ file: entry.source, game: entry.game, yaml, expected: { ...entry.base, name: 'Daniel' } }]), encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stdout + result.stderr);
 });

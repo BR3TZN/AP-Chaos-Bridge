@@ -238,3 +238,15 @@ test('rule UI saves a random recipient from the stored player group', async t =>
   const rule = app.store.state.rules.find(r => r.name === 'Eine Person aus unserer Gruppe'); assert.equal(rule.target, 'random_selected'); assert.deepEqual(rule.targetKeys, ['0:1', '0:2']);
   const jobs = app.engine.plan(rule, { id: 'group-test', source: 'manual', user: 'Test', dryRun: true }); assert.equal(jobs.length, 1); assert(rule.targetKeys.includes(jobs[0].targetKey));
 });
+
+test('update UI masks private access and displays a new release through the real API', async t => {
+  const { VERSION } = await import('../lib/model.mjs'); const next = VERSION.split('.').map(Number); next[2]++; const version = next.join('.');
+  const release = { tag_name: 'v' + version, assets: [{ id: 123, name: `AP-Chaos-Bridge-v${version}.zip`, state: 'uploaded', size: 1000, digest: 'sha256:' + '1'.repeat(64) }] };
+  const { app, window, document } = await ui(t, { fetchImpl: async () => Response.json(release) });
+  window.location.hash = 'einrichtung'; await until(() => document.querySelector('#update-token-form'), 'Updatebereich fehlt.');
+  document.querySelector('#update-token-form input').value = 'only-test-github-token'; document.querySelector('#update-token-form [type="submit"]').click();
+  await until(() => app.snapshot().updates.hasToken, 'Zugang nicht gespeichert.'); await until(() => document.querySelector('#update-token-form input').value === '••••••••', 'Zugang nicht maskiert.');
+  assert(!document.documentElement.innerHTML.includes('only-test-github-token'));
+  document.querySelector('[data-action="update-check"]').click(); await until(() => document.querySelector('#update-version').textContent === 'Release ' + version, 'Neue Version fehlt.');
+  assert.equal(document.querySelector('[data-action="update-download"]').hidden, false); assert.equal(document.querySelector('[data-action="update-install"]').hidden, true); assert(document.querySelector('[data-update-link]').textContent.includes(version));
+});
