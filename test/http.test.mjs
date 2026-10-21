@@ -17,7 +17,7 @@ test('HTTP serves the real app, examples and game catalog without external asset
   for (const path of ['/app.js', '/style.css', '/icon.svg', '/overlay', '/overlay.js', '/overlay.css', '/oauth/callback', '/oauth.js']) {
     const response = await fetch(app.url + path); assert.equal(response.status, 200, path); assert(response.headers.get('content-security-policy'));
   }
-  const index = await fetch(app.url + '/api/game-index').then(r => r.json()); assert.equal(index.games.length, 867);
+  const index = await fetch(app.url + '/api/game-index').then(r => r.json()); assert.equal(index.games.length, 0);
   assert.equal(app.store.state.yamlProfiles.length, 3); assert.equal(app.snapshot().config.mode, 'test'); assert.equal(app.snapshot().config.paused, true);
 });
 test('cross-site requests and writes without session are rejected', async t => {

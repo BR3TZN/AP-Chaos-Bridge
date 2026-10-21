@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.3.0 · Einrichtung
+# AP Chaos Bridge 0.3.1 · Einrichtung
 
 ## Start und Update
 
@@ -119,3 +119,17 @@ Unter **Räume** archivieren, nach **Archiviert** filtern und bei Bedarf **Wiede
 4. Die Regel zuerst simulieren. Zufall aus der Auswahl trifft pro Auslösung genau eine geeignete Person; mehrere oder alle erzeugt Aktionen pro geeignetem Spieler.
 
 Die Spielerliste erzeugt keine zusätzlichen Serververbindungen: Eine Bridge-Verbindung zu eurem AP-Raum reicht aus. DeathLink bleibt eine Gruppenaktion des AP-Teams.
+
+## Programmupdates
+
+1. **Einrichtung → Programmupdates → Nach Updates suchen** öffnen.
+2. Solange das Repo privat ist, einen [Fine-grained Token](https://github.com/settings/personal-access-tokens/new) für `BR3TZN/AP-Chaos-Bridge` mit **Contents: Read-only** unter **GitHub-Zugang für private Repositories** speichern.
+3. **Update herunterladen** wählen und die Prüfung abwarten.
+4. **Installieren & neu starten** wählen. Räume, Regeln und Zugangsdaten bleiben erhalten; die Bridge startet im Testmodus und pausiert.
+5. Bei einem Fehler wird die vorherige Version wiederhergestellt. Protokolle: `data/updates/install.log` und `restart.log`; Sicherungen: `data/updates/backups/`. Falls die Oberfläche nicht zurückkommt, `Start.cmd` öffnen.
+
+Die erste Installation der Updatefunktion erfolgt manuell mit dem vollständigen Release-ZIP. `data` dabei beibehalten.
+
+## Spieler-YAMLs verwenden
+
+Der Katalog zeigt nur eingelesene APworlds. Nach diesem Update alte Platin-YAMLs erneut exportieren. Die angezeigte World-Version und Mindestversion von Archipelago beachten. Die passende `.apworld` in Archipelagos `custom_worlds` installieren, Spieler-YAMLs in `Players` legen und daraus den Seed generieren. Die YAML ist eine Konfigurationsdatei für den Generator.

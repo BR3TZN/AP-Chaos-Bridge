@@ -17,3 +17,5 @@
 .player-row { border: 1px solid var(--border, #343633); border-radius: 12px; padding: 16px; margin: 16px 0 0; min-width: 0; }
 .player-row legend { padding: 0 6px; font-weight: 600; }
 .player-row .button-row { justify-content: space-between; }
+
+[hidden]{display:none!important}#update-progress{display:block;width:100%;height:9px;margin-top:14px;accent-color:var(--accent)}#update-panel .section-title{align-items:flex-start}#update-result{overflow-wrap:anywhere}

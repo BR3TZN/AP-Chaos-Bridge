@@ -92,8 +92,9 @@ function eventsPage() {
 }
 function settingsPage() {
   return pageHead('EINRICHTUNG', 'Bereit für deinen Run.', 'Gespeicherte Regeln, kontrollierte Ausführung und austauschbare Ereignisquellen.')
+    + Updates.panel()
     + `<div class="grid source-grid"><section class="panel panel-pad"><h2>Warteschlange & Zeitlimits</h2><form id="limits-form"><div class="form-grid narrow"><label>Globaler Abstand (Sekunden)<input type="number" name="globalCooldownSec" min="0" max="3600" step="0.25" value="${S.config.globalCooldownSec}"></label><label>Maximale Warteschlange<input type="number" name="maxQueue" min="1" max="1000" value="${S.config.maxQueue}"></label><label>Auftrag gültig (Sekunden)<input type="number" name="queueTtlSec" min="30" max="86400" value="${S.config.queueTtlSec}"></label><label>Ereignis höchstens alt (Sekunden)<input type="number" name="eventMaxAgeSec" min="10" max="3600" value="${S.config.eventMaxAgeSec}"></label></div><button type="submit">Einstellungen speichern</button></form><p class="help">Regel-Cooldowns verzögern passende Aufträge. Volle Warteschlangen werden protokolliert. Abgelaufene Aufträge werden verworfen.</p></section><section class="panel panel-pad"><h2>Konfiguration & OBS</h2><p class="help">Exportiert Regeln und Konfiguration ohne Passwörter oder Twitch-Token. Beim Import bleiben Live-Modus und DeathLink gesperrt; Slotfreigaben werden erneut im Raum geprüft.</p><div class="button-row section-gap"><a class="text-link" href="/api/export" download>Konfiguration exportieren ↓</a><button class="small ghost" data-action="config-import">Importieren</button></div><hr class="line"><h3>Browserquelle für OBS</h3><pre>${esc(location.origin)}/overlay</pre><p class="help">1920 × 1080 · transparenter Hintergrund. Zeigt nur neu abgeschlossene Aktionen, keine Zugangsdaten. Die Quelle muss auf dem PC der Bridge laufen.</p><div class="button-row section-gap"><button class="small" data-action="copy-overlay">URL kopieren</button><a class="tiny text-link" href="/overlay" target="_blank" rel="noreferrer">Overlay öffnen ↗</a></div><hr class="line"><button class="small danger" data-action="shutdown">Tool beenden</button><p class="help">Verbindungen werden geschlossen. Bereits im Spiel oder AP-Server zugestellte Items bleiben bestehen.</p></section></div>`
-    + `<section class="panel panel-pad section-gap"><div class="section-title"><h2>Spielekatalog & Kompatibilität</h2><a class="text-link" href="#katalog">Katalog & YAML-Editor öffnen</a></div><p class="help">Referenz aus deiner Spieleliste. „Stable“ beschreibt die AP-Integration, nicht die Unterstützung von Zuschaueraktionen. Die Bridge lädt tatsächliche Items aus dem verbundenen Raum. Für Effekte ohne AP-Item oder DeathLink ist eine zusätzliche Spielmod erforderlich.</p><input id="catalog-search" class="catalog-search" placeholder="Spiel in der Referenzliste suchen …" aria-label="Spielekatalog durchsuchen"><div id="catalog-results" class="grid catalog-grid">${empty('Referenzkatalog', 'Suche nach einem Spieltitel.')}</div><p class="help"><a href="https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002" target="_blank" rel="noreferrer">Original-Spieleliste ↗</a></p></section>`
+    + `<section class="panel panel-pad section-gap"><div class="section-title"><h2>Spielekatalog & Kompatibilität</h2><a class="text-link" href="#katalog">Katalog & YAML-Editor öffnen</a></div><p class="help">Eingelesene APworlds aus deinem Spieleordner. „Stable“ beschreibt die AP-Integration, nicht die Unterstützung von Zuschaueraktionen. Die Bridge lädt tatsächliche Items aus dem verbundenen Raum. Für Effekte ohne AP-Item oder DeathLink ist eine zusätzliche Spielmod erforderlich.</p><input id="catalog-search" class="catalog-search" placeholder="Eingelesene APworld suchen …" aria-label="Spielekatalog durchsuchen"><div id="catalog-results" class="grid catalog-grid">${empty('Referenzkatalog', 'Suche nach einem Spieltitel.')}</div><p class="help"><a href="https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002" target="_blank" rel="noreferrer">Original-Spieleliste ↗</a></p></section>`
     + `<section class="panel panel-pad section-gap"><h2>Technische Grundlage</h2><div class="form-grid"><p class="help"><a href="https://streamer.make-a-wish.at/api" target="_blank" rel="noreferrer">Charity Royale API ↗</a><br>DonationCompleted · Netto-Cent · metadata.action</p><p class="help"><a href="https://github.com/ArchipelagoMW/Archipelago/blob/0.6.8/docs/network%20protocol.md" target="_blank" rel="noreferrer">Archipelago-Protokoll ↗</a><br>TextOnly · GetDataPackage · Say · Bounce</p><p class="help"><a href="https://archipelago.gg/tutorial/Archipelago/advanced_settings_en" target="_blank" rel="noreferrer">Advanced YAML Settings ↗</a><br>YAML-triggers ändern Optionen vor der Generierung.</p><p class="help"><a href="https://dev.twitch.tv/docs/eventsub/handling-websocket-events/" target="_blank" rel="noreferrer">Twitch EventSub ↗</a><br>Direkte WebSocket-Verbindung mit User Access Token</p></div></section>`;
 }
 function render(force = false) {
@@ -107,6 +108,8 @@ function render(force = false) {
   $('#mode').value = S.config.mode;
   $('#source-count').textContent = [S.charity, S.twitch].filter(x => x.state === 'connected').length;
   $('#footer-status').textContent = S.ap.demo ? 'Demo · keine Spielverbindung' : S.ap.connected ? S.ap.seed + (S.ap.admin ? ' · Admin aktiv' : ' · Admin fehlt') : 'Lokal · kein AP-Raum verbunden';
+  document.querySelectorAll('.version, footer b').forEach(el => el.textContent = el.classList.contains('version') ? S.version : 'V' + S.version);
+  Updates.sync();
   if (!force && ['quellen', 'einrichtung'].includes(currentPage) && $('#main').children.length) {
     document.querySelectorAll('[data-status]').forEach(el => el.innerHTML = sourceStatus(el.dataset.status));
     const authStatus = $('#ap-form .statusbar');
@@ -117,6 +120,7 @@ function render(force = false) {
   if (!force && page === 'spiel' && $('#studio-yaml-form')) return;
   const pages = { regie: dashboard, quellen: () => Studio.sourcesPage(sourcesPage()), spielslots: () => slotsPage() + Studio.playersPanel(), regeln: rulesPage, ereignisse: () => Studio.eventsPage(eventsPage), einrichtung: settingsPage, katalog: () => Studio.catalogPage(), raeume: () => Studio.roomsPage(), spiel: () => Studio.gamePage() };
   $('#main').innerHTML = (pages[page] || dashboard)();
+  Updates.sync();
 }
 function showDrawer(content) { $('#drawer-content').innerHTML = content; if (!$('#drawer').open) $('#drawer').showModal(); }
 const drawerHead = (title, description) => `<div class="drawer-head"><div><h2>${esc(title)}</h2><p>${esc(description)}</p></div><button type="button" class="icon-button" data-action="close-drawer" aria-label="Schließen">×</button></div>`;
@@ -165,6 +169,7 @@ document.addEventListener('click', async event => {
   const button = event.target.closest('[data-action]'); if (!button) return; event.preventDefault();
   const action = button.dataset.action, id = button.dataset.id;
   try {
+    if (action.startsWith('update-')) return await Updates.click(action, button);
     if (action.startsWith('studio-')) return await Studio.click(action, id, button);
     if (action === 'close-drawer') { $('#drawer').close(); approvalEditor = null; integration = null; return; }
     if (action === 'new-rule' || action === 'edit-rule') return editRule(id);
@@ -205,6 +210,7 @@ document.addEventListener('submit', async event => {
   if (previousError) previousError.textContent = '';
   if (submit) submit.disabled = true;
   try {
+    if (formId === 'update-token-form') { await Updates.submit(form); return; }
     if (formId.startsWith('studio-')) { await Studio.submit(form); return; }
     if (formId === 'ap-form') { await api('ap/connect', Object.fromEntries(d)); }
     else if (formId === 'charity-form') { await api('config', { charity: Object.fromEntries(d) }); await api('charity/connect', {}); }

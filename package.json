@@ -1,9 +1,9 @@
 {
   "name": "ap-chaos-bridge",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
-  "description": "Lokale Charity-Royale- und Twitch-Bridge f\u00fcr Archipelago",
+  "description": "Lokale Charity-Royale- und Twitch-Bridge für Archipelago",
   "engines": {
     "node": ">=22"
   },
@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "ws": "8.22.0",
-    "yaml": "2.9.1"
+    "yaml": "2.9.1",
+    "yauzl": "3.4.0"
   },
   "devDependencies": {
     "jsdom": "26.1.0"

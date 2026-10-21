@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.3.0
+# AP Chaos Bridge 0.3.1
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und erzeugen zusätzliche AP-Items oder einen DeathLink an die eigene Teamgruppe.
 
@@ -14,13 +14,32 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.3.0
+## Update auf 0.3.1
 
 Bridge über **Einrichtung → Tool beenden** schließen. Neue Dateien über den bisherigen Programmordner kopieren; den bestehenden Ordner **`data` beibehalten**. Anschließend `Start.cmd` öffnen und die Oberfläche mit **Strg+F5** neu laden. Das Update-Paket enthält keine persönlichen Daten.
 
 Neu: Spielerliste mit **+ Spieler**, Zufall aus einer ausgewählten Gruppe, APworlds aus dem verlinkten Katalog, vorbereitete Einstellungsformulare mit Dropdowns, rekursiver APworld-Ordner und archivierte oder löschbare Räume. Fehlende Downloads und Grenzen stehen in **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)**. Der Einstellungseditor liest ausschließlich APworlds; frühere YAML-Vorlagen werden nicht mehr als Spieleinstellungen übernommen. Bestehende Regeln und Räume bleiben erhalten.
 
 Kurze Anleitung inklusive Twitch-Setup: **[ANLEITUNG.md](ANLEITUNG.md)**.
+
+## Programmupdates
+
+Unter **Einrichtung → Programmupdates** nach stabilen GitHub-Releases suchen. Die Bridge prüft beim normalen Start und alle zwölf Stunden automatisch. **Update herunterladen** lädt das vollständige ZIP und prüft SHA-256 sowie sämtliche Dateien. **Installieren & neu starten** pausiert die Ausführung, sichert Programmdateien und Daten und startet die neue Version im Testmodus. Bei Installations- oder Startfehlern wird die vorherige Version einschließlich ihrer Daten wiederhergestellt. Räume, Verbindungen und eigene APworlds bleiben erhalten. Sicherungen und Protokolle liegen unter `data/updates/`.
+
+Für das private Repo unter **GitHub-Zugang für private Repositories** einen [Fine-grained Token](https://github.com/settings/personal-access-tokens/new) für `BR3TZN/AP-Chaos-Bridge` mit **Contents: Read-only** speichern. Der GitHub-Login im Browser wird nicht an den lokalen Updater übergeben. Für öffentliche Repositories ist kein Token erforderlich. Tokens bleiben lokal verschlüsselt und werden nicht exportiert.
+
+Auf älteren Versionen die Updatefunktion einmal mit dem vollständigen neuen ZIP manuell einspielen und `data` beibehalten. GitHubs automatische „Source code“-Downloads enthalten keine Laufzeitpakete und sind keine Updatepakete.
+
+Neue Releases erstellt `.github/workflows/release.yml`: eine neue Versionsnummer in `package.json` nach `main` pushen. Der Workflow testet unter Windows und Linux, prüft die World-YAMLs mit PyYAML, baut die Pakete und veröffentlicht erst danach. Veröffentlichte Versionen werden nicht überschrieben.
+
+## YAML-Kompatibilität
+
+Der Katalog zeigt ausschließlich Spiele aus tatsächlich eingelesenen APworld-Dateien. Die Referenzliste bleibt als Downloadnachweis und manuelle Ergänzungsliste verfügbar.
+
+Der Export verwendet YAML 1.1, passend zu Archipelagos Leser. Werte wie `no`, `on` und `off` werden als Text erhalten; exponentielle Zahlen werden ausdrücklich als Zahlen ausgegeben. Die Platin-YAML aus einer älteren Bridge-Version neu erzeugen. Das APworld-Manifest liefert World-Version und erforderliche Archipelago-Version. Die passende APworld muss zusätzlich im Generator installiert sein. YAMLs in Archipelagos `Players`-Ordner legen und daraus den Seed generieren.
+
+Prüfumfang und Grenzen: **[VALIDIERUNG.md](VALIDIERUNG.md)**.
+
 
 ## In drei Minuten den Ablauf prüfen
 
@@ -93,7 +112,7 @@ Optionale OBS-Browserquelle: **http://127.0.0.1:17381/overlay**, 1920 × 1080. T
 
 ## Spiele und YAMLs
 
-Der **Spielekatalog** enthält die Referenzeinträge aus deiner Tabelle und die direkt verfügbaren APworlds. Stand, Downloadquellen und SHA-256-Prüfsummen sind unter `assets/apworld-downloads.json` dokumentiert. **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)** nennt Discord-Downloads, nicht erreichbare Dateien, Core-Spiele ohne separate APworld und teilweise dynamische Optionen. Die Referenzliste ist kein Nachweis getesteter Spieleffekte.
+Der **Spielekatalog** enthält ausschließlich eingelesene APworlds. Die Referenzeinträge aus deiner Tabelle dienen als Downloadnachweis und manuelle Ergänzungsliste. Stand, Downloadquellen und SHA-256-Prüfsummen sind unter `assets/apworld-downloads.json` dokumentiert. **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)** nennt Discord-Downloads, nicht erreichbare Dateien, Core-Spiele ohne separate APworld und teilweise dynamische Optionen. Die Referenzliste ist kein Nachweis getesteter Spieleffekte.
 
 Im Katalog ein Spiel suchen und **Einstellungen & YAML** öffnen. Choice- und Toggle-Optionen erscheinen als Dropdown; kleine Zahlenbereiche ebenfalls. Größere Bereiche erlauben eigene Werte und Zufallsbereiche. Bekannte Set-Werte bieten eine Mehrfachauswahl; freie Dictionaries und andere komplexe Angaben bleiben strukturierte Eingaben. Ein Slotname pro Zeile erzeugt eine YAML pro Spieler, mehrere Spieler werden als ZIP exportiert. Einstellungen und Namen bleiben pro Raum gespeichert.
 
