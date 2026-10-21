@@ -41,9 +41,9 @@ function cleanConfig(old, raw) {
 }
 
 export async function createApp({ directory = join(root, 'data'), port = 17381, memory = false, fetchImpl = fetch, worldsDirectory, twitchSocketUrl } = {}) {
-  const store = new Store(directory, { memory }); const session = randomBytes(32).toString('hex');
+  const store = new Store(Rooms.initialDirectory(directory, { memory }), { memory }); const session = randomBytes(32).toString('hex');
   const rooms = new Rooms(store, directory, { memory }), vault = new Vault(directory, { memory });
-  const library = new GameLibrary(directory, root, { memory });
+  const library = new GameLibrary(directory, root, { memory, folder: worldsDirectory });
   if (worldsDirectory) library.data.folder = worldsDirectory;
   const keyFile = join(directory, 'integration-key.txt');
   const integrationKey = !memory && existsSync(keyFile) ? readFileSync(keyFile, 'utf8').trim() : randomBytes(32).toString('hex');
@@ -68,7 +68,13 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     if (config.autoConnect.charity && config.charity.slug) { try { charity.connect(); } catch (e) { log('error', e.message); } }
     if (config.autoConnect.twitch && saved.twitchToken) { try { await connectTwitch(saved.twitchToken, saved); } catch (e) { log('error', 'Twitch-Wiederverbindung: ' + e.message); } }
   }
+  let roomBusy = false;
+  async function changeRoom(action) {
+    if (roomBusy) throw new Error('Ein Raumwechsel läuft noch.');
+    roomBusy = true; try { return await action(); } finally { roomBusy = false; }
+  }
   async function switchRoom(id) {
+    rooms.require(id, { activeOnly: true }); if (id === rooms.id) return;
     if (engine.busy) throw new Error('Ein Versand läuft noch. Nach dessen Abschluss den Raum wechseln.');
     charity.disconnect(); twitch.disconnect(); ap.disconnect(); pendingOAuth = null;
     ap.players = []; ap.catalogs = {}; ap.seed = ''; ap.roomKey = ''; ap.slotInfo = null; ap.networkPlayers = null;
@@ -124,6 +130,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         const candidates = [...new Set([...(PROFILES[game]?.traps || []), ...(library.data.games[game]?.traps || []), ...store.state.yamlProfiles.filter(p => p.game === game).flatMap(p => p.traps)])];
         return json(res, { game, items: Object.keys(ap.items(game)).sort(), candidates, demo: ap.demo });
       }
+      if (req.method === 'GET' && path === '/apworlds-manual') { res.writeHead(200, { 'Content-Type': 'text/markdown; charset=utf-8', 'Content-Disposition': 'attachment; filename=APWORLDS-MANUELL.md' }); res.end(readFileSync(join(root, 'APWORLDS-MANUELL.md'))); return; }
       if (req.method === 'GET' && path === '/api/game-index') return json(res, gameIndex);
       if (req.method === 'GET' && path === '/api/game-library') return json(res, library.list());
       if (req.method === 'GET' && path === '/api/game-settings') return json(res, library.get(url.searchParams.get('game')));
@@ -157,7 +164,18 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         } else if (path === '/api/rooms/create') {
           const room = rooms.create(data); changed(); return json(res, { room });
         } else if (path === '/api/rooms/rename') { rooms.rename(data); changed(); return json(res, { ok: true });
-        } else if (path === '/api/rooms/activate') { await switchRoom(data.id); return json(res, { ok: true });
+        } else if (path === '/api/rooms/archive' || path === '/api/rooms/delete') {
+          await changeRoom(async () => {
+            const room = rooms.require(data.id), deleting = path.endsWith('/delete');
+            if (deleting && data.confirmName !== room.name) throw new Error('Zum Löschen den Raumnamen exakt eingeben.');
+            if (!deleting && typeof data.archived !== 'boolean') throw new Error('Archivstatus fehlt.');
+            if (room.id === rooms.id && (deleting || data.archived)) {
+              if (engine.busy) throw new Error('Ein Versand läuft noch. Nach dessen Abschluss den Raum wechseln.');
+              await switchRoom(rooms.fallback(room.id).id);
+            }
+            if (deleting) { rooms.remove(room.id); vault.remove(room.id); } else rooms.archive(room.id, data.archived);
+          }); changed(); return json(res, { ok: true });
+        } else if (path === '/api/rooms/activate') { await changeRoom(() => switchRoom(data.id)); return json(res, { ok: true });
         } else if (path === '/api/players') {
           if (!Array.isArray(data.players) || data.players.length > 100) throw new Error('Höchstens 100 Spielerprofile.');
           const players = data.players.map(p => ({ id: /^[\w-]{1,80}$/.test(p.id || '') ? p.id : randomBytes(12).toString('hex'), name: text(p.name, 16), game: text(p.game || '', 200) }));
@@ -231,7 +249,6 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         } else if (path === '/api/yaml') {
           const profiles = parseYamlProfiles(data.text);
           if (store.state.yamlProfiles.length + profiles.length > 100) throw new Error('Höchstens 100 YAML-Profile.');
-          library.importYaml(data.text, 'Eigene YAML-Vorlage');
           store.state.yamlProfiles.push(...profiles);
         } else if (path === '/api/yaml/delete') store.state.yamlProfiles = store.state.yamlProfiles.filter(p => p.id !== data.id);
         else if (path === '/api/import') {

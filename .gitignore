@@ -1,4 +1,7 @@
-data/
 node_modules/
+data/
+.catalog-cache/
+__pycache__/
+*.pyc
+*.tmp
 *.zip
-*.log

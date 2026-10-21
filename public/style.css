@@ -8,3 +8,12 @@
 
 .room-picker select{min-height:34px;max-width:190px;font-size:11px;padding:6px 10px;margin:0}.option-field{display:flex;flex-direction:column;min-width:0;gap:3px}.option-field b{font-size:12px;font-weight:600}.option-key{font-weight:400;font-size:10px;overflow-wrap:anywhere}.option-description{font-weight:400;white-space:pre-wrap;line-height:1.65;max-height:130px;overflow:auto}.option-grid{gap:24px}.option-grid textarea{min-height:110px}.option-grid .full{grid-column:1/-1}.option-grid input,.option-grid select{margin-top:4px}.setup-steps{padding-left:19px;line-height:1.9;font-size:12px}.setup-steps li{margin-bottom:10px}.log-game-filter{max-width:350px;margin-bottom:22px}.catalog-card button{width:100%}.catalog-card .section-title{align-items:flex-start;gap:9px}.catalog-card .badge{font-size:8px}.random-help{margin-top:16px}#studio-yaml-preview{max-height:620px;overflow:auto}#studio-import-progress{white-space:pre-wrap}
 @media(max-width:800px){.top-controls{gap:6px;flex-wrap:wrap}.room-picker select{max-width:130px}.option-grid{grid-template-columns:1fr}.option-grid .full{grid-column:auto}.top-controls .pill{font-size:9px}.mode-picker select{width:109px}.top-controls button{font-size:10px;padding:7px 9px}}
+
+.option-control { border: 0; padding: 0; margin: 0; min-width: 0; }
+.option-control:disabled { opacity: .5; }
+.option-field { display: flex; flex-direction: column; gap: .45rem; }
+.catalog-card p { overflow-wrap: anywhere; }
+
+.player-row { border: 1px solid var(--border, #343633); border-radius: 12px; padding: 16px; margin: 16px 0 0; min-width: 0; }
+.player-row legend { padding: 0 6px; font-weight: 600; }
+.player-row .button-row { justify-content: space-between; }

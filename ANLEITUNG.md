@@ -1,17 +1,17 @@
-# AP Chaos Bridge 0.2.0 · Einrichtung
+# AP Chaos Bridge 0.3.0 · Einrichtung
 
 ## Start und Update
 
 1. ZIP vollständig entpacken. Für ein Update die neue Version über den bisherigen Programmordner kopieren und **`data` beibehalten**. Die laufende Bridge vorher unter Einrichtung beenden.
 2. [Node.js 22 oder neuer](https://nodejs.org/en/download) installieren. Die npm-Pakete liegen bereits bei.
 3. `Start.cmd` öffnen. Oberfläche: **http://127.0.0.1:17381**. Nach einem Update mit Strg+F5 neu laden.
-4. Für `.apworld` zusätzlich [Python 3.10 oder neuer](https://www.python.org/downloads/windows/) installieren und bei der Installation zu PATH hinzufügen. Bereits vorhandenes Python wird über `py -3`, `python` oder `python3` erkannt. Anschließend die Bridge neu starten.
+4. Für das Einlesen neuer `.apworld`-Dateien zusätzlich [Python 3.10 oder neuer](https://www.python.org/downloads/windows/) installieren und bei der Installation zu PATH hinzufügen. Bereits vorhandenes Python wird über `py -3`, `python` oder `python3` erkannt. Anschließend die Bridge neu starten.
 
 ## Räume und mehrere Spieler
 
 1. Unter **Räume → Raum anlegen** z. B. „Stardew Charity“ oder „Factorio Run“ anlegen.
 2. Oben im Raum-Menü wechseln. Regeln, Zugangsdaten und Protokolle sind pro Raum getrennt.
-3. Unter **Spielslots → Spieler bearbeiten** einen Namen pro Zeile eintragen:
+3. Unter **Spielslots → + Spieler** einen Namen pro Zeile eintragen:
 
 ```text
 Br3tzn | Stardew Valley
@@ -23,14 +23,16 @@ Slotnamen: eindeutig, maximal 16 Zeichen. Der Spieltitel ist optional. Tatsächl
 
 ## APworlds und YAML-Editor
 
-1. `.apworld`-Dateien oder erzeugte Spieler-YAMLs in den Ordner **`apworlds`** neben `Start.cmd` kopieren. Alternativ im Spielekatalog über **APworld / YAML hinzufügen** mehrere Dateien auswählen.
+Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **[Liste manueller Downloads](APWORLDS-MANUELL.md)** nennt fehlende Dateien und teilweise dynamische Einstellungen. Die Unterordner des APworld-Ordners werden mit eingelesen; YAML-Vorlagen werden dort ignoriert.
+
+1. `.apworld`-Dateien mit Originalnamen in den Ordner **`apworlds`** neben `Start.cmd` kopieren. Alternativ im Spielekatalog über **APworld hinzufügen** mehrere Dateien auswählen.
 2. Unter **Spielekatalog → Ordner neu einlesen** aktualisieren. Ein anderer Ordner kann dort eingetragen werden.
 3. Spiel suchen und **Einstellungen & YAML** öffnen.
 4. Einstellungen setzen und Slotnamen eintragen, ein Name pro Zeile. **Gespeicherte Spielernamen übernehmen** füllt die zum Spiel passenden Profile ein.
 5. **Einstellungen speichern** behält die Vorlage in diesem Raum. **YAML-Vorschau** zeigt den Export. **YAMLs herunterladen** erzeugt eine einzelne YAML oder ein ZIP mit einer Datei pro Spieler.
 6. Die Dateien anschließend mit der passenden APworld-Version in Archipelago zum Seed generieren. Die Bridge verändert durch den YAML-Export keinen bereits laufenden Seed.
 
-Die Formularfelder basieren auf den deklarierten APworld-Optionen. Dynamische Angaben werden auf der Spielseite aufgelistet. Für solche Worlds eine vom APworld generierte YAML-Vorlage importieren oder die fehlenden Angaben bei **Erweiterte Zusatzoptionen als YAML** setzen. Diese Zusatzoptionen überschreiben gleichnamige Formularfelder. APworld-Code wird beim Einlesen nicht ausgeführt.
+Die Formularfelder basieren auf den deklarierten APworld-Optionen. Dynamische Angaben werden auf der Spielseite aufgelistet. Für solche Worlds die fehlenden Angaben bei **Erweiterte Zusatzoptionen als YAML** setzen. Diese Zusatzoptionen überschreiben gleichnamige Formularfelder. APworld-Code wird beim Einlesen nicht ausgeführt.
 
 ## Archipelago-Raum verbinden
 
@@ -104,3 +106,16 @@ Zur Sicherung die geschlossene Bridge und ihren gesamten **`data`-Ordner** kopie
 - [Twitch OAuth](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/)
 - [Twitch Token-Erneuerung](https://dev.twitch.tv/docs/authentication/refresh-tokens/)
 - [Twitch EventSub-WebSockets](https://dev.twitch.tv/docs/eventsub/handling-websocket-events/)
+
+## Räume archivieren oder löschen
+
+Unter **Räume** archivieren, nach **Archiviert** filtern und bei Bedarf **Wiederherstellen** wählen. Regeln, Protokolle und Zugangsdaten bleiben beim Archivieren erhalten. **Löschen** verlangt den exakten Raumnamen und entfernt die lokalen Daten dieses Raums endgültig. Der Spielekatalog bleibt erhalten. Beim Archivieren oder Löschen des geöffneten Raums wechselt die Bridge in einen anderen Raum.
+
+## Gezielt oder zufällig einen Spieler treffen
+
+1. Unter **Spielslots** auf **+ Spieler** klicken. Pro Teilnehmer Slotname und optional Spiel eintragen; **Spieler speichern** wählen. Bei verbundenem AP-Raum wird der nächste noch nicht eingetragene Slot vorgeschlagen.
+2. Für die tatsächlichen AP-Slots unter **Effekte & Freigabe** die gewünschten Items oder Fallen erlauben.
+3. In der Regel als **Ziel** einen bestimmten Spieler, **Alle freigegebenen Spieler**, **Zufälliger freigegebener Spieler**, **Mehrere ausgewählte Spieler** oder **Zufällig aus ausgewählten Spielern** wählen. Bei den letzten beiden Modi die Teilnehmer markieren; **Gespeicherte Spieler auswählen** übernimmt eure Liste.
+4. Die Regel zuerst simulieren. Zufall aus der Auswahl trifft pro Auslösung genau eine geeignete Person; mehrere oder alle erzeugt Aktionen pro geeignetem Spieler.
+
+Die Spielerliste erzeugt keine zusätzlichen Serververbindungen: Eine Bridge-Verbindung zu eurem AP-Raum reicht aus. DeathLink bleibt eine Gruppenaktion des AP-Teams.

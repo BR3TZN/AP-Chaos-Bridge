@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.2.0
+# AP Chaos Bridge 0.3.0
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und erzeugen zusätzliche AP-Items oder einen DeathLink an die eigene Teamgruppe.
 
@@ -14,11 +14,11 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.2.0
+## Update auf 0.3.0
 
 Bridge über **Einrichtung → Tool beenden** schließen. Neue Dateien über den bisherigen Programmordner kopieren; den bestehenden Ordner **`data` beibehalten**. Anschließend `Start.cmd` öffnen und die Oberfläche mit **Strg+F5** neu laden. Das Update-Paket enthält keine persönlichen Daten.
 
-Neu: Spielekatalog mit YAML-Editor, APworld-Ordner und Dateiimport, YAML-Export pro Spieler, mehrere Zielslots pro Regel, gemischte Zufallsaktionen, getrennte Räume sowie gespeicherte Verbindungen. Der Twitch-OAuth-Callback wird bei der Rückleitung vom Anbieter korrekt zugelassen. Der Schutz der übrigen lokalen API bleibt bestehen.
+Neu: Spielerliste mit **+ Spieler**, Zufall aus einer ausgewählten Gruppe, APworlds aus dem verlinkten Katalog, vorbereitete Einstellungsformulare mit Dropdowns, rekursiver APworld-Ordner und archivierte oder löschbare Räume. Fehlende Downloads und Grenzen stehen in **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)**. Der Einstellungseditor liest ausschließlich APworlds; frühere YAML-Vorlagen werden nicht mehr als Spieleinstellungen übernommen. Bestehende Regeln und Räume bleiben erhalten.
 
 Kurze Anleitung inklusive Twitch-Setup: **[ANLEITUNG.md](ANLEITUNG.md)**.
 
@@ -93,28 +93,21 @@ Optionale OBS-Browserquelle: **http://127.0.0.1:17381/overlay**, 1920 × 1080. T
 
 ## Spiele und YAMLs
 
-Deine drei unveränderten YAMLs liegen unter `examples`. Sie sind als lokale Vorlagen eingelesen. Import unterstützt mehrere Dokumente mit `---`, einfache gewichtete Angaben und Namensplatzhalter; bei mehreren möglichen Spielen wird keine Wahl für den generierten Raum geraten.
+Der **Spielekatalog** enthält die Referenzeinträge aus deiner Tabelle und die direkt verfügbaren APworlds. Stand, Downloadquellen und SHA-256-Prüfsummen sind unter `assets/apworld-downloads.json` dokumentiert. **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)** nennt Discord-Downloads, nicht erreichbare Dateien, Core-Spiele ohne separate APworld und teilweise dynamische Optionen. Die Referenzliste ist kein Nachweis getesteter Spieleffekte.
 
-| Spiel | Ausgangspunkt | Grenze |
-| --- | --- | --- |
-| Stardew Valley | 23 Fallen-Vorschläge aus deinem YAML; Abgleich mit dem Raumkatalog | Client/Mod-Version und Ausführung im Spiel prüfen. DeathLink im Beispiel aus. |
-| Factorio | 9 Fallen-Vorschläge aus dem offiziellen Mod-Template | Explosive und andere Fallen können dauerhaft die Fabrik verändern. Die YAML-Werte 0 betreffen den generierten Pool. DeathLink im Beispiel aus. |
-| Kingdom Hearts 2 | Raumkatalog für zusätzliche Items; dokumentierte DeathLink-Funktion im Client | Kein Fallenkatalog behauptet. DeathLink-Aktivierung und passende Client-/Lua-Version prüfen. |
-| Andere AP-Spiele | Zusätzliche Items aus dem tatsächlichen `GetDataPackage` des Raums | Fallen manuell auswählen und testen; kein allgemeiner Zugriff auf beliebige Spieleffekte. |
+Im Katalog ein Spiel suchen und **Einstellungen & YAML** öffnen. Choice- und Toggle-Optionen erscheinen als Dropdown; kleine Zahlenbereiche ebenfalls. Größere Bereiche erlauben eigene Werte und Zufallsbereiche. Bekannte Set-Werte bieten eine Mehrfachauswahl; freie Dictionaries und andere komplexe Angaben bleiben strukturierte Eingaben. Ein Slotname pro Zeile erzeugt eine YAML pro Spieler, mehrere Spieler werden als ZIP exportiert. Einstellungen und Namen bleiben pro Raum gespeichert.
 
-Die Suche unter Einrichtung enthält **867 Referenzeinträge** aus deiner verlinkten Tabelle, Stand Abruf 20.10.2026. `Stable`, `Unstable` und `Broken on Main` bezeichnen den Status der AP-Integration in der Tabelle. **Diese 867 Einträge sind keine Liste getesteter Bridge-Effekte.** Der Umfang tatsächlicher Aktionen hängt vom jeweiligen APWorld, Serverkatalog und Spielclient ab. Die Tabelle ist ein Suchkatalog; beim Verbinden gibt der Raum den aktuellen Itemumfang vor.
+Eigene `.apworld`-Dateien in **`apworlds/`** oder einen Unterordner legen und **Ordner neu einlesen** wählen. Alternativ über **APworld hinzufügen** hochladen. Beim Start wird ebenfalls gescannt. Eigene Dateien direkt im APworld-Ordner haben Vorrang vor mitgelieferten Varianten in Unterordnern. YAML-Dateien werden in diesem Ordner nicht eingelesen. Für neue APworlds wird **Python 3.10 oder neuer** benötigt, automatisch über `py -3`, `python` oder `python3` erkannt. Bei Bedarf gibt `AP_BRIDGE_PYTHON` den vollständigen Pfad vor. Die mitgelieferten Metadaten sind bereits vorbereitet und werden nur bei passenden Datei-Prüfsummen verwendet.
 
-Unter **Spielekatalog** kannst du Spiele suchen, YAML-Vorlagen importieren und eine eigene Einstellungsseite öffnen. Ein Name pro Zeile erzeugt eine YAML pro Spieler; mehrere Spieler werden als ZIP exportiert. Einstellungen und Namen bleiben pro Raum gespeichert. Gewichtete YAML-Werte bleiben erhalten und lassen sich im JSON-Feld bearbeiten. Erweiterte Zusatzoptionen werden als YAML angenommen und überschreiben gleichnamige Formularwerte.
+Die Dateien liegen nach Quelle und Hash in Unterordnern; ihre **Originalnamen bleiben erhalten**. Für die eigentliche Archipelago-Generierung die gewünschte Datei in Archipelagos `custom_worlds` installieren. Abweichende Installationsnamen einzelner Entwicklerpakete stehen in der manuellen Liste. Nicht alle mitgelieferten Versionen gleichzeitig in Archipelago installieren. Den verwendeten Dateipfad zeigt der Editor als Quelle an.
 
-Lege `.apworld`, `.yaml` oder `.yml` in den Ordner **`apworlds`** oder wähle im Spielekatalog einen anderen Ordner. **Ordner neu einlesen** aktualisiert den Katalog; beim Start wird ebenfalls gescannt. Alternativ mehrere Dateien direkt im Browser importieren. Für APworlds wird **Python 3.10 oder neuer** benötigt, automatisch über `py -3`, `python` oder `python3` erkannt. Bei Bedarf kann `AP_BRIDGE_PYTHON` den vollständigen Pfad vorgeben. Python-Download: https://www.python.org/downloads/windows/.
-
-Der Import liest Python-Deklarationen mit dem AST-Parser und führt APworld-Code nicht aus. Choice-, Toggle-, Range-, Set-, Listen- und Dictionary-Optionen werden nach Möglichkeit in Formularfelder umgesetzt. Dynamische oder nicht auflösbare Angaben stehen ausdrücklich auf der Spielseite. Dafür eine vom APworld erzeugte YAML-Vorlage importieren oder Zusatzoptionen eintragen. Die installierte World-Version in der anschließenden Archipelago-Generierung muss zur Vorlage passen. Das Tool exportiert YAMLs und generiert selbst keinen Seed.
+Der Import wertet Python-Deklarationen statisch aus und führt APworld-Code nicht aus. Laufzeitabhängige Optionen und Standardwerte können dabei offen bleiben; die Spielseite weist darauf hin. Fehlende Werte bei **Erweiterte Zusatzoptionen als YAML** setzen oder die Standards der World übernehmen. Zusatzoptionen überschreiben gleichnamige Formularwerte. Die World-Version in der anschließenden Archipelago-Generierung muss zum Editor passen. Die Bridge exportiert YAMLs und generiert selbst keinen Seed.
 
 Ein APworld liefert nicht automatisch beliebige Live-Funktionen. Zusätzliche Items stammen weiterhin aus dem echten AP-Raumkatalog; erkannte Fallennamen sind Vorschläge für den Abgleich. Die tatsächliche Wirkung hängt vom verbundenen Spielclient ab. Einen Run-Reset enthält diese Version nicht.
 
 ## Mehrere Spieler und Zufallsaktionen
 
-Unter **Spielslots → Spieler bearbeiten** mehrere Slotnamen hinterlegen, optional als `Name | Spiel`. Diese Profile stehen bei der Raumverbindung und im YAML-Editor bereit. Tatsächliche Spielslots entstehen bei der Seed-Generierung und werden aus dem verbundenen AP-Raum übernommen. Eine TextOnly-Verbindung genügt für mehrere Zielspieler desselben Teams.
+Unter **Spielslots** mit **+ Spieler** für jeden Teilnehmer eine eigene Zeile hinzufügen. Slotname und optional Spiel eintragen und **Spieler speichern** wählen. Bei bestehender AP-Verbindung schlägt **+ Spieler** den nächsten noch nicht eingetragenen Slot vor. Die Liste lässt sich auch unter Quellen über **Slotnamen verwalten** öffnen. Diese Profile stehen bei der Raumverbindung und im YAML-Editor bereit. Tatsächliche Spielslots entstehen bei der Seed-Generierung und werden aus dem verbundenen AP-Raum übernommen. Eine TextOnly-Verbindung genügt für mehrere Zielspieler desselben Teams.
 
 | Regelaktion | Pool |
 | --- | --- |
@@ -124,11 +117,13 @@ Unter **Spielslots → Spieler bearbeiten** mehrere Slotnamen hinterlegen, optio
 | Bestimmtes Item | Genau das eingetragene und erlaubte Item |
 | DeathLink | Die aktivierte DeathLink-Gruppe des eigenen AP-Teams |
 
-Als Ziel stehen ein Slot, mehrere ausgewählte Slots, alle geeigneten Slots oder ein zufälliger geeigneter Slot zur Verfügung. DeathLink bleibt eine Gruppenaktion; die Item-Zielliste begrenzt dessen Empfänger nicht. Die separate Gruppenfreigabe ist zusätzlich nötig. Jede Zufallsauswahl wird beim Anlegen des Auftrags festgeschrieben; späteres Warten würfelt nicht erneut.
+Als Ziel stehen ein bestimmter Spieler, mehrere ausgewählte Spieler, alle freigegebenen Spieler, ein zufälliger freigegebener Spieler oder **Zufällig aus ausgewählten Spielern** zur Verfügung. Im letzten Modus wird genau eine geeignete Person aus der markierten Auswahl gewählt. **Gespeicherte Spieler auswählen** übernimmt eure Liste in die Auswahl. Bei Itemaktionen gelten weiterhin die Effektfreigaben und der Spiel-Filter. DeathLink bleibt eine Gruppenaktion; die Item-Zielliste begrenzt dessen Empfänger nicht. Die separate Gruppenfreigabe ist zusätzlich nötig. Jede Zufallsauswahl wird beim Anlegen des Auftrags festgeschrieben; späteres Warten würfelt nicht erneut.
 
 ## Räume und Verbindungen
 
-Unter **Räume** einen Arbeitsbereich pro Run oder Spiel anlegen. Jeder Raum speichert eigene Regeln, Spielerprofile, YAML-Presets, Freigaben und Protokolle. Nur der oben gewählte Raum empfängt und verarbeitet neue Ereignisse. Gemeinsame APworlds und YAML-Vorlagen bleiben im Spielekatalog verfügbar. Im Ereignisprotokoll kann zusätzlich nach Spiel gefiltert werden.
+Unter **Räume** einen Arbeitsbereich pro Run oder Spiel anlegen. Jeder Raum speichert eigene Regeln, Spielerprofile, YAML-Presets, Freigaben und Protokolle. Nur der oben gewählte Raum empfängt und verarbeitet neue Ereignisse. Gemeinsame APworlds bleiben im Spielekatalog verfügbar. Im Ereignisprotokoll kann zusätzlich nach Spiel gefiltert werden.
+
+**Archivieren** bewahrt Regeln, Protokolle, Presets und Zugangsdaten. Die Filter **Aktive Räume / Archiviert / Alle** helfen beim Aufräumen. **Wiederherstellen** macht einen archivierten Raum wieder auswählbar. **Löschen** verlangt den exakten Raumnamen und entfernt die lokalen Raumdaten und Zugangsdaten endgültig. Der gemeinsame Spielekatalog bleibt erhalten. Wird der geöffnete Raum archiviert oder gelöscht, öffnet die Bridge einen anderen Raum.
 
 AP-Verbindung, Admin-Anmeldung, Charity und Twitch werden nach erfolgreicher Einrichtung für diesen Raum gemerkt. Nach Neustart oder Raumwechsel werden die zuletzt aktiv verbundenen Quellen wieder verbunden. **Trennen** beendet auch deren automatische Wiederverbindung. Die Ausführung beginnt dabei pausiert im Testmodus.
 
@@ -165,14 +160,17 @@ Für echte DeathLink-Aktionen muss unter **Spielslots** die Gruppenfreigabe für
 
 ## Daten und Entwicklung
 
-Der ursprüngliche Raum bleibt in `data/state.json`; weitere Räume liegen unter `data/rooms/<Raum-ID>/state.json`. `data/rooms.json` merkt den geöffneten Raum. `data/game-library.json` enthält importierte Vorlagen. Verschlüsselte Zugangsdaten liegen in `data/connections.enc`, der lokale Schlüssel in `data/connections.key`. Der Ordner wird beim ersten Start erstellt. Der Token des lokalen HTTP-Eingangs liegt in `data/integration-key.txt`. Zum Sichern eigener Einstellungen den geschlossenen `data`-Ordner kopieren; nicht öffentlich weitergeben, da er Integrationszugriff und Ereignisnamen enthalten kann.
+Der ursprüngliche Raum bleibt in `data/state.json`; weitere Räume liegen unter `data/rooms/<Raum-ID>/state.json`. `data/rooms.json` merkt den geöffneten Raum. `data/game-library.json` enthält die importierten APworld-Einstellungen. Verschlüsselte Zugangsdaten liegen in `data/connections.enc`, der lokale Schlüssel in `data/connections.key`. Der Ordner wird beim ersten Start erstellt. Der Token des lokalen HTTP-Eingangs liegt in `data/integration-key.txt`. Zum Sichern eigener Einstellungen den geschlossenen `data`-Ordner kopieren; nicht öffentlich weitergeben, da er Integrationszugriff und Ereignisnamen enthalten kann.
 
 Konfigurationsexport enthält keine Zugangsdaten. Beim Import werden Slotfreigaben neu aufgebaut; Live-Modus und DeathLink werden nicht importiert. Eine beschädigte Zustandsdatei wird nicht stillschweigend überschrieben.
 
 ```sh
 npm test
 npm run check
+npm run validate:worlds
 ```
+
+APworld-Bestand herunterladen oder fortsetzen: `python scripts/sync_apworld_catalog.py`, danach `python scripts/build_apworld_cache.py` und `python scripts/build_catalog_report.py`. Der Download liest nur frei zugängliche Links und meldet fehlende Dateien; anschließend `npm run validate:worlds` ausführen. Die Python-Skripte nutzen ausschließlich die Standardbibliothek.
 
 Tests und Prüfgrenzen: **[VALIDIERUNG.md](VALIDIERUNG.md)**. Drittanbieter-Lizenzen liegen bei den enthaltenen Paketen in `node_modules`.
 

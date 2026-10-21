@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const files = [];
-function walk(directory) { for (const entry of readdirSync(directory, { withFileTypes: true })) { if (['node_modules', 'data'].includes(entry.name)) continue; const p = join(directory, entry.name); if (entry.isDirectory()) walk(p); else files.push(p); } }
+function walk(directory) { for (const entry of readdirSync(directory, { withFileTypes: true })) { if (['node_modules', 'data', '.git', '.catalog-cache', '__pycache__', 'apworlds'].includes(entry.name)) continue; const p = join(directory, entry.name); if (entry.isDirectory()) walk(p); else files.push(p); } }
 walk(root);
 for (const p of files.filter(p => /\.(m?js)$/.test(p))) {
   const result = spawnSync(process.execPath, ['--check', p], { encoding: 'utf8' });

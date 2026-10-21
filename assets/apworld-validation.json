@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-21T13:59:17.387Z",
+  "files": 765,
+  "variants": 779,
+  "exportedGames": 756,
+  "errors": [],
+  "parserErrors": [
+    {
+      "file": "github-com-2dos/814f8f1b/dk64.apworld",
+      "error": "Kein statisch deklarierter World-Spielname gefunden"
+    },
+    {
+      "file": "github-com-DayKat/292752c2/tloz_st.apworld",
+      "error": "Kein statisch deklarierter World-Spielname gefunden"
+    },
+    {
+      "file": "github-com-Z11Coding/65070658/APAPI.apworld",
+      "error": "Kein statisch deklarierter World-Spielname gefunden"
+    }
+  ]
+}

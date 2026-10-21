@@ -1,3475 +1,6075 @@
 {
-  "source": "https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002",
-  "date": "2026-10-20",
-  "disclaimer": "AP-Status, keine bestätigte Live-Effekt-Kompatibilität",
+  "source": "https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002#gid=58422002",
+  "date": "2026-10-21T13:23:41Z",
   "games": [
     {
       "game": "ActRaiser",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Adventure",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Against the Storm",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Age of Mythology: Retold",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Air Delivery",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "ANIMAL WELL",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Anno 1800",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Anodyne",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ape Escape",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ape Escape 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ape Escape 3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "APQuest",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Aquaria",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Archipelaballs",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Archipeladoku (Sudoku)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Astalon: Tears of the Earth",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Autopelago",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Axiom Verge",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Balatro",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Baldur's Gate 3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Banjo-Tooie",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Binding of Isaac: Repentance",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "BK Simulator",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Black Market of Bulletphilia ~ 100th Black Market (Touhou 18.5)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Blasphemous",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Bloons Tower Defense 6",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bomberman Hero",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bomb Rush Cyberfunk",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Brave Fencer Musashi",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Brotato",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Buckshot Roulette",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bumper Stickers",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
-      "game": "Build a Jetpack",
-      "stability": "Stable"
+      "game": "Build a Jetpack ",
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Candy Box 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "CartogrAP",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Castlevania 64",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Castlevania: Circle of the Moon",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Castlevania: Dawn of Sorrow",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Castlevania: Harmony of Dissonance",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Castlevania: Legacy of Darkness",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Castlevania: Order of Ecclesia",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Castlevania: Symphony of the Night",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cavern of Dreams",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cave Story",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Celeste (Open World)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Celeste 64",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "ChecksFinder",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "ChecksMate (Chess)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Choo Choo Charles",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Chrono Trigger: Jets of Time",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Citadel (Luanti)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Civilization V",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Civilization VI",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Clique",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "HTTP Error 522: Unknown"
     },
     {
       "game": "CloverPit",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "ClusterTruck",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cobalt Core",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "CornKidz64",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cowtastic Cafe",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Create",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "CrossCode",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crypt of the NecroDancer",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crystalis",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crystal Project",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cuphead",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "A Dance Of Fire And Ice",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dark Cloud 1",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dark Souls II",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dark Souls III",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Dead Rising Deluxe Remastered",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Deep Rock Galactic",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "DELTARUNE",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Diddy Kong Racing",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "A Difficult Game About Climbing",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "DLCQuest",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Dome Keeper",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Donkey Kong 64",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Donkey Kong Country",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Donkey Kong Country 2: Diddy's Kong Quest",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Donkey Kong Country Returns",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Don't Starve Together",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "DOOM 1993",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "DOOM II",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Door to Door Door Salesman",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "DORONKO WANKO",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dracomino",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dragon Quest III HD-2D Remake",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dragon Warrior",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dream Dazia",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Duck Game",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Duke Nukem 3D",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Earthbound",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "The Elder Scrolls IV: Oblivion Remastered",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Elementipelago",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ender Lilies: Quietus of the Knights",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Factorio",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Factorio - Space Age Without Space",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Faxanadu",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Final Fantasy",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Final Fantasy IV: Free Enterprise",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy 6 Worlds Collide",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Final Fantasy X",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy XII: Open World",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy XII: Trial Mode",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy Mystic Quest",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy Tactics Advance",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy Tactics A2: Grimoire of the Rift",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy Tactics: Ivalice Island (FFT PSX)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Fire Emblem: The Sacred Stones",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Flipwitch",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "FNAF World",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Frogmonster",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Funi Raccoon Game",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Garfield Kart: Furious Racing",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Gato Roboto",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Gato Roboto B-Side",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Gauntlet Legends",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Getting Over It with Bennett Foddy",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Glover",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "GLYPHS",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Golden Sun: The Lost Age",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Grandia HD Remaster",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download größer als 40 MiB; Download größer als 40 MiB"
     },
     {
       "game": "Grim Dawn",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Grinch",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Guardian Legend",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Guild Wars 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hades",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hades 2 (Rogue)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hammerwatch",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "A Hat in Time",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Hatsune Miku: Project Diva Megamix+",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Here Comes Niko!",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Heretic",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Heroes of the Storm",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hexcells Infinite",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hollow Knight",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Horse Magnifier: The Full Horse",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Huniepop",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Huniepop 2: Double Date",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hylics 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Iji",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Inscryption",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Isles of Sea and Sky",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Isles of Trials",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ittle Dew 2+",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Jak and Daxter: The Precursor Legacy",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Jak 3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Jigsaw Puzzle for Archipelago",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kabuto Park (Demo)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Keep Talking and Nobody Explodes",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kindergarten 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kingdom Hearts",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Kingdom Hearts 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Kingdom Hearts: Birth by Sleep Final Mix",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kingdom Hearts: Chain of Memories (GBA)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kingdom Hearts: RE Chain of Memories",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kirby's Dream Land 3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kirby 64 - The Crystal Shards",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kirby Super Star",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "K-On! After School Live!!",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lakelands",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Landstalker - The Treasures of King Nole",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "League of Legends",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
-      "game": "Zelda 2: The Adventure of Link",
-      "stability": "Stable"
+      "game": "Zelda 2: The Adventure of Link ",
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: A Link to the Past",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: A Link Between Worlds",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Links Awakening DX",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Ocarina of Time",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Ocarina of Time - Ship of Harkinian",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Majora's Mask",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Oracle of Seasons",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: The Wind Waker",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "The Legend of Zelda: Wind Waker HD",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: The Minish Cap",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Twilight Princess",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Phantom Hourglass",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Skyward Sword",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lego Star Wars: The Complete Saga",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lingo",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Lingo 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Little Witch Nobeta",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Loonyland: Halloween Hill",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lufia II Ancient Cave",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Luigi's Mansion",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lunacid",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Marbles! Balance Challenge",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario & Luigi Superstar Saga",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Mario is Missing (SNES)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario Kart: Double Dash",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario Super Sluggers",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Mega Man 3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Mega Man X",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man X2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man X3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man X4",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man Battle Network 3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Mega Man Battle Network 6",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man Zero 3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Meritous",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "The Messenger",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Metal Gear Solid - Masala Garden Salad",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "MetroCUBEvania",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Metroid Fusion",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Metroid",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "SMZ3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Metroid Prime",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Metroid: Zero Mission",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mina the Hollower",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Minecraft",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Minecraft Dig",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Minishoot' Adventures",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Minit",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Momodora: Moonlit Farewell",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Monster Sanctuary",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Muse Dash",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Nicktoons: Battle for Volcano Island",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Nine Sols",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Noita",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Noita - Enemysanity",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Nonograhmm",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Old School Runescape",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "OpenRCT2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ori and the Blind Forest Definitive Edition",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ori and the Will of the Wisps",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "osu!",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Outer Wilds",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Overcooked! 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Oxygen Not Included",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Paint",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Paper Mario 64",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Paper Mario: The Thousand Year Door",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Parkitect",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Path of Exile",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "PEAK",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Peaks of Yore",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Peggle Deluxe",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Peggle Nights",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pikuniku",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pinball FX3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Piranesi Restoration Project (Luanti)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "PixelDraw",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pizza Tower",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Placid Plastic Duck Simulator",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Plants vs. Zombies: GOTY",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Plants vs. Zombies: Replanted",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Plateup!",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Red and Blue",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Crystal",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Emerald",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Pokémon FireRed and LeafGreen",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Platinum",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Black and White",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Mystery Dungeon: Explorers of Sky",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "PokéPark Wii: Pikachu's Adventure",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Portal 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "PowerWash Simulator",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Prodigal",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pseudoregalia",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Psychonauts",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rabi-Ribi",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Raft",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Rain World",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ratchet & Clank 2: Going Commando",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ratchet & Clank 3: Up Your Arsenal",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rayman 2: The Great Escape",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Refunct",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Resident Evil 2 Remake",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Resident Evil 3 Remake",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Return of the Obra Dinn",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Reventure",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rhythm Tengoku",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rift of the Necrodancer",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rift Wizard",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Risk of Rain 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Rogue Legacy",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Rusted Moss",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Satisfactory",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Saving Princess",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Scooby-Doo! Night of 100 Frights",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Scorpion Swamp",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Secret of Evermore",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Sekiro: Shadows Die Twice",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sentinels of the Multiverse",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Shadow the Hedgehog",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "shapez",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Shellipelago",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Shivers",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "A Short Hike",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Simon Tatham's Portable Puzzle Collection",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Simpsons: Hit & Run",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Sims 4",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Skul: The Hero Slayer",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Slay the Spire",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Slime Rancher",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Slime Rancher 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sly Cooper and the Thievius Raccoonus",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sly 2: Band of Thieves",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic the Hedgehog",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Adventure DX",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Adventure 2 Battle",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Heroes",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Riders",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Rush",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "SoulBlazer",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "A Space Archipelago",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Spelunker",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Spelunky 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Spinball",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Spongebob Squarepants: Battle for Bikini Bottom",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download größer als 40 MiB; Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Spyro 2: Ripto's Rage",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Spyro 3: Year of the Dragon",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Spyro: A Hero's Tail",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Stacklands",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Starcraft 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Stardew Valley",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Star Fox 64",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Stick Ranger",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Subnautica",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Super Cat Planet",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Junkoid",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Mario 64",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Super Mario Land 2: The Golden Coins",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Super Mario World",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Mario World: Spicy Mycena Waffles",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Smash Bros. Melee",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "System Shock 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "TCG Card Shop Simulator",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Terraria",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Tetris Attack",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Tevi",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Timespinner",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "TOEM: A Photo Adventure",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Tony Hawk's Pro Skater 1 + 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Touhou Koumakyou ~ the Embodiment of Scarlet Devil",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Touhou Youyoumu ~ Perfect Cherry Blossom",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Trackmania",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "TUNIC",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Turnip Boy Commits Tax Evasion",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Twisty Cube",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Tyrian / Tyrian 2000",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ty The Tasmanian Tiger HD Remaster (PC)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "UFO 50",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "ULTRAKILL",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Uncanny Cat Golf",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Undertale",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Unfair Flips",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "An Untitled Story",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "UZDoom",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Void Sols",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Voltorb Flip (from Pokémon HG & SS)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "VVVVVV",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Wargroove",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Wargroove 2",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Wario Land 1",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Wario Land 3",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Wario Land 4",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Watery Words",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The WereCleaner",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "West of Loathing",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Witness",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Wordipelago",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Wynncraft (Minecraft Server)",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "XCOM 2: War of the Chosen",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yacht Dice",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Yacht Dice Bliss",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yellow Taxi Goes Vroom",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yooka-Laylee",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yoshi's Island",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "YS VIII: Lacrimosa of Dana",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yu-Gi-Oh! 2006",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yu-Gi-Oh! Dungeon Dice Monsters",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yu-Gi-Oh! Forbidden Memories",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Zillion",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": true,
+      "downloadStatus": "core",
+      "reason": "Core-Spiel: kein eigenständiges APworld im Tabellenlink gefunden"
     },
     {
       "game": "Zork: Grand Inquisitor",
-      "stability": "Stable"
+      "stability": "Stable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
-      "game": "2048",
-      "stability": "Unstable"
+      "game": "2048.0",
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "7 Days to Die",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "8Doors: Arum's Afterlife Adventure",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Age of Empires II: Definite Edition",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Age of Empires IV",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Angband",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Animal Crossing (GameCube)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Animal Crossing: Wild World",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Another Crab's Treasure",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "ANTONBLAST",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "AP Rummy",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Archipelacode",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Archipela-Go!",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ark: Survival Evolved",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Arkham Horror The Card Game",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Armored Core (PSX)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Armored Core 3",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Armored Core VI: Fires of Rubicon",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Arzette: The Jewel of Faramore",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Atlyss",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Baba Is You",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Baldur's Gate 3 - Trials of Tav",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bat to the Heavens",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bayonetta",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Beat Saber",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bits & Bops",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bitty Buddies",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Blasphemous 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Blender",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Blockupelago",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Blue Fire",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Blue Prince",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bomberman 64",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bomberman 64: The Second Attack",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bomberman Quest",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Borderlands 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Borderlands The Pre-Sequel",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Brutal Orchestra",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bubble Bobble",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bug Fables: The Everlasting Sapling",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bugs Bunny Lost in Time",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "A Bug's Life",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Bugsnax",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Burger Shop",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Burger Shop 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Burnout 3: Takedown",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "C&C Reloaded",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Call of Duty: Black Ops 3 - Zombies",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Carnival Games MiniGolf",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cash Cleaner Simulator",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cassette Beasts",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Castlevania: Aria of Sorrow",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Castlevania: Lords of Shadow",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Castlevania: Portrait of Ruin",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Castlevania: Symphony of the Night (SymphonyRecomp)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Casualties: Unknown (Scav Prototype Demo)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cat Quest",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Caves of Qud",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Celeste",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Celeste Classic",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Chained Echoes",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Chests 'n' Keys",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Chibi Robo! Plug into Adventure",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Children of Morta",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Chrono Trigger Rando-Dalton Imperial (SNES)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Civilization IV",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Clair Obscur Expedition 33",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Codeforces",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Codename: Kids Next Door, Operation: VIDEOGAME",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download größer als 40 MiB; Download größer als 40 MiB; Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Command & Conquer: Mental Omega",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Commander Keen in Goodbye, Galaxy",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Conbunn Cardboard",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Content Warning",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Control (Ultimate Edition)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cookie Clicker",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Core Keeper",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "corru.observer",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crab Champions",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crash Bandicoot 2: Cortex Strikes Back",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crash Bandicoot 3: Warped",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download-Bundle enthält keine .apworld-Datei; Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Crash Bash",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crash Team Racing",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Creeper World 4",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crosswords",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Crusader Kings III",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Cult of the Lamb",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cursed Mario 64",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cursed Words: The Word Game That Isn't",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Custom Robo",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cyber Hook",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Cyberpunk 2077",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dark Souls Remastered",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dead Cells",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Deadlock",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Deathbulge Battle of the Bands",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Death Road to Canada",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Death's Door",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Delivering Hope",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Devil May Cry 3 (Special Edition)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dicey Dungeons",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Die in the Dungeon",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Digimon World 1",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Divinity: Original Sin 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Donkey Kong Country (Mirrored)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Donkey Kong Toluca (DKC3)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Donut County",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "DOOM Eternal",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "DOTA 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dragon Ball Z: Budokai 3",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dragon Ball Z: Budokai Tenkaichi 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dragon Quest 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dragon Quest IX",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "DREDGE",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Drehmal APOTHEOSIS (Minecraft Map)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Duck Life 4",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dungeon Clawler",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dungeon Defenders",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "DUSK",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dwarf Fortress",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dyson Sphere Program",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Easy Delivery Co.",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Elden Ring",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Elder Scrolls Online",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Empire Earth",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "HTTP Error 404: Not Found"
     },
     {
       "game": "Ender Magnolia: Bloom In The Mist",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Enter the Gungeon",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Equilinox",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Etrian Odyssey (DS)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Everhood 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Evolve Incremental",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Factorio w/ Bob's Mods",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Factorio Platformer",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Factorio: Space Age",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Fakutori",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Fall Guys",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Fantastic Fist",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Farmer Was Replaced",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Feeding Frenzy 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Fez",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy 1: Pixel Remaster",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy 1 (PSP)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy VII",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy XIII-2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Final Fantasy XIII - Lightning Returns",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Forager",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Forest's End",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Forged Curse",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Freddy Fazbear's Pizzeria Simulator",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Freedom Planet 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Friday Night Funkin'",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Garry's Mod (apAdventure)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "GBAPQuest",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Gemcraft: Frostborn Wrath",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Geometry Dash",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Gnosia",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "GoldenEye 007",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Grand Theft Auto III",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Grand Theft Auto: San Andreas",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Grapple Dog",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Grunn",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "GTFO",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hacknet",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Halo The Master Chief Collection",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Harry Potter and the Chamber of Secrets",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "HASTE: Broken Worlds",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hello Kitty: Roller Rescue",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Henry Stickmin Collection",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hero Core",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hi-Fi Rush",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "High Roller",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "HITMAN: World of Assassination",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hollow Knight: Silksong (Batsong)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "holo8",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hololive Treasure Mountain",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hot Lava",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hungry Pumkin",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Huniecam Studio",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hyperdimension Neptunia Re;Birth3 V Generation",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "HyperRogue",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Hytale",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "I am Your Beast",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "ICEwall",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Idle Loops",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "I Hate You, Please Suffer",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Into the Breach",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "I Was A Teenage Exocolonist",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Jak II",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Jet Island",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Johnny Upgrade",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Jump King Quest",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Jurassic Park (SNES)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kerbal Space Program",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "KeyWe",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kingdom Hearts III",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Kingdom Hearts 358/2 Days",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Kingdom Hearts Dream Drop Distance",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kingdom Two Crowns",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Kirby Air Ride",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kirby & The Amazing Mirror",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kirby Planet Robobot",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kirby Squeak Squad",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Kirby Super Star Ultra",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Knights of the Old Republic (KotoR)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Laika: Aged Through Blood",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "La-Mulana 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Layer8Problem",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Left 4 Dead 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Dragoon",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Heroes: Trails Beyond the Horizon",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Heroes: Trails in the Sky the 3rd",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: A Link to the Past OWR",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend Zelda: Ocarina of Time (Updated, not Ship)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Oracle of Ages",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Zelda: Spirit Tracks",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Zelda's Adventure GDX",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "LEGO Batman: The Video Game",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "LEGO Harry Potter 5-7",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "LEGO Rock Raiders/Manic Miners",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "LEGO Star Wars III (Wii)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lethal Company",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lethal Crisis",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Librarian: Tidy Up the Arcane Library",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Library of Ruina",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Library of Babel",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lies of P",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "A Little to the Left",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lobotomy Corporation",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Look Outside",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lost But Found",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Lost Kingdoms 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Made in Abyss BSFD",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Madou Monogatari Hanamaru Dai Youchienji",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Magical Quest starring Mickey Mouse",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Marble It Up! Ultra",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario & Luigi: Dream Team",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario Golf: Toadstool Tour",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario Kart 64",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario Kart Wii",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario Party Advance",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario Sports Mix",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "New Super Mario Bros DS",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "New Super Mario Bros Wii",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Mario 64 - Spicy Mycena 64",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Mario Galaxy",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Mario Land",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Mario RPG",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Mario Sunshine",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Mario Sunshine Arcade 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mario Tennis (GBC)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mass Effect 1 (Legendary Edition)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "MediEvil (1998)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "MediEvil 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man 1",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man 4",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man 7",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man Legends",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man X5",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man X6",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man X Command Mission",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mega Man ZX",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Melatonin",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mercenaries: Playground of Destruction",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Metal Gear Solid",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Metal Hellsinger",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Metroid: Samus Returns",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Archiv überschreitet Import-Limit; Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Mindustry",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Minecraft Fabric",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Minecraft Modded",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Minecraft [AEM]",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Minecraft: Vault Hunters (Modpack)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mini Metro",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "MIO: Memories in Orbit",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mirror's Edge",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Monster Hunter Freedom Unite",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Monster Hunter Rise",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Monster Hunter World",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Moonlighter",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mortal Kombat: Shaolin Monks",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Mother (Earthbound Beginnings)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Mount & Blade II: Bannerlord",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Muck",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Murder of Sonic the Hedgehog",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Musipelago",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download größer als 40 MiB; Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Naruto Clash of Ninja 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "NEO: The World Ends with You",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Neon White",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Nodebuster",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Nonopelagram",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "No Rest for the Wicked",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Northgard",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Not Another Needle Game",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Nova Lands",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Nubby's Number Factory",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Nuclear Throne",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ocarina of Time but it's just Master Quest Water Temple",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Oh So Hero",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Okami HD",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Once Upon a Katamari",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "One Must Fall: 2097",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download größer als 40 MiB"
     },
     {
       "game": "OpenTTD",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "OpenTTD Cargolock",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Operation Octo",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Our Ascent",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Outward: Definitive Edition",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Paquerette Down the Bunburrows",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "PAYDAY 2: Criminal Dawn",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Perfect Dark",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Persona 5 Royal",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Phantasy Star II",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Phoenotopia: Awakening",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pikmin 1",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pikmin 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pinball FX",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pipistrello and the Cursed Yoyo",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Planet Crafter",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Planet Zoo",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Plok",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Poco",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Battle Revolution",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon HeartGold & SoulSilver (Singe)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon HeartGold & SoulSilver (TrueBlue)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Pinball",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Pinball Ruby & Sapphire",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Ranger (Quest)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Snap",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Stadium",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon Trading Card Game (GameBoy)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Pokémon Trozei / Link",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Poképelago",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Pokémon XD: Gale of Darkness",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "POOLS",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Prisma Road",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Quake",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Quest 64 (Recomp)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Q-Up",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rabbit and Steel",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Raccoin",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ratchet & Clank",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ratchet & Clank: Size Matters",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "R.E.P.O",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "RE:RUN",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Resident Evil 4 Remake",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Resident Evil 7",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rhythm Doctor",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rimworld",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Risk of Rain",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Riven",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Road Trip Adventure",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rogue Legacy 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Rune Factory 4 Special",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Running with Rifles",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "RWBY: Grimm Eclipse",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Saints Row 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sayonara Wild Hearts",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Schedule I",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Scooby-Doo! Unmasked",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Scritchy Scratchy",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Scrokkpelago",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Secret of Mana",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Settlers: Heritage of Kings",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "SEUM: Speedrunners from Hell",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Severed Soul",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Severed Steel",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Shadowgate 64: Trials of the Four Towers",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Shadow Generations",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Shadow Man Remastered",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "shapez 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Shining in the Darkness",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Shovel Knight Pocket Dungeon",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Signalis",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Silver Daze",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Slay the Princess — The Pristine Cut",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Slay the Spire 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sly 3: Honor Among Thieves",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Smushi Come Home",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sneak King",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Advance 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Battle",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Colors (DS)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Dreams Collection",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sonic Frontiers",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Soul of Dreamer",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Space Engineers",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Spark the Electric Jester 3",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Spirit Island",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Spirit Valley",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Splasher",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Spyro the Dragon",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "The Legend of Spyro: Dawn of The Dragons",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "S.T.A.L.K.E.R 2 Heart of Chornobyl",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Star Fox Adventures",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Starship Titanic",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Star Trek: Armada",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Star Wars: Episode 1 Racer",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Stella",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sternly Worded Adventures",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Stray",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Streets of Rage",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Streets of Rogue",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Suikapelago",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Chipflake Ü: Quest for the Uncooked Schnitzel",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Hexagon",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "SUPERHOT",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "SUPERHOT: Mind Control Delete",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Supermarket Simulator",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Meat Boy",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Metroid Map Rando",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Smash Bros. (N64)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Smash Bros. Brawl - The Subspace Emissary",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Supraland",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sven Co-op",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Sweet Defeat",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "The Talos Principle Reawakened",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Taz: Wanted",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Team Fortress 2 (Mann vs Machine)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Teardown",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Terra Nil",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Three Goblin Wobblin'",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Time is broken again",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Time Rifters",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Timesplitters 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "TimeSplitters: Future Perfect",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Toejam & Earl",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Tomba!",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Tombola",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Tony Hawk's American Wasteland",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Totally Accurate Battle Simulator (TABS)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Total War: Warhammer III",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Touhou Fuujinroku ~ Mountain of Faith",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Touhou Eiyashou ~ Imperishable Night",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Toy Story 2 (PS1)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Toy Story Racer",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Turok 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ty the Tasmanian Tiger 2",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ty the Tasmanian Tiger 3",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ultimate Custom Night",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "UNBEATABLE",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Undertale Yellow",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Untitled Goose Game",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Vacation Simulator",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Valheim",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Vampire Survivors",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "vardrain--",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Vertical Drop Heroes HD",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Very Very Valet",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Vespadian",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Vintage Story",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Kein direktes APworld-Asset im verlinkten Download gefunden"
     },
     {
       "game": "Viscera Cleanup Details",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Vision Soft Reset",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Voices of the Void",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Void Stranger",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "VRChat",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "V Rising",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Warcraft 3",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Warframe",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "WarioWare, Inc. - Mega Microgame$!",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "WEBFISHING",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "We Love Katamari Reroll",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "White Knuckle",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Widget Inc",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Wikipelago",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Witchspring R",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Wizard of Legende",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Word Search",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Xenoblade Chronicles X",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Archiv überschreitet Import-Limit; Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Yakuza | Like a Dragon Gaiden: The Man Who Erased His Name",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "YARG (Guitar Hero/Rockband)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yarimono",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "YAYARG (YARG Custom Songs)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yet Another Rhythm Game (YARG)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "YOHANE THE PARHELION -BLAZE in the DEEPBLUE-",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yoku's Island Express",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yooka-Replaylee",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "You Have to Win the Game",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ys I Chronicles",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Ys Origin",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Yu-Gi-Oh! GX - Duel Academy (GBA)",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Yu-Gi-Oh! Legacy of the Duelist: Link Evolution",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
-      "game": "Yu-Gi-Oh! World Championship 2008",
-      "stability": "Unstable"
+      "game": "Yu-Gi-Oh! World Championship 2008 ",
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Zoominoes",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Zuma Deluxe",
-      "stability": "Unstable"
+      "stability": "Unstable",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Christmas Delivery",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Dark Cloud 2",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Donkey Kong Country 3",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download-Bundle enthält keine .apworld-Datei; Download-Bundle enthält keine .apworld-Datei"
     },
     {
       "game": "Lil Gator Game",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Momodora 4 - Reverie Under the Moonlight",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Password Game",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "HTTP Error 404: Not Found"
     },
     {
       "game": "A Robot Named Fight!",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     },
     {
       "game": "Santa Needs YOU!",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Seedling",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Super Adventure Island II",
-      "stability": "Broken on Main"
+      "stability": "Broken on Main",
+      "core": false,
+      "downloadStatus": "manual",
+      "reason": "Download nur über Discord verlinkt"
     }
   ]
 }

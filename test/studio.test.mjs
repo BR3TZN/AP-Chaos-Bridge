@@ -1,9 +1,10 @@
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 import { once } from 'node:events';
 import { WebSocketServer } from 'ws';
 import { parse } from 'yaml';
@@ -175,13 +176,14 @@ test('folder scan caches unchanged APworlds and includes errors per unsupported 
   const first = await library.scan(directory); assert.equal(first.imported.length, 1); assert.equal(first.errors.length, 1);
   const second = await library.scan(directory); assert.equal(second.unchanged, 1); assert.equal(second.errors.length, 1);
 });
-test('YAML template export preserves weighted options and exports one distinct file per player', t => {
-  const library = new GameLibrary(temp(t), root, { memory: true });
-  library.importYaml('name: Original\ngame: Demo\nDemo:\n  difficulty: {easy: 50, hard: 50}\n  enabled: true\n  trap_distribution: {Bomb Trap: 4}\n');
-  const files = library.generate({ game: 'Demo', values: { enabled: false }, players: ['One', 'Two'], extra: 'new_option: 7' });
-  assert.equal(parse(files[0].content).name, 'One'); assert.equal(parse(files[1].content).name, 'Two'); assert.deepEqual(parse(files[0].content).Demo.difficulty, { easy: 50, hard: 50 }); assert.equal(parse(files[0].content).Demo.new_option, 7);
-  assert.throws(() => library.generate({ game: 'Demo', players: ['One', 'one'] }), /Eindeutige/);
-  assert.throws(() => library.generate({ game: 'Demo', players: ['NameLongerThanSixteenCharacters'] }));
+test('APworld export preserves advanced weighted options and creates one YAML per player', t => {
+  const library = new GameLibrary(temp(t), root, { memory: true }); library.importWorld(worldZip(), 'fixture.apworld');
+  const files = library.generate({ game: 'Fixture Adventure', values: { fast_mode: false }, players: ['One', 'Two'], extra: 'difficulty: {easy: 50, hard: 50}\nnew_option: 7' });
+  assert.equal(parse(files[0].content).name, 'One'); assert.equal(parse(files[1].content).name, 'Two');
+  assert.deepEqual(parse(files[0].content)['Fixture Adventure'].difficulty, { easy: 50, hard: 50 });
+  assert.equal(parse(files[0].content)['Fixture Adventure'].new_option, 7);
+  assert.throws(() => library.generate({ game: 'Fixture Adventure', players: ['One', 'one'] }), /Eindeutige/);
+  assert.throws(() => library.generate({ game: 'Fixture Adventure', players: ['NameLongerThanSixteenCharacters'] }));
   assert.equal(readZip(writeZip(files)).length, 2);
 });
 test('HTTP imports templates, persists presets and returns valid multi-player YAML ZIPs', async t => {
@@ -207,4 +209,137 @@ test('mixed random actions can choose useful items and selected player lists iso
   assert(engine.plan(random, event).every(j => j.effect === 'random_item'));
   store.state.config.deathLinkArmed = true;
   const death = engine.plan(random, event); assert.equal(death.length, 1); assert.equal(death[0].effect, 'deathlink'); assert.equal(death[0].targetKey, 'group');
+});
+
+
+test('active rooms archive and restore without losing history or credentials after restart', async t => {
+  const directory = temp(t), worldsDirectory = join(directory, 'worlds');
+  let app = await createApp({ directory, worldsDirectory, port: 0 }); t.after(() => app.close());
+  app.store.state.rules[0].name = 'Preserve'; app.store.state.events.push({ id: 'archived-event' }); app.store.save(); app.vault.update('default', { adminPassword: 'archive-secret' });
+  assert.equal((await post(app, 'rooms/archive', { id: 'default', archived: true })).status, 200);
+  assert.notEqual(app.rooms.id, 'default'); assert.equal(app.rooms.require('default').archived, true);
+  assert.equal(app.store.state.config.paused, true); assert.equal(app.store.state.config.mode, 'test');
+  assert.equal((await post(app, 'rooms/activate', { id: 'default' })).status, 400);
+  app.close(); app = await createApp({ directory, worldsDirectory, port: 0 });
+  assert.equal(app.rooms.require('default').archived, true);
+  assert.equal((await post(app, 'rooms/archive', { id: 'default', archived: false })).status, 200);
+  assert.notEqual(app.rooms.id, 'default');
+  await post(app, 'rooms/activate', { id: 'default' });
+  assert.equal(app.store.state.rules[0].name, 'Preserve'); assert.equal(app.store.state.events[0].id, 'archived-event'); assert.equal(app.vault.get('default').adminPassword, 'archive-secret');
+});
+test('deleting default room requires its exact name and preserves shared files across restart', async t => {
+  const directory = temp(t), worldsDirectory = join(directory, 'worlds');
+  let app = await createApp({ directory, worldsDirectory, port: 0 }); t.after(() => app.close());
+  app.vault.update('default', { adminPassword: 'delete-secret' }); const name = app.rooms.require('default').name;
+  writeFileSync(join(directory, 'game-library.json'), JSON.stringify({ games: {}, hashes: {}, folder: worldsDirectory }));
+  assert.equal((await post(app, 'rooms/delete', { id: 'default', confirmName: 'wrong' })).status, 400);
+  assert.equal(app.rooms.id, 'default'); assert(existsSync(join(directory, 'state.json')));
+  assert.equal((await post(app, 'rooms/delete', { id: 'default', confirmName: name })).status, 200);
+  assert.equal(app.vault.get('default').adminPassword, undefined); assert(!existsSync(join(directory, 'state.json')));
+  for (const name of ['game-library.json', 'connections.key', 'integration-key.txt']) assert(existsSync(join(directory, name)));
+  const active = app.rooms.id; app.close(); app = await createApp({ directory, worldsDirectory, port: 0 });
+  assert.equal(app.rooms.id, active); assert(!existsSync(join(directory, 'state.json'))); assert.equal(app.rooms.manifest.rooms.length, 1);
+});
+test('busy active room is not archived or deleted and archived room deletion removes its own directory', async t => {
+  const directory = temp(t); const app = await createApp({ directory, worldsDirectory: join(directory, 'worlds'), port: 0 }); t.after(() => app.close());
+  app.engine.busy = true;
+  assert.equal((await post(app, 'rooms/archive', { id: 'default', archived: true })).status, 400); assert.equal(app.rooms.manifest.rooms.length, 1);
+  app.engine.busy = false;
+  const room = (await (await post(app, 'rooms/create', { name: 'Old run' })).json()).room;
+  app.vault.update(room.id, { twitchToken: 'old' }); await post(app, 'rooms/archive', { id: room.id, archived: true });
+  assert.equal((await post(app, 'rooms/delete', { id: room.id, confirmName: room.name })).status, 200);
+  assert(!existsSync(join(directory, 'rooms', room.id))); assert.equal(app.vault.get(room.id).twitchToken, undefined);
+});
+test('only APworld files become settings and recursive scan preserves original names', async t => {
+  const directory = temp(t), nested = join(directory, 'source', 'version'); mkdirSync(nested, { recursive: true });
+  const library = new GameLibrary(directory, root, { memory: true }); assert.equal(library.list().games.length, 0);
+  writeFileSync(join(directory, 'old.yaml'), 'game: Legacy'); writeFileSync(join(nested, 'fixture.apworld'), worldZip());
+  const report = await library.scan(directory); assert.equal(report.imported.length, 1); assert.equal(report.errors.length, 0);
+  assert.equal(library.get('Fixture Adventure').source, 'source/version/fixture.apworld');
+  assert.throws(() => library.upload({ name: 'old.yaml', content: Buffer.from('game: Legacy').toString('base64') }), /apworld/);
+});
+test('bundled settings require matching file hashes and accept nested original filenames without Python', t => {
+  const directory = temp(t), appRoot = temp(t); mkdirSync(join(appRoot, 'assets')); mkdirSync(join(appRoot, 'apworlds', 'source'), { recursive: true });
+  const bytes = worldZip(); writeFileSync(join(appRoot, 'apworlds', 'source', 'fixture.apworld'), bytes);
+  const library = new GameLibrary(directory, root, { memory: true }); library.importWorld(bytes, 'fixture.apworld');
+  const entry = library.get('Fixture Adventure');
+  const cache = { schema: 1, generatedAt: Date.now(), files: { 'source/fixture.apworld': { sha256: createHash('sha256').update(bytes).digest('hex'), worlds: [entry], warnings: [] } } };
+  writeFileSync(join(appRoot, 'assets', 'apworld-settings.json'), JSON.stringify(cache));
+  const cached = new GameLibrary(directory, appRoot); cached.pythonCommand = () => { throw new Error('Must not need Python'); };
+  assert.equal(cached.get(entry.game).source, 'source/fixture.apworld'); assert.equal(cached.generate({ game: entry.game, players: ['One'] }).length, 1);
+  writeFileSync(join(appRoot, 'apworlds', 'source', 'fixture.apworld'), Buffer.from('changed'));
+  const changed = new GameLibrary(temp(t), appRoot); assert.equal(changed.list().games.length, 0);
+});
+test('scoped AST resolves aliases and imported constants without merging same-named classes', t => {
+  const library = new GameLibrary(temp(t), root, { memory: true });
+  library.importWorld(writeZip([
+    { name: 'scoped/__init__.py', content: `from .Options import Settings as S\nfrom .config import GAME\nclass ScopedWorld(World):\n game = GAME\n options_dataclass = S` },
+    { name: 'scoped/config.py', content: `GAME = 'Scoped'\nLIMIT = 10` },
+    { name: 'scoped/Options.py', content: `from Options import Choice as BaseChoice, NamedRange, TextChoice, Toggle\nfrom .config import LIMIT\nclass SameName(BaseChoice):\n option_first = 1\n default = 1\nclass Health(NamedRange):\n range_start = 1\n range_end = LIMIT\n special_range_names = {'all': -1}\n default = -1\nclass Text(TextChoice):\n option_preset = 0\n default = 'My text'\nclass Dynamic(Toggle):\n default = runtime()\nclass Settings(PerGameCommonOptions):\n choice: SameName\n health: Health\n text: Text\n dynamic: Dynamic` },
+    { name: 'scoped/other.py', content: `class SameName(Choice):\n option_wrong = 99\n default = 99` },
+  ]), 'scoped.apworld');
+  const entry = library.get('Scoped'), find = k => entry.options.find(o => o.key === k);
+  assert.equal(find('choice').default, 'first'); assert.equal(find('health').max, 10); assert.equal(find('health').default, -1); assert.equal(find('text').default, 'My text'); assert(!Object.hasOwn(find('dynamic'), 'default'));
+  assert.equal(library.generate({ game: 'Scoped', values: { health: 'random-range-low-6-10' }, players: ['One'] }).length, 1);
+  assert.throws(() => library.generate({ game: 'Scoped', values: { health: 'random-range-6-200' }, players: ['One'] }), /Bereich/);
+});
+test('manifest fallback and scalar collection presets remain exportable', t => {
+  const library = new GameLibrary(temp(t), root, { memory: true });
+  library.importWorld(writeZip([{ name: 'preset/archipelago.json', content: '{"game":"Preset"}' }, { name: 'preset/__init__.py', content: `class Items(OptionSet):\n default = 'All'\nclass PresetOptions(PerGameCommonOptions):\n items: Items\nclass PresetWorld(World):\n game = runtime_name()\n options_dataclass = PresetOptions` }]), 'preset.apworld');
+  const entry = library.get('Preset'); assert.equal(entry.options.find(o => o.key === 'items').kind, 'json');
+  assert.equal(parse(library.generate({ game: 'Preset', players: ['One'] })[0].content).Preset.items, 'All');
+});
+test('APworld reader skips large unused binary resources while checking Python checksums', () => {
+  const bytes = writeZip([{ name: 'fixture/binary.bin', content: Buffer.alloc(9 * 1024 * 1024) }, { name: 'fixture/__init__.py', content: world }]);
+  assert.equal(readZip(bytes, { worldOnly: true }).length, 1);
+  const selected = writeZip([{ name: 'fixture/huge.py', content: 'x'.repeat(9 * 1024 * 1024) }]); assert.throws(() => readZip(selected, { worldOnly: true }), /zu groß/);
+});
+
+
+test('recipient modes select one, all or a random member of the chosen own-team group', () => {
+  const store = new Store('.', { memory: true });
+  const players = [{ team: 0, slot: 1, name: 'A', game: 'Demo', type: 1 }, { team: 0, slot: 2, name: 'B', game: 'Demo', type: 1 }, { team: 0, slot: 3, name: 'C', game: 'Demo', type: 1 }, { team: 1, slot: 4, name: 'Other team', game: 'Demo', type: 1 }];
+  const ap = { connected: true, demo: false, roomKey: 'group-room', seed: 'seed', team: 0, players, items: () => ({ 'Bomb Trap': 1 }) };
+  store.state.approvals[ap.roomKey] = Object.fromEntries(players.map(p => [p.team + ':' + p.slot, { enabled: true, items: ['Bomb Trap'], traps: ['Bomb Trap'] }]));
+  const engine = new Engine(store, ap, { choose: xs => xs.at(-1) }), event = { id: 'group', source: 'manual', user: 'Test', dryRun: true };
+  const base = { name: 'Group', enabled: true, source: 'any', type: 'any', effect: 'random_trap', targetKeys: ['0:1', '0:3', '1:4'] };
+  const plan = target => engine.plan(normalizeRule({ ...base, target }), event).map(job => job.targetName);
+  assert.deepEqual(plan('0:2'), ['B']); assert.deepEqual(plan('all'), ['A', 'B', 'C']); assert.deepEqual(plan('selected'), ['A', 'C']); assert.deepEqual(plan('random_selected'), ['C']); assert.deepEqual(plan('random'), ['C']);
+  store.state.approvals[ap.roomKey]['0:3'].enabled = false; assert.deepEqual(plan('random_selected'), ['A']);
+  assert.throws(() => normalizeRule({ ...base, target: 'random_selected', targetKeys: [] }), /Zielslot/);
+});
+
+
+test('APworlds with Windows archive separators resolve imports and manifest metadata', t => {
+  const library = new GameLibrary(temp(t), root, { memory: true });
+  const bytes = writeZip([
+    { name: 'windows\\archipelago.json', content: '{"game":"Windows Paths"}' },
+    { name: 'windows\\__init__.py', content: `from .options import WindowsOptions\nclass WindowsWorld(World):\n game = runtime_name()\n options_dataclass = WindowsOptions` },
+    { name: 'windows\\options.py', content: `class Health(Range):\n range_start = 1\n range_end = 9\n default = 3\nclass WindowsOptions(PerGameCommonOptions):\n health: Health` },
+  ]);
+  assert(readZip(bytes, { worldOnly: true }).every(file => !file.name.includes('\\')));
+  assert.deepEqual(library.importWorld(bytes, 'windows.apworld'), ['Windows Paths']);
+  assert.equal(library.get('Windows Paths').options.find(o => o.key === 'health').default, 3);
+});
+
+
+test('own APworlds in the root directory take precedence over bundled variants', async t => {
+  const directory = temp(t), appRoot = temp(t), worlds = join(appRoot, 'apworlds');
+  mkdirSync(join(worlds, 'bundle'), { recursive: true }); mkdirSync(join(appRoot, 'assets'));
+  const ownBytes = writeZip([{ name: 'fixture/__init__.py', content: world.replace('default = 3', 'default = 7') }]);
+  writeFileSync(join(worlds, 'own.apworld'), ownBytes); writeFileSync(join(worlds, 'bundle', 'fixture.apworld'), worldZip());
+  const library = new GameLibrary(directory, root, { memory: true });
+  const report = await library.scan(worlds); assert.equal(report.imported.length, 2); assert.equal(library.get('Fixture Adventure').source, 'own.apworld');
+  assert.equal(library.get('Fixture Adventure').options.find(o => o.key === 'health').default, 7);
+  writeFileSync(join(worlds, 'bundle', 'fixture.apworld'), writeZip([{ name: 'fixture/__init__.py', content: world.replace('default = 3', 'default = 5') }]));
+  await library.scan(worlds); assert.equal(library.get('Fixture Adventure').source, 'own.apworld'); assert.equal(library.get('Fixture Adventure').options.find(o => o.key === 'health').default, 7);
+  assert.equal((await library.scan(worlds)).unchanged, 2);
+  writeFileSync(join(worlds, 'bundle', 'fixture.apworld'), worldZip());
+  const own = library.get('Fixture Adventure'); library.importWorld(worldZip(), 'bundle/fixture.apworld'); const bundled = library.get('Fixture Adventure');
+  const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+  writeFileSync(join(appRoot, 'assets', 'apworld-settings.json'), JSON.stringify({ schema: 1, generatedAt: Date.now(), files: {
+    'own.apworld': { sha256: sha(ownBytes), worlds: [own], warnings: [] },
+    'bundle/fixture.apworld': { sha256: sha(worldZip()), worlds: [bundled], warnings: [] },
+  } }));
+  const cached = new GameLibrary(temp(t), appRoot); assert.equal(cached.get('Fixture Adventure').source, 'own.apworld'); assert.equal(cached.get('Fixture Adventure').options.find(o => o.key === 'health').default, 7);
 });

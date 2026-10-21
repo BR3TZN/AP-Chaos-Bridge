@@ -1,16 +1,17 @@
 {
   "name": "ap-chaos-bridge",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "Lokale Charity-Royale- und Twitch-Bridge für Archipelago",
+  "description": "Lokale Charity-Royale- und Twitch-Bridge f\u00fcr Archipelago",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test test/*.test.mjs",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "validate:worlds": "node scripts/validate_worlds.mjs"
   },
   "dependencies": {
     "ws": "8.22.0",
