@@ -1,0 +1,3475 @@
+{
+  "source": "https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002",
+  "date": "2026-10-20",
+  "disclaimer": "AP-Status, keine bestätigte Live-Effekt-Kompatibilität",
+  "games": [
+    {
+      "game": "ActRaiser",
+      "stability": "Stable"
+    },
+    {
+      "game": "Adventure",
+      "stability": "Stable"
+    },
+    {
+      "game": "Against the Storm",
+      "stability": "Stable"
+    },
+    {
+      "game": "Age of Mythology: Retold",
+      "stability": "Stable"
+    },
+    {
+      "game": "Air Delivery",
+      "stability": "Stable"
+    },
+    {
+      "game": "ANIMAL WELL",
+      "stability": "Stable"
+    },
+    {
+      "game": "Anno 1800",
+      "stability": "Stable"
+    },
+    {
+      "game": "Anodyne",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ape Escape",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ape Escape 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ape Escape 3",
+      "stability": "Stable"
+    },
+    {
+      "game": "APQuest",
+      "stability": "Stable"
+    },
+    {
+      "game": "Aquaria",
+      "stability": "Stable"
+    },
+    {
+      "game": "Archipelaballs",
+      "stability": "Stable"
+    },
+    {
+      "game": "Archipeladoku (Sudoku)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Astalon: Tears of the Earth",
+      "stability": "Stable"
+    },
+    {
+      "game": "Autopelago",
+      "stability": "Stable"
+    },
+    {
+      "game": "Axiom Verge",
+      "stability": "Stable"
+    },
+    {
+      "game": "Balatro",
+      "stability": "Stable"
+    },
+    {
+      "game": "Baldur's Gate 3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Banjo-Tooie",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Binding of Isaac: Repentance",
+      "stability": "Stable"
+    },
+    {
+      "game": "BK Simulator",
+      "stability": "Stable"
+    },
+    {
+      "game": "Black Market of Bulletphilia ~ 100th Black Market (Touhou 18.5)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Blasphemous",
+      "stability": "Stable"
+    },
+    {
+      "game": "Bloons Tower Defense 6",
+      "stability": "Stable"
+    },
+    {
+      "game": "Bomberman Hero",
+      "stability": "Stable"
+    },
+    {
+      "game": "Bomb Rush Cyberfunk",
+      "stability": "Stable"
+    },
+    {
+      "game": "Brave Fencer Musashi",
+      "stability": "Stable"
+    },
+    {
+      "game": "Brotato",
+      "stability": "Stable"
+    },
+    {
+      "game": "Buckshot Roulette",
+      "stability": "Stable"
+    },
+    {
+      "game": "Bumper Stickers",
+      "stability": "Stable"
+    },
+    {
+      "game": "Build a Jetpack",
+      "stability": "Stable"
+    },
+    {
+      "game": "Candy Box 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "CartogrAP",
+      "stability": "Stable"
+    },
+    {
+      "game": "Castlevania 64",
+      "stability": "Stable"
+    },
+    {
+      "game": "Castlevania: Circle of the Moon",
+      "stability": "Stable"
+    },
+    {
+      "game": "Castlevania: Dawn of Sorrow",
+      "stability": "Stable"
+    },
+    {
+      "game": "Castlevania: Harmony of Dissonance",
+      "stability": "Stable"
+    },
+    {
+      "game": "Castlevania: Legacy of Darkness",
+      "stability": "Stable"
+    },
+    {
+      "game": "Castlevania: Order of Ecclesia",
+      "stability": "Stable"
+    },
+    {
+      "game": "Castlevania: Symphony of the Night",
+      "stability": "Stable"
+    },
+    {
+      "game": "Cavern of Dreams",
+      "stability": "Stable"
+    },
+    {
+      "game": "Cave Story",
+      "stability": "Stable"
+    },
+    {
+      "game": "Celeste (Open World)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Celeste 64",
+      "stability": "Stable"
+    },
+    {
+      "game": "ChecksFinder",
+      "stability": "Stable"
+    },
+    {
+      "game": "ChecksMate (Chess)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Choo Choo Charles",
+      "stability": "Stable"
+    },
+    {
+      "game": "Chrono Trigger: Jets of Time",
+      "stability": "Stable"
+    },
+    {
+      "game": "Citadel (Luanti)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Civilization V",
+      "stability": "Stable"
+    },
+    {
+      "game": "Civilization VI",
+      "stability": "Stable"
+    },
+    {
+      "game": "Clique",
+      "stability": "Stable"
+    },
+    {
+      "game": "CloverPit",
+      "stability": "Stable"
+    },
+    {
+      "game": "ClusterTruck",
+      "stability": "Stable"
+    },
+    {
+      "game": "Cobalt Core",
+      "stability": "Stable"
+    },
+    {
+      "game": "CornKidz64",
+      "stability": "Stable"
+    },
+    {
+      "game": "Cowtastic Cafe",
+      "stability": "Stable"
+    },
+    {
+      "game": "Create",
+      "stability": "Stable"
+    },
+    {
+      "game": "CrossCode",
+      "stability": "Stable"
+    },
+    {
+      "game": "Crypt of the NecroDancer",
+      "stability": "Stable"
+    },
+    {
+      "game": "Crystalis",
+      "stability": "Stable"
+    },
+    {
+      "game": "Crystal Project",
+      "stability": "Stable"
+    },
+    {
+      "game": "Cuphead",
+      "stability": "Stable"
+    },
+    {
+      "game": "A Dance Of Fire And Ice",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dark Cloud 1",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dark Souls II",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dark Souls III",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dead Rising Deluxe Remastered",
+      "stability": "Stable"
+    },
+    {
+      "game": "Deep Rock Galactic",
+      "stability": "Stable"
+    },
+    {
+      "game": "DELTARUNE",
+      "stability": "Stable"
+    },
+    {
+      "game": "Diddy Kong Racing",
+      "stability": "Stable"
+    },
+    {
+      "game": "A Difficult Game About Climbing",
+      "stability": "Stable"
+    },
+    {
+      "game": "DLCQuest",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dome Keeper",
+      "stability": "Stable"
+    },
+    {
+      "game": "Donkey Kong 64",
+      "stability": "Stable"
+    },
+    {
+      "game": "Donkey Kong Country",
+      "stability": "Stable"
+    },
+    {
+      "game": "Donkey Kong Country 2: Diddy's Kong Quest",
+      "stability": "Stable"
+    },
+    {
+      "game": "Donkey Kong Country Returns",
+      "stability": "Stable"
+    },
+    {
+      "game": "Don't Starve Together",
+      "stability": "Stable"
+    },
+    {
+      "game": "DOOM 1993",
+      "stability": "Stable"
+    },
+    {
+      "game": "DOOM II",
+      "stability": "Stable"
+    },
+    {
+      "game": "Door to Door Door Salesman",
+      "stability": "Stable"
+    },
+    {
+      "game": "DORONKO WANKO",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dracomino",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dragon Quest III HD-2D Remake",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dragon Warrior",
+      "stability": "Stable"
+    },
+    {
+      "game": "Dream Dazia",
+      "stability": "Stable"
+    },
+    {
+      "game": "Duck Game",
+      "stability": "Stable"
+    },
+    {
+      "game": "Duke Nukem 3D",
+      "stability": "Stable"
+    },
+    {
+      "game": "Earthbound",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Elder Scrolls IV: Oblivion Remastered",
+      "stability": "Stable"
+    },
+    {
+      "game": "Elementipelago",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ender Lilies: Quietus of the Knights",
+      "stability": "Stable"
+    },
+    {
+      "game": "Factorio",
+      "stability": "Stable"
+    },
+    {
+      "game": "Factorio - Space Age Without Space",
+      "stability": "Stable"
+    },
+    {
+      "game": "Faxanadu",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy IV: Free Enterprise",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy 6 Worlds Collide",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy X",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy XII: Open World",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy XII: Trial Mode",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy Mystic Quest",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy Tactics Advance",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy Tactics A2: Grimoire of the Rift",
+      "stability": "Stable"
+    },
+    {
+      "game": "Final Fantasy Tactics: Ivalice Island (FFT PSX)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Fire Emblem: The Sacred Stones",
+      "stability": "Stable"
+    },
+    {
+      "game": "Flipwitch",
+      "stability": "Stable"
+    },
+    {
+      "game": "FNAF World",
+      "stability": "Stable"
+    },
+    {
+      "game": "Frogmonster",
+      "stability": "Stable"
+    },
+    {
+      "game": "Funi Raccoon Game",
+      "stability": "Stable"
+    },
+    {
+      "game": "Garfield Kart: Furious Racing",
+      "stability": "Stable"
+    },
+    {
+      "game": "Gato Roboto",
+      "stability": "Stable"
+    },
+    {
+      "game": "Gato Roboto B-Side",
+      "stability": "Stable"
+    },
+    {
+      "game": "Gauntlet Legends",
+      "stability": "Stable"
+    },
+    {
+      "game": "Getting Over It with Bennett Foddy",
+      "stability": "Stable"
+    },
+    {
+      "game": "Glover",
+      "stability": "Stable"
+    },
+    {
+      "game": "GLYPHS",
+      "stability": "Stable"
+    },
+    {
+      "game": "Golden Sun: The Lost Age",
+      "stability": "Stable"
+    },
+    {
+      "game": "Grandia HD Remaster",
+      "stability": "Stable"
+    },
+    {
+      "game": "Grim Dawn",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Grinch",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Guardian Legend",
+      "stability": "Stable"
+    },
+    {
+      "game": "Guild Wars 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Hades",
+      "stability": "Stable"
+    },
+    {
+      "game": "Hades 2 (Rogue)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Hammerwatch",
+      "stability": "Stable"
+    },
+    {
+      "game": "A Hat in Time",
+      "stability": "Stable"
+    },
+    {
+      "game": "Hatsune Miku: Project Diva Megamix+",
+      "stability": "Stable"
+    },
+    {
+      "game": "Here Comes Niko!",
+      "stability": "Stable"
+    },
+    {
+      "game": "Heretic",
+      "stability": "Stable"
+    },
+    {
+      "game": "Heroes of the Storm",
+      "stability": "Stable"
+    },
+    {
+      "game": "Hexcells Infinite",
+      "stability": "Stable"
+    },
+    {
+      "game": "Hollow Knight",
+      "stability": "Stable"
+    },
+    {
+      "game": "Horse Magnifier: The Full Horse",
+      "stability": "Stable"
+    },
+    {
+      "game": "Huniepop",
+      "stability": "Stable"
+    },
+    {
+      "game": "Huniepop 2: Double Date",
+      "stability": "Stable"
+    },
+    {
+      "game": "Hylics 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Iji",
+      "stability": "Stable"
+    },
+    {
+      "game": "Inscryption",
+      "stability": "Stable"
+    },
+    {
+      "game": "Isles of Sea and Sky",
+      "stability": "Stable"
+    },
+    {
+      "game": "Isles of Trials",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ittle Dew 2+",
+      "stability": "Stable"
+    },
+    {
+      "game": "Jak and Daxter: The Precursor Legacy",
+      "stability": "Stable"
+    },
+    {
+      "game": "Jak 3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Jigsaw Puzzle for Archipelago",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kabuto Park (Demo)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Keep Talking and Nobody Explodes",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kindergarten 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kingdom Hearts",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kingdom Hearts 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kingdom Hearts: Birth by Sleep Final Mix",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kingdom Hearts: Chain of Memories (GBA)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kingdom Hearts: RE Chain of Memories",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kirby's Dream Land 3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kirby 64 - The Crystal Shards",
+      "stability": "Stable"
+    },
+    {
+      "game": "Kirby Super Star",
+      "stability": "Stable"
+    },
+    {
+      "game": "K-On! After School Live!!",
+      "stability": "Stable"
+    },
+    {
+      "game": "Lakelands",
+      "stability": "Stable"
+    },
+    {
+      "game": "Landstalker - The Treasures of King Nole",
+      "stability": "Stable"
+    },
+    {
+      "game": "League of Legends",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda",
+      "stability": "Stable"
+    },
+    {
+      "game": "Zelda 2: The Adventure of Link",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: A Link to the Past",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: A Link Between Worlds",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Links Awakening DX",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Ocarina of Time",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Ocarina of Time - Ship of Harkinian",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Majora's Mask",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Oracle of Seasons",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: The Wind Waker",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Wind Waker HD",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: The Minish Cap",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Twilight Princess",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Phantom Hourglass",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Legend of Zelda: Skyward Sword",
+      "stability": "Stable"
+    },
+    {
+      "game": "Lego Star Wars: The Complete Saga",
+      "stability": "Stable"
+    },
+    {
+      "game": "Lingo",
+      "stability": "Stable"
+    },
+    {
+      "game": "Lingo 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Little Witch Nobeta",
+      "stability": "Stable"
+    },
+    {
+      "game": "Loonyland: Halloween Hill",
+      "stability": "Stable"
+    },
+    {
+      "game": "Lufia II Ancient Cave",
+      "stability": "Stable"
+    },
+    {
+      "game": "Luigi's Mansion",
+      "stability": "Stable"
+    },
+    {
+      "game": "Lunacid",
+      "stability": "Stable"
+    },
+    {
+      "game": "Marbles! Balance Challenge",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mario & Luigi Superstar Saga",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mario is Missing (SNES)",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mario Kart: Double Dash",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mario Super Sluggers",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man 3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man X",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man X2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man X3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man X4",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man Battle Network 3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man Battle Network 6",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mega Man Zero 3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Meritous",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Messenger",
+      "stability": "Stable"
+    },
+    {
+      "game": "Metal Gear Solid - Masala Garden Salad",
+      "stability": "Stable"
+    },
+    {
+      "game": "MetroCUBEvania",
+      "stability": "Stable"
+    },
+    {
+      "game": "Metroid Fusion",
+      "stability": "Stable"
+    },
+    {
+      "game": "Super Metroid",
+      "stability": "Stable"
+    },
+    {
+      "game": "SMZ3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Metroid Prime",
+      "stability": "Stable"
+    },
+    {
+      "game": "Metroid: Zero Mission",
+      "stability": "Stable"
+    },
+    {
+      "game": "Mina the Hollower",
+      "stability": "Stable"
+    },
+    {
+      "game": "Minecraft",
+      "stability": "Stable"
+    },
+    {
+      "game": "Minecraft Dig",
+      "stability": "Stable"
+    },
+    {
+      "game": "Minishoot' Adventures",
+      "stability": "Stable"
+    },
+    {
+      "game": "Minit",
+      "stability": "Stable"
+    },
+    {
+      "game": "Momodora: Moonlit Farewell",
+      "stability": "Stable"
+    },
+    {
+      "game": "Monster Sanctuary",
+      "stability": "Stable"
+    },
+    {
+      "game": "Muse Dash",
+      "stability": "Stable"
+    },
+    {
+      "game": "Nicktoons: Battle for Volcano Island",
+      "stability": "Stable"
+    },
+    {
+      "game": "Nine Sols",
+      "stability": "Stable"
+    },
+    {
+      "game": "Noita",
+      "stability": "Stable"
+    },
+    {
+      "game": "Noita - Enemysanity",
+      "stability": "Stable"
+    },
+    {
+      "game": "Nonograhmm",
+      "stability": "Stable"
+    },
+    {
+      "game": "Old School Runescape",
+      "stability": "Stable"
+    },
+    {
+      "game": "OpenRCT2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ori and the Blind Forest Definitive Edition",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ori and the Will of the Wisps",
+      "stability": "Stable"
+    },
+    {
+      "game": "osu!",
+      "stability": "Stable"
+    },
+    {
+      "game": "Outer Wilds",
+      "stability": "Stable"
+    },
+    {
+      "game": "Overcooked! 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Oxygen Not Included",
+      "stability": "Stable"
+    },
+    {
+      "game": "Paint",
+      "stability": "Stable"
+    },
+    {
+      "game": "Paper Mario 64",
+      "stability": "Stable"
+    },
+    {
+      "game": "Paper Mario: The Thousand Year Door",
+      "stability": "Stable"
+    },
+    {
+      "game": "Parkitect",
+      "stability": "Stable"
+    },
+    {
+      "game": "Path of Exile",
+      "stability": "Stable"
+    },
+    {
+      "game": "PEAK",
+      "stability": "Stable"
+    },
+    {
+      "game": "Peaks of Yore",
+      "stability": "Stable"
+    },
+    {
+      "game": "Peggle Deluxe",
+      "stability": "Stable"
+    },
+    {
+      "game": "Peggle Nights",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pikuniku",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pinball FX3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Piranesi Restoration Project (Luanti)",
+      "stability": "Stable"
+    },
+    {
+      "game": "PixelDraw",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pizza Tower",
+      "stability": "Stable"
+    },
+    {
+      "game": "Placid Plastic Duck Simulator",
+      "stability": "Stable"
+    },
+    {
+      "game": "Plants vs. Zombies: GOTY",
+      "stability": "Stable"
+    },
+    {
+      "game": "Plants vs. Zombies: Replanted",
+      "stability": "Stable"
+    },
+    {
+      "game": "Plateup!",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pokémon Red and Blue",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pokémon Crystal",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pokémon Emerald",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pokémon FireRed and LeafGreen",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pokémon Platinum",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pokémon Black and White",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pokémon Mystery Dungeon: Explorers of Sky",
+      "stability": "Stable"
+    },
+    {
+      "game": "PokéPark Wii: Pikachu's Adventure",
+      "stability": "Stable"
+    },
+    {
+      "game": "Portal 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "PowerWash Simulator",
+      "stability": "Stable"
+    },
+    {
+      "game": "Prodigal",
+      "stability": "Stable"
+    },
+    {
+      "game": "Pseudoregalia",
+      "stability": "Stable"
+    },
+    {
+      "game": "Psychonauts",
+      "stability": "Stable"
+    },
+    {
+      "game": "Rabi-Ribi",
+      "stability": "Stable"
+    },
+    {
+      "game": "Raft",
+      "stability": "Stable"
+    },
+    {
+      "game": "Rain World",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ratchet & Clank 2: Going Commando",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ratchet & Clank 3: Up Your Arsenal",
+      "stability": "Stable"
+    },
+    {
+      "game": "Rayman 2: The Great Escape",
+      "stability": "Stable"
+    },
+    {
+      "game": "Refunct",
+      "stability": "Stable"
+    },
+    {
+      "game": "Resident Evil 2 Remake",
+      "stability": "Stable"
+    },
+    {
+      "game": "Resident Evil 3 Remake",
+      "stability": "Stable"
+    },
+    {
+      "game": "Return of the Obra Dinn",
+      "stability": "Stable"
+    },
+    {
+      "game": "Reventure",
+      "stability": "Stable"
+    },
+    {
+      "game": "Rhythm Tengoku",
+      "stability": "Stable"
+    },
+    {
+      "game": "Rift of the Necrodancer",
+      "stability": "Stable"
+    },
+    {
+      "game": "Rift Wizard",
+      "stability": "Stable"
+    },
+    {
+      "game": "Risk of Rain 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Rogue Legacy",
+      "stability": "Stable"
+    },
+    {
+      "game": "Rusted Moss",
+      "stability": "Stable"
+    },
+    {
+      "game": "Satisfactory",
+      "stability": "Stable"
+    },
+    {
+      "game": "Saving Princess",
+      "stability": "Stable"
+    },
+    {
+      "game": "Scooby-Doo! Night of 100 Frights",
+      "stability": "Stable"
+    },
+    {
+      "game": "Scorpion Swamp",
+      "stability": "Stable"
+    },
+    {
+      "game": "Secret of Evermore",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sekiro: Shadows Die Twice",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sentinels of the Multiverse",
+      "stability": "Stable"
+    },
+    {
+      "game": "Shadow the Hedgehog",
+      "stability": "Stable"
+    },
+    {
+      "game": "shapez",
+      "stability": "Stable"
+    },
+    {
+      "game": "Shellipelago",
+      "stability": "Stable"
+    },
+    {
+      "game": "Shivers",
+      "stability": "Stable"
+    },
+    {
+      "game": "A Short Hike",
+      "stability": "Stable"
+    },
+    {
+      "game": "Simon Tatham's Portable Puzzle Collection",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Simpsons: Hit & Run",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Sims 4",
+      "stability": "Stable"
+    },
+    {
+      "game": "Skul: The Hero Slayer",
+      "stability": "Stable"
+    },
+    {
+      "game": "Slay the Spire",
+      "stability": "Stable"
+    },
+    {
+      "game": "Slime Rancher",
+      "stability": "Stable"
+    },
+    {
+      "game": "Slime Rancher 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sly Cooper and the Thievius Raccoonus",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sly 2: Band of Thieves",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sonic the Hedgehog",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sonic Adventure DX",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sonic Adventure 2 Battle",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sonic Heroes",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sonic Riders",
+      "stability": "Stable"
+    },
+    {
+      "game": "Sonic Rush",
+      "stability": "Stable"
+    },
+    {
+      "game": "SoulBlazer",
+      "stability": "Stable"
+    },
+    {
+      "game": "A Space Archipelago",
+      "stability": "Stable"
+    },
+    {
+      "game": "Spelunker",
+      "stability": "Stable"
+    },
+    {
+      "game": "Spelunky 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Spinball",
+      "stability": "Stable"
+    },
+    {
+      "game": "Spongebob Squarepants: Battle for Bikini Bottom",
+      "stability": "Stable"
+    },
+    {
+      "game": "Spyro 2: Ripto's Rage",
+      "stability": "Stable"
+    },
+    {
+      "game": "Spyro 3: Year of the Dragon",
+      "stability": "Stable"
+    },
+    {
+      "game": "Spyro: A Hero's Tail",
+      "stability": "Stable"
+    },
+    {
+      "game": "Stacklands",
+      "stability": "Stable"
+    },
+    {
+      "game": "Starcraft 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Stardew Valley",
+      "stability": "Stable"
+    },
+    {
+      "game": "Star Fox 64",
+      "stability": "Stable"
+    },
+    {
+      "game": "Stick Ranger",
+      "stability": "Stable"
+    },
+    {
+      "game": "Subnautica",
+      "stability": "Stable"
+    },
+    {
+      "game": "Super Cat Planet",
+      "stability": "Stable"
+    },
+    {
+      "game": "Super Junkoid",
+      "stability": "Stable"
+    },
+    {
+      "game": "Super Mario 64",
+      "stability": "Stable"
+    },
+    {
+      "game": "Super Mario Land 2: The Golden Coins",
+      "stability": "Stable"
+    },
+    {
+      "game": "Super Mario World",
+      "stability": "Stable"
+    },
+    {
+      "game": "Super Mario World: Spicy Mycena Waffles",
+      "stability": "Stable"
+    },
+    {
+      "game": "Super Smash Bros. Melee",
+      "stability": "Stable"
+    },
+    {
+      "game": "System Shock 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "TCG Card Shop Simulator",
+      "stability": "Stable"
+    },
+    {
+      "game": "Terraria",
+      "stability": "Stable"
+    },
+    {
+      "game": "Tetris Attack",
+      "stability": "Stable"
+    },
+    {
+      "game": "Tevi",
+      "stability": "Stable"
+    },
+    {
+      "game": "Timespinner",
+      "stability": "Stable"
+    },
+    {
+      "game": "TOEM: A Photo Adventure",
+      "stability": "Stable"
+    },
+    {
+      "game": "Tony Hawk's Pro Skater 1 + 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Touhou Koumakyou ~ the Embodiment of Scarlet Devil",
+      "stability": "Stable"
+    },
+    {
+      "game": "Touhou Youyoumu ~ Perfect Cherry Blossom",
+      "stability": "Stable"
+    },
+    {
+      "game": "Trackmania",
+      "stability": "Stable"
+    },
+    {
+      "game": "TUNIC",
+      "stability": "Stable"
+    },
+    {
+      "game": "Turnip Boy Commits Tax Evasion",
+      "stability": "Stable"
+    },
+    {
+      "game": "Twisty Cube",
+      "stability": "Stable"
+    },
+    {
+      "game": "Tyrian / Tyrian 2000",
+      "stability": "Stable"
+    },
+    {
+      "game": "Ty The Tasmanian Tiger HD Remaster (PC)",
+      "stability": "Stable"
+    },
+    {
+      "game": "UFO 50",
+      "stability": "Stable"
+    },
+    {
+      "game": "ULTRAKILL",
+      "stability": "Stable"
+    },
+    {
+      "game": "Uncanny Cat Golf",
+      "stability": "Stable"
+    },
+    {
+      "game": "Undertale",
+      "stability": "Stable"
+    },
+    {
+      "game": "Unfair Flips",
+      "stability": "Stable"
+    },
+    {
+      "game": "An Untitled Story",
+      "stability": "Stable"
+    },
+    {
+      "game": "UZDoom",
+      "stability": "Stable"
+    },
+    {
+      "game": "Void Sols",
+      "stability": "Stable"
+    },
+    {
+      "game": "Voltorb Flip (from Pokémon HG & SS)",
+      "stability": "Stable"
+    },
+    {
+      "game": "VVVVVV",
+      "stability": "Stable"
+    },
+    {
+      "game": "Wargroove",
+      "stability": "Stable"
+    },
+    {
+      "game": "Wargroove 2",
+      "stability": "Stable"
+    },
+    {
+      "game": "Wario Land 1",
+      "stability": "Stable"
+    },
+    {
+      "game": "Wario Land 3",
+      "stability": "Stable"
+    },
+    {
+      "game": "Wario Land 4",
+      "stability": "Stable"
+    },
+    {
+      "game": "Watery Words",
+      "stability": "Stable"
+    },
+    {
+      "game": "The WereCleaner",
+      "stability": "Stable"
+    },
+    {
+      "game": "West of Loathing",
+      "stability": "Stable"
+    },
+    {
+      "game": "The Witness",
+      "stability": "Stable"
+    },
+    {
+      "game": "Wordipelago",
+      "stability": "Stable"
+    },
+    {
+      "game": "Wynncraft (Minecraft Server)",
+      "stability": "Stable"
+    },
+    {
+      "game": "XCOM 2: War of the Chosen",
+      "stability": "Stable"
+    },
+    {
+      "game": "Yacht Dice",
+      "stability": "Stable"
+    },
+    {
+      "game": "Yacht Dice Bliss",
+      "stability": "Stable"
+    },
+    {
+      "game": "Yellow Taxi Goes Vroom",
+      "stability": "Stable"
+    },
+    {
+      "game": "Yooka-Laylee",
+      "stability": "Stable"
+    },
+    {
+      "game": "Yoshi's Island",
+      "stability": "Stable"
+    },
+    {
+      "game": "YS VIII: Lacrimosa of Dana",
+      "stability": "Stable"
+    },
+    {
+      "game": "Yu-Gi-Oh! 2006",
+      "stability": "Stable"
+    },
+    {
+      "game": "Yu-Gi-Oh! Dungeon Dice Monsters",
+      "stability": "Stable"
+    },
+    {
+      "game": "Yu-Gi-Oh! Forbidden Memories",
+      "stability": "Stable"
+    },
+    {
+      "game": "Zillion",
+      "stability": "Stable"
+    },
+    {
+      "game": "Zork: Grand Inquisitor",
+      "stability": "Stable"
+    },
+    {
+      "game": "2048",
+      "stability": "Unstable"
+    },
+    {
+      "game": "7 Days to Die",
+      "stability": "Unstable"
+    },
+    {
+      "game": "8Doors: Arum's Afterlife Adventure",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Age of Empires II: Definite Edition",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Age of Empires IV",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Angband",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Animal Crossing (GameCube)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Animal Crossing: Wild World",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Another Crab's Treasure",
+      "stability": "Unstable"
+    },
+    {
+      "game": "ANTONBLAST",
+      "stability": "Unstable"
+    },
+    {
+      "game": "AP Rummy",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Archipelacode",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Archipela-Go!",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ark: Survival Evolved",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Arkham Horror The Card Game",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Armored Core (PSX)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Armored Core 3",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Armored Core VI: Fires of Rubicon",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Arzette: The Jewel of Faramore",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Atlyss",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Baba Is You",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Baldur's Gate 3 - Trials of Tav",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bat to the Heavens",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bayonetta",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Beat Saber",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bits & Bops",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bitty Buddies",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Blasphemous 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Blender",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Blockupelago",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Blue Fire",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Blue Prince",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bomberman 64",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bomberman 64: The Second Attack",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bomberman Quest",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Borderlands 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Borderlands The Pre-Sequel",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Brutal Orchestra",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bubble Bobble",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bug Fables: The Everlasting Sapling",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bugs Bunny Lost in Time",
+      "stability": "Unstable"
+    },
+    {
+      "game": "A Bug's Life",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Bugsnax",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Burger Shop",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Burger Shop 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Burnout 3: Takedown",
+      "stability": "Unstable"
+    },
+    {
+      "game": "C&C Reloaded",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Call of Duty: Black Ops 3 - Zombies",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Carnival Games MiniGolf",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cash Cleaner Simulator",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cassette Beasts",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Castlevania: Aria of Sorrow",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Castlevania: Lords of Shadow",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Castlevania: Portrait of Ruin",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Castlevania: Symphony of the Night (SymphonyRecomp)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Casualties: Unknown (Scav Prototype Demo)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cat Quest",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Caves of Qud",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Celeste",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Celeste Classic",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Chained Echoes",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Chests 'n' Keys",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Chibi Robo! Plug into Adventure",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Children of Morta",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Chrono Trigger Rando-Dalton Imperial (SNES)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Civilization IV",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Clair Obscur Expedition 33",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Codeforces",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Codename: Kids Next Door, Operation: VIDEOGAME",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Command & Conquer: Mental Omega",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Commander Keen in Goodbye, Galaxy",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Conbunn Cardboard",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Content Warning",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Control (Ultimate Edition)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cookie Clicker",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Core Keeper",
+      "stability": "Unstable"
+    },
+    {
+      "game": "corru.observer",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Crab Champions",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Crash Bandicoot 2: Cortex Strikes Back",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Crash Bandicoot 3: Warped",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Crash Bash",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Crash Team Racing",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Creeper World 4",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Crosswords",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Crusader Kings III",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cult of the Lamb",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cursed Mario 64",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cursed Words: The Word Game That Isn't",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Custom Robo",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cyber Hook",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Cyberpunk 2077",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dark Souls Remastered",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dead Cells",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Deadlock",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Deathbulge Battle of the Bands",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Death Road to Canada",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Death's Door",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Delivering Hope",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Devil May Cry 3 (Special Edition)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dicey Dungeons",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Die in the Dungeon",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Digimon World 1",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Divinity: Original Sin 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Donkey Kong Country (Mirrored)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Donkey Kong Toluca (DKC3)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Donut County",
+      "stability": "Unstable"
+    },
+    {
+      "game": "DOOM Eternal",
+      "stability": "Unstable"
+    },
+    {
+      "game": "DOTA 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dragon Ball Z: Budokai 3",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dragon Ball Z: Budokai Tenkaichi 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dragon Quest 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dragon Quest IX",
+      "stability": "Unstable"
+    },
+    {
+      "game": "DREDGE",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Drehmal APOTHEOSIS (Minecraft Map)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Duck Life 4",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dungeon Clawler",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dungeon Defenders",
+      "stability": "Unstable"
+    },
+    {
+      "game": "DUSK",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dwarf Fortress",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Dyson Sphere Program",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Easy Delivery Co.",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Elden Ring",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Elder Scrolls Online",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Empire Earth",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ender Magnolia: Bloom In The Mist",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Enter the Gungeon",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Equilinox",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Etrian Odyssey (DS)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Everhood 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Evolve Incremental",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Factorio w/ Bob's Mods",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Factorio Platformer",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Factorio: Space Age",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Fakutori",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Fall Guys",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Fantastic Fist",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Farmer Was Replaced",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Feeding Frenzy 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Fez",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Final Fantasy 1: Pixel Remaster",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Final Fantasy 1 (PSP)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Final Fantasy VII",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Final Fantasy XIII-2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Final Fantasy XIII - Lightning Returns",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Forager",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Forest's End",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Forged Curse",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Freddy Fazbear's Pizzeria Simulator",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Freedom Planet 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Friday Night Funkin'",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Garry's Mod (apAdventure)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "GBAPQuest",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Gemcraft: Frostborn Wrath",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Geometry Dash",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Gnosia",
+      "stability": "Unstable"
+    },
+    {
+      "game": "GoldenEye 007",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Grand Theft Auto III",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Grand Theft Auto: San Andreas",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Grapple Dog",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Grunn",
+      "stability": "Unstable"
+    },
+    {
+      "game": "GTFO",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hacknet",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Halo The Master Chief Collection",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Harry Potter and the Chamber of Secrets",
+      "stability": "Unstable"
+    },
+    {
+      "game": "HASTE: Broken Worlds",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hello Kitty: Roller Rescue",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Henry Stickmin Collection",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hero Core",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hi-Fi Rush",
+      "stability": "Unstable"
+    },
+    {
+      "game": "High Roller",
+      "stability": "Unstable"
+    },
+    {
+      "game": "HITMAN: World of Assassination",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hollow Knight: Silksong (Batsong)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "holo8",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hololive Treasure Mountain",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hot Lava",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hungry Pumkin",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Huniecam Studio",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hyperdimension Neptunia Re;Birth3 V Generation",
+      "stability": "Unstable"
+    },
+    {
+      "game": "HyperRogue",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Hytale",
+      "stability": "Unstable"
+    },
+    {
+      "game": "I am Your Beast",
+      "stability": "Unstable"
+    },
+    {
+      "game": "ICEwall",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Idle Loops",
+      "stability": "Unstable"
+    },
+    {
+      "game": "I Hate You, Please Suffer",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Into the Breach",
+      "stability": "Unstable"
+    },
+    {
+      "game": "I Was A Teenage Exocolonist",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Jak II",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Jet Island",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Johnny Upgrade",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Jump King Quest",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Jurassic Park (SNES)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kerbal Space Program",
+      "stability": "Unstable"
+    },
+    {
+      "game": "KeyWe",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kingdom Hearts III",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kingdom Hearts 358/2 Days",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kingdom Hearts Dream Drop Distance",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kingdom Two Crowns",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kirby Air Ride",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kirby & The Amazing Mirror",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kirby Planet Robobot",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kirby Squeak Squad",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Kirby Super Star Ultra",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Knights of the Old Republic (KotoR)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Laika: Aged Through Blood",
+      "stability": "Unstable"
+    },
+    {
+      "game": "La-Mulana 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Layer8Problem",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Left 4 Dead 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Legend of Dragoon",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Legend of Heroes: Trails Beyond the Horizon",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Legend of Heroes: Trails in the Sky the 3rd",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Legend of Zelda: A Link to the Past OWR",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Legend Zelda: Ocarina of Time (Updated, not Ship)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Legend of Zelda: Oracle of Ages",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Legend of Zelda: Spirit Tracks",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Zelda's Adventure GDX",
+      "stability": "Unstable"
+    },
+    {
+      "game": "LEGO Batman: The Video Game",
+      "stability": "Unstable"
+    },
+    {
+      "game": "LEGO Harry Potter 5-7",
+      "stability": "Unstable"
+    },
+    {
+      "game": "LEGO Rock Raiders/Manic Miners",
+      "stability": "Unstable"
+    },
+    {
+      "game": "LEGO Star Wars III (Wii)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Lethal Company",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Lethal Crisis",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Librarian: Tidy Up the Arcane Library",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Library of Ruina",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Library of Babel",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Lies of P",
+      "stability": "Unstable"
+    },
+    {
+      "game": "A Little to the Left",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Lobotomy Corporation",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Look Outside",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Lost But Found",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Lost Kingdoms 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Made in Abyss BSFD",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Madou Monogatari Hanamaru Dai Youchienji",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Magical Quest starring Mickey Mouse",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Marble It Up! Ultra",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mario & Luigi: Dream Team",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mario Golf: Toadstool Tour",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mario Kart 64",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mario Kart Wii",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mario Party Advance",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mario Sports Mix",
+      "stability": "Unstable"
+    },
+    {
+      "game": "New Super Mario Bros DS",
+      "stability": "Unstable"
+    },
+    {
+      "game": "New Super Mario Bros Wii",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Mario 64 - Spicy Mycena 64",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Mario Galaxy",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Mario Land",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Mario RPG",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Mario Sunshine",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Mario Sunshine Arcade 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mario Tennis (GBC)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mass Effect 1 (Legendary Edition)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "MediEvil (1998)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "MediEvil 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mega Man 1",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mega Man 4",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mega Man 7",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mega Man Legends",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mega Man X5",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mega Man X6",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mega Man X Command Mission",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mega Man ZX",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Melatonin",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mercenaries: Playground of Destruction",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Metal Gear Solid",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Metal Hellsinger",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Metroid: Samus Returns",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mindustry",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Minecraft Fabric",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Minecraft Modded",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Minecraft [AEM]",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Minecraft: Vault Hunters (Modpack)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mini Metro",
+      "stability": "Unstable"
+    },
+    {
+      "game": "MIO: Memories in Orbit",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mirror's Edge",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Monster Hunter Freedom Unite",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Monster Hunter Rise",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Monster Hunter World",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Moonlighter",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mortal Kombat: Shaolin Monks",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mother (Earthbound Beginnings)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Mount & Blade II: Bannerlord",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Muck",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Murder of Sonic the Hedgehog",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Musipelago",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Naruto Clash of Ninja 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "NEO: The World Ends with You",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Neon White",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Nodebuster",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Nonopelagram",
+      "stability": "Unstable"
+    },
+    {
+      "game": "No Rest for the Wicked",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Northgard",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Not Another Needle Game",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Nova Lands",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Nubby's Number Factory",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Nuclear Throne",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ocarina of Time but it's just Master Quest Water Temple",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Oh So Hero",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Okami HD",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Once Upon a Katamari",
+      "stability": "Unstable"
+    },
+    {
+      "game": "One Must Fall: 2097",
+      "stability": "Unstable"
+    },
+    {
+      "game": "OpenTTD",
+      "stability": "Unstable"
+    },
+    {
+      "game": "OpenTTD Cargolock",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Operation Octo",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Our Ascent",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Outward: Definitive Edition",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Paquerette Down the Bunburrows",
+      "stability": "Unstable"
+    },
+    {
+      "game": "PAYDAY 2: Criminal Dawn",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Perfect Dark",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Persona 5 Royal",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Phantasy Star II",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Phoenotopia: Awakening",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pikmin 1",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pikmin 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pinball FX",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pipistrello and the Cursed Yoyo",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Planet Crafter",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Planet Zoo",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Plok",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Poco",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon Battle Revolution",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon HeartGold & SoulSilver (Singe)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon HeartGold & SoulSilver (TrueBlue)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon Pinball",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon Pinball Ruby & Sapphire",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon Ranger (Quest)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon Snap",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon Stadium",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon Trading Card Game (GameBoy)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon Trozei / Link",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Poképelago",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Pokémon XD: Gale of Darkness",
+      "stability": "Unstable"
+    },
+    {
+      "game": "POOLS",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Prisma Road",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Quake",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Quest 64 (Recomp)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Q-Up",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Rabbit and Steel",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Raccoin",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ratchet & Clank",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ratchet & Clank: Size Matters",
+      "stability": "Unstable"
+    },
+    {
+      "game": "R.E.P.O",
+      "stability": "Unstable"
+    },
+    {
+      "game": "RE:RUN",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Resident Evil 4 Remake",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Resident Evil 7",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Rhythm Doctor",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Rimworld",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Risk of Rain",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Riven",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Road Trip Adventure",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Rogue Legacy 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Rune Factory 4 Special",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Running with Rifles",
+      "stability": "Unstable"
+    },
+    {
+      "game": "RWBY: Grimm Eclipse",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Saints Row 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sayonara Wild Hearts",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Schedule I",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Scooby-Doo! Unmasked",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Scritchy Scratchy",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Scrokkpelago",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Secret of Mana",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Settlers: Heritage of Kings",
+      "stability": "Unstable"
+    },
+    {
+      "game": "SEUM: Speedrunners from Hell",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Severed Soul",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Severed Steel",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Shadowgate 64: Trials of the Four Towers",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Shadow Generations",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Shadow Man Remastered",
+      "stability": "Unstable"
+    },
+    {
+      "game": "shapez 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Shining in the Darkness",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Shovel Knight Pocket Dungeon",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Signalis",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Silver Daze",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Slay the Princess — The Pristine Cut",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Slay the Spire 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sly 3: Honor Among Thieves",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Smushi Come Home",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sneak King",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sonic Advance 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sonic Battle",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sonic Colors (DS)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sonic Dreams Collection",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sonic Frontiers",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Soul of Dreamer",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Space Engineers",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Spark the Electric Jester 3",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Spirit Island",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Spirit Valley",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Splasher",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Spyro the Dragon",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Legend of Spyro: Dawn of The Dragons",
+      "stability": "Unstable"
+    },
+    {
+      "game": "S.T.A.L.K.E.R 2 Heart of Chornobyl",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Star Fox Adventures",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Starship Titanic",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Star Trek: Armada",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Star Wars: Episode 1 Racer",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Stella",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sternly Worded Adventures",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Stray",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Streets of Rage",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Streets of Rogue",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Suikapelago",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Chipflake Ü: Quest for the Uncooked Schnitzel",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Hexagon",
+      "stability": "Unstable"
+    },
+    {
+      "game": "SUPERHOT",
+      "stability": "Unstable"
+    },
+    {
+      "game": "SUPERHOT: Mind Control Delete",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Supermarket Simulator",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Meat Boy",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Metroid Map Rando",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Smash Bros. (N64)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Super Smash Bros. Brawl - The Subspace Emissary",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Supraland",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sven Co-op",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Sweet Defeat",
+      "stability": "Unstable"
+    },
+    {
+      "game": "The Talos Principle Reawakened",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Taz: Wanted",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Team Fortress 2 (Mann vs Machine)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Teardown",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Terra Nil",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Three Goblin Wobblin'",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Time is broken again",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Time Rifters",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Timesplitters 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "TimeSplitters: Future Perfect",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Toejam & Earl",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Tomba!",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Tombola",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Tony Hawk's American Wasteland",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Totally Accurate Battle Simulator (TABS)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Total War: Warhammer III",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Touhou Fuujinroku ~ Mountain of Faith",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Touhou Eiyashou ~ Imperishable Night",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Toy Story 2 (PS1)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Toy Story Racer",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Turok 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ty the Tasmanian Tiger 2",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ty the Tasmanian Tiger 3",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ultimate Custom Night",
+      "stability": "Unstable"
+    },
+    {
+      "game": "UNBEATABLE",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Undertale Yellow",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Untitled Goose Game",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Vacation Simulator",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Valheim",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Vampire Survivors",
+      "stability": "Unstable"
+    },
+    {
+      "game": "vardrain--",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Vertical Drop Heroes HD",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Very Very Valet",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Vespadian",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Vintage Story",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Viscera Cleanup Details",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Vision Soft Reset",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Voices of the Void",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Void Stranger",
+      "stability": "Unstable"
+    },
+    {
+      "game": "VRChat",
+      "stability": "Unstable"
+    },
+    {
+      "game": "V Rising",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Warcraft 3",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Warframe",
+      "stability": "Unstable"
+    },
+    {
+      "game": "WarioWare, Inc. - Mega Microgame$!",
+      "stability": "Unstable"
+    },
+    {
+      "game": "WEBFISHING",
+      "stability": "Unstable"
+    },
+    {
+      "game": "We Love Katamari Reroll",
+      "stability": "Unstable"
+    },
+    {
+      "game": "White Knuckle",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Widget Inc",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Wikipelago",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Witchspring R",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Wizard of Legende",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Word Search",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Xenoblade Chronicles X",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Yakuza | Like a Dragon Gaiden: The Man Who Erased His Name",
+      "stability": "Unstable"
+    },
+    {
+      "game": "YARG (Guitar Hero/Rockband)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Yarimono",
+      "stability": "Unstable"
+    },
+    {
+      "game": "YAYARG (YARG Custom Songs)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Yet Another Rhythm Game (YARG)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "YOHANE THE PARHELION -BLAZE in the DEEPBLUE-",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Yoku's Island Express",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Yooka-Replaylee",
+      "stability": "Unstable"
+    },
+    {
+      "game": "You Have to Win the Game",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ys I Chronicles",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Ys Origin",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Yu-Gi-Oh! GX - Duel Academy (GBA)",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Yu-Gi-Oh! Legacy of the Duelist: Link Evolution",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Yu-Gi-Oh! World Championship 2008",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Zoominoes",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Zuma Deluxe",
+      "stability": "Unstable"
+    },
+    {
+      "game": "Christmas Delivery",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "Dark Cloud 2",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "Donkey Kong Country 3",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "Lil Gator Game",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "Momodora 4 - Reverie Under the Moonlight",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "Password Game",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "A Robot Named Fight!",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "Santa Needs YOU!",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "Seedling",
+      "stability": "Broken on Main"
+    },
+    {
+      "game": "Super Adventure Island II",
+      "stability": "Broken on Main"
+    }
+  ]
+}
