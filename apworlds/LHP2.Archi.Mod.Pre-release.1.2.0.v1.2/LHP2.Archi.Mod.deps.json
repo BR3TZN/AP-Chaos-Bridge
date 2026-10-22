@@ -1,0 +1,122 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "LHP2.Archi.Mod/1.0.0": {
+        "dependencies": {
+          "Archipelago.MultiClient.Net": "6.7.1",
+          "Archipelago.MultiClient.Net.Analyzers": "2.0.3",
+          "Microsoft.NET.ILLink.Tasks": "9.0.14",
+          "Reloaded.Memory": "9.4.3",
+          "Reloaded.Mod.Interfaces": "2.5.0",
+          "Reloaded.SharedLib.Hooks": "1.9.0"
+        },
+        "runtime": {
+          "LHP2.Archi.Mod.dll": {}
+        }
+      },
+      "Archipelago.MultiClient.Net/6.7.1": {
+        "runtime": {
+          "lib/net6.0/Archipelago.MultiClient.Net.dll": {
+            "assemblyVersion": "6.7.1.0",
+            "fileVersion": "6.7.1.0"
+          },
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.1.0"
+          }
+        }
+      },
+      "Archipelago.MultiClient.Net.Analyzers/2.0.3": {},
+      "Microsoft.NET.ILLink.Tasks/9.0.14": {},
+      "Reloaded.Hooks.Definitions/1.11.0": {
+        "runtime": {
+          "lib/net6.0/Reloaded.Hooks.Definitions.dll": {
+            "assemblyVersion": "1.11.0.0",
+            "fileVersion": "1.11.0.0"
+          }
+        }
+      },
+      "Reloaded.Memory/9.4.3": {
+        "runtime": {
+          "lib/net8.0/Reloaded.Memory.dll": {
+            "assemblyVersion": "9.4.3.0",
+            "fileVersion": "9.4.3.0"
+          }
+        }
+      },
+      "Reloaded.Mod.Interfaces/2.5.0": {},
+      "Reloaded.SharedLib.Hooks/1.9.0": {
+        "dependencies": {
+          "Reloaded.Hooks.Definitions": "1.11.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Reloaded.Hooks.ReloadedII.Interfaces.dll": {
+            "assemblyVersion": "1.9.0.0",
+            "fileVersion": "1.9.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "LHP2.Archi.Mod/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Archipelago.MultiClient.Net/6.7.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wheDMl5C0e175RvuY+E3oDY13myaa7f2pRRjOg9PgcbOJApVu3QT62mQ46jYJ0sn/X7Fu4bdVVxZ2bx0vwncBQ==",
+      "path": "archipelago.multiclient.net/6.7.1",
+      "hashPath": "archipelago.multiclient.net.6.7.1.nupkg.sha512"
+    },
+    "Archipelago.MultiClient.Net.Analyzers/2.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rC45ABdEF2tW9YAcGqCXV2OeIDqRrWnNSBs3xtRhIqjzxldtJkroWZGMXLfsSq//LMMB4YdGoKIMui/prACXpQ==",
+      "path": "archipelago.multiclient.net.analyzers/2.0.3",
+      "hashPath": "archipelago.multiclient.net.analyzers.2.0.3.nupkg.sha512"
+    },
+    "Microsoft.NET.ILLink.Tasks/9.0.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+MeWjj5sGq6Oj/l0E9RPMgXDyCIPxczzCbGuvuVTZFEGiy2S/atsfoAoKUnkEin/GeGpN+HenCzRmiQKSc99eQ==",
+      "path": "microsoft.net.illink.tasks/9.0.14",
+      "hashPath": "microsoft.net.illink.tasks.9.0.14.nupkg.sha512"
+    },
+    "Reloaded.Hooks.Definitions/1.11.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/z0AwcCvVTQHlQ9SMMMBqKEIrm5t/yBFPylySW2Rnr7uRGV9jGfoACFe79KZKF976dhtkyy2xl0HIXz5hRUkng==",
+      "path": "reloaded.hooks.definitions/1.11.0",
+      "hashPath": "reloaded.hooks.definitions.1.11.0.nupkg.sha512"
+    },
+    "Reloaded.Memory/9.4.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j+pev0mS1guirfo4auPfclXKJKm9N0i3CIEY1WbLo46awhRwVsP2GuD7YFTtxRVUHZzjnWJLFhqP4zh/v7mf6A==",
+      "path": "reloaded.memory/9.4.3",
+      "hashPath": "reloaded.memory.9.4.3.nupkg.sha512"
+    },
+    "Reloaded.Mod.Interfaces/2.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pGv7K8M05W6zO1+Gy21EEiDtjnbfjZIhds3lFtir1apN948mAmniF/lO8NRG4W97wJrd/3PJ8n5pFvokrI5y4A==",
+      "path": "reloaded.mod.interfaces/2.5.0",
+      "hashPath": "reloaded.mod.interfaces.2.5.0.nupkg.sha512"
+    },
+    "Reloaded.SharedLib.Hooks/1.9.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AEDTDhCnYxJGuLrdZCZPoiqrdl/lW4XwA6bb5dntOvkyw4RBBm/gqoNlHS7RJS7k+kt36ES+UFZAtBeyusYtgw==",
+      "path": "reloaded.sharedlib.hooks/1.9.0",
+      "hashPath": "reloaded.sharedlib.hooks.1.9.0.nupkg.sha512"
+    }
+  }
+}

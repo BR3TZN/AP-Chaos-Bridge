@@ -1,0 +1,150 @@
+# ─── No Rest For The Wicked — Archipelago Player Config ───
+
+name: 
+game: No Rest For The Wicked
+requires:
+  version: 0.5.0
+
+No Rest For The Wicked:
+  # ─── Objectives ───
+  crucible_runs: 1
+  crucible_floors_required: 0
+  crucible_floor_5_required: 0
+  crucible_floor_10_required: 0
+  activities_required: 10
+  parries_required: 20
+  whispers_required: 10
+  keys_required: 10
+  harvests_required: 20
+  unique_enemies_required: 0
+  chests_required: 50
+  shinies_required: 50
+
+  # ─── Item Settings ───
+
+  # ── Randomization ──
+  item_replace_chance: 0
+  plague_ichor_count: 5
+
+  # ── What Gets Replaced ──
+  replace_weapon: 0
+  replace_armour: 0
+  replace_shield: 0
+  replace_trinket: 0
+  replace_tool: 0
+  replace_usable: 0
+  replace_resource: 0
+  replace_refined_resource: 0
+  replace_material: 0
+  replace_recipe: 0
+  replace_rune: 0
+  replace_gem: 0
+  replace_house_item: 0
+  replace_quiver: 0
+
+  # ── Pool Type Weights ──
+  pool_weight_weapon: 10
+  pool_weight_armour: 10
+  pool_weight_shield: 10
+  pool_weight_trinket: 10
+  pool_weight_tool: 10
+  pool_weight_usable: 10
+  pool_weight_quiver: 10
+  pool_weight_ingredient: 10
+  pool_weight_resource: 10
+  pool_weight_refined_resource: 10
+  pool_weight_material: 10
+  pool_weight_recipe: 10
+  pool_weight_rune: 10
+  pool_weight_gem: 10
+  pool_weight_house_item: 10
+
+  # ── Pool — Weapon Subtypes ──
+  weapon_pool_straight_sword: 1
+  weapon_pool_great_sword: 1
+  weapon_pool_curved_sword: 1
+  weapon_pool_curved_greatsword: 1
+  weapon_pool_rapier: 1
+  weapon_pool_axe: 1
+  weapon_pool_great_axe: 1
+  weapon_pool_club: 1
+  weapon_pool_great_club: 1
+  weapon_pool_spear: 1
+  weapon_pool_halberd: 1
+  weapon_pool_scythe: 1
+  weapon_pool_knife: 1
+  weapon_pool_double_dagger: 1
+  weapon_pool_wakizashi: 1
+  weapon_pool_staff: 1
+  weapon_pool_wand: 1
+  weapon_pool_orb: 1
+  weapon_pool_tome: 1
+  weapon_pool_great_bow: 1
+  weapon_pool_bowgun: 1
+  weapon_pool_hammer: 1
+  weapon_pool_great_hammer: 1
+  weapon_pool_mace: 1
+  weapon_pool_gauntlet: 1
+  weapon_pool_light: 1
+
+  # ── Rarity Filter ──
+  pool_rarity_white: 1
+  pool_rarity_blue: 1
+  pool_rarity_purple: 1
+  pool_rarity_gold: 1
+
+  # ─── Enemy Settings ───
+
+  # ── Core Settings ──
+  enemy_randomize_chance: 0
+  enemy_spawn_count: 1
+
+  # ── Replace Type Filters ──
+  enemy_replace_type_boss: 0
+  enemy_replace_type_elite: 0
+  enemy_replace_type_giant: 0
+  enemy_replace_type_normal: 0
+  enemy_replace_type_critters: 1
+
+  # ── Spawn Pool Filters ──
+  enemy_spawn_type_boss: 0
+  enemy_spawn_type_elite: 0
+  enemy_spawn_type_giant: 0
+  enemy_spawn_type_normal: 1
+  enemy_spawn_type_critters: 0
+  enemy_preserve_boss_status: 0
+
+  # ── Faction Filters ──
+  enemy_faction_balak_taw: 0
+  enemy_faction_beast: 0
+  enemy_faction_boarskin: 0
+  enemy_faction_corrupt_cerim: 0
+  enemy_faction_fungal_human: 0
+  enemy_faction_humanoid: 0
+  enemy_faction_lumberjack: 0
+  enemy_faction_nith: 0
+  enemy_faction_none: 0
+  enemy_faction_plagued: 0
+  enemy_faction_plagued_beast: 0
+  enemy_faction_plagued_human: 0
+  enemy_faction_prisoner: 0
+  enemy_faction_risen: 0
+  enemy_faction_tanth: 0
+
+  # ── Spawn Weights ──
+  enemy_spawn_weight_normal: 50
+
+  # ── Per-Type Spawn Counts ──
+  enemy_spawn_count_normal: 0
+
+  # ─── Gameplay ───
+  xp_multiplier: 100
+  whisper_heals: 1
+  feature_locks_enabled: 1
+  ingredient_to_meal: 0
+  pool_meal_raw: 1
+  pool_meal_simple: 1
+  pool_meal_elegant: 1
+  pool_meal_succulent: 1
+  death_link: 0
+  start_location: new_character_spawn

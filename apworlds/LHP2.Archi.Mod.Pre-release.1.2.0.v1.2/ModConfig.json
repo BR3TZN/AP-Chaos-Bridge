@@ -1,0 +1,26 @@
+{
+  "ModId": "legoharrypotter2.archipelago.mod",
+  "ModName": "LHP2 Archipelago Mod",
+  "ModAuthor": "jrad23",
+  "ModVersion": "1.2.0",
+  "ModDescription": "Introduces Archipelago support for Lego Harry Potter: Years 5-7.",
+  "ModDll": "LHP2.Archi.Mod.dll",
+  "ModIcon": "Preview.png",
+  "ModR2RManagedDll32": "x86/LHP2.Archi.Mod.dll",
+  "ModR2RManagedDll64": "x64/LHP2.Archi.Mod.dll",
+  "ModNativeDll32": "",
+  "ModNativeDll64": "",
+    "Tags": [
+    "Archipelago",
+    "Client",
+    "Randomizer"
+  ],
+  "IsLibrary": false,
+  "ReleaseMetadataFileName": "LHP2.Archi.Mod.ReleaseMetadata.json",
+  "PluginData": {},
+  "IsUniversalMod": false,
+  "ModDependencies": [ "reloaded.sharedlib.hooks" ],
+  "OptionalDependencies": [],
+  "SupportedAppId": ["harry2.exe", "harry2.exe_dup", "harry2.exe_dup_dup"],
+  "ProjectUrl": ""
+}
