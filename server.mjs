@@ -13,6 +13,7 @@ import { GameLibrary } from './lib/game-library.mjs';
 import { writeZip } from './lib/zip.mjs';
 import { connectionConfig } from './lib/address.mjs';
 import { Updater } from './lib/updater.mjs';
+import { Presentation, normalizeAlerts } from './lib/presentation.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const secretEquals = (a, b) => typeof a === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b));
@@ -26,6 +27,7 @@ function cleanConfig(old, raw) {
   const c = structuredClone(old);
   for (const [key, min, max] of [['globalCooldownSec', 0, 3600], ['queueTtlSec', 30, 86400], ['maxQueue', 1, 1000], ['eventMaxAgeSec', 10, 3600]]) if (raw[key] !== undefined) c[key] = number(raw[key], min, max);
   if (raw.deathLinkArmed !== undefined) c.deathLinkArmed = raw.deathLinkArmed === true;
+  if (raw.alerts) c.alerts = normalizeAlerts(raw.alerts, c.alerts);
   if (raw.ap) c.ap = connectionConfig(c.ap, raw.ap);
   if (raw.rememberConnections !== undefined) c.rememberConnections = raw.rememberConnections === true;
   if (raw.charity) {
@@ -44,6 +46,7 @@ function cleanConfig(old, raw) {
 export async function createApp({ directory = join(root, 'data'), port = 17381, memory = false, fetchImpl = fetch, worldsDirectory, twitchSocketUrl, updateRestart = false, updateRoot = root } = {}) {
   const store = new Store(Rooms.initialDirectory(directory, { memory }), { memory }); const session = randomBytes(32).toString('hex');
   const rooms = new Rooms(store, directory, { memory }), vault = new Vault(directory, { memory });
+  const presentation = new Presentation(directory, { memory }); let alertPreview;
   const library = new GameLibrary(directory, root, { memory, folder: worldsDirectory });
   if (worldsDirectory) library.data.folder = worldsDirectory;
   const keyFile = join(directory, 'integration-key.txt');
@@ -91,7 +94,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   function snapshot() {
     const s = store.state;
     return { name: 'AP Chaos Bridge', version: VERSION, session, config: s.config, ap: ap.status(), charity: charity.status(), twitch: twitch.status(),
-      updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
+      appearance: presentation.appearance, updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
       rooms: rooms.list(), savedCredentials: vault.status(rooms.id), playerProfiles: s.players, yamlPresets: s.yamlPresets,
       gameLibrary: { folder: library.data.folder, games: Object.values(library.data.games).map(g => ({ game: g.game, kind: g.kind, source: g.source, optionCount: g.options.length, unresolved: g.unresolved })) },
       queue: s.queue, events: s.events, logs: s.logs, profiles: PROFILES, yamlProfiles: s.yamlProfiles, twitchEvents: TWITCH_EVENTS,
@@ -122,6 +125,18 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         res.writeHead(303, { Location: '/oauth/callback?complete=1' }); res.end(); return;
       }
       if (req.method === 'GET' && path === '/api/state') return json(res, snapshot());
+      if (req.method === 'GET' && path === '/api/overlay') {
+        const alerts = normalizeAlerts({}, store.state.config.alerts);
+        if (alerts.media && !presentation.has(alerts.media)) alerts.media = '';
+        const jobs = store.state.queue.filter(j => ['confirmed', 'sent', 'simulated', 'alerted'].includes(j.status)).slice(-100).map(j => ({ id: j.id, item: j.item, effect: j.effect, message: j.message, user: j.user, targetName: j.targetName, status: j.status, dryRun: j.dryRun, finishedAt: j.finishedAt }));
+        if (alertPreview?.room === rooms.id && Date.now() - alertPreview.finishedAt < 30000) jobs.push(alertPreview);
+        return json(res, { room: rooms.id, appearance: presentation.appearance, alerts, jobs });
+      }
+      if (req.method === 'GET' && path.startsWith('/alert-media/')) {
+        const media = presentation.get(path.slice('/alert-media/'.length));
+        if (!media) return json(res, { error: 'Alert-Datei nicht gefunden.' }, 404);
+        res.writeHead(200, { 'Content-Type': media.type, 'Content-Length': media.bytes.length }); res.end(media.bytes); return;
+      }
       if (req.method === 'GET' && path === '/api/events') {
         res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', Connection: 'keep-alive' });
         res.write('event: change\ndata: {}\n\n'); listeners.add(res); const beat = setInterval(() => res.write(': keepalive\n\n'), 20000);
@@ -152,7 +167,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (isExternal) {
           if (!secretEquals(req.headers.authorization, 'Bearer ' + integrationKey)) return json(res, { error: 'Integration-Token ungültig.' }, 401);
         } else if (!isCharityHook && !secretEquals(req.headers['x-bridge-session'], session)) return json(res, { error: 'Sitzung fehlt. Seite neu laden.' }, 403);
-        const raw = await body(req, path === '/api/worlds/upload' ? 56 * 1024 * 1024 : 800000);
+        const raw = await body(req, path === '/api/worlds/upload' ? 56 * 1024 * 1024 : path === '/api/alerts/media' ? 14 * 1024 * 1024 : 800000);
         if (isCharityHook && !verifyCharity(raw, req.headers['x-signature'])) return json(res, { error: 'Charity-Signatur ungültig.' }, 401);
         let data; try { data = JSON.parse(raw.toString('utf8') || '{}'); } catch { throw new Error('Ungültiges JSON.'); }
         if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('JSON-Objekt erwartet.');
@@ -160,6 +175,12 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (isExternal) {
           if (!data.id || !Number.isFinite(data.timestamp)) throw new Error('Externe Ereignisse benötigen id und timestamp (Unix-Millisekunden).');
           return json(res, engine.ingest({ ...data, source: 'external' }));
+        }
+        if (path === '/api/appearance') { presentation.update(data); changed(); return json(res, presentation.appearance); }
+        if (path === '/api/alerts/media') { const media = presentation.upload(data); changed(); return json(res, media); }
+        if (path === '/api/alerts/preview') {
+          alertPreview = { id: randomBytes(12).toString('hex'), room: rooms.id, effect: 'alert', message: 'Dein Stream-Alert ist bereit.', user: 'Alert-Vorschau', targetName: 'Nur Anzeige', status: 'preview', dryRun: true, preview: true, finishedAt: Date.now() };
+          changed(); return json(res, { ok: true, id: alertPreview.id });
         }
         if (path === '/api/updates/check') return json(res, await updater.check());
         if (path === '/api/updates/download') return json(res, updater.startDownload());
@@ -215,10 +236,11 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         }
         else if (path === '/api/mode') {
           if (!['test', 'live'].includes(data.mode)) throw new Error('Unbekannter Modus.');
-          if (data.mode === 'live' && (!ap.connected || ap.demo)) throw new Error('Live-Modus benötigt einen echten verbundenen AP-Raum.');
+          const activeRules = store.state.rules.filter(r => r.enabled), visualOnly = activeRules.length && activeRules.every(r => r.effect === 'alert');
+          if (data.mode === 'live' && (!ap.connected || ap.demo) && !visualOnly) throw new Error('Spielaktionen im Live-Modus benötigen einen echten verbundenen AP-Raum.');
           store.state.config.mode = data.mode; store.state.config.paused = true;
         } else if (path === '/api/pause') {
-          if (data.paused === false && !ap.connected) throw new Error('Zuerst Demo oder AP-Raum verbinden.');
+          if (data.paused === false && !ap.connected && !store.state.rules.some(r => r.enabled && r.effect === 'alert')) throw new Error('Zuerst Demo oder AP-Raum verbinden.');
           store.state.config.paused = data.paused !== false;
         } else if (path === '/api/emergency') engine.emergency();
         else if (path === '/api/demo') {
@@ -287,9 +309,9 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         store.save(); changed(); return json(res, { ok: true });
       }
       if (req.method === 'GET') {
-        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
+        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/appearance.js': 'public/appearance.js', '/alerts.js': 'public/alerts.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
         const file = staticFiles[path];
-        if (file) { const type = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' }[extname(file)]; res.writeHead(200, { 'Content-Type': type }); res.end(readFileSync(join(root, file))); return; }
+        if (file) { if (path === '/overlay') res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'"); const type = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' }[extname(file)]; res.writeHead(200, { 'Content-Type': type }); res.end(readFileSync(join(root, file))); return; }
       }
       return json(res, { error: 'Nicht gefunden.' }, 404);
     } catch (error) { return json(res, { ok: false, error: error.message }, 400); }
@@ -309,7 +331,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   }
   if (!memory) {
     void resumeConnections();
-    void library.scan().then(report => { for (const e of report.errors) log('warn', 'Spielekatalog · ' + e.file + ': ' + e.error); changed(); }).catch(e => log('warn', 'Spielekatalog: ' + e.message));
+    void library.scan().then(report => { for (const e of report.errors) log('warn', 'Spielekatalog · ' + e.file + ': ' + e.error); if (report.skipped?.length) log('info', `Spielekatalog: ${report.skipped.length} nicht auswertbare Pakete übersprungen. Details im Spielekatalog.`); changed(); }).catch(e => log('warn', 'Spielekatalog: ' + e.message));
   }
   return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, updater, url: `http://127.0.0.1:${server.address().port}` };
 }

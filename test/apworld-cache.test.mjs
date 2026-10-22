@@ -90,3 +90,14 @@ class FixtureWorld(World):
   assert.equal(entry.base[entry.game].scalar_preset, 5);
   assert.equal(parse(library.generate({ game: entry.game, values: { death_link_group: 'off' }, players: ['Player'] })[0].content, { version: '1.1' })[entry.game].death_link_group, 'off');
 });
+
+test('known unsupported packages are skipped without a misleading Python error', worldTest, async t => {
+  const directory = temporary(t), folder = join(directory, 'unsupported'); mkdirSync(folder);
+  const cache = JSON.parse(readFileSync(join(root, 'assets/apworld-settings.json')));
+  assert.equal(cache.errors.length, 3);
+  for (let i = 0; i < cache.errors.length; i++) writeFileSync(join(folder, `package-${i}.apworld`), readFileSync(join(root, 'apworlds', cache.errors[i].file)));
+  const library = new GameLibrary(directory, root, { memory: true, folder }); library.pythonCommand = noPython;
+  const report = await library.scan();
+  assert.deepEqual(report.errors, []); assert.equal(report.skipped.length, 3); assert.equal(library.list().games.length, 0);
+  assert(report.skipped.every(row => row.reason.includes('Python allein behebt das nicht')));
+});

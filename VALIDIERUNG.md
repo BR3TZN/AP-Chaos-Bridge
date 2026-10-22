@@ -1,10 +1,10 @@
-# Prüfung der Version 0.3.2
+# Prüfung der Version 0.4.0
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Automatisierte Prüfungen
 
-**92 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**109 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -17,13 +17,15 @@ Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 is
 | AST-Analyse | Modulbereiche, Import-Aliase, Konstanten, gleichnamige Klassen, Choice, TextChoice, NamedRange, dynamische Standards und Manifest-Fallback |
 | Spielerziele | Einzelperson, alle, markierte Gruppe oder Zufall aus der Auswahl; nur freigegebene eigene Team-Slots; gespeicherte Profil-IDs beim Bearbeiten erhalten |
 | YAMLs | Separate Spielerdateien, Slotvalidierung, gewichtete Zusatzoptionen, skalare Sammlungs-Presets und Zufallsbereiche |
-| Oberfläche | Regelerstellung trotz benanntem id-Feld, Katalogsuche, Mehrspieler-Vorschau, Raumarchiv, Löschbestätigung , eigene Range-Werte, Plus-Spielerzeilen und Zufallsziel aus einer gespeicherten Gruppe |
+| Design und Alerts | Kontraste für neutrale, helle und getönte Modi einschließlich freier Randfarben; globale Designpersistenz, getrennte Raum-Alerts, Medienupload, Vorschau ohne AP-Aktion, keine historischen Alerts, Reihenfolge und Raumwechsel |
+| Neue Aktionen | Eigene Itempools, Ausschluss markierter Fallen, gleichverteilte Auswahl möglicher Aktionsarten, Chat-Präfix gegen Befehlsausführung, Hint-Befehl und reine Alerts ohne AP-Verbindung |
+| Oberfläche | Regelerstellung trotz benanntem id-Feld, Katalogsuche, Mehrspieler-Vorschau, Raumarchiv, Löschbestätigung, eigene Range-Werte, Plus-Spielerzeilen und Zufallsziel aus einer gespeicherten Gruppe |
 
 `npm run check` prüft die JavaScript-Syntax, JSON-Dateien, HTML-Verweise und vorhandene Laufzeitpakete.
 
 ## Prüfung des APworld-Bestands
 
-Der vollständige Lauf prüfte **767 APworld-Dateien**, **781 World-Varianten** und den Standardwert-Export für **757 Spielnamen**, ohne Validierungsfehler. Drei Dateien liefern noch keinen statisch erkennbaren Spielnamen; sie sind in der manuellen Liste aufgeführt.
+Der vollständige Lauf prüfte **767 APworld-Dateien**, **781 World-Varianten** und den Standardwert-Export für **757 Spielnamen**, ohne Validierungsfehler. Drei Dateien liefern noch keinen statisch erkennbaren Spielnamen; sie werden nach Inhalts-Hash erkannt und im Einlesebericht separat als übersprungen aufgeführt. Der Fall wird ohne verfügbaren Python-Interpreter geprüft.
 
 `npm run validate:worlds` prüft Herkunft und SHA-256 jeder Datei, den Laufzeit-ZIP-Leser und den YAML-Export der statisch erkannten Standards jeder World-Variante. Das Ergebnis steht in `assets/apworld-validation.json`. Erkannte und teilweise dynamische Einstellungen sowie Importfehler stehen in `APWORLDS-MANUELL.md`.
 

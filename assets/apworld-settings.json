@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": 1792625446803,
+  "generatedAt": 1792627950374,
   "files": {
     "archipelago-shinten-moe-games/c5691b00/archipelaballs.apworld": {
       "sha256": "c5691b00bb7008d82baadffb6d3009be1e6616af78919c9e9afadc32680d3aef",
@@ -375077,15 +375077,18 @@
   "errors": [
     {
       "file": "github-com-2dos/814f8f1b/dk64.apworld",
-      "error": "Kein statisch deklarierter World-Spielname gefunden"
+      "error": "Kein statisch deklarierter World-Spielname gefunden",
+      "sha256": "814f8f1b1508f0941a8ae4ffa50dc886040b38b408d644bdd27ff16d58b66170"
     },
     {
       "file": "github-com-DayKat/292752c2/tloz_st.apworld",
-      "error": "Kein statisch deklarierter World-Spielname gefunden"
+      "error": "Kein statisch deklarierter World-Spielname gefunden",
+      "sha256": "292752c26934d75ef655c4a8eafb9079563ff4c8160b258f052a2bef4a746ee6"
     },
     {
       "file": "github-com-Z11Coding/65070658/APAPI.apworld",
-      "error": "Kein statisch deklarierter World-Spielname gefunden"
+      "error": "Kein statisch deklarierter World-Spielname gefunden",
+      "sha256": "65070658126c8ce131c4bb898e903a8c4c8922a4de98ff433a6cda7360feffb8"
     }
   ],
   "parserSha256": "662ce183bc32329dae02d004efe0292c2a571a81b12d20672bfafcbc3527ce8e"

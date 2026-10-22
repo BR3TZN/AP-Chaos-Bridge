@@ -1,8 +1,8 @@
-# AP Chaos Bridge 0.3.2 · Einrichtung
+# AP Chaos Bridge 0.4.0 · Einrichtung
 
 ## Start und Update
 
-1. ZIP vollständig entpacken. Für ein Update die neue Version über den bisherigen Programmordner kopieren und **`data` beibehalten**. Die laufende Bridge vorher unter Einrichtung beenden.
+1. ZIP vollständig entpacken. Für ein Update die neue Version über den bisherigen Programmordner kopieren und **`data` beibehalten**. Die laufende Bridge vorher unter Einstellungen beenden.
 2. [Node.js 22 oder neuer](https://nodejs.org/en/download) installieren. Die npm-Pakete liegen bereits bei.
 3. `Start.cmd` öffnen. Oberfläche: **http://127.0.0.1:17381**. Nach einem Update mit Strg+F5 neu laden.
 4. Vorbereitete APworld-Versionen einschließlich der sieben Nutzerdateien funktionieren ohne Python, auch in einem eigenen Ordner. Für bisher unbekannte Versionen zusätzlich [Python 3.10 oder neuer](https://www.python.org/downloads/windows/) installieren und bei der Installation zu PATH hinzufügen. Bereits vorhandenes Python wird über `py -3`, `python` oder `python3` erkannt. Anschließend die Bridge neu starten.
@@ -11,15 +11,10 @@
 
 1. Unter **Räume → Raum anlegen** z. B. „Stardew Charity“ oder „Factorio Run“ anlegen.
 2. Oben im Raum-Menü wechseln. Regeln, Zugangsdaten und Protokolle sind pro Raum getrennt.
-3. Unter **Spielslots → + Spieler** einen Namen pro Zeile eintragen:
+3. Die echten Zielspieler erscheinen nach dem Verbinden des AP-Raums automatisch unter **Spieler & Effekte**. Dort pro Spieler **Items & Fallen auswählen**, den Slot aktivieren und gewünschte Items erlauben.
+4. Optional unter **Namen für YAMLs und Spielerauswahl merken** auf **+ Spieler** klicken. Pro Teilnehmer eine Zeile mit Slotname und optional Spiel ausfüllen und **Spieler speichern** wählen. Diese Namensliste ist nur eine Eingabehilfe für YAMLs und Auswahlfelder.
 
-```text
-Br3tzn | Stardew Valley
-Spieler2 | Factorio
-Spieler3 | Stardew Valley
-```
-
-Slotnamen: eindeutig, maximal 16 Zeichen. Der Spieltitel ist optional. Tatsächliche Zielslots liest die Bridge später aus dem erzeugten AP-Raum; diese Namensliste allein fügt einem laufenden Seed keine Spieler hinzu.
+Slotnamen für die Generierung: eindeutig, maximal 16 Zeichen. Die gespeicherte Namensliste fügt einem laufenden Seed keine Spieler hinzu. Eine Bridge-Anmeldung mit Adminrechten reicht für Items und Hinweise an mehrere Zielspieler im eigenen AP-Team. Eure normalen Spielclients bleiben verbunden.
 
 ## APworlds und YAML-Editor
 
@@ -32,11 +27,13 @@ Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **
 5. **Einstellungen speichern** behält die Vorlage in diesem Raum. **YAML-Vorschau** zeigt den Export. **YAMLs herunterladen** erzeugt eine einzelne YAML oder ein ZIP mit einer Datei pro Spieler.
 6. Die Dateien anschließend mit der passenden APworld-Version in Archipelago zum Seed generieren. Die Bridge verändert durch den YAML-Export keinen bereits laufenden Seed.
 
+Bekannte enthaltene Versionen von `dk64.apworld`, `tloz_st.apworld` und `APAPI.apworld` sind noch nicht statisch auswertbar. Der aufklappbare Einlesebericht nennt sie als **übersprungen**; dafür ist fehlendes Python nicht die Ursache. Die übrigen eingelesenen Spiele sind verfügbar.
+
 Die Formularfelder basieren auf den deklarierten APworld-Optionen. Dynamische Angaben werden auf der Spielseite aufgelistet. Für solche Worlds die fehlenden Angaben bei **Erweiterte Zusatzoptionen als YAML** setzen. Diese Zusatzoptionen überschreiben gleichnamige Formularfelder. APworld-Code wird beim Einlesen nicht ausgeführt.
 
 ## Archipelago-Raum verbinden
 
-Unter **Quellen → Archipelago-Raum**:
+Unter **Verbindungen → Archipelago-Raum**:
 
 | Hosting | Eingabe |
 | --- | --- |
@@ -52,7 +49,7 @@ Dann einen **bereits existierenden Slotnamen** wählen. Raumpasswort eintragen, 
 
 1. [Twitch Developer Console](https://dev.twitch.tv/console/apps) öffnen und eine Anwendung registrieren.
 2. OAuth Redirect URL exakt **`http://localhost:17381/oauth/callback`** eintragen. Anwendungstyp **Confidential**. Bei einem anderen Bridge-Port die Redirect-URL entsprechend ändern.
-3. Unter **Quellen → Twitch EventSub** die **Client-ID** eintragen.
+3. Unter **Verbindungen → Twitch EventSub** die **Client-ID** eintragen.
 4. Für automatische Token-Erneuerung in Twitch ein **Client Secret** erstellen und zusätzlich eintragen. Ohne Secret funktioniert die Anmeldung ebenfalls; nach Ablauf des gespeicherten Tokens ist eine erneute Anmeldung nötig.
 5. Gewünschte Ereignisse auswählen. Die Broadcaster-ID kann leer bleiben; sie wird aus dem Token erkannt.
 6. **Mit Twitch anmelden** klicken und mit dem Twitch-Kanal anmelden, dessen Ereignisse die Bridge auslösen sollen. Berechtigungen bestätigen.
@@ -68,29 +65,52 @@ Die in 0.1.1 blockierte Rückleitung von Twitch ist behoben. Zugangsdaten werden
 
 ## Charity Royale
 
-1. Unter **Quellen → Charity Royale** nur deinen Slug, z. B. **`br3tzn`**, eintragen; keine vollständige JSON-Adresse.
+1. Unter **Verbindungen → Charity Royale** nur deinen Slug, z. B. **`br3tzn`**, eintragen; keine vollständige JSON-Adresse.
 2. Projekt **`charityroyale2026`**. **Spenden verbinden** klicken.
 3. In der Regel die genaue Aktion des Spendenbuttons eintragen. Ein Test mit `metadata.action: trap` braucht `trap`, nicht `random-trap`.
 4. Der Netto-Betrag wird in Cent ausgewertet: `amount_net: 1000` entspricht 10 Euro.
 5. Offizielle Testspenden bzw. `id: null` werden als Simulation verarbeitet. Die Bridge filtert nach dem Streamer-Slug; eine noch fehlende öffentliche JSON-Seite verhindert solche Testereignisse nicht.
 
-## Zufallsaktionen und mehrere Ziele
+## Regeln und mehrere Ziele
 
-1. Unter **Spielslots → Effekte & Freigabe** den Slot aktivieren und erlaubte Items auswählen.
-2. **Erlaubt** ist der Pool für gezielte und gemischte Zufallsitems. **Zufall** ist der zusätzliche Fallenpool. Für den gesamten Katalog gibt es **Alle Katalogitems für Zufallsaktionen erlauben**.
-3. In der Regel die Aktion wählen:
+1. Unter **Spieler & Effekte → Items & Fallen auswählen** den gewünschten Slot aktivieren. **Erlaubt** nimmt ein Item in den erlaubten Pool auf; **Falle** markiert es zusätzlich für Fallenaktionen. Die Bridge kann nicht alle schädlichen Items automatisch erkennen.
+2. Unter **Regeln → + Neue Regel** zuerst Quelle, Ereignisart und Schwellen festlegen. Exakte Aktionscodes und Twitch-Reward-IDs stehen unter den erweiterten Filtern.
+3. Die Aktion wählen:
 
 | Aktion | Verhalten |
 | --- | --- |
-| Zufällige Falle | Wählt aus dem Fallenpool |
-| Zufälliges Item · gut oder schlecht | Wählt aus sämtlichen erlaubten Items des Zielslots |
-| Zufallsaktion | Wählt erlaubte Items; DeathLink kann ausdrücklich eingeschlossen werden |
+| Zufällige Falle | Aus erlaubten und als Falle markierten Items |
+| Zufälliges Item ohne markierte Fallen | Aus erlaubten Items ohne eure Fallenmarkierung |
+| Zufälliges Item aus allen erlaubten | Erlaubte Items einschließlich Fallen |
+| Zufälliges Item aus eigener Liste | Eigene exakte Itemnamen, begrenzt durch Freigaben und Raumkatalog |
+| Bestimmtes Item senden | Exaktes erlaubtes Item |
+| Hinweis zu einem Item | Kostenloser Admin-Hinweis an das AP-Team des Zielspielers |
+| Nachricht im AP-Chat | Eine Raumchatnachricht mit Präfix `[AP Chaos]`; keine Adminrechte nötig |
+| Nur Stream-Alert | Nur Anzeige; funktioniert auch ohne AP-Verbindung |
+| DeathLink an die Gruppe | Eigenes teilnehmendes AP-Team; Gruppenfreigabe nötig |
+| Zufall aus gewählten Aktionen | Eine mögliche gewählte Aktionsart zufällig auswählen und ausführen |
 
-4. Als Ziel **Mehrere ausgewählte Slots** wählen und die gewünschten Spieler ankreuzen. Alternativ einen einzelnen, einen zufälligen oder alle geeigneten Slots verwenden.
-5. Für DeathLink sowohl die Option im Spielclient als auch **DeathLink-Gruppenaktionen für diese Sitzung erlauben** in der Bridge aktivieren. DeathLink erreicht die aktivierte Gruppe im eigenen AP-Team und bleibt eine Gruppenaktion.
-6. Regel simulieren; danach im echten Raum Live-Modus wählen, die Ausführung starten und eine aktive Regel mit **Live-Test** prüfen.
+4. **Nur Spieler dieses Spiels** kommt aus den verbundenen AP-Slots und filtert deren Spielzuordnung. Es liest keine YAMLs. Bei Item- und Hinweisaktionen die gewünschten Empfänger wählen; die Vorschau zeigt passende freigegebene Spieler. **Zufällig aus ausgewählten Spielern** trifft genau eine geeignete Person aus eurer Auswahl.
+5. Beim Zufallsmix die erlaubten Aktionsarten ankreuzen. Jede aktuell mögliche ausgewählte Art hat dieselbe Chance; leere Pools und gesperrte Aktionen werden ausgelassen. Chat, Alert und DeathLink werden je einmal ausgeführt und durch die Item-Zielliste nicht auf einzelne Spieler begrenzt.
+6. Für DeathLink sowohl die Option im Spielclient als auch **DeathLink-Gruppenaktionen für diese Sitzung erlauben** unter **Spieler & Effekte → Optional: DeathLink für die Gruppe** aktivieren.
+7. **Regel speichern** und zunächst **Simulieren** wählen. Für echte Spielaktionen den AP-Raum verbinden, Live-Modus wählen, Ausführung starten und die aktive Regel mit **Live-Test** prüfen.
 
-Unter **Ereignisse** stehen Eingänge, Aufträge und Systemprotokoll. Zusätzlich kann nach Spiel gefiltert werden. „AP bestätigt“ quittiert die Annahme am Server; der Spieleffekt selbst wird vom Spielclient verarbeitet.
+Unter **Protokoll** stehen Eingänge, Aufträge und Systemprotokoll. „AP bestätigt“ bestätigt den Itemversand am Server; die tatsächliche Wirkung im Spiel wird hier nicht quittiert. Der Alert-Test löst keine Spielaktion aus. Nachrichten können `{user}` und `{rule}` verwenden.
+
+## Stream-Alerts und OBS
+
+OBS ist für die Spielaktionen nicht erforderlich. Es zeigt die Animation im Stream.
+
+1. Unter **Stream-Alerts** **Alert testen** wählen. Die integrierte Vorschau zeigt nur eine Animation, keinen Spieleffekt.
+2. Optional GIF, PNG/APNG, WebP, WebM oder MP4 bis 10 MiB über **Animation hochladen** auswählen. Videos werden stumm abgespielt.
+3. Position, Größe, Dauer und Anzeige wählen; **Alert-Einstellungen speichern**. Die Einstellungen gelten für diesen Raum.
+4. In OBS eine Browserquelle mit **http://127.0.0.1:17381/overlay**, Größe **1920 × 1080**, hinzufügen. OBS muss die lokale Bridge auf diesem PC erreichen können.
+
+Mehrere Alerts laufen nacheinander. Simulationen lassen sich ausblenden; der ausdrückliche Vorschautest bleibt möglich. Alte Protokolle werden beim Öffnen nicht erneut angezeigt.
+
+## Design anpassen
+
+Unter **Design** neutralen Darkmode, Lightmode oder **Klassisch** wählen. Eine Farbvorgabe oder eigene HEX-Farbe einstellen und **Design speichern**. Klassisch färbt auch die Flächen; das ursprüngliche Grün steht als Schaltfläche bereit. Design und Akzent gelten für alle Räume, Alert-Einstellungen jeweils nur für den geöffneten Raum. Animationen können reduziert werden.
 
 ## Gespeicherte Verbindungen
 
@@ -113,8 +133,8 @@ Unter **Räume** archivieren, nach **Archiviert** filtern und bei Bedarf **Wiede
 
 ## Gezielt oder zufällig einen Spieler treffen
 
-1. Unter **Spielslots** auf **+ Spieler** klicken. Pro Teilnehmer Slotname und optional Spiel eintragen; **Spieler speichern** wählen. Bei verbundenem AP-Raum wird der nächste noch nicht eingetragene Slot vorgeschlagen.
-2. Für die tatsächlichen AP-Slots unter **Effekte & Freigabe** die gewünschten Items oder Fallen erlauben.
+1. AP-Raum verbinden. Die Zielspieler erscheinen automatisch unter **Spieler & Effekte**; die zusätzliche gespeicherte Namensliste ist optional.
+2. Für die tatsächlichen AP-Slots unter **Items & Fallen auswählen** die gewünschten Items oder Fallen erlauben.
 3. In der Regel als **Ziel** einen bestimmten Spieler, **Alle freigegebenen Spieler**, **Zufälliger freigegebener Spieler**, **Mehrere ausgewählte Spieler** oder **Zufällig aus ausgewählten Spielern** wählen. Bei den letzten beiden Modi die Teilnehmer markieren; **Gespeicherte Spieler auswählen** übernimmt eure Liste.
 4. Die Regel zuerst simulieren. Zufall aus der Auswahl trifft pro Auslösung genau eine geeignete Person; mehrere oder alle erzeugt Aktionen pro geeignetem Spieler.
 
@@ -122,8 +142,8 @@ Die Spielerliste erzeugt keine zusätzlichen Serververbindungen: Eine Bridge-Ver
 
 ## Programmupdates
 
-1. **Einrichtung → Programmupdates → Nach Updates suchen** öffnen.
-2. Solange das Repo privat ist, einen [Fine-grained Token](https://github.com/settings/personal-access-tokens/new) für `BR3TZN/AP-Chaos-Bridge` mit **Contents: Read-only** unter **GitHub-Zugang für private Repositories** speichern.
+1. **Einstellungen → Programmupdates → Nach Updates suchen** öffnen.
+2. Das Repository ist öffentlich; **kein GitHub-Token nötig**. Ein früher gespeicherter ungültiger Token kann unter **Zugang entfernen** gelöscht werden.
 3. **Update herunterladen** wählen und die Prüfung abwarten.
 4. **Installieren & neu starten** wählen. Räume, Regeln und Zugangsdaten bleiben erhalten; die Bridge startet im Testmodus und pausiert.
 5. Bei einem Fehler wird die vorherige Version wiederhergestellt. Protokolle: `data/updates/install.log` und `restart.log`; Sicherungen: `data/updates/backups/`. Falls die Oberfläche nicht zurückkommt, `Start.cmd` öffnen.

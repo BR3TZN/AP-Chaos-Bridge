@@ -198,7 +198,7 @@ test('HTTP imports templates, persists presets and returns valid multi-player YA
 });
 test('mixed random actions can choose useful items and selected player lists isolate targets', () => {
   const store = new Store('.', { memory: true });
-  const ap = { connected: true, demo: false, roomKey: 'room', seed: 'seed', team: 0, players: [{ team: 0, slot: 1, name: 'A', game: 'Demo', type: 1 }, { team: 0, slot: 2, name: 'B', game: 'Demo', type: 1 }, { team: 0, slot: 3, name: 'C', game: 'Demo', type: 1 }], items: () => ({ 'Bomb Trap': 1, 'Potion': 2 }) };
+  const ap = { connected: true, demo: false, admin: true, roomKey: 'room', seed: 'seed', team: 0, players: [{ team: 0, slot: 1, name: 'A', game: 'Demo', type: 1 }, { team: 0, slot: 2, name: 'B', game: 'Demo', type: 1 }, { team: 0, slot: 3, name: 'C', game: 'Demo', type: 1 }], items: () => ({ 'Bomb Trap': 1, 'Potion': 2 }) };
   store.state.approvals.room = Object.fromEntries(ap.players.map(p => ['0:' + p.slot, { enabled: true, items: ['Bomb Trap', 'Potion'], traps: ['Bomb Trap'] }]));
   const engine = new Engine(store, ap, { choose: xs => xs.at(-1) });
   const event = { id: 'e', source: 'manual', user: 'Test', dryRun: false };

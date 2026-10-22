@@ -1,8 +1,8 @@
-# AP Chaos Bridge 0.3.2
+# AP Chaos Bridge 0.4.0
 
-Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und erzeugen zusätzliche AP-Items oder einen DeathLink an die eigene Teamgruppe.
+Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
-**Windows starten:** ZIP vollständig in einen beschreibbaren Ordner entpacken, **Node.js 22 oder neuer** installieren und **`Start.cmd`** doppelklicken. Alle npm-Abhängigkeiten liegen dem Paket bei. Die Oberfläche öffnet sich unter **http://127.0.0.1:17381**. Das minimierte Node-Fenster gehört zur laufenden Anwendung. Beenden unter **Einrichtung → Tool beenden**.
+**Windows starten:** ZIP vollständig in einen beschreibbaren Ordner entpacken, **Node.js 22 oder neuer** installieren und **`Start.cmd`** doppelklicken. Alle npm-Abhängigkeiten liegen dem Paket bei. Die Oberfläche öffnet sich unter **http://127.0.0.1:17381**. Das minimierte Node-Fenster gehört zur laufenden Anwendung. Beenden unter **Einstellungen → Tool beenden**.
 
 [Node.js herunterladen](https://nodejs.org/en/download)
 
@@ -14,19 +14,21 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.3.2
+## Update auf 0.4.0
 
-Ab Version 0.3.1 unter **Einrichtung → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
+Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-Neu in 0.3.2: Vorbereitete APworld-Versionen funktionieren ohne Python auch beim Hochladen, Umbenennen und in eigenen Ordnern. Unterstützt werden alle sieben bereitgestellten Dateien einschließlich **Kingdom Hearts III 0.16.11** und **Bloons TD6 0.8.2**. Bereits identische Dateien werden wiederverwendet. Trap-Gewichtungen und Freitextfelder wie die Platin-DeathLink-Gruppe sind ergänzt.
+Neu in 0.4.0: klarere Menüs und geführte Regeln mit **Auslöser → Aktion → Empfänger**, zehn benannten Aktionsarten, neutralem Darkmode, Lightmode und einem farbigen klassischen Design. Die Akzentfarbe lässt sich frei wählen. **Stream-Alerts** unterstützen eigene GIFs, animierte Bilder und Videos. Anmeldung und Verbindungsaufbau bleiben unverändert.
 
-Außerdem enthalten: Spielerliste mit **+ Spieler**, Zufall aus einer ausgewählten Gruppe, APworlds aus dem verlinkten Katalog, vorbereitete Einstellungsformulare mit Dropdowns, rekursiver APworld-Ordner und archivierte oder löschbare Räume. Fehlende Downloads und Grenzen stehen in **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)**. Der Einstellungseditor liest ausschließlich APworlds; frühere YAML-Vorlagen werden nicht mehr als Spieleinstellungen übernommen. Bestehende Regeln und Räume bleiben erhalten.
+Tatsächliche Spieler kommen automatisch aus eurem verbundenen AP-Raum. Unter **Spieler & Effekte** legt ihr deren erlaubte Items und Fallen fest. Die zusätzliche gespeicherte Namensliste ist optional. Bekannte Pakete ohne statisch lesbare World-Deklaration werden beim Einlesen separat als übersprungen gemeldet; dafür erscheint kein irreführender Python-Hinweis mehr.
+
+Weiterhin enthalten: vorbereitete APworld-Einstellungen ohne Python für bekannte Dateiversionen, YAML-Export für mehrere Spieler, archivierte oder löschbare Räume und Programmupdates. Der Spielekatalog liest ausschließlich APworlds. Fehlende Downloads und Grenzen stehen in **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)**. Bestehende Regeln und Räume bleiben erhalten.
 
 Kurze Anleitung inklusive Twitch-Setup: **[ANLEITUNG.md](ANLEITUNG.md)**.
 
 ## Programmupdates
 
-Unter **Einrichtung → Programmupdates** nach stabilen GitHub-Releases suchen. Die Bridge prüft beim normalen Start und alle zwölf Stunden automatisch. **Update herunterladen** lädt das vollständige ZIP und prüft SHA-256 sowie sämtliche Dateien. **Installieren & neu starten** pausiert die Ausführung, sichert Programmdateien und Daten und startet die neue Version im Testmodus. Bei Installations- oder Startfehlern wird die vorherige Version einschließlich ihrer Daten wiederhergestellt. Räume, Verbindungen und eigene APworlds bleiben erhalten. Sicherungen und Protokolle liegen unter `data/updates/`.
+Unter **Einstellungen → Programmupdates** nach stabilen GitHub-Releases suchen. Die Bridge prüft beim normalen Start und alle zwölf Stunden automatisch. **Update herunterladen** lädt das vollständige ZIP und prüft SHA-256 sowie sämtliche Dateien. **Installieren & neu starten** pausiert die Ausführung, sichert Programmdateien und Daten und startet die neue Version im Testmodus. Bei Installations- oder Startfehlern wird die vorherige Version einschließlich ihrer Daten wiederhergestellt. Räume, Verbindungen und eigene APworlds bleiben erhalten. Sicherungen und Protokolle liegen unter `data/updates/`.
 
 Das Repository `BR3TZN/AP-Chaos-Bridge` ist öffentlich; Updates benötigen **keinen Token**. Nur bei einer privaten Kopie unter **GitHub-Zugang für private Repositories** einen [Fine-grained Token](https://github.com/settings/personal-access-tokens/new) für `BR3TZN/AP-Chaos-Bridge` mit **Contents: Read-only** speichern. Der GitHub-Login im Browser wird nicht an den lokalen Updater übergeben. Für öffentliche Repositories ist kein Token erforderlich. Tokens bleiben lokal verschlüsselt und werden nicht exportiert.
 
@@ -45,19 +47,19 @@ Prüfumfang und Grenzen: **[VALIDIERUNG.md](VALIDIERUNG.md)**.
 
 ## In drei Minuten den Ablauf prüfen
 
-1. Auf **Regie → Demo öffnen** klicken. Die drei Beispielslots haben keine Verbindung zu echten Spielen.
+1. Auf **Übersicht → Demo öffnen** klicken. Die drei Beispielslots haben keine Verbindung zu echten Spielen.
 2. Bei der mitgelieferten Regel auf **Simulieren** klicken. Das funktioniert auch bei einer inaktiven Regel.
-3. Unter **Ereignisse** den Auftrag mit Status **Simuliert** prüfen. In der Demo werden keine AP-Pakete gesendet.
+3. Unter **Protokoll** den Auftrag mit Status **Simuliert** prüfen. In der Demo werden keine AP-Pakete gesendet.
 
 Der Testmodus ist ein Ablauf-Test. Er bestätigt weder einen laufenden Spielclient noch einen sichtbaren Effekt im Spiel.
 
 ## Mit eurem echten Raum arbeiten
 
 1. Seed normal aus den Spieler-YAMLs generieren und den AP-Raum starten. Jeder Teilnehmer verbindet zusätzlich seinen üblichen Spielclient.
-2. Unter **Quellen → Archipelago-Raum** zwischen lokalem Server, archipelago.gg und eigener externer Adresse wählen. Port und einen existierenden Slotnamen aus diesem Raum eintragen. Die Bridge darf denselben Slot parallel als Text-Client verwenden. Sie empfängt keine `ReceivedItems` und prüft keine Spielorte ab.
+2. Unter **Verbindungen → Archipelago-Raum** zwischen lokalem Server, archipelago.gg und eigener externer Adresse wählen. Port und einen existierenden Slotnamen aus diesem Raum eintragen. Die Bridge darf denselben Slot parallel als Text-Client verwenden. Sie empfängt keine `ReceivedItems` und prüft keine Spielorte ab.
 3. Raumpasswort nur eintragen, wenn gesetzt. **Server-Adminpasswort ist eine andere Einstellung**: Der Host benötigt ein gesetztes `server_password`, damit die Bridge `!admin login …` und anschließend `!admin /send …` verwenden kann. Falls nötig, legt der Host dieses in seiner Serverkonfiguration oder über seine Serverkonsole mit `/option server_password <eigenes Passwort>` fest. Ohne Host-Zugriff ist zusätzlicher Itemversand über diese Bridge nicht möglich.
 4. Bei normalen AP-Adressen `ws://host:port` verwenden. Ein eingefügter Host ohne Schema wird wie im AP-Client als `ws://` behandelt, ohne Port mit Standardport 38281. Für einen Server mit TLS explizit `wss://host:port` angeben; es gibt keinen automatischen Wechsel auf unverschlüsselte Übertragung. `archipelago://` wird ebenfalls erkannt. Zugangsdaten separat eintragen, nicht in die URL.
-5. Unter **Spielslots → Effekte & Freigabe** passende Items aus dem geladenen Raumkatalog auswählen. **Erlaubt** gestattet gezielten Versand und gemischte Zufallsitems; **Zufall** nimmt das Item zusätzlich in den Pool für „Zufällige Falle“ auf. Der Slot muss ebenfalls freigegeben sein. „Alle Katalogitems für Zufallsaktionen erlauben“ nimmt auch hilfreiche Items auf. Ein Vorschlag ist noch kein bestätigter Spieleffekt.
+5. Unter **Spieler & Effekte → Items & Fallen auswählen** passende Items aus dem geladenen Raumkatalog auswählen. **Erlaubt** gestattet gezielten Versand und gemischte Zufallsitems; **Falle** nimmt das Item zusätzlich in den Pool für „Zufällige Falle“ auf. Der Slot muss ebenfalls freigegeben sein. „Alle Katalogitems für Zufallsaktionen erlauben“ nimmt auch hilfreiche Items auf. Ein Vorschlag ist noch kein bestätigter Spieleffekt.
 6. Regeln zuerst simulieren. Dann den **Live-Modus** wählen. Der Wechsel pausiert die Warteschlange. Eine aktive Regel über **Live-Test** einmal auslösen, die Ausführung starten und den Effekt beim betroffenen Spieler prüfen. Die Aktion kann den Spielstand tatsächlich beeinflussen.
 7. Erst für die erfolgreich geprüften Effekte eine echte Ereignisquelle verbinden und passende Regeln aktivieren.
 
@@ -67,7 +69,7 @@ Optional kann eine erwartete Seed-ID eingetragen werden. Bei Abweichung stoppt d
 
 ## Charity Royale
 
-**Quellen → Charity Royale:** exakten Streamer-Slug deiner Spendenseite und Projekt `charityroyale2026` eintragen. Dann **Spenden verbinden**.
+**Verbindungen → Charity Royale:** exakten Streamer-Slug deiner Spendenseite und Projekt `charityroyale2026` eintragen. Dann **Spenden verbinden**.
 
 Die Bridge verwendet den dokumentierten öffentlichen Reverb/Pusher-WebSocket mit Kanal `donations`. Sie benötigt keinen öffentlich erreichbaren lokalen Webhook. Nur abgeschlossene Spenden für den konfigurierten Streamer werden normalisiert. Falls ein Ereignis ein Projektfeld enthält, wird es ebenfalls geprüft; laut API enthält nicht jedes Spendenereignis dieses Feld.
 
@@ -104,13 +106,19 @@ Die direkte Anbindung unterstützt neue Subs, Resub-Nachrichten, Gift-Sub-Pakete
 
 Es gibt feste Mengen **pro Ereignis**, nicht automatisch einen Effekt je Bit, Euro oder Geschenk. Ein Gift-Paket mit 10 Subs ist ein Ereignis mit `units: 10`; zugehörige einzelne Gift-Sub-Ereignisse werden ignoriert. Eine Resub-Nachricht ist ein Chat-Ereignis und kein allgemeiner Beleg für jede automatische Verlängerung.
 
-Das Token wird beim Verbinden und anschließend stündlich validiert. Verbindungen werden für den geöffneten Raum lokal gespeichert. Mit Client Secret werden Authorization-Code-Flow und Refresh Token verwendet; ein abgelaufenes Access Token wird automatisch erneuert. Ohne Secret wird der gespeicherte Access Token bis zu seinem Ablauf wiederverwendet. Nach Widerruf oder ungültigem Refresh Token erneut anmelden. Abgelehnte Teilabonnements erscheinen unter Quellen. Während einer unerwarteten Verbindungslücke nach Twitch verlorene Ereignisse werden nicht automatisch nachgeliefert.
+Das Token wird beim Verbinden und anschließend stündlich validiert. Verbindungen werden für den geöffneten Raum lokal gespeichert. Mit Client Secret werden Authorization-Code-Flow und Refresh Token verwendet; ein abgelaufenes Access Token wird automatisch erneuert. Ohne Secret wird der gespeicherte Access Token bis zu seinem Ablauf wiederverwendet. Nach Widerruf oder ungültigem Refresh Token erneut anmelden. Abgelehnte Teilabonnements erscheinen unter Verbindungen. Während einer unerwarteten Verbindungslücke nach Twitch verlorene Ereignisse werden nicht automatisch nachgeliefert.
 
 ## Weitere Trigger und OBS
 
 Für Streamer.bot oder andere lokale Anwendungen gibt es einen Bearer-geschützten HTTP-Eingang. PowerShell-Helfer, C#-Beispiel und Feldzuordnung: **[integrations/README.md](integrations/README.md)**. Regeln verwenden dafür die Quelle **Externer Trigger**. Native Twitch-Ereignisse nicht gleichzeitig nochmals über Streamer.bot einspeisen.
 
-Optionale OBS-Browserquelle: **http://127.0.0.1:17381/overlay**, 1920 × 1080. Transparenter Hintergrund, Anzeige nach einem abgeschlossenen Auftrag, mit Kennzeichnung **TEST** oder **LIVE**. Bestehende Historie wird beim Öffnen nicht erneut abgespielt. OBS und Bridge müssen auf demselben PC laufen; die Anwendung ist absichtlich nur an Loopback gebunden.
+Unter **Stream-Alerts** Darstellung, Position, Dauer und eigene Animation wählen. Unterstützt werden GIF, PNG/APNG, WebP, WebM und MP4 bis 10 MiB; Videos laufen stumm. **Alert testen** erzeugt nur eine visuelle Vorschau, keinen Regeltest und keine Spielaktion. Die Vorschau funktioniert auch bei ausgeschalteten normalen Alerts. Die Einstellungen gelten für den geöffneten Raum.
+
+OBS ist optional und zeigt nur die Animation im Stream. Als Browserquelle **http://127.0.0.1:17381/overlay**, Größe 1920 × 1080, eintragen. Die Quelle ist transparent, arbeitet mehrere Alerts nacheinander ab und kennzeichnet Simulationen mit **TEST**. Alte Aufträge werden beim Öffnen nicht erneut abgespielt. OBS muss die Bridge auf diesem PC erreichen können; die Anwendung ist an Loopback gebunden. „Nur Stream-Alert“ kann auch ohne AP-Verbindung verwendet werden.
+
+## Design
+
+Unter **Design** zwischen neutralem **Darkmode**, **Lightmode** und **Klassisch** mit farbig getöntem Hintergrund wählen. Farbvorgaben und eine freie HEX-Farbe ändern die Akzente; die Schaltfläche für das ursprüngliche Grün stellt den bisherigen Farbcharakter her. Die Vorschau wird erst mit **Design speichern** dauerhaft übernommen. Design und Akzentfarbe gelten für die gesamte Anwendung und das Overlay; Statusfarben für Erfolg, Warnung und Fehler bleiben unterscheidbar. Animationen lassen sich reduzieren.
 
 ## Spiele und YAMLs
 
@@ -122,27 +130,40 @@ Eigene `.apworld`-Dateien in **`apworlds/`** oder einen Unterordner legen und **
 
 Die Dateien liegen nach Quelle und Hash in Unterordnern; ihre **Originalnamen bleiben erhalten**. Für die eigentliche Archipelago-Generierung die gewünschte Datei in Archipelagos `custom_worlds` installieren. Abweichende Installationsnamen einzelner Entwicklerpakete stehen in der manuellen Liste. Nicht alle mitgelieferten Versionen gleichzeitig in Archipelago installieren. Den verwendeten Dateipfad zeigt der Editor als Quelle an.
 
+Die bekannten Pakete `dk64.apworld`, `tloz_st.apworld` und `APAPI.apworld` liefern in den enthaltenen Versionen keine statisch auswertbare Spieldeklaration. Sie stehen im aufklappbaren Einlesebericht unter **übersprungen**. Python allein ergänzt diese Deklaration nicht.
+
 Der Import wertet Python-Deklarationen statisch aus und führt APworld-Code nicht aus. Laufzeitabhängige Optionen und Standardwerte können dabei offen bleiben; die Spielseite weist darauf hin. Fehlende Werte bei **Erweiterte Zusatzoptionen als YAML** setzen oder die Standards der World übernehmen. Zusatzoptionen überschreiben gleichnamige Formularwerte. Die World-Version in der anschließenden Archipelago-Generierung muss zum Editor passen. Die Bridge exportiert YAMLs und generiert selbst keinen Seed.
 
 Ein APworld liefert nicht automatisch beliebige Live-Funktionen. Zusätzliche Items stammen weiterhin aus dem echten AP-Raumkatalog; erkannte Fallennamen sind Vorschläge für den Abgleich. Die tatsächliche Wirkung hängt vom verbundenen Spielclient ab. Einen Run-Reset enthält diese Version nicht.
 
 ## Mehrere Spieler und Zufallsaktionen
 
-Unter **Spielslots** mit **+ Spieler** für jeden Teilnehmer eine eigene Zeile hinzufügen. Slotname und optional Spiel eintragen und **Spieler speichern** wählen. Bei bestehender AP-Verbindung schlägt **+ Spieler** den nächsten noch nicht eingetragenen Slot vor. Die Liste lässt sich auch unter Quellen über **Slotnamen verwalten** öffnen. Diese Profile stehen bei der Raumverbindung und im YAML-Editor bereit. Tatsächliche Spielslots entstehen bei der Seed-Generierung und werden aus dem verbundenen AP-Raum übernommen. Eine TextOnly-Verbindung genügt für mehrere Zielspieler desselben Teams.
+Die echten Zielspieler werden automatisch aus eurem verbundenen AP-Raum übernommen. Unter **Spieler & Effekte → Items & Fallen auswählen** jeden gewünschten Slot aktivieren und seine Items freigeben. Eine TextOnly-Verbindung mit Admin-Anmeldung genügt für zusätzliche Items und Hinweise an mehrere Spieler desselben Teams. Jeder Teilnehmer verbindet weiterhin seinen normalen Spielclient.
 
-| Regelaktion | Pool |
+Die aufklappbare Namensliste unter **Optional: Namen für YAMLs und Spielerauswahl merken** ist eine Arbeitshilfe. Mit **+ Spieler** eigene Zeilen für Slotname und optional Spiel hinzufügen und **Spieler speichern** wählen. Bei verbundenem Raum wird der nächste noch nicht eingetragene Slot vorgeschlagen. Die Profile helfen im YAML-Editor und bei der Zielauswahl; sie erzeugen keine zusätzlichen Slots in einem bestehenden Seed und keine zusätzlichen Anmeldungen.
+
+| Regelaktion | Verhalten |
 | --- | --- |
-| Zufällige Falle | Nur im jeweiligen Slot als „Zufall“ markierte Items |
-| Zufälliges Item · gut oder schlecht | Alle für den Slot erlaubten Katalogitems |
-| Zufallsaktion | Erlaubte Katalogitems und auf Wunsch zusätzlich DeathLink |
-| Bestimmtes Item | Genau das eingetragene und erlaubte Item |
-| DeathLink | Die aktivierte DeathLink-Gruppe des eigenen AP-Teams |
+| Zufällige Falle | Erlaubte Items, die beim Zielspieler als **Falle** markiert sind |
+| Zufälliges Item ohne markierte Fallen | Erlaubte Items ohne eure Fallenmarkierung; keine automatische Garantie für einen hilfreichen Effekt |
+| Zufälliges Item aus allen erlaubten | Alle erlaubten Katalogitems, einschließlich markierter Fallen |
+| Zufälliges Item aus eigener Liste | Exakte Namen aus eurer Liste, begrenzt durch Raumkatalog und Freigaben des Zielspielers |
+| Bestimmtes Item senden | Genau das eingetragene und erlaubte Item |
+| Hinweis zu einem Item | Kostenloser Admin-Hinweis für das Item des Zielspielers; Ausgabe an dessen AP-Team, kein zusätzliches Item |
+| Nachricht im AP-Chat | Eine Nachricht im Raumchat; benötigt eine AP-Verbindung, keine Admin-Anmeldung |
+| Nur Stream-Alert | Eine visuelle Meldung; keine AP-Verbindung erforderlich |
+| DeathLink an die Gruppe | Ein DeathLink an die teilnehmenden Clients des eigenen AP-Teams; separate Gruppenfreigabe nötig |
+| Zufall aus gewählten Aktionen | Zuerst gleichverteilte Auswahl einer aktuell möglichen gewählten Aktionsart, dann deren Ausführung |
 
-Als Ziel stehen ein bestimmter Spieler, mehrere ausgewählte Spieler, alle freigegebenen Spieler, ein zufälliger freigegebener Spieler oder **Zufällig aus ausgewählten Spielern** zur Verfügung. Im letzten Modus wird genau eine geeignete Person aus der markierten Auswahl gewählt. **Gespeicherte Spieler auswählen** übernimmt eure Liste in die Auswahl. Bei Itemaktionen gelten weiterhin die Effektfreigaben und der Spiel-Filter. DeathLink bleibt eine Gruppenaktion; die Item-Zielliste begrenzt dessen Empfänger nicht. Die separate Gruppenfreigabe ist zusätzlich nötig. Jede Zufallsauswahl wird beim Anlegen des Auftrags festgeschrieben; späteres Warten würfelt nicht erneut.
+Beim Zufallsmix werden leere Item-Pools oder gesperrte Aktionen ausgelassen. Eine gewählte Aktionsart bekommt nicht durch einen größeren Item-Pool mehr Gewicht. Für Chat und Alerts sind `{user}` und `{rule}` als Platzhalter möglich. Chatnachrichten erhalten immer den Präfix `[AP Chaos]`, damit ihr Text nicht als AP-Befehl interpretiert wird.
+
+**Nur Spieler dieses Spiels** liest die Spielzuordnung der tatsächlich verbundenen eigenen AP-Team-Slots. Der Filter begrenzt die Empfänger der Item- und Hinweisaktionen. Er verwendet weder den Spielekatalog noch YAMLs oder das Spiel des Zuschauers. Als Ziel stehen eine Person, alle passenden Spieler, mehrere markierte Spieler oder eine zufällige Person aus allen beziehungsweise den markierten Spielern zur Verfügung. Die Vorschau nennt passende freigegebene Personen; Item-Pool und Aktionsfreigabe werden zusätzlich geprüft.
+
+DeathLink, Chat und reine Alerts werden einmal pro Auslösung ausgeführt. Der Spiel- und Spielerfilter begrenzt diese Gruppen- beziehungsweise Anzeigeaktionen auch im Zufallsmix nicht. Die Zufallsauswahl wird beim Anlegen des Auftrags festgeschrieben; späteres Warten würfelt nicht erneut. Alle passenden aktiven Regeln werden ausgewertet.
 
 ## Räume und Verbindungen
 
-Unter **Räume** einen Arbeitsbereich pro Run oder Spiel anlegen. Jeder Raum speichert eigene Regeln, Spielerprofile, YAML-Presets, Freigaben und Protokolle. Nur der oben gewählte Raum empfängt und verarbeitet neue Ereignisse. Gemeinsame APworlds bleiben im Spielekatalog verfügbar. Im Ereignisprotokoll kann zusätzlich nach Spiel gefiltert werden.
+Unter **Räume** einen Arbeitsbereich pro Run oder Spiel anlegen. Jeder Raum speichert eigene Regeln, Spielerprofile, YAML-Presets, Freigaben, Alert-Einstellungen und Protokolle. Nur der oben gewählte Raum empfängt und verarbeitet neue Ereignisse. Gemeinsame APworlds bleiben im Spielekatalog verfügbar. Im Ereignisprotokoll kann zusätzlich nach Spiel gefiltert werden.
 
 **Archivieren** bewahrt Regeln, Protokolle, Presets und Zugangsdaten. Die Filter **Aktive Räume / Archiviert / Alle** helfen beim Aufräumen. **Wiederherstellen** macht einen archivierten Raum wieder auswählbar. **Löschen** verlangt den exakten Raumnamen und entfernt die lokalen Raumdaten und Zugangsdaten endgültig. Der gemeinsame Spielekatalog bleibt erhalten. Wird der geöffnete Raum archiviert oder gelöscht, öffnet die Bridge einen anderen Raum.
 
@@ -156,7 +177,7 @@ Die YAML-Option **`triggers`** in den Advanced Settings verändert Optionen **w�
 
 DeathLink ist eine eigene **Gruppenaktion**. Die Bridge sendet nur den Tag `DeathLink` an das eigene AP-Team und gibt **keine Einzelziel-Auswahl** vor. Eine Kombination aus Tags und Slotfiltern kann je Protokollversion größere Empfängergruppen erreichen; deshalb wird dieser Weg für einzelne Spieler nicht angeboten.
 
-Für echte DeathLink-Aktionen muss unter **Spielslots** die Gruppenfreigabe für die aktuelle Sitzung aktiviert werden. Betroffen sein können alle verbundenen Clients mit aktiviertem DeathLink im eigenen Team – auch Slots, die in dieser Bridge keine Itemfreigabe haben. Unterstützt ein Spielclient DeathLink nicht oder ist es dort ausgeschaltet, entsteht dort kein entsprechender Effekt. Die Bridge ändert diese Einstellung nicht.
+Für echte DeathLink-Aktionen muss unter **Spieler & Effekte** die Gruppenfreigabe für die aktuelle Sitzung aktiviert werden. Betroffen sein können alle verbundenen Clients mit aktiviertem DeathLink im eigenen Team – auch Slots, die in dieser Bridge keine Itemfreigabe haben. Unterstützt ein Spielclient DeathLink nicht oder ist es dort ausgeschaltet, entsteht dort kein entsprechender Effekt. Die Bridge ändert diese Einstellung nicht.
 
 ## Verarbeitung, Wiederanlauf und Status
 
@@ -207,3 +228,5 @@ Tests und Prüfgrenzen: **[VALIDIERUNG.md](VALIDIERUNG.md)**. Drittanbieter-Lize
 - [KH2-Client einschließlich DeathLink](https://github.com/ArchipelagoMW/Archipelago/blob/0.6.8/worlds/kh2/ClientStuff/Client.py)
 - [Twitch EventSub-WebSockets](https://dev.twitch.tv/docs/eventsub/handling-websocket-events/), [Ereignistypen](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/), [OAuth](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/), [Tokenvalidierung](https://dev.twitch.tv/docs/authentication/validate-tokens/)
 - [Deine AP-Spieleliste](https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002)
+
+Design: `data/appearance.json`; hochgeladene Animationen: `data/alert-media/`. Beide bleiben bei Programmupdates erhalten.
