@@ -6,7 +6,7 @@ Stand: 2026-10-22T09:59:57Z
 
 Zusätzliche Nutzer-Uploads, unverändert und per SHA-256 erfasst: Bloons TD6, Cyberpunk 2077, Kingdom Hearts III, Minecraft, Pokemon Platinum, Ratchet & Clank 2, The Binding of Isaac Repentance. Bereits identische Dateien werden gemeinsam verwendet.
 
-867 von 867 Tabellenzeilen geprüft. 760 Zeilen mit Download, 768 unterschiedliche APworld-Dateien, 758 erkannte Spielnamen. 51 manuelle Downloads und 56 Core-Einträge ohne separate Datei.
+867 von 867 Tabellenzeilen geprüft. 760 Zeilen mit Download, 768 unterschiedliche APworld-Dateien, 760 erkannte Spielnamen. 50 manuelle Downloads und 56 Core-Einträge ohne separate Datei.
 
 ## Manuell hinzufügen
 
@@ -38,7 +38,6 @@ Die folgenden verlinkten Quellen liefern keinen frei direkt erreichbaren APworld
 | Crusader Kings III | Kein direktes APworld-Asset im verlinkten Download gefunden | [Download](https://steamcommunity.com/sharedfiles/filedetails/?id=3776198575) · [Anleitung](https://steamcommunity.com/sharedfiles/filedetails/?id=3776198575) · [Support](https://discord.com/channels/731205301247803413/1526261237074104421) |
 | Dragon Quest IX | Kein direktes APworld-Asset im verlinkten Download gefunden | [Download](https://www.google.com/url?q=https://github.com/DQIX/ArchipelagoDQIX/releases&sa=D&source=editors&ust=1790896983731144&usg=AOvVaw1zcU0bo31eIaqzp7t60xXt) · [Anleitung](https://discord.com/channels/731205301247803413/1427594624389742716/1491731616068800543) · [Support](https://discord.com/channels/731205301247803413/1427594624389742716) |
 | Empire Earth | HTTP Error 404: Not Found | [Download](https://github.com/povka/EmpireEarth_Archipelago/releases/latest) · [Anleitung](https://github.com/povka/EmpireEarth_Archipelago/tree/master) · [Support](https://discord.com/channels/731205301247803413/1533221949822599218) |
-| Kingdom Hearts III | Download nur über Discord verlinkt | [Download](https://discord.com/channels/731205301247803413/1162854339686187192/1529517325298958346) · [Anleitung](https://ap.aesais.net/games/kingdom-hearts-iii?lang=en) · [Support](https://discord.com/channels/731205301247803413/1162854339686187192) |
 | Kingdom Hearts 358/2 Days | Download nur über Discord verlinkt | [Download](https://discord.com/channels/731205301247803413/1087405565069766756) · [Anleitung](https://discord.com/channels/731205301247803413/1087405565069766756/1088418720906498088) · [Support](https://discord.com/channels/731205301247803413/1087405565069766756) |
 | Kingdom Two Crowns | Download nur über Discord verlinkt | [Download](https://discord.com/channels/731205301247803413/1316324689911746570/1434552668004810804) · [Anleitung](https://github.com/Catalyss/Archipelago-Kingdom2Crown/tree/main/docs) · [Support](https://discord.com/channels/731205301247803413/1316324689911746570) |
 | Knights of the Old Republic (KotoR) | Download-Bundle enthält keine .apworld-Datei | [Download](https://github.com/Firebringer92/Archipelago-Fire/releases) · [Anleitung](https://github.com/Firebringer92/Archipelago-Fire/tree/main/KotoR/Docs) · [Support](https://discord.com/channels/731205301247803413/1455534824352907378) |
@@ -68,7 +67,7 @@ Die folgenden verlinkten Quellen liefern keinen frei direkt erreichbaren APworld
 
 ## Core-Spiele
 
-Diese Spiele sind bereits Bestandteil von Archipelago. Im Tabellenlink wurde keine separate APworld gefunden. Für ihren Einstellungseditor wird eine eigenständige APworld oder eine zusätzliche Core-Integration benötigt.
+55 zusätzliche Core-Spiele sind direkt für Archipelago 0.6.8 vorbereitet und benötigen keine separate APworld oder Python. APQuest ist bereits über die mitgelieferte APworld verfügbar. Der Editor verwendet echte Optionstypen aus dem festgelegten offiziellen Release, keine YAML-Vorlagen aus der Tabelle. Eigene APworlds desselben Spielnamens haben Vorrang.
 
 | Spiel | Links |
 |---|---|
@@ -129,15 +128,13 @@ Diese Spiele sind bereits Bestandteil von Archipelago. Im Tabellenlink wurde kei
 | Yoshi's Island | [Download](https://github.com/Radagast81/yoshis-island-tracker/releases/latest) · [Anleitung](https://archipelago.gg/tutorial/) · [Support](https://discord.com/channels/731205301247803413/1224389973336133743) |
 | Zillion | [Download](https://github.com/Br00ty/zillion_brooty/releases/latest) · [Anleitung](https://archipelago.gg/tutorial/) · [Support](https://discord.com/channels/731205301247803413/1043593966131613736) |
 
-## Heruntergeladen, noch nicht auswertbar
+## Pakete ohne eigene Spieleinstellungen
 
-Diese Dateien liegen im APworld-Ordner; der statische Leser konnte ihren Spielnamen nicht ermitteln.
+Diese Dateien bleiben als Bibliotheken oder nicht auswertbare Pakete getrennt von den Spiel-Worlds aufgeführt. APAPI ist eine Hilfsbibliothek; Friday Night Funkin liegt separat als fridaynightfunkin.apworld vor.
 
 | Datei | Grund |
 |---|---|
-| github-com-2dos/814f8f1b/dk64.apworld | Kein statisch deklarierter World-Spielname gefunden |
-| github-com-DayKat/292752c2/tloz_st.apworld | Kein statisch deklarierter World-Spielname gefunden |
-| github-com-Z11Coding/65070658/APAPI.apworld | Kein statisch deklarierter World-Spielname gefunden |
+| github-com-Z11Coding/65070658/APAPI.apworld | APAPI ist eine Hilfsbibliothek ohne eigenes Spiel. Die separate Spiel-APworld verwenden; für Friday Night Funkin heißt sie fridaynightfunkin.apworld. |
 
 ## Hinweise zur APworld-Installation
 
@@ -157,7 +154,7 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Spiel | Nicht statisch aufgelöst |
 |---|---|
 | 2048 | Options-Dataclass konnte nicht statisch aufgelöst werden |
-| A Link to the Past Beta | plando_connections; plando_texts; key_rings_list (Standardwert dynamisch); boss_shuffle; goals; smallkey_shuffle; bigkey_shuffle |
+| A Link to the Past Beta | key_rings_list (Standardwert dynamisch); boss_shuffle; goals; smallkey_shuffle; bigkey_shuffle |
 | A Little to the Left | generator_repeat_limit |
 | AEMinecraft | minecraft_version (Standardwert dynamisch); advancements_required |
 | ANIMAL WELL | wheel_hopping; weird_tricks |
@@ -174,7 +171,6 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Balatro | include_deckChoice (Standardwert dynamisch) |
 | Baldur's Gate 3 - ToT | Options-Dataclass konnte nicht statisch aufgelöst werden |
 | Brotato | num_characters; num_starting_characters; include_base_game_characters (Standardwert dynamisch); num_common_crate_drop_groups; num_legendary_crate_drop_groups; include_abyssal_terrors_characters (Standardwert dynamisch) |
-| Bug Fables | plando_connections |
 | C&C Reloaded | mission_goal; main_reward_weights (Standardwert dynamisch); unit_buff_weights (Standardwert dynamisch); power_buff_weights (Standardwert dynamisch) |
 | Candy Box 2 | goal_conditions (Standardwert dynamisch) |
 | Cash cleaner simulator | Options-Dataclass konnte nicht statisch aufgelöst werden |
@@ -183,15 +179,12 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Civilization V | filler_item_weights (Standardwert dynamisch); trap_item_weights (Standardwert dynamisch); death_link_effect_weights (Standardwert dynamisch) |
 | Crash Team Racing | trap_weights (Standardwert dynamisch); racer_locked_pads |
 | Crypt of the NecroDancer | all_zones_speedrun_times (Standardwert dynamisch) |
-| Crystalis | plando_connections |
 | Cult of the Lamb | divine_inspiration_checks |
 | Cuphead | coin_amounts; filler_item_weights; shop_map; test_overrides; trap_item_weights; boss_phase_checks; buster_quest; dlc_randomize_boat; dlc_requires_mausoleum; fourmel_quest; ginger_quest; lucien_quest; music_quest; require_secret_shortcuts; randomize_abilities_aim; shop_mode; weapon_gate |
 | Cursed Mario 64 | move_rando_actions (Standardwert dynamisch) |
 | Cursed Words | sticker_synergies (Standardwert dynamisch); stamp_synergies (Standardwert dynamisch); trap_weighting (Standardwert dynamisch); filler_weighting (Standardwert dynamisch) |
-| DOOM 1993 (Beta) | episode1; episode2; episode3; episode4; difficulty; start_with_computer_area_maps; partial_invisibility_as_trap; split_backpack; backpack_count; max_ammo_bullets; max_ammo_shells; max_ammo_energy_cells; max_ammo_rockets |
 | DOOM Eternal | custom_missions (Standardwert dynamisch); starting_weapon (Standardwert dynamisch); praetor_suit_upgrades_in_pool |
 | Deadlock | final_character |
-| Death's Door | plando_connections |
 | Delivering Hope | achievement_checks (Standardwert dynamisch); powerup_items (Standardwert dynamisch); powerup_starting_levels (Standardwert dynamisch) |
 | Devil May Cry 3 | exclude_locations (Standardwert dynamisch) |
 | Die in the Dungeon | goal_character_count |
@@ -202,7 +195,6 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Dream Dazia | Options-Dataclass konnte nicht statisch aufgelöst werden |
 | DuckGame | total_arcade_levels; medal_count_goal |
 | Dungeon Clawler | shuffle_combat_items (Standardwert dynamisch); shuffle_perks (Standardwert dynamisch); enemysanity (Standardwert dynamisch) |
-| Dwarf Fortress | craftsanity_items (Standardwert dynamisch); craftsanity_materials (Standardwert dynamisch); skillsanity_skills (Standardwert dynamisch); skillsanity_combat_skills (Standardwert dynamisch); enabled_traps (Standardwert dynamisch) |
 | Ender Magnolia | starting_respite |
 | Etrian Odyssey | goal; battle_logic_mode; battle_logic_difficulty; class_sanity_mode; skill_sanity_mode; skill_requirement_shuffle |
 | Factorio Modpacks | packname (Standardwert dynamisch); number_of_science_packs |
@@ -210,7 +202,6 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Factorio: Space Age | world_gen_asteroid_spawn_rate; world_gen_spoil_rate; world_gen_custom |
 | Final Fantasy Tactics Ivalice Island | vanilla_changes (Standardwert dynamisch); transmooglifier_options (Standardwert dynamisch) |
 | Forged Curse | Options-Dataclass konnte nicht statisch aufgelöst werden |
-| Friday Night Funkin | songList (Standardwert dynamisch); trapAmount |
 | GTFO (Vanilla) | world; logger; gtfo_type_hints; random; growth_reqs; global_reachability; state_reachability; filled_empty_locations; growing_item_counts; start_inventory_results; start_voucher_results; early_item_results; goal_item_results; skippable_goal_count; errors; arch_start_inventory; arch_local_items; arch_non_local_items; arch_item_hints; arch_location_hints; arch_priority_locations; arch_exclude_locations; parsed_region_whitelist; parsed_region_blacklist; parsed_location_whitelist; parsed_location_blacklist; parsed_item_whitelist; parsed_item_blacklist; parsed_goal_items; parsed_start_inventory; parsed_start_vouchers; parsed_early_items; parsed_local_items; parsed_non_local_items; parsed_item_hints; parsed_location_hints; parsed_priority_locations; parsed_exclude_locations; gtfo_region_whitelist; gtfo_region_blacklist; gtfo_location_whitelist; gtfo_location_blacklist; gtfo_item_whitelist; gtfo_item_blacklist; gtfo_goal_items; gtfo_start_inventory; gtfo_start_vouchers; gtfo_early_items; gtfo_local_items; gtfo_non_local_items; gtfo_item_hints; gtfo_location_hints; gtfo_priority_locations; gtfo_exclude_locations; fail_if_insufficient_empty_locations; fail_during_sampling; root_seed; path_naming_policies; path_ordering |
 | Garfield Kart - Furious Racing | goal; cc_requirement; time_trial_goal_grade; randomize_races; progressive_cups; time_trial_randomization; randomize_puzzle_pieces; puzzle_piece_count; puzzle_piece_required; randomize_characters; randomize_karts; randomize_hats; randomize_spoilers; stat_randomizer; random_stat_values; single_lap_mode; lap_count; disable_cpu_items; item_mania; springs_only; randomize_items; lap_sanity; trap_percentage; trap_handling |
 | Grim Dawn | trap_weights (Standardwert dynamisch) |
@@ -223,9 +214,7 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Hollow Knight | Options-Dataclass konnte nicht statisch aufgelöst werden |
 | Hollow Knight 2 | Options-Dataclass konnte nicht statisch aufgelöst werden |
 | Hollow Knight: Silksong | accessibility (Standardwert dynamisch) |
-| Hunie Cam Studio | enabled_girls (Standardwert dynamisch) |
-| Hunie Pop | enabled_girls (Standardwert dynamisch); shop_item_cost; shop_gift_cost; shop_date_gift_cost; hunie_gift_cost |
-| Hunie Pop 2 | enabled_girls (Standardwert dynamisch) |
+| Hunie Pop | shop_item_cost; shop_gift_cost; shop_date_gift_cost; hunie_gift_cost |
 | Jak 3 | trap_weights (Standardwert dynamisch) |
 | Jak II | trap_weights (Standardwert dynamisch) |
 | Jak and Daxter: The Precursor Legacy | fire_canyon_cell_count; mountain_pass_cell_count; lava_tube_cell_count; citizen_orb_trade_amount; oracle_orb_trade_amount; trap_weights (Standardwert dynamisch) |
@@ -233,7 +222,7 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Kerbal Space Program 1 | accessibility (Standardwert dynamisch); contract_type_weights (Standardwert dynamisch); trap_type_weights (Standardwert dynamisch); buff_types (Standardwert dynamisch) |
 | Kingdom Hearts Birth by Sleep | exp_multiplier |
 | Kirby & The Amazing Mirror | starting_kirby_color |
-| Kirby 64 - The Crystal Shards | plando_connections; boss_shuffle |
+| Kirby 64 - The Crystal Shards | boss_shuffle |
 | Kirby Air Ride | allowed_items (Standardwert dynamisch); city_trial_progression (Standardwert dynamisch); archipelago_progression (Standardwert dynamisch) |
 | Kirby Super Star | included_subgames (Standardwert dynamisch) |
 | Kirby Super Star Ultra | included_maingames (Standardwert dynamisch) |
@@ -252,12 +241,10 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Mega Man ZX | required_models (Standardwert dynamisch); required_missions |
 | Mental Omega | main_reward_weights (Standardwert dynamisch); unit_buff_weights (Standardwert dynamisch); power_buff_weights (Standardwert dynamisch) |
 | Mercenaries | progressive_intel (Standardwert dynamisch); vanilla_intel (Standardwert dynamisch) |
-| Metal: Hellsinger | filler_items_distribution (Standardwert dynamisch) |
 | Metroid Fusion | TrickyShinesparksInRegionLogic; SimpleWallJumpsInRegionLogic |
 | Metroid Prime | starting_room; combat_logic_difficulty; fusion_suit; hud_color; hud_color_red; hud_color_green; hud_color_blue; randomize_suit_colors; power_suit_color; varia_suit_color; gravity_suit_color; phazon_suit_color |
 | Metroid: Zero Mission | unknown_items_always_usable; walljumps_in_logic |
 | Mina The Hollower | trap_weights (Standardwert dynamisch) |
-| Minecraft | plando_connections |
 | Minecraft Dig | Options-Dataclass konnte nicht statisch aufgelöst werden |
 | Mini Metro | goal_map |
 | Mirror's Edge | trap_weights (Standardwert dynamisch) |
@@ -268,8 +255,8 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Mount And Blade Bannerlord | Options-Dataclass konnte nicht statisch aufgelöst werden |
 | NSMBW | abilites_included (Standardwert dynamisch); level_elements_included (Standardwert dynamisch); enemies_included (Standardwert dynamisch); filler_items (Standardwert dynamisch); trap_items (Standardwert dynamisch) |
 | New Super Mario Bros. DS | required_star_coins |
-| Ocarina of Time | plando_connections; sfx_iron_boots; sfx_silver_rupee; sfx_boomerang_throw; sfx_hookshot_chain; sfx_arrow_shot; sfx_slingshot_shot; sfx_magic_arrow_shot; sfx_bombchu_move; sfx_get_small_item; sfx_explosion; sfx_cucco |
-| Ocarina of Time but it's just Master Quest Water Temple | plando_connections; fast_chests; correct_chest_appearances; minor_items_as_major_chest; correct_potcrate_appearances; text_shuffle; damage_multiplier; deadly_bonks; no_collectible_hearts; start_with_consumables; ice_trap_appearance; default_targeting; display_dpad; dpad_dungeon_menu; correct_model_colors; background_music; fanfares; ocarina_fanfares; kokiri_color; goron_color; zora_color; silver_gauntlets_color; golden_gauntlets_color; mirror_shield_frame_color; navi_color_default_inner; navi_color_default_outer; navi_color_enemy_inner; navi_color_enemy_outer; navi_color_npc_inner; navi_color_npc_outer; navi_color_prop_inner; navi_color_prop_outer; sword_trail_duration; sword_trail_color_inner; sword_trail_color_outer; bombchu_trail_color_inner; bombchu_trail_color_outer; heart_color; magic_color; a_button_color; b_button_color; c_button_color; start_button_color; sfx_navi_overworld; sfx_navi_enemy; sfx_low_hp; sfx_menu_cursor; sfx_menu_select; sfx_nightfall; sfx_horse_neigh; sfx_hover_boots; sfx_ocarina |
+| Ocarina of Time | sfx_iron_boots; sfx_silver_rupee; sfx_boomerang_throw; sfx_hookshot_chain; sfx_arrow_shot; sfx_slingshot_shot; sfx_magic_arrow_shot; sfx_bombchu_move; sfx_get_small_item; sfx_explosion; sfx_cucco |
+| Ocarina of Time but it's just Master Quest Water Temple | fast_chests; correct_chest_appearances; minor_items_as_major_chest; correct_potcrate_appearances; text_shuffle; damage_multiplier; deadly_bonks; no_collectible_hearts; start_with_consumables; ice_trap_appearance; default_targeting; display_dpad; dpad_dungeon_menu; correct_model_colors; background_music; fanfares; ocarina_fanfares; kokiri_color; goron_color; zora_color; silver_gauntlets_color; golden_gauntlets_color; mirror_shield_frame_color; navi_color_default_inner; navi_color_default_outer; navi_color_enemy_inner; navi_color_enemy_outer; navi_color_npc_inner; navi_color_npc_outer; navi_color_prop_inner; navi_color_prop_outer; sword_trail_duration; sword_trail_color_inner; sword_trail_color_outer; bombchu_trail_color_inner; bombchu_trail_color_outer; heart_color; magic_color; a_button_color; b_button_color; c_button_color; start_button_color; sfx_navi_overworld; sfx_navi_enemy; sfx_low_hp; sfx_menu_cursor; sfx_menu_select; sfx_nightfall; sfx_horse_neigh; sfx_hover_boots; sfx_ocarina |
 | OpenRCT2 | scenario; difficulty; scenario_length; randomization_range; preferred_intensity; stat_rerolls; difficult_guest_generation; difficult_park_rating; forbid_high_construction; forbid_landscape_changes; forbid_marketing_campaigns; forbid_tree_removal; visibility; selected_awards |
 | POOLS | trap_weights (Standardwert dynamisch) |
 | Parkitect | difficulty; scenario |
@@ -282,12 +269,10 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | PixelDraw | actions_needed (Standardwert dynamisch) |
 | PlateUp | trap_weights (Standardwert dynamisch) |
 | Poco | Options-Dataclass konnte nicht statisch aufgelöst werden |
-| Pokemon Black and White | encounter_plando; stats_plando; move_data_plando; text_plando |
-| Pokemon Crystal | dark_areas (Standardwert dynamisch); johto_trainersanity; kanto_trainersanity; trap_weights (Standardwert dynamisch); mix_entrances (Standardwert dynamisch); plando_connections |
-| Pokemon HeartGold and SoulSilver | version; trainersanity; exp_multiplier |
-| Pokemon Mystery Dungeon Explorers of Sky | allowed_legendaries (Standardwert dynamisch) |
+| Pokemon Black and White | encounter_plando; stats_plando; move_data_plando |
+| Pokemon Crystal | dark_areas (Standardwert dynamisch); johto_trainersanity; kanto_trainersanity; trap_weights (Standardwert dynamisch); mix_entrances (Standardwert dynamisch) |
+| Pokemon HeartGold and SoulSilver | trainersanity; exp_multiplier |
 | Pokemon Platinum | trainersanity; exp_multiplier |
-| Pokémon Battle Revolution | starting_colosseum_pool (Standardwert dynamisch) |
 | Powerwash Simulator | amount_of_levels_to_goal |
 | Pseudoregalia | spawn_point |
 | Quake 1 | ap_vanilla_items (Standardwert dynamisch) |
@@ -316,17 +301,16 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | Spirit Island | goals (Standardwert dynamisch); island_shards_reduction; enabled_expansions (Standardwert dynamisch); deathlink; hint_received_cards |
 | Stacklands | boards; board_expansion_mode; moon_length; goal; red_structure_spawn |
 | Star Trek: Armada | finale_mission_completion_requirement |
-| Stardew Valley | entrance_plando; special_order_locations (Standardwert dynamisch); include_endgame_locations (Standardwert dynamisch); trap_distribution (Standardwert dynamisch); joja_are_you_sure (Standardwert dynamisch); trap_items; bundle_plando; arcade_machine_locations |
+| Stardew Valley | special_order_locations (Standardwert dynamisch); include_endgame_locations (Standardwert dynamisch); trap_distribution (Standardwert dynamisch); joja_are_you_sure (Standardwert dynamisch); trap_items; bundle_plando; arcade_machine_locations |
 | Starship Titanic | Options-Dataclass konnte nicht statisch aufgelöst werden |
 | Super Mario RPG Legend of the Seven Stars | Options-Dataclass konnte nicht statisch aufgelöst werden |
-| TUNIC | plando_connections; fixed_shop; logic_rules |
+| TUNIC | fixed_shop; logic_rules |
 | Team Fortress 2 Mann vs Machine | mission_count; starting_bot_cards |
 | The Grinch | gadgets_to_randomize (Standardwert dynamisch); moves_to_randomize (Standardwert dynamisch); filler_weight (Standardwert dynamisch); trap_weight (Standardwert dynamisch) |
 | The Guardian Legend | corridor_hints (Standardwert dynamisch) |
 | The Legend of Zelda - Oracle of Ages | excluded_rings (Standardwert dynamisch) |
 | The Legend of Zelda - Oracle of Seasons | randomize_puzzles (Standardwert dynamisch); excluded_rings (Standardwert dynamisch) |
-| The Legend of Zelda - Phantom Hourglass | plando_transitions |
-| The Messenger | accessibility (Standardwert dynamisch); portal_plando; plando_connections |
+| The Messenger | accessibility (Standardwert dynamisch) |
 | The Sims 4 | career (Standardwert dynamisch) |
 | The WereCleaner | Options-Dataclass konnte nicht statisch aufgelöst werden |
 | TimeSplitters 2 | story_mode; goal; story_levels_required; trophies_required; trophy_hunt_setting |
@@ -344,7 +328,7 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 | VRChat | TrapWeights (Standardwert dynamisch) |
 | Vault Hunters | quest_progression_item_limit |
 | Viscera Cleanup Detail | level_pool (Standardwert dynamisch) |
-| Voices of the Void | objective; enable_crafted_capsule; death_link; day_as_items; scrap_recipes_as_items; doors_as_items; breakers_as_items; maintenance_tasks; cooking_tasks; rock_candles; time_sensitive; funny_setting; lambert_plush_enabled |
+| Voices of the Void | enable_crafted_capsule; death_link; day_as_items; scrap_recipes_as_items; doors_as_items; breakers_as_items; maintenance_tasks; cooking_tasks; rock_candles; time_sensitive; funny_setting; lambert_plush_enabled |
 | Warcraft 3 | included_campaigns (Standardwert dynamisch); paladin_arthas_hero; paladin_arthas_name (Standardwert dynamisch); jaina_hero; jaina_name (Standardwert dynamisch); muradin_bronzebeard_hero; muradin_bronzebeard_name (Standardwert dynamisch) |
 | Wargroove 2 | enabled_commanders (Standardwert dynamisch); custom_early_level_playlist (Standardwert dynamisch); custom_main_level_playlist (Standardwert dynamisch); custom_final_level_playlist (Standardwert dynamisch) |
 | WarioWare, Inc. - Mega Microgame$! | included_stages (Standardwert dynamisch); starting_stage (Standardwert dynamisch) |

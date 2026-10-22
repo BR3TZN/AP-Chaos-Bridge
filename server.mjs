@@ -43,11 +43,11 @@ function cleanConfig(old, raw) {
   return c;
 }
 
-export async function createApp({ directory = join(root, 'data'), port = 17381, memory = false, fetchImpl = fetch, worldsDirectory, twitchSocketUrl, updateRestart = false, updateRoot = root } = {}) {
+export async function createApp({ directory = join(root, 'data'), port = 17381, memory = false, core = !memory, fetchImpl = fetch, worldsDirectory, twitchSocketUrl, updateRestart = false, updateRoot = root } = {}) {
   const store = new Store(Rooms.initialDirectory(directory, { memory }), { memory }); const session = randomBytes(32).toString('hex');
   const rooms = new Rooms(store, directory, { memory }), vault = new Vault(directory, { memory });
   const presentation = new Presentation(directory, { memory }); let alertPreview;
-  const library = new GameLibrary(directory, root, { memory, folder: worldsDirectory });
+  const library = new GameLibrary(directory, root, { memory, core, folder: worldsDirectory });
   if (worldsDirectory) library.data.folder = worldsDirectory;
   const keyFile = join(directory, 'integration-key.txt');
   const integrationKey = !memory && existsSync(keyFile) ? readFileSync(keyFile, 'utf8').trim() : randomBytes(32).toString('hex');
@@ -96,7 +96,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     return { name: 'AP Chaos Bridge', version: VERSION, session, config: s.config, ap: ap.status(), charity: charity.status(), twitch: twitch.status(),
       appearance: presentation.appearance, updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
       rooms: rooms.list(), savedCredentials: vault.status(rooms.id), playerProfiles: s.players, yamlPresets: s.yamlPresets,
-      gameLibrary: { importLimits: APWORLD_LIMITS, folder: library.data.folder, games: Object.values(library.data.games).map(g => ({ game: g.game, kind: g.kind, source: g.source, optionCount: g.options.length, unresolved: g.unresolved })) },
+      gameLibrary: { importLimits: APWORLD_LIMITS, folder: library.data.folder, coreVersion: library.coreVersion || '', games: Object.values(library.data.games).map(g => ({ game: g.game, kind: g.kind, source: g.source, coreVersion: g.coreVersion, aliases: g.aliases, optionCount: g.options.length, unresolved: g.unresolved })) },
       queue: s.queue, events: s.events, logs: s.logs, profiles: PROFILES, yamlProfiles: s.yamlProfiles, twitchEvents: TWITCH_EVENTS,
       stats: { queued: s.queue.filter(j => j.status === 'queued').length, confirmed: s.queue.filter(j => j.status === 'confirmed').length, uncertain: s.queue.filter(j => j.status === 'uncertain').length, simulated: s.queue.filter(j => j.status === 'simulated').length },
     };
@@ -150,7 +150,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
       if (req.method === 'GET' && path === '/apworlds-manual') { res.writeHead(200, { 'Content-Type': 'text/markdown; charset=utf-8', 'Content-Disposition': 'attachment; filename=APWORLDS-MANUELL.md' }); res.end(readFileSync(join(root, 'APWORLDS-MANUELL.md'))); return; }
       if (req.method === 'GET' && path === '/api/game-index') {
         const references = new Map(gameIndex.games.map(game => [game.game, game]));
-        return json(res, { ...gameIndex, games: library.list().games.filter(game => game.kind === 'apworld').map(game => ({ ...references.get(game.game), game: game.game, kind: 'apworld', source: game.source })) });
+        return json(res, { ...gameIndex, games: library.list().games.filter(game => ['apworld', 'core'].includes(game.kind)).map(game => ({ ...references.get(game.game), game: game.game, kind: game.kind, source: game.source, coreVersion: game.coreVersion, aliases: game.aliases })) });
       }
       if (req.method === 'GET' && path === '/api/game-library') return json(res, library.list());
       if (req.method === 'GET' && path === '/api/game-settings') return json(res, library.get(url.searchParams.get('game')));

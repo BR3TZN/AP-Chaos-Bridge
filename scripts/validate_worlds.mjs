@@ -32,6 +32,22 @@ for (const file of apworldFiles(join(root, 'apworlds'))) {
   } catch (error) { report.errors.push({ file: file.name, error: error.message }); }
 }
 report.exportedGames = games.size;
+library.core = true; library.loadCore();
+report.coreGames = 0;
+const coreSource = JSON.parse(readFileSync(join(root, 'assets/core-worlds-source.json')));
+const coreCache = JSON.parse(readFileSync(join(root, 'assets/core-world-settings.json')));
+if (coreCache.source.commit !== coreSource.commit || coreCache.version !== coreSource.version || coreCache.worlds.length !== coreSource.worlds.length) report.errors.push({ error: 'Core-Metadaten passen nicht zur gepinnten Quelle' });
+for (const row of coreSource.worlds) {
+  try {
+    const entry = library.get(row.game), file = 'Core ' + coreCache.version + '/' + row.folder;
+    if (entry.kind !== 'core') throw new Error('Vorbereiteter Core-Eintrag fehlt');
+    const yaml = library.generate({ game: row.game, values: entry.base[row.game], players: ['Validation'] })[0].content;
+    const expected = { ...structuredClone(entry.base), name: 'Validation' };
+    deepStrictEqual(parse(yaml, { version: '1.1' }), expected);
+    compatibilityChecks.push({ file, game: row.game, yaml, expected }); report.coreGames++; games.add(row.game);
+  } catch (error) { report.errors.push({ game: row.game, error: error.message }); }
+}
+report.catalogGames = games.size;
 report.yamlSchema = '1.1'; report.yamlRoundTrips = compatibilityChecks.length;
 if (process.argv.includes('--pyyaml')) {
   const python = library.pythonCommand();

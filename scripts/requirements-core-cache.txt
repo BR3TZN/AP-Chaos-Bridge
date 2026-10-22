@@ -1,0 +1,17 @@
+# Developer/CI dependencies for the pinned official Archipelago 0.6.8 sources.
+# These are not installed or required by the normal Bridge application.
+colorama==0.4.6
+websockets==13.1
+PyYAML==6.0.3
+jellyfish==1.2.1
+jinja2==3.1.6
+schema==0.7.8
+bsdiff4==1.2.6
+platformdirs==4.10.1
+orjson==3.11.7
+typing_extensions==4.15.0
+pathspec==1.0.4
+requests==2.32.5
+setuptools==80.9.0
+pyevermizer==0.50.1
+zilliandomizer @ git+https://github.com/beauxq/zilliandomizer@96d9a20f8278cee64bb4db859fbd874e0f332d36

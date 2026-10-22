@@ -315,3 +315,18 @@ test('APworld chooser accepts a file above the previous 40 MiB limit and explain
   form.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
   await until(() => app.library.data.games['UI Large World'] && !document.querySelector('#drawer').open && !form.querySelector('[type=submit]').disabled, 'Große Datei wurde in der Oberfläche abgelehnt.').catch(error => { throw new Error(error.message + ' ' + document.querySelector('#toast').textContent + ' ' + document.querySelector('#studio-import-progress')?.textContent); });
 });
+
+test('Core search recognizes the table name and opens a versioned dropdown editor with valid YAML', async t => {
+  const { window, document } = await ui(t, { core: true });
+  window.location.hash = 'katalog'; await until(() => document.querySelector('#studio-search'), 'Core-Katalog fehlt.');
+  const search = document.querySelector('#studio-search'); search.value = 'The Golden Coins'; search.dispatchEvent(new window.Event('input', { bubbles: true }));
+  await until(() => document.querySelectorAll('#studio-catalog-results article').length === 1, 'Core-Alias wird nicht gefunden.');
+  assert(document.querySelector('#studio-catalog-results').textContent.includes('Core 0.6.8'));
+  document.querySelector('#studio-catalog-results [data-action="studio-game"]').click();
+  await until(() => document.querySelector('#studio-yaml-form'), 'Core-Unterseite fehlt.');
+  assert(document.querySelector('#studio-yaml-form').textContent.includes('keine zusätzliche APworld installieren'));
+  assert(document.querySelectorAll('#studio-yaml-form select').length > 3);
+  document.querySelector('[data-action="studio-yaml-preview"]').click();
+  await until(() => document.querySelector('#studio-yaml-preview')?.textContent.includes('version: 0.6.8'), 'Core-YAML-Vorschau fehlt.');
+  assert(document.querySelector('#studio-yaml-preview').textContent.includes('game: Super Mario Land 2'));
+});

@@ -1,0 +1,21 @@
+{
+  "archipelagoVersion": "0.6.8",
+  "worldVersion": "0.8.4",
+  "apworldSha256": "292752c26934d75ef655c4a8eafb9079563ff4c8160b258f052a2bef4a746ee6",
+  "results": [
+    {
+      "file": "Spirit-Tracks-default.yaml",
+      "game": "Spirit Tracks",
+      "player": "Daniel",
+      "options": 91,
+      "valid": true
+    },
+    {
+      "file": "Spirit-Tracks-changed.yaml",
+      "game": "Spirit Tracks",
+      "player": "Daniel",
+      "options": 91,
+      "valid": true
+    }
+  ]
+}

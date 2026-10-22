@@ -1,10 +1,10 @@
-# Prüfung der Version 0.4.1
+# Prüfung der Version 0.5.0
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Automatisierte Prüfungen
 
-**114 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**122 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -13,7 +13,7 @@ Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 is
 | Programmupdates | Versionsvergleich, Token ohne Weitergabe bei Redirects, SHA-256, ZIP-Pfade, vollständiges Manifest, erhaltene Räume und eigene APworlds, Sicherungen, Rücknahme bei Schreibfehlern, echter Neustart und Rückkehr zu Programm und Daten der vorherigen Version bei Startfehlern |
 | Raumarchiv | Archivieren des geöffneten Raums mit Wechsel, Wiederherstellung nach Neustart, erhaltene Regeln, Historie und Zugangsdaten |
 | Löschen | Exakte Namensbestätigung, eigene Raumdateien und Zugangsdaten entfernen, gemeinsame Daten erhalten, kein Wiederanlegen des gelöschten Standardraums |
-| APworlds | CRC-Prüfung, Pfade, Größenbegrenzung, rekursive Ordner, Vorrang eigener APworlds, Windows-Archivpfade, APworld-only, passende Metadaten-Hashes unabhängig von Dateiname und Ordner, HTTP-Upload aller sieben Nutzerdateien ohne Python, keine Ausführung des World-Codes |
+| APworlds | CRC-Prüfung, Pfade, Größenbegrenzung, rekursive Ordner, Vorrang eigener APworlds, Windows-Archivpfade, Ausschluss reiner YAML-Vorlagen, passende Metadaten-Hashes unabhängig von Dateiname und Ordner, HTTP-Upload aller sieben Nutzerdateien ohne Python, keine Ausführung des World-Codes |
 | AST-Analyse | Modulbereiche, Import-Aliase, Konstanten, gleichnamige Klassen, Choice, TextChoice, NamedRange, dynamische Standards und Manifest-Fallback |
 | Spielerziele | Einzelperson, alle, markierte Gruppe oder Zufall aus der Auswahl; nur freigegebene eigene Team-Slots; gespeicherte Profil-IDs beim Bearbeiten erhalten |
 | YAMLs | Separate Spielerdateien, Slotvalidierung, gewichtete Zusatzoptionen, skalare Sammlungs-Presets und Zufallsbereiche |
@@ -25,7 +25,7 @@ Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 is
 
 ## Prüfung des APworld-Bestands
 
-Der vollständige Lauf prüfte **768 APworld-Dateien**, **782 World-Varianten** und den Standardwert-Export für **758 Spielnamen**, ohne Validierungsfehler. Drei Dateien liefern noch keinen statisch erkennbaren Spielnamen; sie werden nach Inhalts-Hash erkannt und im Einlesebericht separat als übersprungen aufgeführt. Der Fall wird ohne verfügbaren Python-Interpreter geprüft.
+Der vollständige Lauf prüfte **768 APworld-Dateien**, **784 World-Varianten** und den Standardwert-Export für **760 Spielnamen**, ohne Validierungsfehler. Nur APAPI bleibt als Hilfsbibliothek ohne eigenes Spiel separat aufgeführt. Donkey Kong 64 und Spirit Tracks sind nun erkannt; FNF weist auf den unterstützten Engine-Export hin. Der Fall wird ohne verfügbaren Python-Interpreter geprüft.
 
 `npm run validate:worlds` prüft Herkunft und SHA-256 jeder Datei, den Laufzeit-ZIP-Leser und den YAML-Export der statisch erkannten Standards jeder World-Variante. Das Ergebnis steht in `assets/apworld-validation.json`. Erkannte und teilweise dynamische Einstellungen sowie Importfehler stehen in `APWORLDS-MANUELL.md`.
 
@@ -42,12 +42,12 @@ Standard-YAML und geänderte Optionen wurden zusätzlich mit **Archipelago 0.6.7
 - Kein echter Twitch-Konto-Login, keine Spende und kein echter Spieleffekt wurden ausgelöst.
 - Die neuen Oberflächenabläufe wurden mit JSDOM und der echten lokalen API geprüft. Diese Version wurde nicht zusätzlich in einem interaktiven Chromium-Browser geprüft.
 - Der Release-Workflow führt die automatisierten Tests zusätzlich unter Windows und Linux aus. Das manuelle Öffnen der Windows-Startdatei wurde hier nicht geprüft.
-- Core-Spiele ohne eigenständige APworld benötigen eine zusätzliche Integration für den Einstellungseditor.
+- Die 55 vorbereiteten Core-Spiele setzen für die Generierung Archipelago 0.6.8 voraus. Änderungen in anderen Core-Versionen werden nicht automatisch übernommen.
 - APworld-Import erzeugt keine universellen Live-Aktionen und keine Run-Reset-Funktion.
 
 ## YAML-1.1- und Platin-Prüfung
 
-Alle **782 World-Varianten** wurden exportiert und sowohl mit dem YAML-1.1-Leser der JavaScript-Bibliothek als auch mit **PyYAML 6.0.3** erneut gelesen. Sämtliche Werte, Schlüssel und Datentypen wurden mit den Exportdaten verglichen: keine Abweichungen. `npm run validate:worlds -- --pyyaml` reproduziert diese Prüfung; dazu Python mit PyYAML installieren (`python -m pip install PyYAML==6.0.3`). Die normale Bridge benötigt PyYAML nicht.
+Alle **784 APworld-Varianten und 55 Core-Worlds** wurden exportiert und sowohl mit dem YAML-1.1-Leser der JavaScript-Bibliothek als auch mit **PyYAML 6.0.3** erneut gelesen. Sämtliche Werte, Schlüssel und Datentypen wurden mit den Exportdaten verglichen: keine Abweichungen. `npm run validate:worlds -- --pyyaml` reproduziert diese Prüfung; dazu Python mit PyYAML installieren (`python -m pip install PyYAML==6.0.3`). Die normale Bridge benötigt PyYAML nicht.
 
 Pokémon Platin wurde zusätzlich mit dem unveränderten **Archipelago 0.6.7** (Commit `debe4cf035c7c15efe6fb95f72343af0d420c68c`) und der mitgelieferten **APworld 0.2.2** geprüft. Archipelagos `Generate.roll_settings` und `PokemonPlatinumOptions.validate` akzeptieren die Standarddatei sowie zwei Varianten mit geänderten Optionen. Jeweils **99 reale Optionsklassen** wurden verarbeitet. Der vorherige Export scheiterte nachweislich an `hm_reader: no`, das PyYAML als `false` statt als Auswahltext interpretierte. Ergebnis und APworld-Prüfsumme stehen in `assets/pokemon-platinum-validation.json`.
 
@@ -78,3 +78,13 @@ Geänderte Konfigurationen aktivieren DeathLink; Platin verwendet zusätzlich `h
 Nach der Umstellung auf öffentliche Sichtbarkeit wurden die Release-Abfrage und der binäre Download über den echten Updater **ohne Token** mit HTTP 200 geprüft.
 
 Das vollständige ZIP wurde mit dem echten Update-Entpacker und Dateimanifest geprüft und die entpackte Bridge gestartet. Mit einem absichtlich ungültigen Python-Pfad lud ein fremder APworld-Ordner alle sieben Nutzerdateien, erzeugte YAMLs und blieb im Testmodus mit pausierter Ausführung.
+
+## Core-Integration 0.5.0
+
+**55 zusätzliche Core-Spiele, 1.978 Felder und 815 Katalogspiele insgesamt.** Die Metadaten stammen aus Archipelago **0.6.8**, Commit `54803be064fc7e80c4628777ed0b46a9390f255f`. Sie werden beim Entwickler-Build mit den echten Optionsklassen erzeugt; beim Start und Einlesen führt die Bridge keinen Core- oder APworld-Code aus. Ein eigener APworld-Ordner, Neustart und Überschreiben/Entfernen einer Core-World durch eine eigene APworld sind geprüft. Reine YAML-Vorlagen bleiben ausgeschlossen.
+
+**110 YAML-Konfigurationen** – Standard und eine geänderte Toggle-Option pro Spiel – wurden über `npm run validate:core -- --archipelago PFAD` mit den echten `Generate.roll_settings`-, `Option.verify`- und vorhandenen Dataclass-Validatoren akzeptiert. Factorios `world_gen` und StarCrafts `custom_mission_order` behalten dabei das ursprüngliche Eingabeformat; interne bereits umgewandelte Optionswerte würden beim zweiten Einlesen scheitern. Ergebnis: `assets/core-worlds-validation.json`. Die Erzeugung wurde mit unterschiedlichen Python-Hash-Seeds identisch reproduziert. Der Release-Workflow wiederholt Aufbau und Optionsprüfung vor dem Veröffentlichen.
+
+Der allgemeine Bestandslauf umfasst **839 YAML-1.1-/PyYAML-Roundtrips**, einschließlich der 55 Core-Worlds. Die Core-Prüfung bestätigt Optionsannahme; sie erzeugt keine vollständigen Seeds oder ROM-Patches und startet keine Spielclients.
+
+**Spirit Tracks 0.8.4:** Standard und geänderte YAML wurden zusätzlich mit der originalen APworld und Archipelago 0.6.8 durch `Generate.roll_settings` akzeptiert, jeweils 91 reale Optionstypen. **Donkey Kong 64:** 100 Felder werden statisch erkannt; die vollständige World wurde für diese Prüfung nicht importiert. **Friday Night Funkin 2.3.1:** 46 Felder einschließlich kopierter Standard-Songliste, Textauswahl und Trap-Gewichtung erkannt. Die Upstream-World fordert bei Initialisierung interaktive Eingaben und verlangt unterstützte YAMLs aus der Mixtape Engine; ein vollständiger FNF-Seed wurde hier nicht validiert. Diese Grenze steht in der Spieloberfläche und Anleitung.

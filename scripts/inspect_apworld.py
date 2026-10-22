@@ -10,6 +10,7 @@ BUILTINS = {
     'Choice': ('choice', 0), 'TextChoice': ('textchoice', 0), 'Range': ('range', 0), 'NamedRange': ('range', 0),
     'OptionDict': ('dict', {}), 'OptionCounter': ('dict', {}), 'ItemDict': ('dict', {}), 'OptionList': ('list', []), 'ItemLinks': ('list', []),
     'FreeText': ('text', ''),
+    'PlandoConnections': ('list', []), 'PlandoTexts': ('list', []),
     'OptionSet': ('set', []), 'ItemSet': ('set', []), 'LocationSet': ('set', []),
     'StartInventory': ('dict', {}), 'StartInventoryPool': ('dict', {}), 'LocalItems': ('set', []),
     'NonLocalItems': ('set', []), 'StartHints': ('set', []), 'StartLocationHints': ('set', []),
@@ -38,8 +39,35 @@ def assignments(body):
                 if isinstance(target, ast.Name): yield target.id, node.value
 
 
+def module_scope(body):
+    """Inspect declarations inside module guards, without evaluating or executing them.
+
+    Function and class bodies keep their own scope. TYPE_CHECKING-only declarations
+    do not exist at runtime. Other branches are inspected as declarations only.
+    """
+    for node in body:
+        yield node
+        if isinstance(node, ast.If):
+            if name_of(node.test).split('.')[-1] == 'TYPE_CHECKING':
+                yield from module_scope(node.orelse)
+            elif isinstance(node.test, ast.Constant) and isinstance(node.test.value, bool):
+                yield from module_scope(node.body if node.test.value else node.orelse)
+            else:
+                yield from module_scope(node.body)
+                yield from module_scope(node.orelse)
+        elif isinstance(node, (ast.Try, getattr(ast, 'TryStar', ast.Try))):
+            yield from module_scope(node.body)
+            for handler in node.handlers:
+                yield from module_scope(handler.body)
+            yield from module_scope(node.orelse)
+            yield from module_scope(node.finalbody)
+        elif isinstance(node, (ast.With, ast.AsyncWith)):
+            yield from module_scope(node.body)
+
+
 def inspect(files):
     modules, classes, warnings, traps, manifests, manifest_details = {}, {}, [], set(), {}, {}
+    ambiguous_classes = set()
     for file in sorted(files, key=lambda f: f['name']):
         filename = file['name']
         if filename.rsplit('/', 1)[-1] == 'archipelago.json':
@@ -59,8 +87,17 @@ def inspect(files):
         modules[module] = {'tree': tree, 'constants': dict(assignments(tree.body)), 'aliases': {}, 'stars': []}
         for node in ast.walk(tree):
             if isinstance(node, ast.Constant) and isinstance(node.value, str) and node.value.endswith(' Trap') and len(node.value) < 160 and '\n' not in node.value: traps.add(node.value)
-        for node in tree.body:
-            if isinstance(node, ast.ClassDef): classes[module + '.' + node.name] = {'node': node, 'module': module, 'file': filename, 'attrs': dict(assignments(node.body))}
+        for node in module_scope(tree.body):
+            if isinstance(node, ast.ClassDef):
+                ref = module + '.' + node.name
+                if ref in ambiguous_classes:
+                    continue
+                if ref in classes and ast.dump(classes[ref]['node'], include_attributes=False) != ast.dump(node, include_attributes=False):
+                    ambiguous_classes.add(ref)
+                    classes.pop(ref)
+                    warnings.append(filename + ': Mehrere bedingte Deklarationen für ' + node.name + '; keine automatische Auswahl')
+                else:
+                    classes[ref] = {'node': node, 'module': module, 'file': filename, 'attrs': dict(assignments(node.body))}
             if isinstance(node, ast.ImportFrom):
                 prefix = node.module or ''
                 if node.level:
@@ -72,10 +109,13 @@ def inspect(files):
             elif isinstance(node, ast.Import):
                 for alias in node.names: modules[module]['aliases'][alias.asname or alias.name.split('.')[0]] = alias.name if alias.asname else alias.name.split('.')[0]
 
-    def normalize(name):
+    def normalize(name, module=''):
         if name.startswith('worlds.'):
             candidate = name[7:]
             if any(candidate == m or candidate.startswith(m + '.') for m in modules): return candidate
+        candidate = module.split('.')[0] + '.' + name if module else ''
+        if candidate in classes or candidate.rpartition('.')[0] in modules or candidate in modules:
+            return candidate
         return name
 
     def reference(node, module, depth=0):
@@ -88,11 +128,11 @@ def inspect(files):
         first, _, rest = name.partition('.')
         local = modules.get(module, {})
         if module + '.' + first in classes or first in local.get('constants', {}): return module + '.' + name
-        if first in local.get('aliases', {}): return normalize(local['aliases'][first] + ('.' + rest if rest else ''))
+        if first in local.get('aliases', {}): return normalize(local['aliases'][first] + ('.' + rest if rest else ''), module)
         for star in local.get('stars', []):
-            candidate = normalize(star + '.' + name)
+            candidate = normalize(star + '.' + name, module)
             if candidate in classes or (star in modules and first in modules[star]['constants']): return candidate
-        return normalize(name)
+        return normalize(name, module)
 
     detail_cache = {}
     def literal(node, module, env=None, depth=0):
@@ -157,6 +197,13 @@ def inspect(files):
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr in ('keys', 'values') and not node.args and not node.keywords:
             value = literal(node.func.value, module, env, depth + 1)
             if isinstance(value, dict): return list(value.keys() if node.func.attr == 'keys' else value.values())
+        if isinstance(node, ast.Call) and name_of(node.func) == 'int' and len(node.args) == 1 and not node.keywords:
+            value = literal(node.args[0], module, env, depth + 1)
+            if isinstance(value, (int, float)) and abs(value) <= 1e12:
+                return int(value)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == 'copy' and not node.args and not node.keywords:
+            value = literal(node.func.value, module, env, depth + 1)
+            if isinstance(value, (dict, list)): return copy.deepcopy(value)
         return UNKNOWN
 
     def details(ref, trail=(), depth=0):
@@ -237,6 +284,8 @@ def inspect(files):
                 choices = {k[7:].lower(): v for k, v in attrs.items() if k.startswith('option_') and isinstance(v, (int, str))}
                 if not choices and kind == 'choice': unresolved.append(key); continue
                 option['choices'] = [{'value': k, 'label': k.replace('_', ' ').title()} for k in choices]
+                if not choices and kind == 'textchoice' and isinstance(attrs.get('valid_keys'), (list, dict)):
+                    option['choices'] = [{'value': k, 'label': k} for k in attrs['valid_keys'] if isinstance(k, str)]
                 default = next((k for k, v in choices.items() if v == default), default if isinstance(default, str) else UNKNOWN)
                 if kind == 'choice' and default not in choices and default != 'random': default = UNKNOWN
             elif kind == 'range':

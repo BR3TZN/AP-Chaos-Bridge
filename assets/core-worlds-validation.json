@@ -1,0 +1,780 @@
+{
+  "archipelagoVersion": "0.6.8",
+  "sourceCommit": "54803be064fc7e80c4628777ed0b46a9390f255f",
+  "games": 55,
+  "configurations": 110,
+  "method": "Generate.roll_settings, Option.verify und Options-Dataclass.validate; keine vollständige Seed-Generierung",
+  "results": [
+    {
+      "file": "A Hat in Time-default.yaml",
+      "game": "A Hat in Time",
+      "player": "Daniel",
+      "options": 79,
+      "valid": true
+    },
+    {
+      "file": "A Hat in Time-changed.yaml",
+      "game": "A Hat in Time",
+      "player": "Friend",
+      "options": 79,
+      "valid": true
+    },
+    {
+      "file": "A Short Hike-default.yaml",
+      "game": "A Short Hike",
+      "player": "Daniel",
+      "options": 26,
+      "valid": true
+    },
+    {
+      "file": "A Short Hike-changed.yaml",
+      "game": "A Short Hike",
+      "player": "Friend",
+      "options": 26,
+      "valid": true
+    },
+    {
+      "file": "Adventure-default.yaml",
+      "game": "Adventure",
+      "player": "Daniel",
+      "options": 26,
+      "valid": true
+    },
+    {
+      "file": "Adventure-changed.yaml",
+      "game": "Adventure",
+      "player": "Friend",
+      "options": 26,
+      "valid": true
+    },
+    {
+      "file": "Blasphemous-default.yaml",
+      "game": "Blasphemous",
+      "player": "Daniel",
+      "options": 32,
+      "valid": true
+    },
+    {
+      "file": "Blasphemous-changed.yaml",
+      "game": "Blasphemous",
+      "player": "Friend",
+      "options": 32,
+      "valid": true
+    },
+    {
+      "file": "Bomb Rush Cyberfunk-default.yaml",
+      "game": "Bomb Rush Cyberfunk",
+      "player": "Daniel",
+      "options": 25,
+      "valid": true
+    },
+    {
+      "file": "Bomb Rush Cyberfunk-changed.yaml",
+      "game": "Bomb Rush Cyberfunk",
+      "player": "Friend",
+      "options": 25,
+      "valid": true
+    },
+    {
+      "file": "Bumper Stickers-default.yaml",
+      "game": "Bumper Stickers",
+      "player": "Daniel",
+      "options": 18,
+      "valid": true
+    },
+    {
+      "file": "Bumper Stickers-changed.yaml",
+      "game": "Bumper Stickers",
+      "player": "Friend",
+      "options": 18,
+      "valid": true
+    },
+    {
+      "file": "Castlevania - Circle of the Moon-default.yaml",
+      "game": "Castlevania - Circle of the Moon",
+      "player": "Daniel",
+      "options": 36,
+      "valid": true
+    },
+    {
+      "file": "Castlevania - Circle of the Moon-changed.yaml",
+      "game": "Castlevania - Circle of the Moon",
+      "player": "Friend",
+      "options": 36,
+      "valid": true
+    },
+    {
+      "file": "Castlevania 64-default.yaml",
+      "game": "Castlevania 64",
+      "player": "Daniel",
+      "options": 63,
+      "valid": true
+    },
+    {
+      "file": "Castlevania 64-changed.yaml",
+      "game": "Castlevania 64",
+      "player": "Friend",
+      "options": 63,
+      "valid": true
+    },
+    {
+      "file": "ChecksFinder-default.yaml",
+      "game": "ChecksFinder",
+      "player": "Daniel",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "ChecksFinder-changed.yaml",
+      "game": "ChecksFinder",
+      "player": "Friend",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "Choo-Choo Charles-default.yaml",
+      "game": "Choo-Choo Charles",
+      "player": "Daniel",
+      "options": 12,
+      "valid": true
+    },
+    {
+      "file": "Choo-Choo Charles-changed.yaml",
+      "game": "Choo-Choo Charles",
+      "player": "Friend",
+      "options": 12,
+      "valid": true
+    },
+    {
+      "file": "Civilization VI-default.yaml",
+      "game": "Civilization VI",
+      "player": "Daniel",
+      "options": 22,
+      "valid": true
+    },
+    {
+      "file": "Civilization VI-changed.yaml",
+      "game": "Civilization VI",
+      "player": "Friend",
+      "options": 22,
+      "valid": true
+    },
+    {
+      "file": "DLCQuest-default.yaml",
+      "game": "DLCQuest",
+      "player": "Daniel",
+      "options": 20,
+      "valid": true
+    },
+    {
+      "file": "DLCQuest-changed.yaml",
+      "game": "DLCQuest",
+      "player": "Friend",
+      "options": 20,
+      "valid": true
+    },
+    {
+      "file": "Dark Souls III-default.yaml",
+      "game": "Dark Souls III",
+      "player": "Daniel",
+      "options": 61,
+      "valid": true
+    },
+    {
+      "file": "Dark Souls III-changed.yaml",
+      "game": "Dark Souls III",
+      "player": "Friend",
+      "options": 61,
+      "valid": true
+    },
+    {
+      "file": "EarthBound-default.yaml",
+      "game": "EarthBound",
+      "player": "Daniel",
+      "options": 72,
+      "valid": true
+    },
+    {
+      "file": "EarthBound-changed.yaml",
+      "game": "EarthBound",
+      "player": "Friend",
+      "options": 72,
+      "valid": true
+    },
+    {
+      "file": "Factorio-default.yaml",
+      "game": "Factorio",
+      "player": "Daniel",
+      "options": 47,
+      "valid": true
+    },
+    {
+      "file": "Factorio-changed.yaml",
+      "game": "Factorio",
+      "player": "Friend",
+      "options": 47,
+      "valid": true
+    },
+    {
+      "file": "Faxanadu-default.yaml",
+      "game": "Faxanadu",
+      "player": "Daniel",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "Faxanadu-changed.yaml",
+      "game": "Faxanadu",
+      "player": "Friend",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "Final Fantasy-default.yaml",
+      "game": "Final Fantasy",
+      "player": "Daniel",
+      "options": 14,
+      "valid": true
+    },
+    {
+      "file": "Final Fantasy-changed.yaml",
+      "game": "Final Fantasy",
+      "player": "Friend",
+      "options": 14,
+      "valid": true
+    },
+    {
+      "file": "Hylics 2-default.yaml",
+      "game": "Hylics 2",
+      "player": "Daniel",
+      "options": 18,
+      "valid": true
+    },
+    {
+      "file": "Hylics 2-changed.yaml",
+      "game": "Hylics 2",
+      "player": "Friend",
+      "options": 18,
+      "valid": true
+    },
+    {
+      "file": "Kingdom Hearts-default.yaml",
+      "game": "Kingdom Hearts",
+      "player": "Daniel",
+      "options": 90,
+      "valid": true
+    },
+    {
+      "file": "Kingdom Hearts-changed.yaml",
+      "game": "Kingdom Hearts",
+      "player": "Friend",
+      "options": 90,
+      "valid": true
+    },
+    {
+      "file": "Kingdom Hearts 2-default.yaml",
+      "game": "Kingdom Hearts 2",
+      "player": "Daniel",
+      "options": 47,
+      "valid": true
+    },
+    {
+      "file": "Kingdom Hearts 2-changed.yaml",
+      "game": "Kingdom Hearts 2",
+      "player": "Friend",
+      "options": 47,
+      "valid": true
+    },
+    {
+      "file": "Landstalker - The Treasures of King Nole-default.yaml",
+      "game": "Landstalker - The Treasures of King Nole",
+      "player": "Daniel",
+      "options": 30,
+      "valid": true
+    },
+    {
+      "file": "Landstalker - The Treasures of King Nole-changed.yaml",
+      "game": "Landstalker - The Treasures of King Nole",
+      "player": "Friend",
+      "options": 30,
+      "valid": true
+    },
+    {
+      "file": "Lingo-default.yaml",
+      "game": "Lingo",
+      "player": "Daniel",
+      "options": 35,
+      "valid": true
+    },
+    {
+      "file": "Lingo-changed.yaml",
+      "game": "Lingo",
+      "player": "Friend",
+      "options": 35,
+      "valid": true
+    },
+    {
+      "file": "Lufia II Ancient Cave-default.yaml",
+      "game": "Lufia II Ancient Cave",
+      "player": "Daniel",
+      "options": 42,
+      "valid": true
+    },
+    {
+      "file": "Lufia II Ancient Cave-changed.yaml",
+      "game": "Lufia II Ancient Cave",
+      "player": "Friend",
+      "options": 42,
+      "valid": true
+    },
+    {
+      "file": "Mario & Luigi Superstar Saga-default.yaml",
+      "game": "Mario & Luigi Superstar Saga",
+      "player": "Daniel",
+      "options": 37,
+      "valid": true
+    },
+    {
+      "file": "Mario & Luigi Superstar Saga-changed.yaml",
+      "game": "Mario & Luigi Superstar Saga",
+      "player": "Friend",
+      "options": 37,
+      "valid": true
+    },
+    {
+      "file": "Mega Man 2-default.yaml",
+      "game": "Mega Man 2",
+      "player": "Daniel",
+      "options": 26,
+      "valid": true
+    },
+    {
+      "file": "Mega Man 2-changed.yaml",
+      "game": "Mega Man 2",
+      "player": "Friend",
+      "options": 26,
+      "valid": true
+    },
+    {
+      "file": "Mega Man 3-default.yaml",
+      "game": "Mega Man 3",
+      "player": "Daniel",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "Mega Man 3-changed.yaml",
+      "game": "Mega Man 3",
+      "player": "Friend",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "MegaMan Battle Network 3-default.yaml",
+      "game": "MegaMan Battle Network 3",
+      "player": "Daniel",
+      "options": 15,
+      "valid": true
+    },
+    {
+      "file": "MegaMan Battle Network 3-changed.yaml",
+      "game": "MegaMan Battle Network 3",
+      "player": "Friend",
+      "options": 15,
+      "valid": true
+    },
+    {
+      "file": "Meritous-default.yaml",
+      "game": "Meritous",
+      "player": "Daniel",
+      "options": 16,
+      "valid": true
+    },
+    {
+      "file": "Meritous-changed.yaml",
+      "game": "Meritous",
+      "player": "Friend",
+      "options": 16,
+      "valid": true
+    },
+    {
+      "file": "Muse Dash-default.yaml",
+      "game": "Muse Dash",
+      "player": "Daniel",
+      "options": 29,
+      "valid": true
+    },
+    {
+      "file": "Muse Dash-changed.yaml",
+      "game": "Muse Dash",
+      "player": "Friend",
+      "options": 29,
+      "valid": true
+    },
+    {
+      "file": "Old School Runescape-default.yaml",
+      "game": "Old School Runescape",
+      "player": "Daniel",
+      "options": 52,
+      "valid": true
+    },
+    {
+      "file": "Old School Runescape-changed.yaml",
+      "game": "Old School Runescape",
+      "player": "Friend",
+      "options": 52,
+      "valid": true
+    },
+    {
+      "file": "Overcooked! 2-default.yaml",
+      "game": "Overcooked! 2",
+      "player": "Daniel",
+      "options": 27,
+      "valid": true
+    },
+    {
+      "file": "Overcooked! 2-changed.yaml",
+      "game": "Overcooked! 2",
+      "player": "Friend",
+      "options": 27,
+      "valid": true
+    },
+    {
+      "file": "Paint-default.yaml",
+      "game": "Paint",
+      "player": "Daniel",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "Paint-changed.yaml",
+      "game": "Paint",
+      "player": "Friend",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "Pokemon Emerald-default.yaml",
+      "game": "Pokemon Emerald",
+      "player": "Daniel",
+      "options": 80,
+      "valid": true
+    },
+    {
+      "file": "Pokemon Emerald-changed.yaml",
+      "game": "Pokemon Emerald",
+      "player": "Friend",
+      "options": 80,
+      "valid": true
+    },
+    {
+      "file": "Raft-default.yaml",
+      "game": "Raft",
+      "player": "Daniel",
+      "options": 22,
+      "valid": true
+    },
+    {
+      "file": "Raft-changed.yaml",
+      "game": "Raft",
+      "player": "Friend",
+      "options": 22,
+      "valid": true
+    },
+    {
+      "file": "Risk of Rain 2-default.yaml",
+      "game": "Risk of Rain 2",
+      "player": "Daniel",
+      "options": 53,
+      "valid": true
+    },
+    {
+      "file": "Risk of Rain 2-changed.yaml",
+      "game": "Risk of Rain 2",
+      "player": "Friend",
+      "options": 53,
+      "valid": true
+    },
+    {
+      "file": "SMZ3-default.yaml",
+      "game": "SMZ3",
+      "player": "Daniel",
+      "options": 25,
+      "valid": true
+    },
+    {
+      "file": "SMZ3-changed.yaml",
+      "game": "SMZ3",
+      "player": "Friend",
+      "options": 25,
+      "valid": true
+    },
+    {
+      "file": "Saving Princess-default.yaml",
+      "game": "Saving Princess",
+      "player": "Daniel",
+      "options": 22,
+      "valid": true
+    },
+    {
+      "file": "Saving Princess-changed.yaml",
+      "game": "Saving Princess",
+      "player": "Friend",
+      "options": 22,
+      "valid": true
+    },
+    {
+      "file": "Secret of Evermore-default.yaml",
+      "game": "Secret of Evermore",
+      "player": "Daniel",
+      "options": 39,
+      "valid": true
+    },
+    {
+      "file": "Secret of Evermore-changed.yaml",
+      "game": "Secret of Evermore",
+      "player": "Friend",
+      "options": 39,
+      "valid": true
+    },
+    {
+      "file": "Shivers-default.yaml",
+      "game": "Shivers",
+      "player": "Daniel",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "Shivers-changed.yaml",
+      "game": "Shivers",
+      "player": "Friend",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "Starcraft 2-default.yaml",
+      "game": "Starcraft 2",
+      "player": "Daniel",
+      "options": 97,
+      "valid": true
+    },
+    {
+      "file": "Starcraft 2-changed.yaml",
+      "game": "Starcraft 2",
+      "player": "Friend",
+      "options": 97,
+      "valid": true
+    },
+    {
+      "file": "Subnautica-default.yaml",
+      "game": "Subnautica",
+      "player": "Daniel",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "Subnautica-changed.yaml",
+      "game": "Subnautica",
+      "player": "Friend",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "Super Mario 64-default.yaml",
+      "game": "Super Mario 64",
+      "player": "Daniel",
+      "options": 31,
+      "valid": true
+    },
+    {
+      "file": "Super Mario 64-changed.yaml",
+      "game": "Super Mario 64",
+      "player": "Friend",
+      "options": 31,
+      "valid": true
+    },
+    {
+      "file": "Super Mario Land 2-default.yaml",
+      "game": "Super Mario Land 2",
+      "player": "Daniel",
+      "options": 27,
+      "valid": true
+    },
+    {
+      "file": "Super Mario Land 2-changed.yaml",
+      "game": "Super Mario Land 2",
+      "player": "Friend",
+      "options": 27,
+      "valid": true
+    },
+    {
+      "file": "Super Metroid-default.yaml",
+      "game": "Super Metroid",
+      "player": "Daniel",
+      "options": 57,
+      "valid": true
+    },
+    {
+      "file": "Super Metroid-changed.yaml",
+      "game": "Super Metroid",
+      "player": "Friend",
+      "options": 57,
+      "valid": true
+    },
+    {
+      "file": "Terraria-default.yaml",
+      "game": "Terraria",
+      "player": "Daniel",
+      "options": 20,
+      "valid": true
+    },
+    {
+      "file": "Terraria-changed.yaml",
+      "game": "Terraria",
+      "player": "Friend",
+      "options": 20,
+      "valid": true
+    },
+    {
+      "file": "The Legend of Zelda-default.yaml",
+      "game": "The Legend of Zelda",
+      "player": "Daniel",
+      "options": 15,
+      "valid": true
+    },
+    {
+      "file": "The Legend of Zelda-changed.yaml",
+      "game": "The Legend of Zelda",
+      "player": "Friend",
+      "options": 15,
+      "valid": true
+    },
+    {
+      "file": "The Wind Waker-default.yaml",
+      "game": "The Wind Waker",
+      "player": "Daniel",
+      "options": 65,
+      "valid": true
+    },
+    {
+      "file": "The Wind Waker-changed.yaml",
+      "game": "The Wind Waker",
+      "player": "Friend",
+      "options": 65,
+      "valid": true
+    },
+    {
+      "file": "Timespinner-default.yaml",
+      "game": "Timespinner",
+      "player": "Daniel",
+      "options": 95,
+      "valid": true
+    },
+    {
+      "file": "Timespinner-changed.yaml",
+      "game": "Timespinner",
+      "player": "Friend",
+      "options": 95,
+      "valid": true
+    },
+    {
+      "file": "Undertale-default.yaml",
+      "game": "Undertale",
+      "player": "Daniel",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "Undertale-changed.yaml",
+      "game": "Undertale",
+      "player": "Friend",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "VVVVVV-default.yaml",
+      "game": "VVVVVV",
+      "player": "Daniel",
+      "options": 17,
+      "valid": true
+    },
+    {
+      "file": "VVVVVV-changed.yaml",
+      "game": "VVVVVV",
+      "player": "Friend",
+      "options": 17,
+      "valid": true
+    },
+    {
+      "file": "Wargroove-default.yaml",
+      "game": "Wargroove",
+      "player": "Daniel",
+      "options": 20,
+      "valid": true
+    },
+    {
+      "file": "Wargroove-changed.yaml",
+      "game": "Wargroove",
+      "player": "Friend",
+      "options": 20,
+      "valid": true
+    },
+    {
+      "file": "Yacht Dice-default.yaml",
+      "game": "Yacht Dice",
+      "player": "Daniel",
+      "options": 30,
+      "valid": true
+    },
+    {
+      "file": "Yacht Dice-changed.yaml",
+      "game": "Yacht Dice",
+      "player": "Friend",
+      "options": 30,
+      "valid": true
+    },
+    {
+      "file": "Yoshi's Island-default.yaml",
+      "game": "Yoshi's Island",
+      "player": "Daniel",
+      "options": 38,
+      "valid": true
+    },
+    {
+      "file": "Yoshi's Island-changed.yaml",
+      "game": "Yoshi's Island",
+      "player": "Friend",
+      "options": 38,
+      "valid": true
+    },
+    {
+      "file": "Zillion-default.yaml",
+      "game": "Zillion",
+      "player": "Daniel",
+      "options": 32,
+      "valid": true
+    },
+    {
+      "file": "Zillion-changed.yaml",
+      "game": "Zillion",
+      "player": "Friend",
+      "options": 32,
+      "valid": true
+    },
+    {
+      "file": "shapez-default.yaml",
+      "game": "shapez",
+      "player": "Daniel",
+      "options": 33,
+      "valid": true
+    },
+    {
+      "file": "shapez-changed.yaml",
+      "game": "shapez",
+      "player": "Friend",
+      "options": 33,
+      "valid": true
+    }
+  ],
+  "errors": []
+}

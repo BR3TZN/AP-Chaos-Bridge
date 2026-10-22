@@ -1,3 +1,23 @@
+# AP Chaos Bridge 0.5.0
+
+- **55 Core-Spiele** direkt im Katalog: **1.978 Einstellungsfelder** aus den echten offiziellen Archipelago-0.6.8-Optionsklassen. Dropdowns, Bereiche und strukturierte Felder funktionieren ohne zusätzliche APworlds und ohne Python. Die YAML enthält `requires.version: 0.6.8`.
+- Core-Spiele bleiben nach Neustart und bei einem eigenen APworld-Ordner verfügbar. Eine eigene APworld desselben Spielnamens hat Vorrang; nach Entfernen und erneutem Einlesen erscheint wieder Core. Die Suche berücksichtigt abweichende Tabellennamen für Wind Waker und Super Mario Land 2.
+- **Donkey Kong 64** erkannt: World-Klasse und Imports innerhalb einer Bedingung sowie Imports relativ zur Archivwurzel werden statisch gelesen. **100 Felder**.
+- **Spirit Tracks** erkannt: Basisklassenalias innerhalb eines `try`-Imports unterstützt. **90 Felder**, einschließlich Plando-Eingabe. Standard und geänderte YAML mit 91 echten Optionsklassen akzeptiert.
+- **Friday Night Funkin**: kopierte Standard-Songliste, Textauswahl und Trap-Bereich ergänzt; **46 Felder**. Die enthaltene Spiel-World war bereits vorhanden. `APAPI.apworld` wird korrekt als zusätzliche Hilfsbibliothek erklärt. Diese FNF-Version verlangt für unterstützte YAMLs den Export aus der **Mixtape Engine**; die Spielseite enthält Hinweis und Anleitung. Kein vollständiger FNF-Seed validiert.
+- **[50 noch fehlende Spiele mit manuellen Downloadlinks](FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen)** bereinigt; Core-Einträge stehen nun als verfügbar. Es werden weiterhin keine reinen YAML- oder Tabellen-Vorlagen als Spiele angelegt.
+- Prüfung: **122 automatisierte Tests**, **110 Core-YAMLs von Archipelago 0.6.8 akzeptiert**, **839 YAML-1.1-/PyYAML-Roundtrips**. Der Katalog umfasst **815 Spielnamen**: 760 aus APworlds und 55 zusätzliche Core-Spiele. Der Release-Workflow reproduziert die offiziellen Core-Metadaten und prüft die exportierten Core-Optionen vor der Veröffentlichung.
+
+## Update
+
+Unter **Updates → Nach Updates suchen → Herunterladen & prüfen → Update installieren** aktualisieren. Räume, Regeln, Zugangsdaten, eigene APworlds und Einstellungen bleiben erhalten. Die Ausführung beginnt danach pausiert im Testmodus.
+
+Alternativ **AP-Chaos-Bridge-v0.5.0.zip** vollständig entpacken und bei beendeter Bridge Programmdateien ersetzen; **data beibehalten**. Node.js ab 22 bleibt erforderlich. Core-YAMLs sind für **Archipelago 0.6.8** vorbereitet; normale APworlds verwenden weiterhin ihre eigenen Versionsanforderungen.
+
+Die Optionsprüfung erzeugt keine vollständigen Seeds oder ROM-Patches und prüft keine Spielclients. Run-Reset bleibt ausgenommen.
+
+---
+
 # AP Chaos Bridge 0.4.1
 
 - **SpongeBob SquarePants: Battle for Bikini Bottom 1.2.5** ergänzt. Im Spielekatalog nach **Bikini Bottom** suchen. 22 vorbereitete Einstellungen einschließlich Pfannenwender-Anzahl, Socken, Fähigkeiten, Tor-Kosten, DeathLink und RingLink; YAMLs für mehrere Slotnamen exportieren. Bekannte Dateiversion funktioniert ohne Python auch bei Upload, Umbenennung oder eigenem APworld-Ordner.

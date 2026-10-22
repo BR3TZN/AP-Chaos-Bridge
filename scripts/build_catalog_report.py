@@ -1,5 +1,7 @@
 """Produce the manual-download list and reference catalog from recorded provenance."""
 import json
+import re
+import unicodedata
 import zipfile
 from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
@@ -13,6 +15,7 @@ def links(row):
 def main():
     data = json.loads((ROOT / 'assets/apworld-downloads.json').read_text(encoding='utf-8'))
     cache = json.loads((ROOT / 'assets/apworld-settings.json').read_text(encoding='utf-8'))
+    core_cache = json.loads((ROOT / 'assets/core-world-settings.json').read_text(encoding='utf-8'))
     games = {}
     partial = {}
     for file, entry in cache['files'].items():
@@ -25,7 +28,11 @@ def main():
     index = {'source': data['source'], 'date': data['retrievedAt'], 'games': [{**{k: r.get(k) for k in ['game', 'stability', 'core']}, 'downloadStatus': states.get(r['row'], {}).get('status', 'pending'), 'reason': states.get(r['row'], {}).get('reason', '')} for r in snapshot['rows']]}
     (ROOT / 'assets/game-index.json').write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding='utf-8')
     files = {f['file'] for row in data['entries'] for f in row.get('files', [])} | {f['file'] for f in data.get('userImports', [])}
-    manual = [r for r in data['entries'] if r['status'] == 'manual']
+    normalize = lambda value: re.sub('[^a-z0-9]', '', unicodedata.normalize('NFKD', value).lower())
+    present = {normalize(name) for name in games}
+    for world in core_cache['worlds']:
+        present.update(normalize(name) for name in [world['game'], *world.get('aliases', [])])
+    manual = [r for r in data['entries'] if r['status'] == 'manual' and normalize(r['game']) not in present]
     core = [r for r in data['entries'] if r['status'] == 'core']
     lines = ['# APworlds: manuelle Downloads und Importstatus', '', 'Stand: ' + data['retrievedAt'], '', '[Quelltabelle](' + data['source'] + ')', '', f"{data['processed']} von {data['total']} Tabellenzeilen geprüft. {data['stats']['downloaded']} Zeilen mit Download, {len(files)} unterschiedliche APworld-Dateien, {len(games)} erkannte Spielnamen. {len(manual)} manuelle Downloads und {len(core)} Core-Einträge ohne separate Datei.", '', '## Manuell hinzufügen', '', 'Die folgenden verlinkten Quellen liefern keinen frei direkt erreichbaren APworld-Download oder überschreiten die Importgrenzen. Discord-Dateien bitte selbst herunterladen. Die Links stammen aus der Tabelle.', '', '| Spiel | Grund | Links |', '|---|---|---|']
     if data.get('repositoryImports'):
@@ -33,9 +40,9 @@ def main():
     if data.get('userImports'):
         lines[6:6] = ['Zusätzliche Nutzer-Uploads, unverändert und per SHA-256 erfasst: ' + ', '.join(esc(item['game']) for item in data['userImports']) + '. Bereits identische Dateien werden gemeinsam verwendet.', '']
     lines += [f"| {esc(r['game'])} | {esc(r['reason'])} | {links(r)} |" for r in manual]
-    lines += ['', '## Core-Spiele', '', 'Diese Spiele sind bereits Bestandteil von Archipelago. Im Tabellenlink wurde keine separate APworld gefunden. Für ihren Einstellungseditor wird eine eigenständige APworld oder eine zusätzliche Core-Integration benötigt.', '', '| Spiel | Links |', '|---|---|']
+    lines += ['', '## Core-Spiele', '', f"{len(core_cache['worlds'])} zusätzliche Core-Spiele sind direkt für Archipelago {core_cache['version']} vorbereitet und benötigen keine separate APworld oder Python. APQuest ist bereits über die mitgelieferte APworld verfügbar. Der Editor verwendet echte Optionstypen aus dem festgelegten offiziellen Release, keine YAML-Vorlagen aus der Tabelle. Eigene APworlds desselben Spielnamens haben Vorrang.", '', '| Spiel | Links |', '|---|---|']
     lines += [f"| {esc(r['game'])} | {links(r)} |" for r in core]
-    lines += ['', '## Heruntergeladen, noch nicht auswertbar', '', 'Diese Dateien liegen im APworld-Ordner; der statische Leser konnte ihren Spielnamen nicht ermitteln.', '', '| Datei | Grund |', '|---|---|']
+    lines += ['', '## Pakete ohne eigene Spieleinstellungen', '', 'Diese Dateien bleiben als Bibliotheken oder nicht auswertbare Pakete getrennt von den Spiel-Worlds aufgeführt. APAPI ist eine Hilfsbibliothek; Friday Night Funkin liegt separat als fridaynightfunkin.apworld vor.', '', '| Datei | Grund |', '|---|---|']
     lines += [f"| {esc(e['file'])} | {esc(e['error'])} |" for e in cache['errors']]
     packaging = []
     for name in sorted(files):

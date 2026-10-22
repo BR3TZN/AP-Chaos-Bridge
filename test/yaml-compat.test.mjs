@@ -41,7 +41,7 @@ test('deleted world files disappear from the settings catalog after scanning', a
   const directory = temporary(), folder = join(directory, 'worlds'); mkdirSync(folder);
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   writeFileSync(join(folder, 'fixture.apworld'), archive);
-  const library = new GameLibrary(directory, process.cwd(), { folder }); await library.scan();
+  const library = new GameLibrary(directory, process.cwd(), { folder, core: false }); await library.scan();
   assert.equal(library.list().games.length, 1);
   rmSync(join(folder, 'fixture.apworld')); await library.scan();
   assert.equal(library.list().games.length, 0); assert.throws(() => library.get('YAML Fixture'));

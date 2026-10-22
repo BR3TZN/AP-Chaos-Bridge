@@ -1,6 +1,6 @@
 # Noch fehlende Spiele im YAML-Katalog
 
-Stand: Bridge **0.4.1**, 22.10.2026. Abgleich der Ausgangsliste mit den tatsächlich erkannten APworld-Spielnamen und den importierten Dateien. Insgesamt **108 fehlende Einträge**: 50 manuell zu beschaffende Worlds, 55 Core-Einträge und 3 noch nicht auswertbare vorhandene Pakete.
+Stand: Bridge **0.5.0**, 22.10.2026. Es fehlen noch die unten aufgeführten **50 manuell zu beschaffenden Spiele**. Die **55 Core-Einträge** sind jetzt direkt aus den offiziellen Archipelago-0.6.8-Optionstypen vorbereitet; Donkey Kong 64 und Spirit Tracks werden ebenfalls erkannt.
 
 Kingdom Hearts III, APQuest und SpongeBob / Battle for Bikini Bottom sind bereits enthalten und stehen deshalb nicht auf dieser Liste.
 
@@ -61,9 +61,9 @@ Die Links stammen aus der Ausgangsliste. Ihre Erreichbarkeit wurde für diesen A
 | Xenoblade Chronicles X | [Download](https://github.com/MaragonMH/Archipelago/releases) · [Anleitung](https://github.com/MaragonMH/Archipelago/blob/XenoX/worlds/xenobladex/docs/setup_en.md) · [Support](https://discord.com/channels/731205301247803413/1333863771868762265) | Archiv überschreitet Import-Limit; Download-Bundle enthält keine .apworld-Datei |
 | Yu-Gi-Oh! GX - Duel Academy (GBA) | [Download](https://discord.com/channels/731205301247803413/1345884440571678862) · [Anleitung](https://discord.com/channels/731205301247803413/1345884440571678862/1345884579445211279) | Download nur über Discord verlinkt |
 
-## 55 Core-Einträge: keine separate APworld übernommen
+## 55 Core-Einträge: jetzt im Katalog verfügbar
 
-Diese Spiele sind in der Ausgangsliste als Core markiert und fehlen im Bridge-YAML-Editor. Für den Import wird eine passende APworld aus der verwendeten Archipelago-Version benötigt. Die verlinkten Tracker oder Spielclients ersetzen diese Datei nicht.
+Diese Spiele sind ab Bridge 0.5.0 ohne zusätzliche Dateien im YAML-Editor verfügbar. Grundlage ist **Archipelago 0.6.8**, Commit `54803be064fc7e80c4628777ed0b46a9390f255f`. Die YAMLs verlangen diese Version; die normale Bridge braucht dafür kein Python. Auch bei einem eigenen APworld-Ordner bleiben die Core-Spiele erhalten. Eigene APworlds desselben Spielnamens haben Vorrang.
 
 - A Hat in Time
 - A Short Hike
@@ -121,14 +121,13 @@ Diese Spiele sind in der Ausgangsliste als Core markiert und fehlen im Bridge-YA
 - Yoshi's Island
 - Zillion
 
-## 3 Pakete vorhanden, aber noch nicht auswertbar
+## Einlesefälle aus der bisherigen Liste
 
-Die Dateien sind schon enthalten. Der statische Importer erkennt darin noch keine auswertbare Spieldeklaration. Erneutes Hochladen derselben Datei oder das Installieren von Python behebt diesen Fall nicht; erforderlich ist eine Parser-Erweiterung oder eine geeignete andere World-Version.
+| Spiel / Paket | Status ab 0.5.0 |
+|---|---|
+| Donkey Kong 64 | Bedingt deklarierte World erkannt; 100 Einstellungsfelder. |
+| The Legend of Zelda: Spirit Tracks | World-Basisklassenalias erkannt; im Katalog als **Spirit Tracks**, 90 Einstellungsfelder. Standard und geänderte YAML mit den echten Optionsklassen geprüft. |
+| Friday Night Funkin | Die Spiel-World war bereits enthalten. Jetzt 46 Felder einschließlich Songliste und Trap-Gewichtung. Diese World-Version verlangt für unterstützte YAMLs den Export aus der **Mixtape Engine**, vor allem für eigene Songs und Mods. Die Spielseite verlinkt die [Entwickleranleitung](https://github.com/Z11Coding/Mixtape-Engine-Rework). |
+| APAPI.apworld | Hilfsbibliothek ohne eigenes Spiel; bleibt korrekt separat im Einlesebericht. Kein fehlendes FNF-Spiel. |
 
-| Spiel | Vorhandene Datei | Quellen |
-|---|---|---|
-| Donkey Kong 64 | `github-com-2dos/814f8f1b/dk64.apworld` | [Download](https://github.com/2dos/DK64-Randomizer-Dev/releases/latest) · [Anleitung](https://github.com/2dos/DK64-Randomizer/wiki/Archipelago-Dev-Setup-Guide) · [Support](https://discord.com/channels/731205301247803413/1409624528912650360) |
-| Friday Night Funkin' | `github-com-Z11Coding/65070658/APAPI.apworld` | [Download](https://github.com/Z11Coding/Mixtape-Engine-Rework/releases) · [Anleitung](https://github.com/Z11Coding/Mixtape-Engine-Rework) · [Support](https://discord.com/channels/731205301247803413/1142560423594430576) |
-| The Legend of Zelda: Spirit Tracks | `github-com-DayKat/292752c2/tloz_st.apworld` | [Download](https://github.com/DayKat/spirit-tracks/releases) · [Anleitung](https://github.com/DayKat/spirit-tracks/blob/main/worlds/tloz_st/docs/setup.md) · [Support](https://discord.com/channels/731205301247803413/1358582876085682417) |
-
-Quellen: [Downloadnachweis](assets/apworld-downloads.json), [erkannte World-Einstellungen](assets/apworld-settings.json), [ursprüngliche Referenztabelle](https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002#gid=58422002).
+Quellen: [Downloadnachweis](assets/apworld-downloads.json), [erkannte APworld-Einstellungen](assets/apworld-settings.json), [Core-Quelle](assets/core-worlds-source.json), [Core-Optionsprüfung](assets/core-worlds-validation.json), [ursprüngliche Referenztabelle](https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002#gid=58422002).

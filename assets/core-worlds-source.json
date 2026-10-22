@@ -1,0 +1,283 @@
+{
+  "schema": 1,
+  "version": "0.6.8",
+  "repository": "https://github.com/ArchipelagoMW/Archipelago",
+  "commit": "54803be064fc7e80c4628777ed0b46a9390f255f",
+  "worlds": [
+    {
+      "game": "A Hat in Time",
+      "folder": "ahit",
+      "referenceName": "A Hat in Time"
+    },
+    {
+      "game": "A Short Hike",
+      "folder": "shorthike",
+      "referenceName": "A Short Hike"
+    },
+    {
+      "game": "Adventure",
+      "folder": "adventure",
+      "referenceName": "Adventure"
+    },
+    {
+      "game": "Blasphemous",
+      "folder": "blasphemous",
+      "referenceName": "Blasphemous"
+    },
+    {
+      "game": "Bomb Rush Cyberfunk",
+      "folder": "bomb_rush_cyberfunk",
+      "referenceName": "Bomb Rush Cyberfunk"
+    },
+    {
+      "game": "Bumper Stickers",
+      "folder": "bumpstik",
+      "referenceName": "Bumper Stickers"
+    },
+    {
+      "game": "Castlevania - Circle of the Moon",
+      "folder": "cvcotm",
+      "referenceName": "Castlevania: Circle of the Moon"
+    },
+    {
+      "game": "Castlevania 64",
+      "folder": "cv64",
+      "referenceName": "Castlevania 64"
+    },
+    {
+      "game": "ChecksFinder",
+      "folder": "checksfinder",
+      "referenceName": "ChecksFinder"
+    },
+    {
+      "game": "Choo-Choo Charles",
+      "folder": "cccharles",
+      "referenceName": "Choo Choo Charles"
+    },
+    {
+      "game": "Civilization VI",
+      "folder": "civ_6",
+      "referenceName": "Civilization VI"
+    },
+    {
+      "game": "DLCQuest",
+      "folder": "dlcquest",
+      "referenceName": "DLCQuest"
+    },
+    {
+      "game": "Dark Souls III",
+      "folder": "dark_souls_3",
+      "referenceName": "Dark Souls III"
+    },
+    {
+      "game": "EarthBound",
+      "folder": "earthbound",
+      "referenceName": "Earthbound"
+    },
+    {
+      "game": "Factorio",
+      "folder": "factorio",
+      "referenceName": "Factorio"
+    },
+    {
+      "game": "Faxanadu",
+      "folder": "faxanadu",
+      "referenceName": "Faxanadu"
+    },
+    {
+      "game": "Final Fantasy",
+      "folder": "ff1",
+      "referenceName": "Final Fantasy"
+    },
+    {
+      "game": "Hylics 2",
+      "folder": "hylics2",
+      "referenceName": "Hylics 2"
+    },
+    {
+      "game": "Kingdom Hearts",
+      "folder": "kh1",
+      "referenceName": "Kingdom Hearts"
+    },
+    {
+      "game": "Kingdom Hearts 2",
+      "folder": "kh2",
+      "referenceName": "Kingdom Hearts 2"
+    },
+    {
+      "game": "Landstalker - The Treasures of King Nole",
+      "folder": "landstalker",
+      "referenceName": "Landstalker - The Treasures of King Nole"
+    },
+    {
+      "game": "Lingo",
+      "folder": "lingo",
+      "referenceName": "Lingo"
+    },
+    {
+      "game": "Lufia II Ancient Cave",
+      "folder": "lufia2ac",
+      "referenceName": "Lufia II Ancient Cave"
+    },
+    {
+      "game": "Mario & Luigi Superstar Saga",
+      "folder": "mlss",
+      "referenceName": "Mario & Luigi Superstar Saga"
+    },
+    {
+      "game": "Mega Man 2",
+      "folder": "mm2",
+      "referenceName": "Mega Man 2"
+    },
+    {
+      "game": "Mega Man 3",
+      "folder": "mm3",
+      "referenceName": "Mega Man 3"
+    },
+    {
+      "game": "MegaMan Battle Network 3",
+      "folder": "mmbn3",
+      "referenceName": "Mega Man Battle Network 3"
+    },
+    {
+      "game": "Meritous",
+      "folder": "meritous",
+      "referenceName": "Meritous"
+    },
+    {
+      "game": "Muse Dash",
+      "folder": "musedash",
+      "referenceName": "Muse Dash"
+    },
+    {
+      "game": "Old School Runescape",
+      "folder": "osrs",
+      "referenceName": "Old School Runescape"
+    },
+    {
+      "game": "Overcooked! 2",
+      "folder": "overcooked2",
+      "referenceName": "Overcooked! 2"
+    },
+    {
+      "game": "Paint",
+      "folder": "paint",
+      "referenceName": "Paint"
+    },
+    {
+      "game": "Pokemon Emerald",
+      "folder": "pokemon_emerald",
+      "referenceName": "Pokémon Emerald"
+    },
+    {
+      "game": "Raft",
+      "folder": "raft",
+      "referenceName": "Raft"
+    },
+    {
+      "game": "Risk of Rain 2",
+      "folder": "ror2",
+      "referenceName": "Risk of Rain 2"
+    },
+    {
+      "game": "SMZ3",
+      "folder": "smz3",
+      "referenceName": "SMZ3"
+    },
+    {
+      "game": "Saving Princess",
+      "folder": "saving_princess",
+      "referenceName": "Saving Princess"
+    },
+    {
+      "game": "Secret of Evermore",
+      "folder": "soe",
+      "referenceName": "Secret of Evermore"
+    },
+    {
+      "game": "Shivers",
+      "folder": "shivers",
+      "referenceName": "Shivers"
+    },
+    {
+      "game": "Starcraft 2",
+      "folder": "sc2",
+      "referenceName": "Starcraft 2"
+    },
+    {
+      "game": "Subnautica",
+      "folder": "subnautica",
+      "referenceName": "Subnautica"
+    },
+    {
+      "game": "Super Mario 64",
+      "folder": "sm64ex",
+      "referenceName": "Super Mario 64"
+    },
+    {
+      "game": "Super Mario Land 2",
+      "folder": "marioland2",
+      "referenceName": "Super Mario Land 2: The Golden Coins"
+    },
+    {
+      "game": "Super Metroid",
+      "folder": "sm",
+      "referenceName": "Super Metroid"
+    },
+    {
+      "game": "Terraria",
+      "folder": "terraria",
+      "referenceName": "Terraria"
+    },
+    {
+      "game": "The Legend of Zelda",
+      "folder": "tloz",
+      "referenceName": "The Legend of Zelda"
+    },
+    {
+      "game": "The Wind Waker",
+      "folder": "tww",
+      "referenceName": "The Legend of Zelda: The Wind Waker"
+    },
+    {
+      "game": "Timespinner",
+      "folder": "timespinner",
+      "referenceName": "Timespinner"
+    },
+    {
+      "game": "Undertale",
+      "folder": "undertale",
+      "referenceName": "Undertale"
+    },
+    {
+      "game": "VVVVVV",
+      "folder": "v6",
+      "referenceName": "VVVVVV"
+    },
+    {
+      "game": "Wargroove",
+      "folder": "wargroove",
+      "referenceName": "Wargroove"
+    },
+    {
+      "game": "Yacht Dice",
+      "folder": "yachtdice",
+      "referenceName": "Yacht Dice"
+    },
+    {
+      "game": "Yoshi's Island",
+      "folder": "yoshisisland",
+      "referenceName": "Yoshi's Island"
+    },
+    {
+      "game": "Zillion",
+      "folder": "zillion",
+      "referenceName": "Zillion"
+    },
+    {
+      "game": "shapez",
+      "folder": "shapez",
+      "referenceName": "shapez"
+    }
+  ]
+}

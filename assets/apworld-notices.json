@@ -1,0 +1,6 @@
+{
+  "e0b3c9986ae96fb65fc62735c88a9c52e97cdd0476104b0b14b7199a2b740ad2": {
+    "yamlNotice": "Diese FNF-Version verwendet die Mixtape Engine für die unterstützte YAML-Erstellung. Dort zuerst über das AP-Menü und dessen Einstellungen exportieren, insbesondere für eigene Songs und Mods. Die Bridge zeigt die deklarierten Optionen, ersetzt aber den Engine-Export und dessen Zusatzdaten nicht. Die separate APAPI.apworld ist eine Hilfsbibliothek für Archipelago und kein weiteres Spiel.",
+    "setupURL": "https://github.com/Z11Coding/Mixtape-Engine-Rework"
+  }
+}

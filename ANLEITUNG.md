@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.4.1 · Einrichtung
+# AP Chaos Bridge 0.5.0 · Einrichtung
 
 ## Start und Update
 
@@ -27,9 +27,15 @@ Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **
 5. **Einstellungen speichern** behält die Vorlage in diesem Raum. **YAML-Vorschau** zeigt den Export. **YAMLs herunterladen** erzeugt eine einzelne YAML oder ein ZIP mit einer Datei pro Spieler.
 6. Die Dateien anschließend mit der passenden APworld-Version in Archipelago zum Seed generieren. Die Bridge verändert durch den YAML-Export keinen bereits laufenden Seed.
 
-Bekannte enthaltene Versionen von `dk64.apworld`, `tloz_st.apworld` und `APAPI.apworld` sind noch nicht statisch auswertbar. Der aufklappbare Einlesebericht nennt sie als **übersprungen**; dafür ist fehlendes Python nicht die Ursache. Die übrigen eingelesenen Spiele sind verfügbar.
+**Donkey Kong 64** und **Spirit Tracks** werden jetzt erkannt. Die zusätzliche `APAPI.apworld` ist eine Hilfsbibliothek ohne eigenes Spiel und wird separat erklärt. **Friday Night Funkin** liegt als eigene World vor, verlangt für unterstützte YAMLs aber den Export aus der **Mixtape Engine**; die Spielseite enthält den Hinweis und die Anleitung.
 
 Die Formularfelder basieren auf den deklarierten APworld-Optionen. Dynamische Angaben werden auf der Spielseite aufgelistet. Für solche Worlds die fehlenden Angaben bei **Erweiterte Zusatzoptionen als YAML** setzen. Diese Zusatzoptionen überschreiben gleichnamige Formularfelder. APworld-Code wird beim Einlesen nicht ausgeführt.
+
+## Core-Spiele direkt verwenden
+
+Die 55 bisher fehlenden Core-Spiele stehen ab 0.5.0 ohne eigene Dateien und ohne Python im Spielekatalog. Nach dem Spiel suchen und **Einstellungen & YAML** öffnen; das Kennzeichen lautet **Core 0.6.8**. Namen und Optionen einstellen und exportieren. Zur Generierung **Archipelago 0.6.8** verwenden. Diese Worlds sind dort bereits enthalten; keine zweite APworld installieren. Core-Spiele bleiben auch bei einem eigenen APworld-Ordner verfügbar.
+
+Die [Liste der 50 weiterhin fehlenden Spiele](FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen) enthält die manuellen Downloadlinks.
 
 ## Worlds aus Release-ZIPs: SpongeBob
 

@@ -34,6 +34,8 @@ def analyze(path):
                 files.append({'name': filename, 'text': archive.read(entry).decode('utf8', 'replace')})
         result = inspect(files)
         if not result['worlds']:
+            if any(f['name'].endswith('/archipelago.json') and json.loads(f['text']).get('game') == 'APAPI' for f in files if f['name'].endswith('/archipelago.json')):
+                raise ValueError('APAPI ist eine Hilfsbibliothek ohne eigenes Spiel. Die separate Spiel-APworld verwenden; für Friday Night Funkin heißt sie fridaynightfunkin.apworld.')
             raise ValueError('Kein statisch deklarierter World-Spielname gefunden')
         return (name, {'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), **result}, None)
     except Exception as error:
@@ -58,6 +60,10 @@ def main():
                 result['errors'].append({'file': name, 'error': error, 'sha256': hashlib.sha256((ROOT / 'apworlds' / name).read_bytes()).hexdigest()})
             else:
                 result['files'][name] = data
+    notices = json.loads((ROOT / 'assets/apworld-notices.json').read_text(encoding='utf-8'))
+    for entry in result['files'].values():
+        for world in entry['worlds']:
+            world.update(notices.get(entry['sha256'], {}))
     out = ROOT / 'assets/apworld-settings.json'
     temp = out.with_suffix('.tmp')
     temp.write_text(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False), encoding='utf-8')

@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.4.1
+# AP Chaos Bridge 0.5.0
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -14,11 +14,11 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.4.1
+## Update auf 0.5.0
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-Neu in 0.4.1: **SpongeBob / Battle for Bikini Bottom 1.2.5** ist mit vorbereiteten Einstellungen enthalten. Größere APworlds bis 128 MiB lassen sich über Upload und Ordnerscan einlesen; der Katalogdownload kann sie auch aus Release-ZIPs übernehmen.
+Neu in 0.5.0: **55 Core-Spiele mit 1.978 echten Optionsfeldern**, vorbereitet für **Archipelago 0.6.8**, zusätzlich zum APworld-Katalog. Donkey Kong 64 und Spirit Tracks werden jetzt erkannt. FNF zeigt die vollständigen deklarierten Felder und den erforderlichen Mixtape-Engine-Ablauf. Die [50 noch fehlenden Spiele samt Downloadlinks](FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen) kannst du manuell ergänzen.
 
 Seit 0.4.0: klarere Menüs und geführte Regeln mit **Auslöser → Aktion → Empfänger**, zehn benannten Aktionsarten, neutralem Darkmode, Lightmode und einem farbigen klassischen Design. Die Akzentfarbe lässt sich frei wählen. **Stream-Alerts** unterstützen eigene GIFs, animierte Bilder und Videos. Anmeldung und Verbindungsaufbau bleiben unverändert.
 
@@ -126,7 +126,7 @@ Unter **Design** zwischen neutralem **Darkmode**, **Lightmode** und **Klassisch*
 
 ## Spiele und YAMLs
 
-Der **Spielekatalog** enthält ausschließlich eingelesene APworlds. Die Referenzeinträge aus deiner Tabelle dienen als Downloadnachweis und manuelle Ergänzungsliste. Stand, Downloadquellen und SHA-256-Prüfsummen sind unter `assets/apworld-downloads.json` dokumentiert. **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)** nennt Discord-Downloads, nicht erreichbare Dateien, Core-Spiele ohne separate APworld und teilweise dynamische Optionen. Die Referenzliste ist kein Nachweis getesteter Spieleffekte.
+Der **Spielekatalog** enthält eingelesene APworlds und 55 vorbereitete Core-Worlds aus dem offiziellen Archipelago 0.6.8. Reine YAML-Vorlagen und Tabellenreferenzen erzeugen keine Spieleinträge. Die Referenzeinträge aus deiner Tabelle dienen als Downloadnachweis und manuelle Ergänzungsliste. Stand, Downloadquellen und SHA-256-Prüfsummen sind unter `assets/apworld-downloads.json` dokumentiert. **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)** nennt Discord-Downloads, nicht erreichbare Dateien, den Core-Status und teilweise dynamische Optionen. Die Referenzliste ist kein Nachweis getesteter Spieleffekte.
 
 Im Katalog ein Spiel suchen und **Einstellungen & YAML** öffnen. Choice- und Toggle-Optionen erscheinen als Dropdown; kleine Zahlenbereiche ebenfalls. Größere Bereiche erlauben eigene Werte und Zufallsbereiche. Bekannte Set-Werte bieten eine Mehrfachauswahl; freie Dictionaries und andere komplexe Angaben bleiben strukturierte Eingaben. Ein Slotname pro Zeile erzeugt eine YAML pro Spieler, mehrere Spieler werden als ZIP exportiert. Einstellungen und Namen bleiben pro Raum gespeichert.
 
@@ -134,11 +134,17 @@ Eigene `.apworld`-Dateien in **`apworlds/`** oder einen Unterordner legen und **
 
 Die Dateien liegen nach Quelle und Hash in Unterordnern; ihre **Originalnamen bleiben erhalten**. Für die eigentliche Archipelago-Generierung die gewünschte Datei in Archipelagos `custom_worlds` installieren. Abweichende Installationsnamen einzelner Entwicklerpakete stehen in der manuellen Liste. Nicht alle mitgelieferten Versionen gleichzeitig in Archipelago installieren. Den verwendeten Dateipfad zeigt der Editor als Quelle an.
 
-Die bekannten Pakete `dk64.apworld`, `tloz_st.apworld` und `APAPI.apworld` liefern in den enthaltenen Versionen keine statisch auswertbare Spieldeklaration. Sie stehen im aufklappbaren Einlesebericht unter **übersprungen**. Python allein ergänzt diese Deklaration nicht.
+**Donkey Kong 64** und **Spirit Tracks** werden mit 100 bzw. 90 Feldern erkannt. **Friday Night Funkin** hat 46 Felder; seine World verlangt für unterstützte YAMLs einen Export aus der **Mixtape Engine**, insbesondere bei eigenen Songs und Mods. Die Spielseite erklärt das und verlinkt die Anleitung. `APAPI.apworld` ist eine zusätzliche Hilfsbibliothek ohne eigenes Spiel und wird im Einlesebericht entsprechend getrennt aufgeführt.
 
 Der Import wertet Python-Deklarationen statisch aus und führt APworld-Code nicht aus. Laufzeitabhängige Optionen und Standardwerte können dabei offen bleiben; die Spielseite weist darauf hin. Fehlende Werte bei **Erweiterte Zusatzoptionen als YAML** setzen oder die Standards der World übernehmen. Zusatzoptionen überschreiben gleichnamige Formularwerte. Die World-Version in der anschließenden Archipelago-Generierung muss zum Editor passen. Die Bridge exportiert YAMLs und generiert selbst keinen Seed.
 
 Ein APworld liefert nicht automatisch beliebige Live-Funktionen. Zusätzliche Items stammen weiterhin aus dem echten AP-Raumkatalog; erkannte Fallennamen sind Vorschläge für den Abgleich. Die tatsächliche Wirkung hängt vom verbundenen Spielclient ab. Einen Run-Reset enthält diese Version nicht.
+
+## Core-Spiele ohne eigene APworld
+
+Die 55 zuvor fehlenden Core-Spiele sind sofort im Katalog verfügbar, mit Kennzeichnung **Core 0.6.8**. Spiel suchen, Einstellungen öffnen, Slotnamen eintragen und YAMLs exportieren. Diese Worlds sind in Archipelago bereits enthalten; keine zusätzliche APworld installieren. Für die Generierung **Archipelago 0.6.8** verwenden. Die YAML setzt `requires.version: 0.6.8`.
+
+Der Core-Katalog bleibt nach Neustart und Wechsel des APworld-Ordners erhalten. Eine eigene APworld mit genau demselben Spielnamen hat Vorrang; nach ihrem Entfernen und erneutem Einlesen erscheint wieder die Core-Version. Die Einstellungen stammen aus echten Optionsklassen des festgelegten offiziellen Releases; die Anwendung liest nur die vorbereiteten JSON-Metadaten.
 
 ## Worlds aus Release-ZIPs: SpongeBob
 
@@ -251,3 +257,7 @@ Tests und Prüfgrenzen: **[VALIDIERUNG.md](VALIDIERUNG.md)**. Drittanbieter-Lize
 - [Deine AP-Spieleliste](https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002)
 
 Design: `data/appearance.json`; hochgeladene Animationen: `data/alert-media/`. Beide bleiben bei Programmupdates erhalten.
+
+### Core-Metadaten für Entwickler aktualisieren
+
+Die normale Anwendung benötigt diese Schritte nicht. `assets/core-worlds-source.json` legt Release, Commit und 55 World-Module fest. Einen sauberen offiziellen Checkout dieses Commits verwenden, die Entwicklerabhängigkeiten mit `python -m pip install -r scripts/requirements-core-cache.txt` installieren und `python scripts/build_core_cache.py --archipelago PFAD` ausführen. `npm run validate:core -- --archipelago PFAD` prüft 110 aus der Bridge exportierte YAMLs mit `Generate.roll_settings`, `Option.verify` und vorhandenen Dataclass-Validatoren. Dabei wird ausschließlich der explizit gewählte offizielle Core-Quellcode importiert. Normale APworld-Imports bleiben statisch. Der Release-Workflow reproduziert diese Prüfung automatisch.

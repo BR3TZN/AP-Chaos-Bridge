@@ -1,30 +1,22 @@
 {
-  "checkedAt": "2026-10-22T10:05:08.125Z",
+  "checkedAt": "2026-10-22T10:46:47.619Z",
   "files": 768,
-  "variants": 782,
-  "exportedGames": 758,
+  "variants": 784,
+  "exportedGames": 760,
   "errors": [],
   "parserErrors": [
     {
-      "file": "github-com-2dos/814f8f1b/dk64.apworld",
-      "error": "Kein statisch deklarierter World-Spielname gefunden",
-      "sha256": "814f8f1b1508f0941a8ae4ffa50dc886040b38b408d644bdd27ff16d58b66170"
-    },
-    {
-      "file": "github-com-DayKat/292752c2/tloz_st.apworld",
-      "error": "Kein statisch deklarierter World-Spielname gefunden",
-      "sha256": "292752c26934d75ef655c4a8eafb9079563ff4c8160b258f052a2bef4a746ee6"
-    },
-    {
       "file": "github-com-Z11Coding/65070658/APAPI.apworld",
-      "error": "Kein statisch deklarierter World-Spielname gefunden",
+      "error": "APAPI ist eine Hilfsbibliothek ohne eigenes Spiel. Die separate Spiel-APworld verwenden; für Friday Night Funkin heißt sie fridaynightfunkin.apworld.",
       "sha256": "65070658126c8ce131c4bb898e903a8c4c8922a4de98ff433a6cda7360feffb8"
     }
   ],
+  "coreGames": 55,
+  "catalogGames": 815,
   "yamlSchema": "1.1",
-  "yamlRoundTrips": 782,
+  "yamlRoundTrips": 839,
   "pythonYaml": {
-    "checked": 782,
+    "checked": 839,
     "loader": "PyYAML 6.0.3",
     "errors": []
   }
