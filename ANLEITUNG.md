@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.5.1 · Einrichtung
+# AP Chaos Bridge 0.5.2 · Einrichtung
 
 ## Start und Update
 

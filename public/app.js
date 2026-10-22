@@ -119,8 +119,13 @@ function render(force = false) {
   }
   if (!force && document.activeElement?.closest('form')) return;
   if (!force && page === 'spiel' && $('#studio-yaml-form')) return;
+  const search = page === 'katalog' ? $('#studio-search') : null;
+  const searchSelection = search && search === document.activeElement ? [search.selectionStart, search.selectionEnd, search.selectionDirection] : null;
   const pages = { regie: dashboard, quellen: () => Studio.sourcesPage(sourcesPage()), spielslots: () => slotsPage() + Studio.playersPanel(), design: () => Appearance.page(), alerts: () => Alerts.page(), regeln: rulesPage, ereignisse: () => Studio.eventsPage(eventsPage), einrichtung: settingsPage, katalog: () => Studio.catalogPage(), raeume: () => Studio.roomsPage(), spiel: () => Studio.gamePage() };
   $('#main').innerHTML = (pages[page] || dashboard)();
+  if (searchSelection) {
+    const next = $('#studio-search'); next.focus({ preventScroll: true }); next.setSelectionRange(...searchSelection);
+  }
   Updates.sync();
 }
 function showDrawer(content) { $('#drawer-content').innerHTML = content; if (!$('#drawer').open) $('#drawer').showModal(); }

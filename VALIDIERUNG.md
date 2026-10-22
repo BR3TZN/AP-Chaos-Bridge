@@ -1,10 +1,10 @@
-# Prüfung der Version 0.5.1
+# Prüfung der Version 0.5.2
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Automatisierte Prüfungen
 
-**123 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**125 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -92,3 +92,7 @@ Der allgemeine Bestandslauf umfasst **839 YAML-1.1-/PyYAML-Roundtrips**, einschl
 ## Paketprüfung 0.5.1
 
 Der echte Download von 0.5.0 wurde korrekt per SHA-256 geprüft, aber vor der Installation wegen der neuen Hauptordner-Datei `FEHLENDE-SPIELE.md` abgewiesen. 0.5.1 verlagert sie im Laufzeitpaket in den erlaubten Ordner `assets`; Quellcode-Paket und GitHub-Liste behalten den bisherigen Pfad. Der Paketbau prüft nun das vollständige Manifest mit `validateManifest`. Ein Integrationstest baut ein echtes Paket, entpackt es über `extractRelease`, prüft alle Hashes und verifiziert die Zurückweisung unbekannter Hauptordner-Dateien.
+
+## Spielsuche 0.5.2
+
+Die beiden neuen Regressionstests scheitern mit der vorherigen Oberfläche, weil `df` bei einer Aktualisierung zu einer leeren Zeichenfolge wird. Mit dem Fix bleiben Suchtext und gefilterte Treffer beim tatsächlichen 15-Sekunden-Callback erhalten, sowohl bei fokussiertem Suchfeld als auch nach Verlassen des Felds. Fokus und Textauswahl werden über den Neuaufbau hinweg wiederhergestellt. Ein absichtlich verzögerter Katalogabruf prüft zusätzlich den erzwungenen Neuaufbau während der Suche und behält 60 bereits angezeigte Treffer. Die Rückkehr aus einer Spielseite erhält den Filter; bewusstes Leeren und erneutes Suchen setzt die Anzahl wieder auf 24 Treffer zurück. Die Tests verwenden die echten UI-Handler und HTTP-Routen in JSDOM.

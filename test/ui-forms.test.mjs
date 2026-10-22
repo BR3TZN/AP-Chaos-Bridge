@@ -21,20 +21,20 @@ async function ui(t, options = {}) {
   app.library.importWorld(writeZip([{ name: 'ui/__init__.py', content: `class Health(Range):\n range_start = 1\n range_end = 9\n default = 3\nclass UIOptions(PerGameCommonOptions):\n health: Health\nclass UIWorld(World):\n game = 'UI Fixture'\n options_dataclass = UIOptions` }]), 'ui.apworld');
   const dom = new JSDOM(readFileSync(new URL('../public/index.html', import.meta.url), 'utf8'), { url: app.url + '/#regeln', runScripts: 'outside-only' });
   const { window } = dom;
-  const requests = [];
+  const requests = [], intervals = [];
   window.fetch = (path, init) => {
     requests.push({ path, method: init?.method || 'GET', body: init?.body });
     return fetch(new URL(path, app.url), init);
   };
   window.EventSource = class { addEventListener() {} close() {} };
-  window.setInterval = () => 0;
+  window.setInterval = (callback, delay) => { intervals.push({ callback, delay }); return intervals.length; };
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   window.scrollTo = () => {};
-  window.eval(['appearance.js', 'alerts.js', 'studio.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__bridgeRefresh = refresh;');
+  window.eval(['appearance.js', 'alerts.js', 'studio.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading;');
   await until(() => window.document.querySelector('[data-action="new-rule"]'), 'Regelseite wurde nicht geladen.');
   t.after(() => { dom.window.close(); app.close(); rmSync(directory, { recursive: true, force: true }); });
-  return { app, window, document: window.document, requests, directory };
+  return { app, window, document: window.document, requests, directory, intervals };
 }
 
 function emulateNamedId(form) {
@@ -99,6 +99,55 @@ test('catalog opens a dedicated game page and previews separate player YAMLs thr
   document.querySelector('[data-action="studio-yaml-save"]').click();
   await until(() => app.store.state.yamlPresets['UI Fixture']?.players.length === 2, 'Spielereinstellungen wurden nicht gespeichert.');
   await until(() => document.querySelector('[data-studio-message]')?.textContent.includes('gespeichert'), 'Speicherbestätigung fehlt.');
+});
+
+test('catalog search survives periodic refresh with and without focus and returning from a game', async t => {
+  const { app, window, document, intervals } = await ui(t);
+  app.library.importWorld(writeZip([{ name: 'search/__init__.py', content: "class MetroidWorld(World):\n game = 'Metroid Fusion'\nclass OriWorld(World):\n game = 'Ori and the Blind Forest'" }]), 'search.apworld');
+  await window.__bridgeRefresh();
+  window.location.hash = 'katalog'; await until(() => document.querySelector('#studio-search'), 'Katalog fehlt.');
+  await until(() => window.__bridgeIndexReady(), 'Katalogindex fehlt.');
+  let search = document.querySelector('#studio-search'); search.value = 'df'; search.dispatchEvent(new window.Event('input', { bubbles: true })); search.focus(); search.setSelectionRange(1, 2);
+  const titles = () => [...document.querySelectorAll('#studio-catalog-results h3')].map(el => el.textContent);
+  assert.deepEqual(titles(), ['Metroid Fusion', 'Ori and the Blind Forest']);
+  await until(() => intervals.some(timer => timer.delay === 15000), 'Status-Timer fehlt.');
+  const poll = intervals.find(timer => timer.delay === 15000);
+  await poll.callback(); search = document.querySelector('#studio-search');
+  assert.equal(search.value, 'df'); assert.equal(document.activeElement, search); assert.equal(search.selectionStart, 1); assert.equal(search.selectionEnd, 2);
+  search.blur(); await poll.callback(); assert.equal(document.querySelector('#studio-search').value, 'df'); assert.deepEqual(titles(), ['Metroid Fusion', 'Ori and the Blind Forest']);
+  document.querySelector('#studio-catalog-results [data-action="studio-game"]').click();
+  await until(() => document.querySelector('#studio-yaml-form'), 'Spielseite fehlt.');
+  window.location.hash = 'katalog'; await until(() => document.querySelector('#studio-search'), 'Rückkehr zum Katalog fehlgeschlagen.');
+  assert.equal(document.querySelector('#studio-search').value, 'df'); assert.deepEqual(titles(), ['Metroid Fusion', 'Ori and the Blind Forest']);
+});
+
+test('late catalog loading retains the active search and expanded results; clearing resets pagination', async t => {
+  const { app, window, document } = await ui(t);
+  app.library.importWorld(writeZip([{ name: 'many/__init__.py', content: Array.from({ length: 60 }, (_, i) => `class Search${i}World(World):\n game = 'DF Game ${String(i).padStart(2, '0')}'`).join('\n') }]), 'many.apworld');
+  await window.__bridgeRefresh();
+  const originalFetch = window.fetch; let releaseIndex;
+  const indexGate = new Promise(resolve => { releaseIndex = resolve; });
+  window.fetch = async (path, init) => { if (path === '/api/game-index') await indexGate; return originalFetch(path, init); };
+  window.location.hash = 'katalog'; await until(() => document.querySelector('#studio-search'), 'Katalog fehlt.');
+  const originalSearch = document.querySelector('#studio-search');
+  try {
+    originalSearch.value = 'df'; originalSearch.dispatchEvent(new window.Event('input', { bubbles: true }));
+    assert.equal(document.querySelectorAll('#studio-catalog-results article').length, 24);
+    document.querySelector('[data-action="studio-catalog-more"]').click();
+    assert.equal(document.querySelectorAll('#studio-catalog-results article').length, 60);
+    originalSearch.focus(); originalSearch.setSelectionRange(2, 2);
+  } finally {
+    releaseIndex();
+    await until(() => document.querySelector('#studio-search') !== originalSearch, 'Verzögerte Katalog-Aktualisierung fehlt.');
+  }
+  let search = document.querySelector('#studio-search');
+  assert.equal(search.value, 'df'); assert.equal(document.activeElement, search); assert.equal(search.selectionStart, 2);
+  assert.equal(document.querySelectorAll('#studio-catalog-results article').length, 60);
+  await window.__bridgeRefresh(); assert.equal(document.querySelectorAll('#studio-catalog-results article').length, 60);
+  search = document.querySelector('#studio-search'); search.value = ''; search.dispatchEvent(new window.Event('input', { bubbles: true }));
+  assert.equal(document.querySelectorAll('#studio-catalog-results article').length, 24);
+  search.value = 'df'; search.dispatchEvent(new window.Event('input', { bubbles: true }));
+  assert.equal(document.querySelectorAll('#studio-catalog-results article').length, 24);
 });
 
 test('UI creates an independent room and persists multiple player profiles', async t => {

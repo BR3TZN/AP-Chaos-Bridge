@@ -1,3 +1,15 @@
+# AP Chaos Bridge 0.5.2
+
+Die Spielsuche bleibt bei der automatischen Statusaktualisierung erhalten. Bisher wurde der Katalog alle 15 Sekunden neu aufgebaut und dabei Suchtext und Trefferliste zurückgesetzt. Auch eine verzögert geladene Katalogantwort konnte die Suche löschen.
+
+- Suchtext, gefilterte Treffer und bereits über „Weitere Spiele anzeigen“ erweiterte Ergebnisse bleiben bei Aktualisierungen und bei der Rückkehr aus einer Spielseite erhalten.
+- Ein aktives Suchfeld behält Fokus und Textauswahl; die Eingabe springt nicht an den Anfang. Status und Verbindungen werden weiterhin aktualisiert.
+- Zwei Regressionstests reproduzieren das bisherige Löschen von `df` und prüfen den echten 15-Sekunden-Callback, den verspäteten Katalogabruf, Fokuswechsel, Navigation und bewusstes Leeren der Suche. **125 Tests** erfolgreich.
+
+Unter **Updates → Nach Updates suchen → Herunterladen & prüfen → Update installieren** auf **0.5.2** aktualisieren.
+
+---
+
 # AP Chaos Bridge 0.5.1
 
 - Paketierung für bestehende Updater korrigiert: Die Liste der fehlenden Spiele liegt im vollständigen ZIP unter `assets/FEHLENDE-SPIELE.md`. Auf GitHub bleibt sie direkt im Repo erreichbar. Der bisherige Updater verweigerte 0.5.0 wegen dieser neuen Datei im Paket-Hauptordner, bevor Programmdateien geändert wurden.

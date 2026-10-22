@@ -32,7 +32,7 @@ const Studio = {
     const room = S.rooms.rooms.find(r => r.id === id);
     showDrawer(drawerHead(room ? 'Raum bearbeiten' : 'Raum anlegen', 'Ein eigener Arbeitsbereich für deinen Run.') + `<form id="studio-room-form"><div class="drawer-body"><input type="hidden" name="roomId" value="${esc(id || '')}"><label class="section-gap">Raumname<input name="name" required maxlength="100" value="${esc(room?.name || '')}" placeholder="Stardew · Charity Royale"></label><label class="section-gap">Spiel <span class="muted">(optional, leer für Multiworld)</span><input name="game" list="studio-games" value="${esc(room?.game || '')}"><datalist id="studio-games">${this.knownGames().map(g => `<option value="${esc(g)}"></option>`).join('')}</datalist></label></div><div class="drawer-foot"><button class="ghost" type="button" data-action="close-drawer">Abbrechen</button><button class="primary" type="submit">Speichern</button></div></form>`);
   },
-  catalogCards(query = '') {
+  catalogCards(query = this.catalogQuery) {
     if (query !== this.catalogQuery) { this.catalogQuery = query; this.catalogLimit = 24; }
     const normalize = name => name.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
     const imported = new Map((S.gameLibrary?.games || []).filter(g => ['apworld', 'core'].includes(g.kind)).map(g => [normalize(g.game), g]));
@@ -45,7 +45,7 @@ const Studio = {
     void this.loadIndex();
     return pageHead('SPIELEKATALOG', 'Deine Spiele. Deine Settings.', 'Suche ein Spiel, hinterlege seine Einstellungen und exportiere eine YAML für jeden Spieler.', '<button class="primary" data-action="studio-import">+ APworld hinzufügen</button>')
       + `<section class="panel panel-pad"><form id="studio-scan-form"><label>APworld-Ordner<input name="folder" value="${esc(S.gameLibrary?.folder || '')}" required></label><div class="button-row section-gap"><button type="submit">Ordner neu einlesen</button><span class="tiny">Nur .apworld · Unterordner werden mit eingelesen</span></div></form><p class="help">Vorbereitete APworld-Versionen werden am Dateiinhalt erkannt und funktionieren auch in deinem eigenen Ordner oder nach Umbenennen ohne Python. Für bisher unbekannte Versionen ist Python 3.10 oder neuer nötig.</p>${S.gameLibrary?.coreVersion ? `<p class="help">Core-Spiele sind direkt vorbereitet für Archipelago ${esc(S.gameLibrary.coreVersion)}. Sie bleiben auch bei einem eigenen APworld-Ordner verfügbar. Eine eigene APworld desselben Spiels hat Vorrang.</p>` : ''}<p class="help">${S.gameLibrary?.games.length || 0} Spiele verfügbar · <a href="/apworlds-manual" download>Liste der manuellen Downloads</a></p>${this.scanReport ? this.scanReportHTML() : ''}</section>`
-      + `<label class="section-gap">Spiel suchen<input id="studio-search" type="search" placeholder="Stardew Valley, Kingdom Hearts …" autocomplete="off"></label><div id="studio-catalog-results" class="grid catalog-grid section-gap">${this.catalogCards()}</div>`;
+      + `<label class="section-gap">Spiel suchen<input id="studio-search" type="search" value="${esc(this.catalogQuery)}" placeholder="Stardew Valley, Kingdom Hearts …" autocomplete="off"></label><div id="studio-catalog-results" class="grid catalog-grid section-gap">${this.catalogCards()}</div>`;
   },
   scanReportHTML() {
     const report = this.scanReport;
