@@ -69,3 +69,20 @@ test('pinned large-world preparation reconstructs a missing file and rejects a d
   writeFileSync(manifest, JSON.stringify({ worlds: [spec] })); writeFileSync(join(directory, '.catalog-cache', hash(badBundle) + '.zip'), badBundle);
   result = run(); assert.notEqual(result.status, 0); assert(result.stderr.includes('SHA-256 der APworld')); assert(!existsSync(join(directory, 'apworlds', spec.file)));
 });
+
+test('pinned direct APworld assets are copied byte-for-byte and checked for exact size', t => {
+  const directory = mkdtempSync(join(tmpdir(), 'ap-direct-prepare-')); t.after(() => rmSync(directory, { recursive: true, force: true }));
+  mkdirSync(join(directory, 'assets')); mkdirSync(join(directory, '.catalog-cache'));
+  writeFileSync(join(directory, 'assets/apworld-import-limits.json'), JSON.stringify(APWORLD_LIMITS));
+  const world = writeZip([{ name: 'fixture/__init__.py', content: "class Fixture(World):\n game = 'Direct fixture'" }]);
+  const sha256 = createHash('sha256').update(world).digest('hex');
+  const spec = { file: 'fixture.apworld', bytes: world.length, sha256, url: 'https://github.com/example/world/releases/download/v1/fixture.apworld' };
+  const manifest = join(directory, 'assets/large-apworlds.json');
+  writeFileSync(manifest, JSON.stringify({ worlds: [spec] })); writeFileSync(join(directory, '.catalog-cache', sha256 + '.zip'), world);
+  const args = new GameLibrary(directory, root, { memory: true }).pythonCommand();
+  const run = () => spawnSync(args[0], [...args.slice(1), '-X', 'utf8', '-c', "import runpy,sys;from pathlib import Path;runpy.run_path(sys.argv[1])['prepare'](Path(sys.argv[2]))", join(root, 'scripts/prepare_large_apworlds.py'), directory], { encoding: 'utf8', timeout: 30000, windowsHide: true });
+  let result = run(); assert.equal(result.status, 0, result.stderr); assert.deepEqual(readFileSync(join(directory, 'apworlds', spec.file)), world);
+  rmSync(join(directory, 'apworlds', spec.file)); spec.bytes++;
+  writeFileSync(manifest, JSON.stringify({ worlds: [spec] })); result = run(); assert.notEqual(result.status, 0); assert.match(result.stderr, /Dateigröße/);
+  assert(!existsSync(join(directory, 'apworlds', spec.file)));
+});

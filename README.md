@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.5.2
+# AP Chaos Bridge 0.5.3
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -14,17 +14,19 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.5.2
+## Update auf 0.5.3
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-Neu in 0.5.0: **55 Core-Spiele mit 1.978 echten Optionsfeldern**, vorbereitet für **Archipelago 0.6.8**, zusätzlich zum APworld-Katalog. Donkey Kong 64 und Spirit Tracks werden jetzt erkannt. FNF zeigt die vollständigen deklarierten Felder und den erforderlichen Mixtape-Engine-Ablauf. Die [50 noch fehlenden Spiele samt Downloadlinks](https://github.com/BR3TZN/AP-Chaos-Bridge/blob/main/FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen) kannst du manuell ergänzen.
+**Neu in 0.5.3:** 33 weitere Spiele aus den neuen Uploads, mit vorbereiteten Formularen und Mehrspieler-YAMLs ohne Python. Grandia (43 MiB) und Metroid: Samus Returns (32 MiB) liegen dem vollständigen Paket bereits unverändert bei. Made in Abyss ist als APworld gepackt; Crash 3, LEGO Harry Potter 5–7 und Codename: Kids Next Door wurden ergänzt. Ältere Optionswörterbücher, Trap-Gewichtungen, DeathLink-Mixins und entfernte Optionen werden korrekt gelesen. Der Katalog umfasst jetzt 848 Spiele.
+
+Neu in 0.5.0: **55 Core-Spiele mit 1.978 echten Optionsfeldern**, vorbereitet für **Archipelago 0.6.8**, zusätzlich zum APworld-Katalog. Donkey Kong 64 und Spirit Tracks werden jetzt erkannt. FNF zeigt die vollständigen deklarierten Felder und den erforderlichen Mixtape-Engine-Ablauf. Die [aktualisierte Liste noch fehlender Spiele](https://github.com/BR3TZN/AP-Chaos-Bridge/blob/main/FEHLENDE-SPIELE.md#noch-fehlende-apworlds) enthält die verbleibenden Downloads.
 
 Seit 0.4.0: klarere Menüs und geführte Regeln mit **Auslöser → Aktion → Empfänger**, zehn benannten Aktionsarten, neutralem Darkmode, Lightmode und einem farbigen klassischen Design. Die Akzentfarbe lässt sich frei wählen. **Stream-Alerts** unterstützen eigene GIFs, animierte Bilder und Videos. Anmeldung und Verbindungsaufbau bleiben unverändert.
 
 Tatsächliche Spieler kommen automatisch aus eurem verbundenen AP-Raum. Unter **Spieler & Effekte** legt ihr deren erlaubte Items und Fallen fest. Die zusätzliche gespeicherte Namensliste ist optional. Bekannte Pakete ohne statisch lesbare World-Deklaration werden beim Einlesen separat als übersprungen gemeldet; dafür erscheint kein irreführender Python-Hinweis mehr.
 
-Weiterhin enthalten: vorbereitete APworld-Einstellungen ohne Python für bekannte Dateiversionen, YAML-Export für mehrere Spieler, archivierte oder löschbare Räume und Programmupdates. Der Spielekatalog liest ausschließlich APworlds. Fehlende Downloads und Grenzen stehen in **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)**. Bestehende Regeln und Räume bleiben erhalten.
+Weiterhin enthalten: vorbereitete APworld-Einstellungen ohne Python für bekannte Dateiversionen, YAML-Export für mehrere Spieler, archivierte oder löschbare Räume und Programmupdates. Der Spielekatalog liest APworlds und vorbereitete Core-Worlds. Fehlende Downloads und Grenzen stehen in **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)**. Bestehende Regeln und Räume bleiben erhalten.
 
 Kurze Anleitung inklusive Twitch-Setup: **[ANLEITUNG.md](ANLEITUNG.md)**.
 
@@ -36,13 +38,13 @@ Das Repository `BR3TZN/AP-Chaos-Bridge` ist öffentlich; Updates benötigen **ke
 
 Auf älteren Versionen die Updatefunktion einmal mit dem vollständigen neuen ZIP manuell einspielen und `data` beibehalten. GitHubs automatische „Source code“-Downloads enthalten keine Laufzeitpakete und sind keine Updatepakete.
 
-Für einen Entwickler-Checkout vor `npm test` einmal `python scripts/prepare_large_apworlds.py` ausführen. Große Originaldateien wie BfBB werden dabei anhand festgelegter Release- und Datei-Prüfsummen vorbereitet. CI und vollständiger Paketbau führen diesen Schritt automatisch aus. Das fertige Programm benötigt dafür kein Python.
+Für einen Entwickler-Checkout vor `npm test` einmal `python scripts/prepare_large_apworlds.py` ausführen. Große Originaldateien wie BfBB, Grandia und Samus Returns werden dabei anhand festgelegter Release- und Datei-Prüfsummen vorbereitet. CI und vollständiger Paketbau führen diesen Schritt automatisch aus. Das fertige Programm benötigt dafür kein Python.
 
 Neue Releases erstellt `.github/workflows/release.yml`: eine neue Versionsnummer in `package.json` nach `main` pushen. Der Workflow testet unter Windows und Linux, prüft die World-YAMLs mit PyYAML, baut die Pakete und veröffentlicht erst danach. Veröffentlichte Versionen werden nicht überschrieben.
 
 ## YAML-Kompatibilität
 
-Der Katalog zeigt ausschließlich Spiele aus tatsächlich eingelesenen APworld-Dateien. Die Referenzliste bleibt als Downloadnachweis und manuelle Ergänzungsliste verfügbar.
+Der Katalog zeigt Spiele aus tatsächlich eingelesenen APworld-Dateien und den vorbereiteten offiziellen Core-Worlds. Die Referenzliste bleibt als Downloadnachweis und manuelle Ergänzungsliste verfügbar.
 
 Der Export verwendet YAML 1.1, passend zu Archipelagos Leser. Werte wie `no`, `on` und `off` werden als Text erhalten; exponentielle Zahlen werden ausdrücklich als Zahlen ausgegeben. Die Platin-YAML aus einer älteren Bridge-Version neu erzeugen. Das APworld-Manifest liefert World-Version und erforderliche Archipelago-Version. Die passende APworld muss zusätzlich im Generator installiert sein. YAMLs in Archipelagos `Players`-Ordner legen und daraus den Seed generieren.
 

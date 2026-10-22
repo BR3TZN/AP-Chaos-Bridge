@@ -23661,6 +23661,439 @@
       "sha256": "cc3a539ad57aaf3dc669135fd9cfbfa7aceac9f1635cfab48b0e8883f3057011",
       "bytes": 429427,
       "source": "Nutzer-Upload vom 22.10.2026"
+    },
+    {
+      "file": "MadeInAbyssBSFD.apworld",
+      "originalName": "MadeInAbyssBSFD.apworld",
+      "game": "MadeInAbyssBSFD",
+      "games": [
+        "MadeInAbyssBSFD"
+      ],
+      "sha256": "78890615d308b48800cb5a2f83b560e9249eb4cd4c70ad81308080be0f41bbf5",
+      "bytes": 12498,
+      "batch": "catalog-2026-10-22",
+      "origin": "Aus World-Quellcode gepackt",
+      "url": "Nutzer-Upload im Repository",
+      "sourceManifest": "assets/user-world-sources.json"
+    },
+    {
+      "file": "Scrokkpelago.apworld",
+      "originalName": "Scrokkpelago.apworld",
+      "game": "Scrokkpelago",
+      "games": [
+        "Scrokkpelago"
+      ],
+      "sha256": "c29287a7b599e9a07469b2c59bcd6f8838d28182adfed91af4bb361159bc8ee9",
+      "bytes": 7440,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "antonblast.apworld",
+      "originalName": "antonblast.apworld",
+      "game": "Antonblast",
+      "games": [
+        "Antonblast"
+      ],
+      "sha256": "dc2f1aa2656678dd0a2167978439e15cdbd1a9d2b20f0fc75c700f30329e49e5",
+      "bytes": 18692,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "blasphemous2.apworld",
+      "originalName": "blasphemous2.apworld",
+      "game": "Blasphemous 2",
+      "games": [
+        "Blasphemous 2"
+      ],
+      "sha256": "90a861d1bf61c736376d9d09c8afb3855ba9455630386b144f587dba49f2096e",
+      "bytes": 23176,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "cartograp.apworld",
+      "originalName": "cartograp.apworld",
+      "game": "CartogrAP",
+      "games": [
+        "CartogrAP"
+      ],
+      "sha256": "dced4d08c1e3474ccc3be7f7e989b2bf9c4c19aee4ee3da8e1c7605cdfb460ce",
+      "bytes": 11597,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "celeste.apworld",
+      "originalName": "celeste.apworld",
+      "game": "Celeste",
+      "games": [
+        "Celeste"
+      ],
+      "sha256": "b98495eb4b8b0aa3b3de39f5b11151d54e21e955be63611687cfc179f63854a6",
+      "bytes": 43926,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "citadel.apworld",
+      "originalName": "citadel.apworld",
+      "game": "Luanti Citadel",
+      "games": [
+        "Luanti Citadel"
+      ],
+      "sha256": "49449438a5a664bc52dfd6af4bee2364e4b4982a6c3eeb6d71a624e3dc2fdf53",
+      "bytes": 4592,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "crash3.apworld",
+      "originalName": "crash3.apworld",
+      "game": "Crash Bandicoot 3: Warped",
+      "games": [
+        "Crash Bandicoot 3: Warped"
+      ],
+      "sha256": "f05de9257500579fdc81450820f442b791c9398a9a960109757345eef5b356c5",
+      "bytes": 20954,
+      "batch": "catalog-2026-10-22",
+      "origin": "Aus World-Quellcode gepackt",
+      "url": "Nutzer-Upload im Repository",
+      "sourceManifest": "assets/user-world-sources.json"
+    },
+    {
+      "file": "crusader_kings_3.apworld",
+      "originalName": "crusader_kings_3.apworld",
+      "game": "Crusader Kings 3",
+      "games": [
+        "Crusader Kings 3"
+      ],
+      "sha256": "c71f3c51e054773ab4215dee798c95e57f995bb256cc7392c0265b7f493db721",
+      "bytes": 7606,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "dome_keeper.apworld",
+      "originalName": "dome_keeper.apworld",
+      "game": "Dome Keeper",
+      "games": [
+        "Dome Keeper"
+      ],
+      "sha256": "30dcd6752f93360b0fb4290317d53692a16e68512a3ef7bc7498419c959d3de1",
+      "bytes": 85834,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "dqix.apworld",
+      "originalName": "dqix.apworld",
+      "game": "Dragon Quest IX",
+      "games": [
+        "Dragon Quest IX"
+      ],
+      "sha256": "d1f892fc713d9f3b66e2b2b0ac3e73473954b7cd1c3ee0ee9473d6530b23f4a4",
+      "bytes": 71159,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "ff6wc.apworld",
+      "originalName": "ff6wc.apworld",
+      "game": "Final Fantasy 6 Worlds Collide",
+      "games": [
+        "Final Fantasy 6 Worlds Collide"
+      ],
+      "sha256": "0af6979d6034dcd8537328bebfd9566231a66f44ead0f66f9cc31ef378352e0a",
+      "bytes": 2138658,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "ffcc.apworld",
+      "originalName": "ffcc.apworld",
+      "game": "Final Fantasy Crystal Chronicles",
+      "games": [
+        "Final Fantasy Crystal Chronicles"
+      ],
+      "sha256": "064a7d2e9972259d0fc1dee62054f62606b0003b764136d2b51788cbb59b90a1",
+      "bytes": 446334,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "grandia.apworld",
+      "originalName": "grandia.apworld",
+      "game": "Grandia",
+      "games": [
+        "Grandia"
+      ],
+      "sha256": "e80d8e6537a68c9083f6e5679c5cd4e3f42e4ff03637cf563acadef0bca44947",
+      "bytes": 44783053,
+      "batch": "catalog-2026-10-22",
+      "origin": "Verifiziertes Original-Release",
+      "url": "https://github.com/Wakamu/Grandiarchipelago/releases/download/0.15.0/grandia.apworld"
+    },
+    {
+      "file": "kabuto_park.apworld",
+      "originalName": "kabuto_park.apworld",
+      "game": "Kabuto Park",
+      "games": [
+        "Kabuto Park"
+      ],
+      "sha256": "7cb1cb7d5116eab20b61a19bb113219984570aa27b48ae45b84506af511bf5cb",
+      "bytes": 42107,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "khdays.apworld",
+      "originalName": "khdays.apworld",
+      "game": "KH Days",
+      "games": [
+        "KH Days"
+      ],
+      "sha256": "377615b7bba0ed67ce5c03947e77937cc517596d92e196a8021129d280f3b98b",
+      "bytes": 76116,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "kingdomtwocrowns.apworld",
+      "originalName": "kingdomtwocrowns.apworld",
+      "game": "Kingdom Two Crowns",
+      "games": [
+        "Kingdom Two Crowns"
+      ],
+      "sha256": "5f2f177f9228f3935c6a05061ea7c6c0be4c2c41f6c231aa41b1d8f5fa40c9d1",
+      "bytes": 191663,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "lakelands.apworld",
+      "originalName": "lakelands.apworld",
+      "game": "Lakelands",
+      "games": [
+        "Lakelands"
+      ],
+      "sha256": "fbd235bb359bd8a74c219a4536cf0709968e43be1a539d2a116ed434c45b277e",
+      "bytes": 3939,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "lhp2.apworld",
+      "originalName": "lhp2.apworld",
+      "game": "Lego Harry Potter 5-7",
+      "games": [
+        "Lego Harry Potter 5-7"
+      ],
+      "sha256": "7355188566005fe88d9f84ad87f0d8b2c69664309837d49da7eb982aad6de57a",
+      "bytes": 61232,
+      "batch": "catalog-2026-10-22",
+      "origin": "Verifiziertes Original-Release",
+      "url": "https://github.com/jradcode23/LHP2-APWorld/releases/download/v1.2.0/lhp2.apworld"
+    },
+    {
+      "file": "lingo2.apworld",
+      "originalName": "lingo2.apworld",
+      "game": "Lingo 2",
+      "games": [
+        "Lingo 2"
+      ],
+      "sha256": "8afa2ef5c53c15578b2bac5386e77b435c6aea98bb9ecf54bb156866a14973f0",
+      "bytes": 237413,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "mother.apworld",
+      "originalName": "mother.apworld",
+      "game": "MOTHER",
+      "games": [
+        "MOTHER"
+      ],
+      "sha256": "2e641b84d9c0121a88ed89ac6d5acaf33b0e82ea01fe557d0dc43dde73085cf5",
+      "bytes": 42102,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "msr.apworld",
+      "originalName": "msr.apworld",
+      "game": "Metroid: Samus Returns",
+      "games": [
+        "Metroid: Samus Returns"
+      ],
+      "sha256": "41898b8814d81a1fd65ea5f12e35d128d7859fdef43ba4c25e784ba50df21d9a",
+      "bytes": 33940240,
+      "batch": "catalog-2026-10-22",
+      "origin": "Verifiziertes Original-Release",
+      "url": "https://github.com/lilDavid/AP-SamusReturns/releases/download/0.3.1/msr.apworld"
+    },
+    {
+      "file": "openomf.apworld",
+      "originalName": "openomf.apworld",
+      "game": "One Must Fall: 2097",
+      "games": [
+        "One Must Fall: 2097"
+      ],
+      "sha256": "7ab59e0c08769a6b2c47459a77c6633cf9ae62d6f148713ad6c913100423367f",
+      "bytes": 13500,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "peaks_of_yore.apworld",
+      "originalName": "peaks_of_yore.apworld",
+      "game": "Peaks of Yore",
+      "games": [
+        "Peaks of Yore"
+      ],
+      "sha256": "76d206558c151dfde09689b45d603c37ba5c8fd90d3ad10ff8e46118b8037907",
+      "bytes": 19701,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "piranesi.apworld",
+      "originalName": "piranesi.apworld",
+      "game": "Piranesi Restoration Project",
+      "games": [
+        "Piranesi Restoration Project"
+      ],
+      "sha256": "098d80451fb8c72f8c0d6a00da211bdc95630bb260f75c6673c0da2715914ff7",
+      "bytes": 7722,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "pokemon_tcg.apworld",
+      "originalName": "pokemon_tcg.apworld",
+      "game": "Pokemon Trading Card Game",
+      "games": [
+        "Pokemon Trading Card Game"
+      ],
+      "sha256": "4e35ec596c998a739b5fac542b3aeface1e131c9ec5971b2fbd21e9747f7dff9",
+      "bytes": 150681,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "rogue_legacy.apworld",
+      "originalName": "rogue_legacy.apworld",
+      "game": "Rogue Legacy",
+      "games": [
+        "Rogue Legacy"
+      ],
+      "sha256": "229e049ecb61eab6a554e31bdf387137af7f43f8b83c08aa89fc2f0b4c8aa7e4",
+      "bytes": 14358,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "sap.apworld",
+      "originalName": "sap.apworld",
+      "game": "A Space Archipelago",
+      "games": [
+        "A Space Archipelago"
+      ],
+      "sha256": "3bc5df62cbcfd73d837e74849693de622b4e92bdc3e6ce8381e74c43f52e0ff5",
+      "bytes": 206207,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "shellipelago.apworld",
+      "originalName": "shellipelago.apworld",
+      "game": "Shellipelago",
+      "games": [
+        "Shellipelago"
+      ],
+      "sha256": "0d459f8b5054d82f4f501652d8c41fc1d03f4889c1442a78bd84ae09431cd049",
+      "bytes": 56997,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "space_engineers.apworld",
+      "originalName": "space_engineers.apworld",
+      "game": "Space Engineers",
+      "games": [
+        "Space Engineers"
+      ],
+      "sha256": "36848024072450697a8a251be321249fb28d772a3e77b768fcd1797583f0416f",
+      "bytes": 93805,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "spelunker.apworld",
+      "originalName": "spelunker.apworld",
+      "game": "Spelunker",
+      "games": [
+        "Spelunker"
+      ],
+      "sha256": "c2c49d59d418b5d92d228acec5083ad7b52489029a810d25b2ae9571637b845a",
+      "bytes": 87927,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "vintagestory.apworld",
+      "originalName": "vintagestory.apworld",
+      "game": "Vintage Story",
+      "games": [
+        "Vintage Story"
+      ],
+      "sha256": "791a4aabf2b8dbc6881dc698b7f66df621fe97737147c4468cb4a34bfccd5800",
+      "bytes": 9832,
+      "batch": "catalog-2026-10-22",
+      "origin": "Nutzer-Upload",
+      "url": "Nutzer-Upload im Repository"
+    },
+    {
+      "file": "codename_kids_next_door_gc.apworld",
+      "originalName": "codename_kids_next_door_gc.apworld",
+      "game": "Codename: Kids Next Door (GC)",
+      "games": [
+        "Codename: Kids Next Door (GC)"
+      ],
+      "sha256": "6527861d44bd519ecef45d3934a00aa3fe208e1e01d9616ee55d265b13083d97",
+      "bytes": 32241,
+      "batch": "catalog-2026-10-22",
+      "origin": "Verifiziertes Original-Release",
+      "url": "https://github.com/themasterzuku-debug/knd_apworld/releases/download/v2/knd_apworld.zip",
+      "member": "codename_kids_next_door_gc.apworld",
+      "bundleSha256": "396fc344d294c9a73c0d2421fbbdd07b6ff5fad812fcff411d9444c1a5a5a5cf"
     }
   ]
 }

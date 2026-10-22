@@ -1,3 +1,12 @@
+# 0.5.3 – Neue APworlds und Importkorrekturen
+
+- 33 weitere Spiele aus den Nutzerdateien und dazugehörigen World-Quellen vorbereitet; insgesamt 848 Katalogspiele. Alle neuen Versionen funktionieren auch umbenannt oder in eigenen Ordnern ohne Python.
+- Grandia und Metroid: Samus Returns unverändert enthalten. Große Originaldateien werden beim Entwickler-Build aus festgelegten öffentlichen Releases mit exakten Größen und SHA-256-Prüfsummen vorbereitet; der fertige Download enthält sie bereits.
+- Made in Abyss aus dem hochgeladenen World-Ordner gepackt. Crash 3 aus festgelegtem World-Quellstand gebaut; LEGO Harry Potter 5–7 und Codename: Kids Next Door als Original-APworld ergänzt. Reine YAML-Vorlagen und Clients erscheinen weiterhin nicht als Spiele.
+- Ältere option_definitions-Wörterbücher, deklarative Trap-Gewichtungen und DeathLink-Mixins unterstützt. Entfernte Optionen und archivierte alte Clients erzeugen keine falschen Felder oder Spiele mehr. Worlds mit ausschließlich Standardoptionen erhalten keine falsche Warnung.
+- Standards und geänderte YAMLs aller 33 Ergänzungen mit den originalen Optionstypen und Archipelago 0.6.8 geprüft: 66 akzeptierte Konfigurationen, ohne vollständige Seeds oder Spielclients. Space Engineers benötigt zum Generieren weiterhin eine zur älteren World passende Archipelago-Version.
+- Fehlende-Spiele-Liste und Importstatus aktualisiert.
+
 # AP Chaos Bridge 0.5.2
 
 Die Spielsuche bleibt bei der automatischen Statusaktualisierung erhalten. Bisher wurde der Katalog alle 15 Sekunden neu aufgebaut und dabei Suchtext und Trefferliste zurückgesetzt. Auch eine verzögert geladene Katalogantwort konnte die Suche löschen.

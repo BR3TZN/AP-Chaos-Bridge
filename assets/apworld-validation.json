@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-22T10:46:47.619Z",
-  "files": 768,
-  "variants": 784,
-  "exportedGames": 760,
+  "checkedAt": "2026-10-22T15:17:18.378Z",
+  "files": 801,
+  "variants": 803,
+  "exportedGames": 793,
   "errors": [],
   "parserErrors": [
     {
@@ -12,11 +12,11 @@
     }
   ],
   "coreGames": 55,
-  "catalogGames": 815,
+  "catalogGames": 848,
   "yamlSchema": "1.1",
-  "yamlRoundTrips": 839,
+  "yamlRoundTrips": 858,
   "pythonYaml": {
-    "checked": 839,
+    "checked": 858,
     "loader": "PyYAML 6.0.3",
     "errors": []
   }

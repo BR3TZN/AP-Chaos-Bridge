@@ -1,6 +1,6 @@
 """Fetch pinned large APworlds for development, validation and complete releases.
 
-Only the named archive member is copied. APworld code and client libraries are
+Only the pinned APworld or named archive member is copied. APworld code and client libraries are
 never executed. The download and extracted World must both match pinned hashes.
 """
 import hashlib
@@ -32,8 +32,11 @@ def prepare(root=ROOT):
             continue
         if not 0 < world['bytes'] <= limits['maxArchiveBytes']:
             raise ValueError('APworld überschreitet Import-Limit')
-        bundle = cache / (world['bundleSha256'] + '.zip')
-        if not bundle.exists() or digest(bundle) != world['bundleSha256']:
+        direct = not world.get('member')
+        bundle_hash = world['sha256'] if direct else world['bundleSha256']
+        download_limit = limits['maxArchiveBytes'] if direct else limits['maxBundleBytes']
+        bundle = cache / (bundle_hash + '.zip')
+        if not bundle.exists() or digest(bundle) != bundle_hash:
             url = world['url']
             if not url.startswith('https://github.com/') or '/releases/download/' not in url:
                 raise ValueError('Kein gepinnter GitHub-Release-Download')
@@ -44,28 +47,33 @@ def prepare(root=ROOT):
                     size = 0
                     while chunk := response.read(1024 * 1024):
                         size += len(chunk)
-                        if size > limits['maxBundleBytes']:
+                        if size > download_limit:
                             raise ValueError('Download-Bundle überschreitet Größenlimit')
                         output.write(chunk)
                 except BaseException:
                     output.close()
                     temporary.unlink(missing_ok=True)
                     raise
-            if digest(temporary) != world['bundleSha256']:
+            if digest(temporary) != bundle_hash:
                 temporary.unlink(missing_ok=True)
                 raise ValueError('SHA-256 des Release-Bundles stimmt nicht')
             temporary.replace(bundle)
-        if bundle.stat().st_size > limits['maxBundleBytes']:
+        if bundle.stat().st_size > download_limit:
             raise ValueError('Download-Bundle überschreitet Größenlimit')
         target.parent.mkdir(parents=True, exist_ok=True)
         temporary = target.with_suffix('.tmp')
         try:
-            with zipfile.ZipFile(bundle) as archive:
-                info = archive.getinfo(world['member'])
-                if info.flag_bits & 1 or info.file_size != world['bytes']:
-                    raise ValueError('APworld-Dateigröße oder Verschlüsselung ungültig')
-                with archive.open(info) as source, temporary.open('wb') as output:
-                    shutil.copyfileobj(source, output, 1024 * 1024)
+            if direct:
+                if bundle.stat().st_size != world['bytes']:
+                    raise ValueError('APworld-Dateigröße ungültig')
+                shutil.copyfile(bundle, temporary)
+            else:
+                with zipfile.ZipFile(bundle) as archive:
+                    info = archive.getinfo(world['member'])
+                    if info.flag_bits & 1 or info.file_size != world['bytes']:
+                        raise ValueError('APworld-Dateigröße oder Verschlüsselung ungültig')
+                    with archive.open(info) as source, temporary.open('wb') as output:
+                        shutil.copyfileobj(source, output, 1024 * 1024)
             if digest(temporary) != world['sha256']:
                 raise ValueError('SHA-256 der APworld stimmt nicht')
             temporary.replace(target)

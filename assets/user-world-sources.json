@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "worlds": [
+    {
+      "file": "crash3.apworld",
+      "repository": "https://github.com/LimeDreaming/C3AP",
+      "commit": "c24e490df153c610fded9b4c69d6fe2cb70cfa2a",
+      "folder": "apworld/crash3",
+      "sources": [
+        {
+          "file": "__init__.py",
+          "url": "https://raw.githubusercontent.com/LimeDreaming/C3AP/c24e490df153c610fded9b4c69d6fe2cb70cfa2a/apworld/crash3/__init__.py",
+          "sha256": "795e4fdb213d74ff91705ee1270f89603a20224e803a8c54e9012d4e54fcf8c0"
+        },
+        {
+          "file": "archipelago.json",
+          "url": "https://raw.githubusercontent.com/LimeDreaming/C3AP/c24e490df153c610fded9b4c69d6fe2cb70cfa2a/apworld/crash3/archipelago.json",
+          "sha256": "e4321c9a0b62783d92bc56d672486fe18b92eb29dacb4dbf65d078420ea9ec5e"
+        },
+        {
+          "file": "items.py",
+          "url": "https://raw.githubusercontent.com/LimeDreaming/C3AP/c24e490df153c610fded9b4c69d6fe2cb70cfa2a/apworld/crash3/items.py",
+          "sha256": "fb1b946eb8ff66fdc502b4d66a5ede7b48e32caa71ed17f2a587f0e33a20e2ca"
+        },
+        {
+          "file": "locations.py",
+          "url": "https://raw.githubusercontent.com/LimeDreaming/C3AP/c24e490df153c610fded9b4c69d6fe2cb70cfa2a/apworld/crash3/locations.py",
+          "sha256": "d1587dc5307768c24b515c31e26bcc48d5e176e5ffe839b0ab75f8f9f9a0c4fb"
+        },
+        {
+          "file": "options.py",
+          "url": "https://raw.githubusercontent.com/LimeDreaming/C3AP/c24e490df153c610fded9b4c69d6fe2cb70cfa2a/apworld/crash3/options.py",
+          "sha256": "90f1e5013e7461110387e5be9d79fc25b0fd34b8a4d0a03520a008dc6f544959"
+        },
+        {
+          "file": "regions.py",
+          "url": "https://raw.githubusercontent.com/LimeDreaming/C3AP/c24e490df153c610fded9b4c69d6fe2cb70cfa2a/apworld/crash3/regions.py",
+          "sha256": "2ec0c306d9d346ed1bcbe939ba7961d5aa91473692239b8b9172271a7602579a"
+        },
+        {
+          "file": "rules.py",
+          "url": "https://raw.githubusercontent.com/LimeDreaming/C3AP/c24e490df153c610fded9b4c69d6fe2cb70cfa2a/apworld/crash3/rules.py",
+          "sha256": "7de3a7f52bccb978a1e27bcbd8940f6a41abcfba4182710c89ed2d3ec233884a"
+        },
+        {
+          "file": "world.py",
+          "url": "https://raw.githubusercontent.com/LimeDreaming/C3AP/c24e490df153c610fded9b4c69d6fe2cb70cfa2a/apworld/crash3/world.py",
+          "sha256": "dfe64d314438771b00818d44b41f14bc10f720980076817ec8ec604005ed2ebe"
+        }
+      ]
+    },
+    {
+      "file": "MadeInAbyssBSFD.apworld",
+      "origin": "Aus dem vom Nutzer hochgeladenen World-Ordner gepackt; ohne .pyc-Dateien.",
+      "sources": [
+        {
+          "file": "MadeInAbyssBSFD/__init__.py",
+          "sha256": "284634a5d6a98c421d5df84074dcafd83778c021e641ce088117e5e8bfec1664"
+        },
+        {
+          "file": "MadeInAbyssBSFD/archipelago.json",
+          "sha256": "e007af5945b37289f641b9ad2bd33557b1f02dcbd77e37d366b1bf88f9c17c34"
+        },
+        {
+          "file": "MadeInAbyssBSFD/docs/setup_en.md",
+          "sha256": "b3ce436c89e4cff6da21487f19f081ba6562882ab2439927d472bca378b788af"
+        },
+        {
+          "file": "MadeInAbyssBSFD/items.py",
+          "sha256": "c1c9b5fdf4cd086c9e6a28ab5fe7497500368214e47c90d55776f0710726b2b3"
+        },
+        {
+          "file": "MadeInAbyssBSFD/locations.py",
+          "sha256": "5b263beaeec70658672080ebb8fbc02fd80997046f27f3bdf324ddc8b4ca3de4"
+        },
+        {
+          "file": "MadeInAbyssBSFD/options.py",
+          "sha256": "1389d1ab79a4e6642ac3e841bf1fb29ea54f4a822fb0b3122491c2dc6419f81c"
+        },
+        {
+          "file": "MadeInAbyssBSFD/regions.py",
+          "sha256": "2b6dc074cdc5cc8004e5ca82fc69e1fca6b82b82576b103181fff6bbd1c2637a"
+        },
+        {
+          "file": "MadeInAbyssBSFD/rules.py",
+          "sha256": "5795519f6299b78d9b4b02ab01be2bb1a3cbfa6feb0c7eaf7dacd8fa33601fd9"
+        },
+        {
+          "file": "MadeInAbyssBSFD/test/__init__.py",
+          "sha256": "96afa83e155d49056a74462aedcaba8fab0674c5dc77bdb31be33e6c5fe46f9f"
+        },
+        {
+          "file": "MadeInAbyssBSFD/test/bases.py",
+          "sha256": "fd500c1b04b13718d054c0442600fc1161afdc27b3e75bc73d325a19579af107"
+        },
+        {
+          "file": "MadeInAbyssBSFD/test/test_basic.py",
+          "sha256": "5235af0da9a1340f0ac5bd2c7715dd78b687219431e48284428d16026aedae1c"
+        },
+        {
+          "file": "MadeInAbyssBSFD/web_world.py",
+          "sha256": "c4afd2482fbe0a4bc4a2e1aa0b817955855cbba7eda0837cf9d80416e673604e"
+        },
+        {
+          "file": "MadeInAbyssBSFD/world.py",
+          "sha256": "8f136de0ce4face62a92ee2652050a77ddb165e97236b2101f205092ef488b3c"
+        }
+      ]
+    }
+  ]
+}

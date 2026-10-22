@@ -185,6 +185,29 @@ def inspect(files):
             try:
                 if isinstance(value, (dict, list, str)) and key is not UNKNOWN: return value[key]
             except (KeyError, IndexError, TypeError): pass
+        if isinstance(node, (ast.DictComp, ast.ListComp, ast.SetComp)) and len(node.generators) == 1:
+            generator = node.generators[0]
+            if generator.is_async or generator.ifs or not isinstance(generator.target, ast.Name): return UNKNOWN
+            values = literal(generator.iter, module, env, depth + 1)
+            if not isinstance(values, (list, dict)) or len(values) > 10000: return UNKNOWN
+            result = {} if isinstance(node, ast.DictComp) else []
+            for value in values:
+                context = {**env, generator.target.id: value}
+                if isinstance(node, ast.DictComp):
+                    key = literal(node.key, module, context, depth + 1)
+                    item = literal(node.value, module, context, depth + 1)
+                    if not isinstance(key, (str, int, float, bool)) or item is UNKNOWN: return UNKNOWN
+                    result[key] = item
+                else:
+                    item = literal(node.elt, module, context, depth + 1)
+                    if item is UNKNOWN: return UNKNOWN
+                    result.append(item)
+            return result
+        if isinstance(node, ast.Call) and name_of(node.func) == 'sorted' and len(node.args) == 1 and not node.keywords:
+            value = literal(node.args[0], module, env, depth + 1)
+            if isinstance(value, (list, dict)) and len(value) <= 10000:
+                try: return sorted(value)
+                except TypeError: return UNKNOWN
         if isinstance(node, ast.Call) and name_of(node.func) in ('set', 'frozenset', 'list', 'tuple', 'dict') and not node.keywords:
             if not node.args: return {} if name_of(node.func) == 'dict' else []
             if len(node.args) == 1:
@@ -236,12 +259,40 @@ def inspect(files):
         return None, ''
 
     def fields(ref, trail=()):
-        if ref in trail or ref not in classes: return {}
+        if ref in trail: return {}
+        if ref not in classes:
+            return {'death_link': 'Options.DeathLink'} if ref.rsplit('.', 1)[-1] == 'DeathLinkMixin' else {}
         entry = classes[ref]; result = {}
         for base in entry['node'].bases: result.update(fields(reference(base, entry['module']), trail + (ref,)))
         for node in entry['node'].body:
             if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name): result[node.target.id] = reference(node.annotation, entry['module'])
         return result
+
+    def option_mapping(node, module, trail=()):
+        """Resolve legacy option dictionaries as declarations, never class objects."""
+        if len(trail) > 24 or node is None: return {}
+        if isinstance(node, (ast.Name, ast.Attribute)):
+            ref = reference(node, module)
+            owner, _, key = ref.rpartition('.')
+            if ref in trail: return {}
+            value = modules.get(owner, {}).get('constants', {}).get(key)
+            return option_mapping(value, owner, trail + (ref,))
+        if isinstance(node, ast.Dict):
+            result = {}
+            for key, value in zip(node.keys, node.values):
+                if key is None: result.update(option_mapping(value, module, trail))
+                else:
+                    key = literal(key, module)
+                    if isinstance(key, str): result[key] = reference(value, module)
+            return result
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+            return option_mapping(node.left, module, trail) | option_mapping(node.right, module, trail)
+        return {}
+
+    def removed(ref, trail=()):
+        if ref in trail: return False
+        if ref not in classes: return ref.rsplit('.', 1)[-1] == 'Removed'
+        return any(removed(reference(base, classes[ref]['module']), trail + (ref,)) for base in classes[ref]['node'].bases)
 
     def is_world(ref, trail=()):
         if ref in trail: return False
@@ -259,21 +310,23 @@ def inspect(files):
     worlds = []
     for ref, entry in classes.items():
         if not is_world(ref): continue
+        if any(part in ('test', 'tests', 'old client', '__pycache__') for part in entry['module'].split('.')[1:]): continue
         game = details(ref)[0].get('game')
         if not isinstance(game, str) or not game.strip(): game = manifests.get(entry['module'].split('.')[0], manifests.get(''))
         if not isinstance(game, str) or not game.strip(): continue
-        node, module = attribute(ref, 'options_dataclass'); option_fields = fields(reference(node, module)) if node is not None else {}
+        node, module = attribute(ref, 'options_dataclass')
+        common_only = node is not None and reference(node, module) in ('Options.PerGameCommonOptions', 'Options.CommonOptions')
+        option_fields = fields(reference(node, module)) if node is not None else {}
         if not option_fields:
-            node, module = attribute(ref, 'options')
-            if isinstance(node, ast.Dict):
-                for key, val in zip(node.keys, node.values):
-                    name = literal(key, module)
-                    if isinstance(name, str): option_fields[name] = reference(val, module)
+            for legacy_key in ('options', 'option_definitions'):
+                node, module = attribute(ref, legacy_key)
+                option_fields.update(option_mapping(node, module))
         if not option_fields:
             candidates = [n for n, c in classes.items() if c['module'].split('.')[0] == entry['module'].split('.')[0] and any(name_of(b).split('.')[-1] in ('PerGameCommonOptions', 'CommonOptions') for b in c['node'].bases)]
             if len(candidates) == 1: option_fields = fields(candidates[0])
         options, unresolved = copy.deepcopy(COMMON), []
         for key, type_ref in option_fields.items():
+            if removed(type_ref): continue
             attrs, kind = details(type_ref)
             if not kind: unresolved.append(key); continue
             label = attrs.get('display_name'); label = label if isinstance(label, str) else key.replace('_', ' ').title()
@@ -308,7 +361,8 @@ def inspect(files):
             if default is UNKNOWN: unresolved.append(key + ' (Standardwert dynamisch)')
             else: option['default'] = default
             options = [o for o in options if o['key'] != key] + [option]
-        if not option_fields: unresolved.append('Options-Dataclass konnte nicht statisch aufgelöst werden')
+        declarations = [attribute(ref, key)[0] for key in ('options_dataclass', 'options', 'option_definitions')]
+        if not option_fields and not common_only and any(node is not None for node in declarations): unresolved.append('Options-Dataclass konnte nicht statisch aufgelöst werden')
         manifest = manifest_details.get(entry['module'].split('.')[0], manifest_details.get('', {}))
         info = {}
         for source_key, target_key in [('minimum_ap_version', 'minimumAPVersion'), ('world_version', 'worldVersion')]:
@@ -316,7 +370,12 @@ def inspect(files):
             if isinstance(value, str): info[target_key] = value[:200]
             elif isinstance(value, list) and len(value) == 3 and all(isinstance(part, int) and part >= 0 for part in value): info[target_key] = '.'.join(map(str, value))
         worlds.append({'game': game, 'options': options, 'unresolved': unresolved, 'traps': sorted(traps), 'parser': 'Python AST · kein Import', 'sourceFile': entry['file'], **info})
-    return {'worlds': worlds, 'warnings': warnings}
+    # Imported abstract bases can describe the same game and options as the concrete World.
+    unique = {}
+    for world in worlds:
+        key = json.dumps({k: v for k, v in world.items() if k != 'sourceFile'}, sort_keys=True)
+        unique.setdefault(key, world)
+    return {'worlds': list(unique.values()), 'warnings': warnings}
 
 if __name__ == '__main__':
     try:

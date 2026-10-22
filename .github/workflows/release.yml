@@ -61,6 +61,10 @@ jobs:
           git diff --exit-code -- assets/core-world-settings.json
       - name: Exportierte Core-YAMLs mit Archipelago prüfen
         run: npm run validate:core -- --archipelago .core-archipelago
+      - name: Große Nutzer-Worlds vorbereiten
+        run: python scripts/prepare_large_apworlds.py
+      - name: Neue Nutzer-YAMLs mit originalen Optionstypen prüfen
+        run: npm run validate:user-worlds -- --archipelago .core-archipelago
   publish:
     if: github.ref == 'refs/heads/main'
     needs: [test, core-options]

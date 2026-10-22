@@ -1,10 +1,10 @@
-# Prüfung der Version 0.5.2
+# Prüfung der Version 0.5.3
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Automatisierte Prüfungen
 
-**125 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**132 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -47,7 +47,7 @@ Standard-YAML und geänderte Optionen wurden zusätzlich mit **Archipelago 0.6.7
 
 ## YAML-1.1- und Platin-Prüfung
 
-Alle **784 APworld-Varianten und 55 Core-Worlds** wurden exportiert und sowohl mit dem YAML-1.1-Leser der JavaScript-Bibliothek als auch mit **PyYAML 6.0.3** erneut gelesen. Sämtliche Werte, Schlüssel und Datentypen wurden mit den Exportdaten verglichen: keine Abweichungen. `npm run validate:worlds -- --pyyaml` reproduziert diese Prüfung; dazu Python mit PyYAML installieren (`python -m pip install PyYAML==6.0.3`). Die normale Bridge benötigt PyYAML nicht.
+Alle **803 APworld-Varianten und 55 Core-Worlds** wurden exportiert und sowohl mit dem YAML-1.1-Leser der JavaScript-Bibliothek als auch mit **PyYAML 6.0.3** erneut gelesen. Sämtliche Werte, Schlüssel und Datentypen wurden mit den Exportdaten verglichen: keine Abweichungen. `npm run validate:worlds -- --pyyaml` reproduziert diese Prüfung; dazu Python mit PyYAML installieren (`python -m pip install PyYAML==6.0.3`). Die normale Bridge benötigt PyYAML nicht.
 
 Pokémon Platin wurde zusätzlich mit dem unveränderten **Archipelago 0.6.7** (Commit `debe4cf035c7c15efe6fb95f72343af0d420c68c`) und der mitgelieferten **APworld 0.2.2** geprüft. Archipelagos `Generate.roll_settings` und `PokemonPlatinumOptions.validate` akzeptieren die Standarddatei sowie zwei Varianten mit geänderten Optionen. Jeweils **99 reale Optionsklassen** wurden verarbeitet. Der vorherige Export scheiterte nachweislich an `hm_reader: no`, das PyYAML als `false` statt als Auswahltext interpretierte. Ergebnis und APworld-Prüfsumme stehen in `assets/pokemon-platinum-validation.json`.
 
@@ -96,3 +96,15 @@ Der echte Download von 0.5.0 wurde korrekt per SHA-256 geprüft, aber vor der In
 ## Spielsuche 0.5.2
 
 Die beiden neuen Regressionstests scheitern mit der vorherigen Oberfläche, weil `df` bei einer Aktualisierung zu einer leeren Zeichenfolge wird. Mit dem Fix bleiben Suchtext und gefilterte Treffer beim tatsächlichen 15-Sekunden-Callback erhalten, sowohl bei fokussiertem Suchfeld als auch nach Verlassen des Felds. Fokus und Textauswahl werden über den Neuaufbau hinweg wiederhergestellt. Ein absichtlich verzögerter Katalogabruf prüft zusätzlich den erzwungenen Neuaufbau während der Suche und behält 60 bereits angezeigte Treffer. Die Rückkehr aus einer Spielseite erhält den Filter; bewusstes Leeren und erneutes Suchen setzt die Anzahl wieder auf 24 Treffer zurück. Die Tests verwenden die echten UI-Handler und HTTP-Routen in JSDOM.
+
+## Neue Nutzerdateien 0.5.3
+
+**33 neue Spiele, 801 APworld-Dateien, 848 Katalogspiele insgesamt.** Alle neuen Dateien werden mit gesperrtem Python-Aufruf aus einem fremden Ordner unter anderen Dateinamen eingelesen. Standardwerte und geänderte Werte werden für zwei Spieler exportiert und erneut gelesen. Grandia (44.783.053 Bytes) und Metroid: Samus Returns (33.940.240 Bytes) stimmen exakt mit den angehängten Originalen und den festgelegten öffentlichen Release-Prüfsummen überein. Der Entwickler-Build bereitet diese großen Dateien vor; das vollständige ZIP enthält sie bereits.
+
+Made in Abyss wurde aus dem Nutzerordner ohne .pyc-Dateien gepackt. Crash 3 verwendet ausschließlich die World-Dateien des festgelegten Commits `c24e490df153c610fded9b4c69d6fe2cb70cfa2a`. LEGO Harry Potter 5–7 und Codename: Kids Next Door wurden als Original-APworlds ergänzt. Quellen und Einzeldatei-Hashes: `assets/user-world-sources.json` und `assets/apworld-downloads.json`. Reine YAML-Dateien und Clientprogramme erzeugen keinen Katalogeintrag.
+
+Die Parserkorrektur liest ältere Optionswörterbücher einschließlich importierter `option_definitions`, begrenzte deklarative Comprehensions und DeathLink-Mixins. Entfernte Optionen erscheinen nicht als Eingabefelder. Archivierte alte Clientquellen erzeugen keine falschen Spiele; identische geerbte World-Deklarationen werden zusammengeführt. Gegenüber dem bisherigen Bestand ging kein Spiel und kein bisher erkanntes Optionsfeld verloren.
+
+**66 Konfigurationen aller 33 Ergänzungen** wurden mit Archipelago 0.6.8 akzeptiert: je Standard und ein geänderter Wert. `scripts/validate_user_worlds.py` lädt ausschließlich ausdrücklich geprüfte, per SHA-256 festgelegte Optionsmodule und erforderliche Datendeklarationen. Die Original-Optionsdataclass wird vorübergehend bei `Generate.roll_settings` registriert, anschließend folgen `Option.verify` und ein vorhandener Dataclass-Validator. Die eigentlichen World-Initialisierungen und Clients werden dabei nicht geladen. Für das ältere Space-Engineers-Wörterbuch werden die ursprünglichen Optionstypen in einer temporären Dataclass geprüft. Das bestätigt deren YAML-Eingaben, jedoch keine vollständige World-Kompatibilität oder Seed-Generierung; dieser Unterschied wird im Editor angezeigt. Ergebnisse: `assets/user-worlds-validation.json`; reproduzierbar mit `npm run validate:user-worlds -- --archipelago PFAD` und den Entwicklerabhängigkeiten aus `scripts/requirements-core-cache.txt`. Die normale Anwendung führt diesen Prüfcode nicht aus.
+
+Der vollständige Bestandslauf bestätigt **858 YAML-1.1-/PyYAML-Roundtrips ohne Abweichungen**. Die 55 Core-Spiele wurden weiterhin mit 110 echten Optionskonfigurationen geprüft. APAPI bleibt als Hilfsbibliothek separat übersprungen. Die aktualisierte Liste nennt noch 18 Spiele ohne passende World-Datei.

@@ -1,0 +1,490 @@
+{
+  "schema": 1,
+  "archipelagoCommit": "54803be064fc7e80c4628777ed0b46a9390f255f",
+  "worlds": [
+    {
+      "file": "MadeInAbyssBSFD.apworld",
+      "sha256": "78890615d308b48800cb5a2f83b560e9249eb4cd4c70ad81308080be0f41bbf5",
+      "games": [
+        "MadeInAbyssBSFD"
+      ],
+      "sources": [
+        {
+          "file": "MadeInAbyssBSFD/options.py",
+          "sha256": "1389d1ab79a4e6642ac3e841bf1fb29ea54f4a822fb0b3122491c2dc6419f81c",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "Scrokkpelago.apworld",
+      "sha256": "c29287a7b599e9a07469b2c59bcd6f8838d28182adfed91af4bb361159bc8ee9",
+      "games": [
+        "Scrokkpelago"
+      ],
+      "sources": [
+        {
+          "file": "Scrokkpelago/options.py",
+          "sha256": "416e354d6d0c2368dba583e5b16f612fb4b1e0bdbcc3a0ed63094117ddb1e0ff",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "antonblast.apworld",
+      "sha256": "dc2f1aa2656678dd0a2167978439e15cdbd1a9d2b20f0fc75c700f30329e49e5",
+      "games": [
+        "Antonblast"
+      ],
+      "sources": [
+        {
+          "file": "antonblast/Options.py",
+          "sha256": "04686f6b22b718cfa80df74cafe6b07dd31f98cd3d09bc455d477436e93a18dc",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "blasphemous2.apworld",
+      "sha256": "90a861d1bf61c736376d9d09c8afb3855ba9455630386b144f587dba49f2096e",
+      "games": [
+        "Blasphemous 2"
+      ],
+      "sources": [
+        {
+          "file": "blasphemous2/Options.py",
+          "sha256": "8173eb53362ab4d79900f183407d3c74ea89fa7dd25c9cc5dd39bdc7463631da",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "cartograp.apworld",
+      "sha256": "dced4d08c1e3474ccc3be7f7e989b2bf9c4c19aee4ee3da8e1c7605cdfb460ce",
+      "games": [
+        "CartogrAP"
+      ],
+      "sources": [
+        {
+          "file": "cartograp/options.py",
+          "sha256": "8a58cb30bcc0aead4750f98a30a0b4e99124953649196308d9b65828e379cc0b",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "celeste.apworld",
+      "sha256": "b98495eb4b8b0aa3b3de39f5b11151d54e21e955be63611687cfc179f63854a6",
+      "games": [
+        "Celeste"
+      ],
+      "sources": [
+        {
+          "file": "celeste/options.py",
+          "sha256": "275b08ee7a0075cd7b4006590ecfdad89afc759544899454e4b8ac4c2998ae90",
+          "kind": "options"
+        },
+        {
+          "file": "celeste/data.py",
+          "sha256": "b92d1869c56b0673b1a77a34224c033729bd96d16cc6156a0c4e101e7a03a9a8",
+          "kind": "dependency"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "citadel.apworld",
+      "sha256": "49449438a5a664bc52dfd6af4bee2364e4b4982a6c3eeb6d71a624e3dc2fdf53",
+      "games": [
+        "Luanti Citadel"
+      ],
+      "sources": [],
+      "legacy": false
+    },
+    {
+      "file": "crash3.apworld",
+      "sha256": "f05de9257500579fdc81450820f442b791c9398a9a960109757345eef5b356c5",
+      "games": [
+        "Crash Bandicoot 3: Warped"
+      ],
+      "sources": [
+        {
+          "file": "crash3/options.py",
+          "sha256": "90f1e5013e7461110387e5be9d79fc25b0fd34b8a4d0a03520a008dc6f544959",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "crusader_kings_3.apworld",
+      "sha256": "c71f3c51e054773ab4215dee798c95e57f995bb256cc7392c0265b7f493db721",
+      "games": [
+        "Crusader Kings 3"
+      ],
+      "sources": [
+        {
+          "file": "crusader_kings_3/options.py",
+          "sha256": "f9f564f2e39f85b21ebdad04ec50e0a5e2564b4b166b8a2ea3c6b615a6009c4d",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "dome_keeper.apworld",
+      "sha256": "30dcd6752f93360b0fb4290317d53692a16e68512a3ef7bc7498419c959d3de1",
+      "games": [
+        "Dome Keeper"
+      ],
+      "sources": [
+        {
+          "file": "dome_keeper/Options.py",
+          "sha256": "de37e05bc4687fa05f113699cdd6699876b6dd9b3cbc9fba9c9af7632ea6c7a6",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "dqix.apworld",
+      "sha256": "d1f892fc713d9f3b66e2b2b0ac3e73473954b7cd1c3ee0ee9473d6530b23f4a4",
+      "games": [
+        "Dragon Quest IX"
+      ],
+      "sources": [
+        {
+          "file": "dqix/Options.py",
+          "sha256": "b6195fa064d76544cea4388196ac7ea0e9d34712db5b1903287e35c0a70becfd",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "ff6wc.apworld",
+      "sha256": "0af6979d6034dcd8537328bebfd9566231a66f44ead0f66f9cc31ef378352e0a",
+      "games": [
+        "Final Fantasy 6 Worlds Collide"
+      ],
+      "sources": [
+        {
+          "file": "ff6wc/Options.py",
+          "sha256": "1e68fd8401f1abe7b79975ab52672cbac35504c3a16ce9ea344d7333ee775b39",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "ffcc.apworld",
+      "sha256": "064a7d2e9972259d0fc1dee62054f62606b0003b764136d2b51788cbb59b90a1",
+      "games": [
+        "Final Fantasy Crystal Chronicles"
+      ],
+      "sources": [
+        {
+          "file": "ffcc/options.py",
+          "sha256": "7b340683ce2ea4ccfa0b4f5cb87ba1f6ecccd21d54943b0a71cbdcd74d323aed",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "grandia.apworld",
+      "sha256": "e80d8e6537a68c9083f6e5679c5cd4e3f42e4ff03637cf563acadef0bca44947",
+      "games": [
+        "Grandia"
+      ],
+      "sources": [
+        {
+          "file": "grandia/Options.py",
+          "sha256": "aae44c0498dad6e42cc1774b337dd9877290be3f660c809144db7e9fb76d29c6",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "kabuto_park.apworld",
+      "sha256": "7cb1cb7d5116eab20b61a19bb113219984570aa27b48ae45b84506af511bf5cb",
+      "games": [
+        "Kabuto Park"
+      ],
+      "sources": [
+        {
+          "file": "kabuto_park/Options.py",
+          "sha256": "74482691b55592156a5c14ef09b136080cc1dc721f78755780196ce5b40b2618",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "khdays.apworld",
+      "sha256": "377615b7bba0ed67ce5c03947e77937cc517596d92e196a8021129d280f3b98b",
+      "games": [
+        "KH Days"
+      ],
+      "sources": [
+        {
+          "file": "khdays/Options.py",
+          "sha256": "4e778ec59591760e152b637c79177194579a9438527fbaef4fcf1e5958b66277",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "kingdomtwocrowns.apworld",
+      "sha256": "5f2f177f9228f3935c6a05061ea7c6c0be4c2c41f6c231aa41b1d8f5fa40c9d1",
+      "games": [
+        "Kingdom Two Crowns"
+      ],
+      "sources": [],
+      "legacy": false
+    },
+    {
+      "file": "lakelands.apworld",
+      "sha256": "fbd235bb359bd8a74c219a4536cf0709968e43be1a539d2a116ed434c45b277e",
+      "games": [
+        "Lakelands"
+      ],
+      "sources": [],
+      "legacy": false
+    },
+    {
+      "file": "lhp2.apworld",
+      "sha256": "7355188566005fe88d9f84ad87f0d8b2c69664309837d49da7eb982aad6de57a",
+      "games": [
+        "Lego Harry Potter 5-7"
+      ],
+      "sources": [
+        {
+          "file": "lhp2/Options.py",
+          "sha256": "9ec7c185cd4fce1fa3fc1c100157e257e171faf829aa74aa9fc9f1e25df70ace",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "lingo2.apworld",
+      "sha256": "8afa2ef5c53c15578b2bac5386e77b435c6aea98bb9ecf54bb156866a14973f0",
+      "games": [
+        "Lingo 2"
+      ],
+      "sources": [
+        {
+          "file": "lingo2/options.py",
+          "sha256": "d5e50464a7142c3c8af1ef65567198bd9f2f55b3c995b059bbc40bc98f788041",
+          "kind": "options"
+        },
+        {
+          "file": "lingo2/items.py",
+          "sha256": "b307ee501dd5c9f3e41586fc053ddaf735fed7b363326bc0d1c57005ba955c80",
+          "kind": "literalDependency",
+          "constants": [
+            "TRAP_ITEMS"
+          ]
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "mother.apworld",
+      "sha256": "2e641b84d9c0121a88ed89ac6d5acaf33b0e82ea01fe557d0dc43dde73085cf5",
+      "games": [
+        "MOTHER"
+      ],
+      "sources": [
+        {
+          "file": "mother/Options.py",
+          "sha256": "9c7365e6ebf2790de50f5dfbe34e496f67d6eb25c6d3e2d61e88e7a4f4eee3fb",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "msr.apworld",
+      "sha256": "41898b8814d81a1fd65ea5f12e35d128d7859fdef43ba4c25e784ba50df21d9a",
+      "games": [
+        "Metroid: Samus Returns"
+      ],
+      "sources": [
+        {
+          "file": "msr/options.py",
+          "sha256": "9a0af05c34b10de23ecb8b76ed05d5d7b2ea3c30135b0408ecd88a8d1b24b15b",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "openomf.apworld",
+      "sha256": "7ab59e0c08769a6b2c47459a77c6633cf9ae62d6f148713ad6c913100423367f",
+      "games": [
+        "One Must Fall: 2097"
+      ],
+      "sources": [
+        {
+          "file": "openomf/Options.py",
+          "sha256": "6fe9c960899174079dfe1c7d1b2b0ab745c05b517d45700157629c8bbeddbd3b",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "peaks_of_yore.apworld",
+      "sha256": "76d206558c151dfde09689b45d603c37ba5c8fd90d3ad10ff8e46118b8037907",
+      "games": [
+        "Peaks of Yore"
+      ],
+      "sources": [
+        {
+          "file": "peaks_of_yore/options.py",
+          "sha256": "4f295aad4940f7a1978ea998c57dbbc0ab3a24fff909cb1431729eae03281483",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "piranesi.apworld",
+      "sha256": "098d80451fb8c72f8c0d6a00da211bdc95630bb260f75c6673c0da2715914ff7",
+      "games": [
+        "Piranesi Restoration Project"
+      ],
+      "sources": [],
+      "legacy": false
+    },
+    {
+      "file": "pokemon_tcg.apworld",
+      "sha256": "4e35ec596c998a739b5fac542b3aeface1e131c9ec5971b2fbd21e9747f7dff9",
+      "games": [
+        "Pokemon Trading Card Game"
+      ],
+      "sources": [
+        {
+          "file": "pokemon_tcg/options.py",
+          "sha256": "0842bbe993bb0f172309a0457eb1d34e74f3219112d44051c9d0c9b3787032db",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "rogue_legacy.apworld",
+      "sha256": "229e049ecb61eab6a554e31bdf387137af7f43f8b83c08aa89fc2f0b4c8aa7e4",
+      "games": [
+        "Rogue Legacy"
+      ],
+      "sources": [
+        {
+          "file": "rogue_legacy/Options.py",
+          "sha256": "8c3356501f1dedc59674491576ad1b25d01ca2aea704e8e7b5534ffb0642e4dd",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "sap.apworld",
+      "sha256": "3bc5df62cbcfd73d837e74849693de622b4e92bdc3e6ce8381e74c43f52e0ff5",
+      "games": [
+        "A Space Archipelago"
+      ],
+      "sources": [
+        {
+          "file": "sap/options.py",
+          "sha256": "c63cdba2c44e927ce1ca3a62b349af510e01dfa923fa31c34c0b14f192f740dc",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "shellipelago.apworld",
+      "sha256": "0d459f8b5054d82f4f501652d8c41fc1d03f4889c1442a78bd84ae09431cd049",
+      "games": [
+        "Shellipelago"
+      ],
+      "sources": [
+        {
+          "file": "shellipelago/options.py",
+          "sha256": "3bca538ef32c3cbc9f43dbe7a3f7b863a868daed86d91c50bb6e61d7cf9d3183",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "space_engineers.apworld",
+      "sha256": "36848024072450697a8a251be321249fb28d772a3e77b768fcd1797583f0416f",
+      "games": [
+        "Space Engineers"
+      ],
+      "sources": [
+        {
+          "file": "space_engineers/Options.py",
+          "sha256": "d17daa2748788e8769cb9d59ac8efb964c51ccbbb0be235fd95a7f177e37558d",
+          "kind": "options"
+        }
+      ],
+      "legacy": true
+    },
+    {
+      "file": "spelunker.apworld",
+      "sha256": "c2c49d59d418b5d92d228acec5083ad7b52489029a810d25b2ae9571637b845a",
+      "games": [
+        "Spelunker"
+      ],
+      "sources": [
+        {
+          "file": "spelunker/Options.py",
+          "sha256": "33480321623f90b01de01a490ff271489927d44386446fcfe35ba270e98d140b",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "vintagestory.apworld",
+      "sha256": "791a4aabf2b8dbc6881dc698b7f66df621fe97737147c4468cb4a34bfccd5800",
+      "games": [
+        "Vintage Story"
+      ],
+      "sources": [
+        {
+          "file": "vintagestory/options.py",
+          "sha256": "eaef4e3f033674544c7468251e80076e4a64fd2578e4b2f2913da6678abf5c31",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    },
+    {
+      "file": "codename_kids_next_door_gc.apworld",
+      "sha256": "6527861d44bd519ecef45d3934a00aa3fe208e1e01d9616ee55d265b13083d97",
+      "games": [
+        "Codename: Kids Next Door (GC)"
+      ],
+      "sources": [
+        {
+          "file": "codename_kids_next_door_gc/options.py",
+          "sha256": "ce36a2e8506db011125bde15605a49633d71a1b6ee757bf2a6490255cf28483f",
+          "kind": "options"
+        }
+      ],
+      "legacy": false
+    }
+  ]
+}

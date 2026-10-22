@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.5.2 · Einrichtung
+# AP Chaos Bridge 0.5.3 · Einrichtung
 
 ## Start und Update
 
@@ -35,7 +35,7 @@ Die Formularfelder basieren auf den deklarierten APworld-Optionen. Dynamische An
 
 Die 55 bisher fehlenden Core-Spiele stehen ab 0.5.0 ohne eigene Dateien und ohne Python im Spielekatalog. Nach dem Spiel suchen und **Einstellungen & YAML** öffnen; das Kennzeichen lautet **Core 0.6.8**. Namen und Optionen einstellen und exportieren. Zur Generierung **Archipelago 0.6.8** verwenden. Diese Worlds sind dort bereits enthalten; keine zweite APworld installieren. Core-Spiele bleiben auch bei einem eigenen APworld-Ordner verfügbar.
 
-Die [Liste der 50 weiterhin fehlenden Spiele](https://github.com/BR3TZN/AP-Chaos-Bridge/blob/main/FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen) enthält die manuellen Downloadlinks.
+Die [Liste der 50 weiterhin fehlenden Spiele](https://github.com/BR3TZN/AP-Chaos-Bridge/blob/main/FEHLENDE-SPIELE.md#noch-fehlende-apworlds) enthält die manuellen Downloadlinks.
 
 ## Worlds aus Release-ZIPs: SpongeBob
 

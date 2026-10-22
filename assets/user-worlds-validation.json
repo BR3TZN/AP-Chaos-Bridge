@@ -1,0 +1,472 @@
+{
+  "archipelagoVersion": "0.6.8",
+  "sourceCommit": "54803be064fc7e80c4628777ed0b46a9390f255f",
+  "games": 33,
+  "configurations": 66,
+  "method": "Originale geprüfte Optionsmodule, Generate.roll_settings, Option.verify und Dataclass.validate; temporäre World-Registrierung ohne Spielcode oder Seed-Generierung. Legacy-Wörterbuch mit ursprünglichen Optionstypen.",
+  "results": [
+    {
+      "file": "MadeInAbyssBSFD.apworld",
+      "game": "MadeInAbyssBSFD",
+      "variant": "default",
+      "options": 16,
+      "valid": true
+    },
+    {
+      "file": "MadeInAbyssBSFD.apworld",
+      "game": "MadeInAbyssBSFD",
+      "variant": "changed",
+      "options": 16,
+      "valid": true
+    },
+    {
+      "file": "Scrokkpelago.apworld",
+      "game": "Scrokkpelago",
+      "variant": "default",
+      "options": 22,
+      "valid": true
+    },
+    {
+      "file": "Scrokkpelago.apworld",
+      "game": "Scrokkpelago",
+      "variant": "changed",
+      "options": 22,
+      "valid": true
+    },
+    {
+      "file": "antonblast.apworld",
+      "game": "Antonblast",
+      "variant": "default",
+      "options": 27,
+      "valid": true
+    },
+    {
+      "file": "antonblast.apworld",
+      "game": "Antonblast",
+      "variant": "changed",
+      "options": 27,
+      "valid": true
+    },
+    {
+      "file": "blasphemous2.apworld",
+      "game": "Blasphemous 2",
+      "variant": "default",
+      "options": 19,
+      "valid": true
+    },
+    {
+      "file": "blasphemous2.apworld",
+      "game": "Blasphemous 2",
+      "variant": "changed",
+      "options": 19,
+      "valid": true
+    },
+    {
+      "file": "cartograp.apworld",
+      "game": "CartogrAP",
+      "variant": "default",
+      "options": 12,
+      "valid": true
+    },
+    {
+      "file": "cartograp.apworld",
+      "game": "CartogrAP",
+      "variant": "changed",
+      "options": 12,
+      "valid": true
+    },
+    {
+      "file": "celeste.apworld",
+      "game": "Celeste",
+      "variant": "default",
+      "options": 18,
+      "valid": true
+    },
+    {
+      "file": "celeste.apworld",
+      "game": "Celeste",
+      "variant": "changed",
+      "options": 18,
+      "valid": true
+    },
+    {
+      "file": "citadel.apworld",
+      "game": "Luanti Citadel",
+      "variant": "default",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "citadel.apworld",
+      "game": "Luanti Citadel",
+      "variant": "changed",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "crash3.apworld",
+      "game": "Crash Bandicoot 3: Warped",
+      "variant": "default",
+      "options": 37,
+      "valid": true
+    },
+    {
+      "file": "crash3.apworld",
+      "game": "Crash Bandicoot 3: Warped",
+      "variant": "changed",
+      "options": 37,
+      "valid": true
+    },
+    {
+      "file": "crusader_kings_3.apworld",
+      "game": "Crusader Kings 3",
+      "variant": "default",
+      "options": 15,
+      "valid": true
+    },
+    {
+      "file": "crusader_kings_3.apworld",
+      "game": "Crusader Kings 3",
+      "variant": "changed",
+      "options": 15,
+      "valid": true
+    },
+    {
+      "file": "dome_keeper.apworld",
+      "game": "Dome Keeper",
+      "variant": "default",
+      "options": 48,
+      "valid": true
+    },
+    {
+      "file": "dome_keeper.apworld",
+      "game": "Dome Keeper",
+      "variant": "changed",
+      "options": 48,
+      "valid": true
+    },
+    {
+      "file": "dqix.apworld",
+      "game": "Dragon Quest IX",
+      "variant": "default",
+      "options": 14,
+      "valid": true
+    },
+    {
+      "file": "dqix.apworld",
+      "game": "Dragon Quest IX",
+      "variant": "changed",
+      "options": 14,
+      "valid": true
+    },
+    {
+      "file": "ff6wc.apworld",
+      "game": "Final Fantasy 6 Worlds Collide",
+      "variant": "default",
+      "options": 39,
+      "valid": true
+    },
+    {
+      "file": "ff6wc.apworld",
+      "game": "Final Fantasy 6 Worlds Collide",
+      "variant": "changed",
+      "options": 39,
+      "valid": true
+    },
+    {
+      "file": "ffcc.apworld",
+      "game": "Final Fantasy Crystal Chronicles",
+      "variant": "default",
+      "options": 37,
+      "valid": true
+    },
+    {
+      "file": "ffcc.apworld",
+      "game": "Final Fantasy Crystal Chronicles",
+      "variant": "changed",
+      "options": 37,
+      "valid": true
+    },
+    {
+      "file": "grandia.apworld",
+      "game": "Grandia",
+      "variant": "default",
+      "options": 20,
+      "valid": true
+    },
+    {
+      "file": "grandia.apworld",
+      "game": "Grandia",
+      "variant": "changed",
+      "options": 20,
+      "valid": true
+    },
+    {
+      "file": "kabuto_park.apworld",
+      "game": "Kabuto Park",
+      "variant": "default",
+      "options": 13,
+      "valid": true
+    },
+    {
+      "file": "kabuto_park.apworld",
+      "game": "Kabuto Park",
+      "variant": "changed",
+      "options": 13,
+      "valid": true
+    },
+    {
+      "file": "khdays.apworld",
+      "game": "KH Days",
+      "variant": "default",
+      "options": 16,
+      "valid": true
+    },
+    {
+      "file": "khdays.apworld",
+      "game": "KH Days",
+      "variant": "changed",
+      "options": 16,
+      "valid": true
+    },
+    {
+      "file": "kingdomtwocrowns.apworld",
+      "game": "Kingdom Two Crowns",
+      "variant": "default",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "kingdomtwocrowns.apworld",
+      "game": "Kingdom Two Crowns",
+      "variant": "changed",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "lakelands.apworld",
+      "game": "Lakelands",
+      "variant": "default",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "lakelands.apworld",
+      "game": "Lakelands",
+      "variant": "changed",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "lhp2.apworld",
+      "game": "Lego Harry Potter 5-7",
+      "variant": "default",
+      "options": 29,
+      "valid": true
+    },
+    {
+      "file": "lhp2.apworld",
+      "game": "Lego Harry Potter 5-7",
+      "variant": "changed",
+      "options": 29,
+      "valid": true
+    },
+    {
+      "file": "lingo2.apworld",
+      "game": "Lingo 2",
+      "variant": "default",
+      "options": 35,
+      "valid": true
+    },
+    {
+      "file": "lingo2.apworld",
+      "game": "Lingo 2",
+      "variant": "changed",
+      "options": 35,
+      "valid": true
+    },
+    {
+      "file": "mother.apworld",
+      "game": "MOTHER",
+      "variant": "default",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "mother.apworld",
+      "game": "MOTHER",
+      "variant": "changed",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "msr.apworld",
+      "game": "Metroid: Samus Returns",
+      "variant": "default",
+      "options": 32,
+      "valid": true
+    },
+    {
+      "file": "msr.apworld",
+      "game": "Metroid: Samus Returns",
+      "variant": "changed",
+      "options": 32,
+      "valid": true
+    },
+    {
+      "file": "openomf.apworld",
+      "game": "One Must Fall: 2097",
+      "variant": "default",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "openomf.apworld",
+      "game": "One Must Fall: 2097",
+      "variant": "changed",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "peaks_of_yore.apworld",
+      "game": "Peaks of Yore",
+      "variant": "default",
+      "options": 40,
+      "valid": true
+    },
+    {
+      "file": "peaks_of_yore.apworld",
+      "game": "Peaks of Yore",
+      "variant": "changed",
+      "options": 40,
+      "valid": true
+    },
+    {
+      "file": "piranesi.apworld",
+      "game": "Piranesi Restoration Project",
+      "variant": "default",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "piranesi.apworld",
+      "game": "Piranesi Restoration Project",
+      "variant": "changed",
+      "options": 11,
+      "valid": true
+    },
+    {
+      "file": "pokemon_tcg.apworld",
+      "game": "Pokemon Trading Card Game",
+      "variant": "default",
+      "options": 39,
+      "valid": true
+    },
+    {
+      "file": "pokemon_tcg.apworld",
+      "game": "Pokemon Trading Card Game",
+      "variant": "changed",
+      "options": 39,
+      "valid": true
+    },
+    {
+      "file": "rogue_legacy.apworld",
+      "game": "Rogue Legacy",
+      "variant": "default",
+      "options": 44,
+      "valid": true
+    },
+    {
+      "file": "rogue_legacy.apworld",
+      "game": "Rogue Legacy",
+      "variant": "changed",
+      "options": 44,
+      "valid": true
+    },
+    {
+      "file": "sap.apworld",
+      "game": "A Space Archipelago",
+      "variant": "default",
+      "options": 28,
+      "valid": true
+    },
+    {
+      "file": "sap.apworld",
+      "game": "A Space Archipelago",
+      "variant": "changed",
+      "options": 28,
+      "valid": true
+    },
+    {
+      "file": "shellipelago.apworld",
+      "game": "Shellipelago",
+      "variant": "default",
+      "options": 27,
+      "valid": true
+    },
+    {
+      "file": "shellipelago.apworld",
+      "game": "Shellipelago",
+      "variant": "changed",
+      "options": 27,
+      "valid": true
+    },
+    {
+      "file": "space_engineers.apworld",
+      "game": "Space Engineers",
+      "variant": "default",
+      "options": 38,
+      "valid": true
+    },
+    {
+      "file": "space_engineers.apworld",
+      "game": "Space Engineers",
+      "variant": "changed",
+      "options": 38,
+      "valid": true
+    },
+    {
+      "file": "spelunker.apworld",
+      "game": "Spelunker",
+      "variant": "default",
+      "options": 15,
+      "valid": true
+    },
+    {
+      "file": "spelunker.apworld",
+      "game": "Spelunker",
+      "variant": "changed",
+      "options": 15,
+      "valid": true
+    },
+    {
+      "file": "vintagestory.apworld",
+      "game": "Vintage Story",
+      "variant": "default",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "vintagestory.apworld",
+      "game": "Vintage Story",
+      "variant": "changed",
+      "options": 21,
+      "valid": true
+    },
+    {
+      "file": "codename_kids_next_door_gc.apworld",
+      "game": "Codename: Kids Next Door (GC)",
+      "variant": "default",
+      "options": 19,
+      "valid": true
+    },
+    {
+      "file": "codename_kids_next_door_gc.apworld",
+      "game": "Codename: Kids Next Door (GC)",
+      "variant": "changed",
+      "options": 19,
+      "valid": true
+    }
+  ],
+  "errors": []
+}

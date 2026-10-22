@@ -11,7 +11,9 @@ import { createApp } from '../server.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const provenance = join(root, 'assets/apworld-downloads.json');
-const uploads = existsSync(provenance) ? JSON.parse(readFileSync(provenance)).userImports || [] : [];
+// Keep these regression cases tied to the seven original uploads; later batches
+// have their own complete scan and export coverage.
+const uploads = existsSync(provenance) ? (JSON.parse(readFileSync(provenance)).userImports || []).filter(row => !row.batch) : [];
 const preparedFiles = uploads.length === 7 && uploads.every(row => existsSync(join(root, 'apworlds', row.file)));
 const worldTest = { skip: preparedFiles ? false : 'Benötigt den APworld-Bestand des vollständigen Pakets' };
 const noPython = () => { throw new Error('Python darf für vorbereitete Dateien nicht aufgerufen werden'); };

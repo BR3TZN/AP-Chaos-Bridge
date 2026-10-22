@@ -2,5 +2,63 @@
   "e0b3c9986ae96fb65fc62735c88a9c52e97cdd0476104b0b14b7199a2b740ad2": {
     "yamlNotice": "Diese FNF-Version verwendet die Mixtape Engine für die unterstützte YAML-Erstellung. Dort zuerst über das AP-Menü und dessen Einstellungen exportieren, insbesondere für eigene Songs und Mods. Die Bridge zeigt die deklarierten Optionen, ersetzt aber den Engine-Export und dessen Zusatzdaten nicht. Die separate APAPI.apworld ist eine Hilfsbibliothek für Archipelago und kein weiteres Spiel.",
     "setupURL": "https://github.com/Z11Coding/Mixtape-Engine-Rework"
+  },
+  "e80d8e6537a68c9083f6e5679c5cd4e3f42e4ff03637cf563acadef0bca44947": {
+    "aliases": [
+      "Grandia HD Remaster"
+    ]
+  },
+  "377615b7bba0ed67ce5c03947e77937cc517596d92e196a8021129d280f3b98b": {
+    "aliases": [
+      "Kingdom Hearts 358/2 Days"
+    ]
+  },
+  "c71f3c51e054773ab4215dee798c95e57f995bb256cc7392c0265b7f493db721": {
+    "aliases": [
+      "Crusader Kings III"
+    ]
+  },
+  "49449438a5a664bc52dfd6af4bee2364e4b4982a6c3eeb6d71a624e3dc2fdf53": {
+    "aliases": [
+      "Citadel (Luanti)"
+    ]
+  },
+  "f05de9257500579fdc81450820f442b791c9398a9a960109757345eef5b356c5": {
+    "aliases": [
+      "Crash Bandicoot 3: Warped"
+    ]
+  },
+  "7355188566005fe88d9f84ad87f0d8b2c69664309837d49da7eb982aad6de57a": {
+    "aliases": [
+      "LEGO Harry Potter 5-7"
+    ]
+  },
+  "36848024072450697a8a251be321249fb28d772a3e77b768fcd1797583f0416f": {
+    "yamlNotice": "Diese World verwendet das ältere option_definitions-Format. Die Bridge liest die Einstellungen; für die Seed-Generierung ist eine dazu passende Archipelago-Version oder eine aktualisierte World erforderlich."
+  },
+  "7cb1cb7d5116eab20b61a19bb113219984570aa27b48ae45b84506af511bf5cb": {
+    "aliases": [
+      "Kabuto Park (Demo)"
+    ]
+  },
+  "098d80451fb8c72f8c0d6a00da211bdc95630bb260f75c6673c0da2715914ff7": {
+    "aliases": [
+      "Piranesi Restoration Project (Luanti)"
+    ]
+  },
+  "6527861d44bd519ecef45d3934a00aa3fe208e1e01d9616ee55d265b13083d97": {
+    "aliases": [
+      "Codename: Kids Next Door, Operation: VIDEOGAME"
+    ]
+  },
+  "2e641b84d9c0121a88ed89ac6d5acaf33b0e82ea01fe557d0dc43dde73085cf5": {
+    "aliases": [
+      "Mother (Earthbound Beginnings)"
+    ]
+  },
+  "4e35ec596c998a739b5fac542b3aeface1e131c9ec5971b2fbd21e9747f7dff9": {
+    "aliases": [
+      "Pokémon Trading Card Game (GameBoy)"
+    ]
   }
 }

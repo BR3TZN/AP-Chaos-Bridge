@@ -29,7 +29,7 @@ def main():
     (ROOT / 'assets/game-index.json').write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding='utf-8')
     files = {f['file'] for row in data['entries'] for f in row.get('files', [])} | {f['file'] for f in data.get('userImports', [])}
     normalize = lambda value: re.sub('[^a-z0-9]', '', unicodedata.normalize('NFKD', value).lower())
-    present = {normalize(name) for name in games}
+    present = {normalize(name) for world in games.values() for name in [world['game'], *world.get('aliases', [])]}
     for world in core_cache['worlds']:
         present.update(normalize(name) for name in [world['game'], *world.get('aliases', [])])
     manual = [r for r in data['entries'] if r['status'] == 'manual' and normalize(r['game']) not in present]
@@ -63,6 +63,18 @@ def main():
     lines += [f"| {esc(game)} | {esc('; '.join(values))} |" for game, values in sorted(partial.items())]
     lines += ['', '## Eigene Dateien einlesen', '', '1. Die originale `.apworld` in `apworlds/` oder einen Unterordner legen.', '2. Die Bridge starten und im Spielekatalog **Ordner neu einlesen** wählen. Vorbereitete Versionen werden am Dateiinhalt erkannt, auch in eigenen Ordnern oder nach Umbenennen; dafür ist kein Python nötig. Unbekannte Versionen benötigen Python 3.10 oder neuer.', '3. Das Spiel öffnen, Einstellungen und Slotnamen festlegen und YAMLs exportieren.', '', 'Die mitgelieferten Dateien liegen nach Quelle und Dateihash in Unterordnern. Ihre Originalnamen bleiben erhalten. Zum Installieren in Archipelago die betreffende Datei in dessen `custom_worlds` kopieren; abweichende Installationsnamen stehen oben. Unterschiedliche Versionen desselben Spiels bitte nicht gleichzeitig installieren.', '', 'Importgrenzen: 128 MiB pro APworld, 512 MiB entpackt, 8 MiB pro ausgewählter Python-/Manifestdatei und zusammen 32 MiB ausgewählter Quelltext. Release-ZIPs zuerst entpacken; die enthaltenen .apworld-Dateien verwenden. Größere Worlds lassen sich nicht allein durch manuelles Kopieren freischalten.', '', 'Der Import liest Python-Deklarationen, führt die APworlds aber nicht aus. Die Prüfung ersetzt keine Seed-Generierung mit einer passenden Archipelago-Version. Das Einlesen installiert keine Spiel-Clients und erzeugt keine zusätzlichen Trap- oder Reset-Funktionen.', '']
     (ROOT / 'APWORLDS-MANUELL.md').write_text('\n'.join(lines), encoding='utf-8')
+    version = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))['version']
+    missing = ['# Noch fehlende Spiele im YAML-Katalog', '',
+               f"Stand: Bridge **{version}**, 22.10.2026. Noch **{len(manual)} Spiele** aus der Quelltabelle benötigen eine passende World-Datei. Der Katalog enthält **{len(games)} Spiele aus APworlds** sowie **{len(core_cache['worlds'])} vorbereitete Core-Spiele**.", '',
+               'Die neue Upload-Runde ergänzt 33 Spiele einschließlich Grandia und Metroid: Samus Returns. Made in Abyss wurde aus dem hochgeladenen World-Ordner gepackt. Für Crash 3 und LEGO Harry Potter 5–7 wurden die zu den Clients gehörenden World-Quellen beziehungsweise Original-APworlds ergänzt.', '',
+               '## Noch fehlende APworlds', '',
+               'Eine YAML-Datei oder ein Spielclient allein enthält keine auslesbaren World-Optionen. Insbesondere der hochgeladene YAML für No Rest for the Wicked ersetzt keine APworld. Die früher gespeicherten Downloadfehler in dieser Liste sind keine erneute Prüfung der Quellen.', '',
+               '| Spiel | Download / Anleitung / Support | Letzter gespeicherter Grund |', '|---|---|---|']
+    missing += [f"| {esc(r['game'])} | {links(r)} | {esc(r['reason'])} |" for r in sorted(manual, key=lambda r: r['game'].lower())]
+    missing += ['', '## Vorbereitete Dateien und Prüfung', '',
+                'Die 33 neuen Spiele sind für Scan, umbenannte Dateien und YAML-Export ohne Python vorbereitet. Die beiden großen Anhänge bleiben bytegleich zu den festgelegten öffentlichen Original-Releases; der vollständige Download enthält sie bereits. Details: [Importstatus](https://github.com/BR3TZN/AP-Chaos-Bridge/blob/main/APWORLDS-MANUELL.md) und [Prüfumfang](https://github.com/BR3TZN/AP-Chaos-Bridge/blob/main/VALIDIERUNG.md).', '',
+                'Space Engineers verwendet noch das ältere `option_definitions`-Format. Der Editor kann die Einstellungen lesen; für die Seed-Generierung wird eine passende Archipelago-Version oder eine aktualisierte World benötigt. Die Optionsprüfung ersetzt keinen vollständigen Seed oder Spielclient.', '']
+    (ROOT / 'FEHLENDE-SPIELE.md').write_text('\n'.join(missing), encoding='utf-8')
     print(json.dumps({'downloadedRows': data['stats']['downloaded'], 'files': len(files), 'games': len(games), 'manual': len(manual), 'core': len(core), 'partiallyDynamic': len(partial)}, ensure_ascii=False))
 if __name__ == '__main__':
     import sys
