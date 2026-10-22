@@ -303,3 +303,15 @@ test('catalog scan reports successful catalog availability and separate skipped 
   assert(document.querySelector('.scan-report summary').textContent.includes('übersprungen'));
   assert(!document.querySelector('.scan-report details').open);
 });
+
+test('APworld chooser accepts a file above the previous 40 MiB limit and explains release ZIP extraction', async t => {
+  const { app, window, document } = await ui(t);
+  window.location.hash = 'katalog'; await until(() => document.querySelector('[data-action="studio-import"]'), 'Katalog fehlt.');
+  document.querySelector('[data-action="studio-import"]').click();
+  const form = document.querySelector('#studio-import-form'); assert(form.textContent.includes('128')); assert(document.querySelector('#drawer').textContent.includes('Release-ZIP'));
+  const bytes = writeZip([{ name: 'large/__init__.py', content: "class LargeWorld(World):\n game = 'UI Large World'" }]);
+  Object.defineProperty(form.elements.namedItem('files'), 'files', { configurable: true, value: [{ name: 'large.apworld', size: 80 * 1024 ** 2, arrayBuffer: async () => bytes }] });
+  // JSDOM cannot build a FileList from test files; emulate the browser submit event.
+  form.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+  await until(() => app.library.data.games['UI Large World'] && !document.querySelector('#drawer').open && !form.querySelector('[type=submit]').disabled, 'Große Datei wurde in der Oberfläche abgelehnt.').catch(error => { throw new Error(error.message + ' ' + document.querySelector('#toast').textContent + ' ' + document.querySelector('#studio-import-progress')?.textContent); });
+});

@@ -1,12 +1,12 @@
 # APworlds: manuelle Downloads und Importstatus
 
-Stand: 2026-10-21T13:23:41Z
+Stand: 2026-10-22T09:59:57Z
 
 [Quelltabelle](https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002#gid=58422002)
 
 Zusätzliche Nutzer-Uploads, unverändert und per SHA-256 erfasst: Bloons TD6, Cyberpunk 2077, Kingdom Hearts III, Minecraft, Pokemon Platinum, Ratchet & Clank 2, The Binding of Isaac Repentance. Bereits identische Dateien werden gemeinsam verwendet.
 
-867 von 867 Tabellenzeilen geprüft. 759 Zeilen mit Download, 767 unterschiedliche APworld-Dateien, 757 erkannte Spielnamen. 52 manuelle Downloads und 56 Core-Einträge ohne separate Datei.
+867 von 867 Tabellenzeilen geprüft. 760 Zeilen mit Download, 768 unterschiedliche APworld-Dateien, 758 erkannte Spielnamen. 51 manuelle Downloads und 56 Core-Einträge ohne separate Datei.
 
 ## Manuell hinzufügen
 
@@ -29,7 +29,6 @@ Die folgenden verlinkten Quellen liefern keinen frei direkt erreichbaren APworld
 | Shellipelago | Kein direktes APworld-Asset im verlinkten Download gefunden | [Download](https://dragonsidestudios.itch.io/shellipelago) · [Anleitung](https://github.com/ethentianknight/shellipelago/releases) · [Support](https://discord.com/channels/731205301247803413/1517710208225378505) |
 | A Space Archipelago | Kein direktes APworld-Asset im verlinkten Download gefunden | [Download](https://berserker66.itch.io/space-archipelago) · [Support](https://discord.com/channels/731205301247803413/1514091091320639498) |
 | Spelunker | Download nur über Discord verlinkt | [Download](https://discord.com/channels/731205301247803413/1237999589907234938) · [Anleitung](https://github.com/PinkSwitch/Archipelago/blob/spelunker/worlds/spelunker/docs/setup_en.md) · [Support](https://discord.com/channels/731205301247803413/1237999589907234938) |
-| Spongebob Squarepants: Battle for Bikini Bottom | Download größer als 40 MiB; Download-Bundle enthält keine .apworld-Datei | [Download](https://github.com/Cyb3RGER/bfbb_ap_world/releases/latest) · [Anleitung](https://github.com/Cyb3RGER/bfbb_ap_world/blob/main/docs/setup_en.md) · [Support](https://discord.com/channels/731205301247803413/1098766534035386458) |
 | ANTONBLAST | Kein direktes APworld-Asset im verlinkten Download gefunden | [Download](https://gamebanana.com/mods/686523) · [Anleitung](https://github.com/ishaeromax/AP-Antonblast-Client/blob/main/README.md) · [Support](https://discord.com/channels/731205301247803413/1341914478610219142) |
 | Blasphemous 2 | Download nur über Discord verlinkt | [Download](https://discord.com/channels/731205301247803413/1399145913649467524/1399146057794981948) · [Anleitung](https://discord.com/channels/731205301247803413/1399145913649467524/1519220863348637758) · [Support](https://discord.com/channels/731205301247803413/1399145913649467524) |
 | Celeste | Download nur über Discord verlinkt | [Download](https://discord.com/channels/731205301247803413/1367624611256205443) · [Anleitung](https://github.com/doshyw/Archipelago/blob/885c19d470477445df5fb2ff3c23c098f4a1da3d/worlds/celeste/docs/celeste_en.md) · [Support](https://discord.com/channels/731205301247803413/1367624611256205443) |
@@ -377,6 +376,6 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 
 Die mitgelieferten Dateien liegen nach Quelle und Dateihash in Unterordnern. Ihre Originalnamen bleiben erhalten. Zum Installieren in Archipelago die betreffende Datei in dessen `custom_worlds` kopieren; abweichende Installationsnamen stehen oben. Unterschiedliche Versionen desselben Spiels bitte nicht gleichzeitig installieren.
 
-Importgrenzen: 40 MiB pro Archiv, 100 MiB entpackt und 8 MiB pro ausgewählter Python-/Manifestdatei. Größere Worlds lassen sich nicht allein durch manuelles Kopieren freischalten.
+Importgrenzen: 128 MiB pro APworld, 512 MiB entpackt, 8 MiB pro ausgewählter Python-/Manifestdatei und zusammen 32 MiB ausgewählter Quelltext. Release-ZIPs zuerst entpacken; die enthaltenen .apworld-Dateien verwenden. Größere Worlds lassen sich nicht allein durch manuelles Kopieren freischalten.
 
 Der Import liest Python-Deklarationen, führt die APworlds aber nicht aus. Die Prüfung ersetzt keine Seed-Generierung mit einer passenden Archipelago-Version. Das Einlesen installiert keine Spiel-Clients und erzeugt keine zusätzlichen Trap- oder Reset-Funktionen.

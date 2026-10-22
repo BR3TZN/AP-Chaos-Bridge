@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.4.0 · Einrichtung
+# AP Chaos Bridge 0.4.1 · Einrichtung
 
 ## Start und Update
 
@@ -30,6 +30,23 @@ Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **
 Bekannte enthaltene Versionen von `dk64.apworld`, `tloz_st.apworld` und `APAPI.apworld` sind noch nicht statisch auswertbar. Der aufklappbare Einlesebericht nennt sie als **übersprungen**; dafür ist fehlendes Python nicht die Ursache. Die übrigen eingelesenen Spiele sind verfügbar.
 
 Die Formularfelder basieren auf den deklarierten APworld-Optionen. Dynamische Angaben werden auf der Spielseite aufgelistet. Für solche Worlds die fehlenden Angaben bei **Erweiterte Zusatzoptionen als YAML** setzen. Diese Zusatzoptionen überschreiben gleichnamige Formularfelder. APworld-Code wird beim Einlesen nicht ausgeführt.
+
+## Worlds aus Release-ZIPs: SpongeBob
+
+**Battle for Bikini Bottom 1.2.5** ist ab Bridge 0.4.1 enthalten: im **Spielekatalog** nach **Bikini Bottom** suchen, **Einstellungen & YAML** öffnen und pro Mitspieler einen Slotnamen eintragen. Die 22 vorbereiteten Felder funktionieren ohne Python. Unter anderem sind goldene Pfannenwender, Socken, Fähigkeiten, Tor-Kosten, DeathLink und RingLink einstellbar.
+
+Andere Spiele werden häufig ebenfalls als Release-ZIP mit einer enthaltenen `.apworld` und zusätzlichen Client-Dateien verteilt:
+
+1. Das passende Release des World-Entwicklers herunterladen und das ZIP entpacken.
+2. Die originale `.apworld` unter **Spielekatalog → + APworld hinzufügen** hochladen oder in den APworld-Ordner kopieren und **Ordner neu einlesen** wählen. Bis **128 MiB pro APworld** werden unterstützt.
+3. Alternativ den **APworld-Ordner** der Bridge auf Archipelagos **`custom_worlds`** setzen, wenn die Worlds dort bereits installiert sind. Bekannte Dateiversionen brauchen kein Python; bisher unbekannte Versionen benötigen Python ab 3.10 für die statische Analyse.
+4. Das eingelesene Spiel öffnen und die Spieler-YAMLs exportieren. Reine Quellcode-Repositories benötigen zunächst eine passende APworld-Datei.
+
+Für das eigentliche Spielen bleiben die Installationsschritte des World-Entwicklers nötig: die passende APworld in Archipelagos `custom_worlds`, gegebenenfalls die mitgelieferten Bibliotheken in Archipelagos `lib`. Die Bridge liest nur Einstellungen; sie installiert keinen Spielclient.
+
+Das hier unterstützte SpongeBob nutzt die ursprüngliche **US-Fassung für GameCube mit Dolphin**. World 1.2.5 verlangt **Archipelago ab 0.6.7**; das angebotene Windows-Paket ist für Archipelagos **Python 3.13** gebaut. Dessen Python-Version ist von einem gegebenenfalls separat für die Bridge installierten Python zu unterscheiden. Anschließend die erzeugten YAMLs in Archipelagos `Players` legen und den Seed generieren.
+
+Quellen: [BfBB 1.2.5](https://github.com/Cyb3RGER/bfbb_ap_world/releases/tag/v1.2.5), [Installationsanleitung](https://github.com/Cyb3RGER/bfbb_ap_world/blob/v1.2.5/docs/setup_en.md), [World-Manifest](https://github.com/Cyb3RGER/bfbb_ap_world/blob/v1.2.5/archipelago.json). Standard-YAML und geänderte Optionen wurden mit dem echten Archipelago 0.6.7 akzeptiert; Ergebnis: `assets/bfbb-validation.json`.
 
 ## Archipelago-Raum verbinden
 

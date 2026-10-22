@@ -1,10 +1,10 @@
-# Prüfung der Version 0.4.0
+# Prüfung der Version 0.4.1
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Automatisierte Prüfungen
 
-**109 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**114 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -25,11 +25,17 @@ Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 is
 
 ## Prüfung des APworld-Bestands
 
-Der vollständige Lauf prüfte **767 APworld-Dateien**, **781 World-Varianten** und den Standardwert-Export für **757 Spielnamen**, ohne Validierungsfehler. Drei Dateien liefern noch keinen statisch erkennbaren Spielnamen; sie werden nach Inhalts-Hash erkannt und im Einlesebericht separat als übersprungen aufgeführt. Der Fall wird ohne verfügbaren Python-Interpreter geprüft.
+Der vollständige Lauf prüfte **768 APworld-Dateien**, **782 World-Varianten** und den Standardwert-Export für **758 Spielnamen**, ohne Validierungsfehler. Drei Dateien liefern noch keinen statisch erkennbaren Spielnamen; sie werden nach Inhalts-Hash erkannt und im Einlesebericht separat als übersprungen aufgeführt. Der Fall wird ohne verfügbaren Python-Interpreter geprüft.
 
 `npm run validate:worlds` prüft Herkunft und SHA-256 jeder Datei, den Laufzeit-ZIP-Leser und den YAML-Export der statisch erkannten Standards jeder World-Variante. Das Ergebnis steht in `assets/apworld-validation.json`. Erkannte und teilweise dynamische Einstellungen sowie Importfehler stehen in `APWORLDS-MANUELL.md`.
 
 Der Bestandsprüfer führt keine APworld-Module aus und generiert keinen Archipelago-Seed. Dynamische Felder bleiben ausdrücklich offen. Eine erfolgreiche YAML-Ausgabe belegt keine Kompatibilität einer beliebigen World-Version mit einer beliebigen Archipelago-Installation.
+
+## Große Worlds und Battle for Bikini Bottom
+
+Die unveränderte **BfBB 1.2.5** hat 79.701.854 Bytes und enthält unkomprimiert rund 119 MB, darunter native Client-Bibliotheken. Geprüft wurden der echte Upload über HTTP, ein Scan aus einem eigenen Ordner, ein umbenannter Dateiname und YAMLs für zwei Spieler ohne Python-Aufruf. Die Oberfläche prüft dieselbe Archivgrenze wie Server, statischer Cache-Builder und Downloader. Grenztests prüfen maximal 128 MiB pro Archiv, 512 MiB deklarierte entpackte Daten, 8 MiB je ausgewählter Quelldatei und zusammen 32 MiB Quelltext. Nicht benötigte Binärdateien werden beim Metadatenlesen nicht entpackt oder ausgeführt.
+
+Standard-YAML und geänderte Optionen wurden zusätzlich mit **Archipelago 0.6.7** und der originalen BfBB-APworld durch `Generate.roll_settings` geprüft. Beide akzeptiert; **23 reale Optionsklassen** verarbeitet, 22 Formularfelder statisch erkannt. Kein vollständiger Seed, kein ROM-Patch und kein Dolphin-Client wurden gestartet. Ergebnis: `assets/bfbb-validation.json`.
 
 ## Prüfgrenzen
 
@@ -41,7 +47,7 @@ Der Bestandsprüfer führt keine APworld-Module aus und generiert keinen Archipe
 
 ## YAML-1.1- und Platin-Prüfung
 
-Alle **781 World-Varianten** wurden exportiert und sowohl mit dem YAML-1.1-Leser der JavaScript-Bibliothek als auch mit **PyYAML 6.0.3** erneut gelesen. Sämtliche Werte, Schlüssel und Datentypen wurden mit den Exportdaten verglichen: keine Abweichungen. `npm run validate:worlds -- --pyyaml` reproduziert diese Prüfung; dazu Python mit PyYAML installieren (`python -m pip install PyYAML==6.0.3`). Die normale Bridge benötigt PyYAML nicht.
+Alle **782 World-Varianten** wurden exportiert und sowohl mit dem YAML-1.1-Leser der JavaScript-Bibliothek als auch mit **PyYAML 6.0.3** erneut gelesen. Sämtliche Werte, Schlüssel und Datentypen wurden mit den Exportdaten verglichen: keine Abweichungen. `npm run validate:worlds -- --pyyaml` reproduziert diese Prüfung; dazu Python mit PyYAML installieren (`python -m pip install PyYAML==6.0.3`). Die normale Bridge benötigt PyYAML nicht.
 
 Pokémon Platin wurde zusätzlich mit dem unveränderten **Archipelago 0.6.7** (Commit `debe4cf035c7c15efe6fb95f72343af0d420c68c`) und der mitgelieferten **APworld 0.2.2** geprüft. Archipelagos `Generate.roll_settings` und `PokemonPlatinumOptions.validate` akzeptieren die Standarddatei sowie zwei Varianten mit geänderten Optionen. Jeweils **99 reale Optionsklassen** wurden verarbeitet. Der vorherige Export scheiterte nachweislich an `hm_reader: no`, das PyYAML als `false` statt als Auswahltext interpretierte. Ergebnis und APworld-Prüfsumme stehen in `assets/pokemon-platinum-validation.json`.
 

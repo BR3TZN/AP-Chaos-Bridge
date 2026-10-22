@@ -26,6 +26,8 @@ jobs:
           import os, sys
           with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as output:
               output.write('AP_BRIDGE_PYTHON=' + sys.executable + '\n')
+      - name: Große APworlds vorbereiten
+        run: python scripts/prepare_large_apworlds.py
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
@@ -54,6 +56,8 @@ jobs:
           import os, sys
           with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as output:
               output.write('AP_BRIDGE_PYTHON=' + sys.executable + '\n')
+      - name: Große APworlds vorbereiten
+        run: python scripts/prepare_large_apworlds.py
       - uses: actions/setup-node@v6
         with:
           node-version: '24'

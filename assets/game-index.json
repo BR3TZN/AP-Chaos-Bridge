@@ -1,6 +1,6 @@
 {
   "source": "https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002#gid=58422002",
-  "date": "2026-10-21T13:23:41Z",
+  "date": "2026-10-22T09:59:57Z",
   "games": [
     {
       "game": "ActRaiser",
@@ -2176,8 +2176,8 @@
       "game": "Spongebob Squarepants: Battle for Bikini Bottom",
       "stability": "Stable",
       "core": false,
-      "downloadStatus": "manual",
-      "reason": "Download größer als 40 MiB; Download-Bundle enthält keine .apworld-Datei"
+      "downloadStatus": "downloaded",
+      "reason": ""
     },
     {
       "game": "Spyro 2: Ripto's Rage",

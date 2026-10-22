@@ -7,25 +7,30 @@ import zipfile
 from pathlib import Path
 from inspect_apworld import inspect
 ROOT = Path(__file__).resolve().parent.parent
+LIMITS = json.loads((ROOT / 'assets/apworld-import-limits.json').read_text(encoding='utf-8'))
 
 def analyze(path):
     name = path.relative_to(ROOT / 'apworlds').as_posix()
     try:
-        if path.stat().st_size > 40 * 1024 * 1024:
-            raise ValueError('Download größer als 40 MiB')
+        if path.stat().st_size > LIMITS['maxArchiveBytes']:
+            raise ValueError('Download größer als ' + str(LIMITS['maxArchiveBytes'] // (1024 * 1024)) + ' MiB')
         with zipfile.ZipFile(path) as archive:
             entries = archive.infolist()
-            if len(entries) > 12000 or sum((e.file_size for e in entries)) > 100 * 1024 * 1024:
+            if len(entries) > LIMITS['maxEntries'] or sum((e.file_size for e in entries)) > LIMITS['maxUncompressedBytes']:
                 raise ValueError('Archiv überschreitet Import-Limit')
             files = []
+            source_bytes = 0
             for entry in entries:
                 filename = entry.filename.replace('\\', '/')
                 if entry.flag_bits & 1 or filename.startswith('/') or '..' in filename.split('/') or (':' in filename):
                     raise ValueError('Ungültiger Archiveintrag')
                 if not (filename.endswith('.py') or filename.split('/')[-1] == 'archipelago.json') or '__pycache__' in filename:
                     continue
-                if entry.file_size > 8 * 1024 * 1024:
+                if entry.file_size > LIMITS['maxSourceFileBytes']:
                     raise ValueError('Quelldatei größer als 8 MiB')
+                source_bytes += entry.file_size
+                if source_bytes > LIMITS['maxSourceBytes']:
+                    raise ValueError('Ausgewählte Quelldateien überschreiten Import-Limit')
                 files.append({'name': filename, 'text': archive.read(entry).decode('utf8', 'replace')})
         result = inspect(files)
         if not result['worlds']:

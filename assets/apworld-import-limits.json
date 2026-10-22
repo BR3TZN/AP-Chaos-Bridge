@@ -1,0 +1,8 @@
+{
+  "maxArchiveBytes": 134217728,
+  "maxBundleBytes": 268435456,
+  "maxUncompressedBytes": 536870912,
+  "maxSourceFileBytes": 8388608,
+  "maxSourceBytes": 33554432,
+  "maxEntries": 12000
+}

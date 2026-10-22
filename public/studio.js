@@ -52,7 +52,7 @@ const Studio = {
     return `<div class="scan-report"><div class="scan-summary" role="status">${badge('Einlesen abgeschlossen', 'good')}<span>${S.gameLibrary.games.length} Spiele bereit · ${report.imported.length} neu eingelesen · ${report.unchanged} Dateien unverändert</span></div>${report.skipped?.length ? `<details class="disclosure"><summary>${report.skipped.length} nicht auswertbare Pakete übersprungen · übriger Katalog ist nutzbar</summary><p class="help">Diese Dateien liefern noch keine Einstellungen. Sie blockieren deine anderen Spiele nicht; Python allein behebt diese bekannten Pakete nicht.</p><ul>${report.skipped.map(e => `<li><code>${esc(e.file)}</code><br>${esc(e.reason)}</li>`).join('')}</ul></details>` : ''}${report.errors.length ? `<details class="disclosure" open><summary>${report.errors.length} Dateien prüfen</summary><ul>${report.errors.map(e => `<li><code>${esc(e.file)}</code><br>${esc(e.error)}</li>`).join('')}</ul></details>` : ''}</div>`;
   },
   importDrawer() {
-    showDrawer(drawerHead('APworlds hinzufügen', 'Mehrere Dateien auswählen oder deinen APworld-Ordner im Spielekatalog einlesen.') + `<form id="studio-import-form"><div class="drawer-body"><label class="section-gap">Dateien<input name="files" type="file" accept=".apworld" multiple required></label><p class="help">APworlds liefern deklarierte Optionen für den Editor. Spielaktionen werden weiterhin mit dem Itemkatalog des verbundenen AP-Raums abgeglichen.</p><div id="studio-import-progress" class="help" role="status"></div></div><div class="drawer-foot"><button type="button" class="ghost" data-action="close-drawer">Abbrechen</button><button class="primary" type="submit">Importieren</button></div></form>`);
+    showDrawer(drawerHead('APworlds hinzufügen', 'Aus einem Release-ZIP zuerst die enthaltenen .apworld-Dateien entpacken. Danach hier auswählen oder den Ordner einlesen.') + `<form id="studio-import-form"><div class="drawer-body"><label class="section-gap">Dateien<input name="files" type="file" accept=".apworld" multiple required></label><p class="help">Maximal ${S.gameLibrary?.importLimits?.maxArchiveBytes / 1024 ** 2 || 128} MiB pro Datei. APworlds liefern deklarierte Optionen für den Editor. Spielaktionen werden weiterhin mit dem Itemkatalog des verbundenen AP-Raums abgeglichen.</p><div id="studio-import-progress" class="help" role="status"></div></div><div class="drawer-foot"><button type="button" class="ghost" data-action="close-drawer">Abbrechen</button><button class="primary" type="submit">Importieren</button></div></form>`);
   },
   async openGame(game) { this.entry = null; this.loadingGame = ''; this.gameError = ''; location.hash = 'spiel/' + encodeURIComponent(game); if (currentPage === 'spiel/' + encodeURIComponent(game)) render(true); },
   async loadGame(game) {
@@ -270,7 +270,7 @@ const Studio = {
       if (!files.length) throw new Error('Mindestens eine Datei auswählen.');
       const errors = [], games = [];
       for (const file of files) {
-        if (file.size > 40 * 1024 * 1024) { errors.push(file.name + ': Datei ist zu groß.'); continue; }
+        if (file.size > (S.gameLibrary?.importLimits?.maxArchiveBytes || 128 * 1024 * 1024)) { errors.push(file.name + ': Maximal ' + (S.gameLibrary?.importLimits?.maxArchiveBytes || 128 * 1024 * 1024) / 1024 ** 2 + ' MiB pro APworld.'); continue; }
         $('#studio-import-progress').textContent = file.name + ' wird eingelesen …';
         try {
           const bytes = new Uint8Array(await file.arrayBuffer()); let binary = '';

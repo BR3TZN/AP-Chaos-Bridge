@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.4.0
+# AP Chaos Bridge 0.4.1
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -14,11 +14,13 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.4.0
+## Update auf 0.4.1
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-Neu in 0.4.0: klarere Menüs und geführte Regeln mit **Auslöser → Aktion → Empfänger**, zehn benannten Aktionsarten, neutralem Darkmode, Lightmode und einem farbigen klassischen Design. Die Akzentfarbe lässt sich frei wählen. **Stream-Alerts** unterstützen eigene GIFs, animierte Bilder und Videos. Anmeldung und Verbindungsaufbau bleiben unverändert.
+Neu in 0.4.1: **SpongeBob / Battle for Bikini Bottom 1.2.5** ist mit vorbereiteten Einstellungen enthalten. Größere APworlds bis 128 MiB lassen sich über Upload und Ordnerscan einlesen; der Katalogdownload kann sie auch aus Release-ZIPs übernehmen.
+
+Seit 0.4.0: klarere Menüs und geführte Regeln mit **Auslöser → Aktion → Empfänger**, zehn benannten Aktionsarten, neutralem Darkmode, Lightmode und einem farbigen klassischen Design. Die Akzentfarbe lässt sich frei wählen. **Stream-Alerts** unterstützen eigene GIFs, animierte Bilder und Videos. Anmeldung und Verbindungsaufbau bleiben unverändert.
 
 Tatsächliche Spieler kommen automatisch aus eurem verbundenen AP-Raum. Unter **Spieler & Effekte** legt ihr deren erlaubte Items und Fallen fest. Die zusätzliche gespeicherte Namensliste ist optional. Bekannte Pakete ohne statisch lesbare World-Deklaration werden beim Einlesen separat als übersprungen gemeldet; dafür erscheint kein irreführender Python-Hinweis mehr.
 
@@ -33,6 +35,8 @@ Unter **Einstellungen → Programmupdates** nach stabilen GitHub-Releases suchen
 Das Repository `BR3TZN/AP-Chaos-Bridge` ist öffentlich; Updates benötigen **keinen Token**. Nur bei einer privaten Kopie unter **GitHub-Zugang für private Repositories** einen [Fine-grained Token](https://github.com/settings/personal-access-tokens/new) für `BR3TZN/AP-Chaos-Bridge` mit **Contents: Read-only** speichern. Der GitHub-Login im Browser wird nicht an den lokalen Updater übergeben. Für öffentliche Repositories ist kein Token erforderlich. Tokens bleiben lokal verschlüsselt und werden nicht exportiert.
 
 Auf älteren Versionen die Updatefunktion einmal mit dem vollständigen neuen ZIP manuell einspielen und `data` beibehalten. GitHubs automatische „Source code“-Downloads enthalten keine Laufzeitpakete und sind keine Updatepakete.
+
+Für einen Entwickler-Checkout vor `npm test` einmal `python scripts/prepare_large_apworlds.py` ausführen. Große Originaldateien wie BfBB werden dabei anhand festgelegter Release- und Datei-Prüfsummen vorbereitet. CI und vollständiger Paketbau führen diesen Schritt automatisch aus. Das fertige Programm benötigt dafür kein Python.
 
 Neue Releases erstellt `.github/workflows/release.yml`: eine neue Versionsnummer in `package.json` nach `main` pushen. Der Workflow testet unter Windows und Linux, prüft die World-YAMLs mit PyYAML, baut die Pakete und veröffentlicht erst danach. Veröffentlichte Versionen werden nicht überschrieben.
 
@@ -135,6 +139,23 @@ Die bekannten Pakete `dk64.apworld`, `tloz_st.apworld` und `APAPI.apworld` liefe
 Der Import wertet Python-Deklarationen statisch aus und führt APworld-Code nicht aus. Laufzeitabhängige Optionen und Standardwerte können dabei offen bleiben; die Spielseite weist darauf hin. Fehlende Werte bei **Erweiterte Zusatzoptionen als YAML** setzen oder die Standards der World übernehmen. Zusatzoptionen überschreiben gleichnamige Formularwerte. Die World-Version in der anschließenden Archipelago-Generierung muss zum Editor passen. Die Bridge exportiert YAMLs und generiert selbst keinen Seed.
 
 Ein APworld liefert nicht automatisch beliebige Live-Funktionen. Zusätzliche Items stammen weiterhin aus dem echten AP-Raumkatalog; erkannte Fallennamen sind Vorschläge für den Abgleich. Die tatsächliche Wirkung hängt vom verbundenen Spielclient ab. Einen Run-Reset enthält diese Version nicht.
+
+## Worlds aus Release-ZIPs: SpongeBob
+
+**Battle for Bikini Bottom 1.2.5** ist ab Bridge 0.4.1 enthalten: im **Spielekatalog** nach **Bikini Bottom** suchen, **Einstellungen & YAML** öffnen und pro Mitspieler einen Slotnamen eintragen. Die 22 vorbereiteten Felder funktionieren ohne Python. Unter anderem sind goldene Pfannenwender, Socken, Fähigkeiten, Tor-Kosten, DeathLink und RingLink einstellbar.
+
+Andere Spiele werden häufig ebenfalls als Release-ZIP mit einer enthaltenen `.apworld` und zusätzlichen Client-Dateien verteilt:
+
+1. Das passende Release des World-Entwicklers herunterladen und das ZIP entpacken.
+2. Die originale `.apworld` unter **Spielekatalog → + APworld hinzufügen** hochladen oder in den APworld-Ordner kopieren und **Ordner neu einlesen** wählen. Bis **128 MiB pro APworld** werden unterstützt.
+3. Alternativ den **APworld-Ordner** der Bridge auf Archipelagos **`custom_worlds`** setzen, wenn die Worlds dort bereits installiert sind. Bekannte Dateiversionen brauchen kein Python; bisher unbekannte Versionen benötigen Python ab 3.10 für die statische Analyse.
+4. Das eingelesene Spiel öffnen und die Spieler-YAMLs exportieren. Reine Quellcode-Repositories benötigen zunächst eine passende APworld-Datei.
+
+Für das eigentliche Spielen bleiben die Installationsschritte des World-Entwicklers nötig: die passende APworld in Archipelagos `custom_worlds`, gegebenenfalls die mitgelieferten Bibliotheken in Archipelagos `lib`. Die Bridge liest nur Einstellungen; sie installiert keinen Spielclient.
+
+Das hier unterstützte SpongeBob nutzt die ursprüngliche **US-Fassung für GameCube mit Dolphin**. World 1.2.5 verlangt **Archipelago ab 0.6.7**; das angebotene Windows-Paket ist für Archipelagos **Python 3.13** gebaut. Dessen Python-Version ist von einem gegebenenfalls separat für die Bridge installierten Python zu unterscheiden. Anschließend die erzeugten YAMLs in Archipelagos `Players` legen und den Seed generieren.
+
+Quellen: [BfBB 1.2.5](https://github.com/Cyb3RGER/bfbb_ap_world/releases/tag/v1.2.5), [Installationsanleitung](https://github.com/Cyb3RGER/bfbb_ap_world/blob/v1.2.5/docs/setup_en.md), [World-Manifest](https://github.com/Cyb3RGER/bfbb_ap_world/blob/v1.2.5/archipelago.json). Standard-YAML und geänderte Optionen wurden mit dem echten Archipelago 0.6.7 akzeptiert; Ergebnis: `assets/bfbb-validation.json`.
 
 ## Mehrere Spieler und Zufallsaktionen
 

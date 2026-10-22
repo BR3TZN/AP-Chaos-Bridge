@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": 1792627950374,
+  "generatedAt": 1792663197507,
   "files": {
     "archipelago-shinten-moe-games/c5691b00/archipelaballs.apworld": {
       "sha256": "c5691b00bb7008d82baadffb6d3009be1e6616af78919c9e9afadc32680d3aef",
@@ -375069,6 +375069,231 @@
           "sourceFile": "kh3/__init__.py",
           "minimumAPVersion": "0.6.6",
           "worldVersion": "0.16.11"
+        }
+      ],
+      "warnings": []
+    },
+    "github-com-Cyb3RGER/83a74e2d/bfbb.apworld": {
+      "sha256": "83a74e2d433308f557088916af214fd3f2242725ef512013c02e556d53020fe5",
+      "worlds": [
+        {
+          "game": "Battle for Bikini Bottom",
+          "options": [
+            {
+              "key": "progression_balancing",
+              "label": "Progression Balancing",
+              "kind": "range",
+              "default": 50,
+              "min": 0,
+              "max": 99,
+              "group": "Archipelago"
+            },
+            {
+              "key": "accessibility",
+              "label": "Accessibility",
+              "kind": "choice",
+              "default": "full",
+              "choices": [
+                {
+                  "value": "full",
+                  "label": "Full"
+                },
+                {
+                  "value": "minimal",
+                  "label": "Minimal"
+                }
+              ],
+              "group": "Archipelago"
+            },
+            {
+              "key": "local_items",
+              "label": "Local Items",
+              "kind": "set",
+              "default": [],
+              "group": "Archipelago"
+            },
+            {
+              "key": "non_local_items",
+              "label": "Non Local Items",
+              "kind": "set",
+              "default": [],
+              "group": "Archipelago"
+            },
+            {
+              "key": "start_inventory",
+              "label": "Start Inventory",
+              "kind": "dict",
+              "default": {},
+              "group": "Archipelago"
+            },
+            {
+              "key": "start_hints",
+              "label": "Start Hints",
+              "kind": "set",
+              "default": [],
+              "group": "Archipelago"
+            },
+            {
+              "key": "start_location_hints",
+              "label": "Start Location Hints",
+              "kind": "set",
+              "default": [],
+              "group": "Archipelago"
+            },
+            {
+              "key": "exclude_locations",
+              "label": "Exclude Locations",
+              "kind": "set",
+              "default": [],
+              "group": "Archipelago"
+            },
+            {
+              "key": "priority_locations",
+              "label": "Priority Locations",
+              "kind": "set",
+              "default": [],
+              "group": "Archipelago"
+            },
+            {
+              "key": "item_links",
+              "label": "Item Links",
+              "kind": "list",
+              "default": [],
+              "group": "Archipelago"
+            },
+            {
+              "key": "start_inventory_from_pool",
+              "label": "Start Inventory From Pool",
+              "kind": "dict",
+              "group": "Spieleinstellungen",
+              "description": "",
+              "default": {}
+            },
+            {
+              "key": "available_spatulas",
+              "label": "Available Spatulas",
+              "kind": "range",
+              "group": "Spieleinstellungen",
+              "description": "Amount of available golden spatulas",
+              "min": 75,
+              "max": 100,
+              "special": [],
+              "specialValues": [],
+              "default": 100
+            },
+            {
+              "key": "required_spatulas",
+              "label": "Required Spatulas",
+              "kind": "range",
+              "group": "Spieleinstellungen",
+              "description": "Amount of golden spatulas required to enter the last boss fight",
+              "min": 20,
+              "max": 99,
+              "special": [],
+              "specialValues": [],
+              "default": 75
+            },
+            {
+              "key": "include_socks",
+              "label": "Include Socks",
+              "kind": "toggle",
+              "group": "Spieleinstellungen",
+              "description": "Include Socks as AP Locations/Items",
+              "default": true
+            },
+            {
+              "key": "include_skills",
+              "label": "Include Skills",
+              "kind": "toggle",
+              "group": "Spieleinstellungen",
+              "description": "Include Skills (Bubble Bowl & Cruise Bubble) as AP Locations/Items",
+              "default": true
+            },
+            {
+              "key": "include_golden_underwear",
+              "label": "Include Golden Underwear",
+              "kind": "toggle",
+              "group": "Spieleinstellungen",
+              "description": "Include Golden Underwear as AP Locations/Items",
+              "default": true
+            },
+            {
+              "key": "include_level_items",
+              "label": "Include Level Items",
+              "kind": "toggle",
+              "group": "Spieleinstellungen",
+              "description": "Include Level Pickups (steering wheels, balloon kids etc.) as AP Locations/Items",
+              "default": true
+            },
+            {
+              "key": "include_purple_so",
+              "label": "Include Purple Shiny Objects Items",
+              "kind": "toggle",
+              "group": "Spieleinstellungen",
+              "description": "Include Purple Shiny Objects as AP Locations/Items",
+              "default": true
+            },
+            {
+              "key": "randomize_gate_cost",
+              "label": "Randomize Gate Cost",
+              "kind": "choice",
+              "group": "Spieleinstellungen",
+              "description": "Randomize how many golden spatulas are required for taxi gates.\nThis will pick a random level order and increment on gate cost according to the level order.\nLow, mid and high refer to possible increment between levels.\nHigh will likely fail to generate on single player seeds or seeds with few filler locations.\nAll gate cost will be below the required spatula count.",
+              "choices": [
+                {
+                  "value": "off",
+                  "label": "Off"
+                },
+                {
+                  "value": "low",
+                  "label": "Low"
+                },
+                {
+                  "value": "mid",
+                  "label": "Mid"
+                },
+                {
+                  "value": "high",
+                  "label": "High"
+                }
+              ],
+              "default": "off"
+            },
+            {
+              "key": "death_link",
+              "label": "Death Link",
+              "kind": "toggle",
+              "group": "Spieleinstellungen",
+              "description": "",
+              "default": false
+            },
+            {
+              "key": "ring_link",
+              "label": "Ring Link",
+              "kind": "toggle",
+              "group": "Spieleinstellungen",
+              "description": "Enables Ring Link support for Shiny Objects",
+              "default": false
+            },
+            {
+              "key": "shiny_object_to_ring_ratio",
+              "label": "Shiny Object To Ring Ratio",
+              "kind": "range",
+              "group": "Spieleinstellungen",
+              "description": "How many Shiny Objects should amount to one Ring in Ring Link",
+              "min": 1,
+              "max": 100,
+              "special": [],
+              "specialValues": [],
+              "default": 10
+            }
+          ],
+          "unresolved": [],
+          "traps": [],
+          "parser": "Python AST · kein Import",
+          "sourceFile": "bfbb/__init__.py",
+          "minimumAPVersion": "0.6.7",
+          "worldVersion": "1.2.5"
         }
       ],
       "warnings": []

@@ -1,0 +1,25 @@
+{
+  "archipelagoVersion": "0.6.7",
+  "worldVersion": "1.2.5",
+  "apworldSha256": "83a74e2d433308f557088916af214fd3f2242725ef512013c02e556d53020fe5",
+  "results": [
+    {
+      "file": "bfbb-default.yaml",
+      "game": "Battle for Bikini Bottom",
+      "player": "Daniel",
+      "options": 23,
+      "valid": true
+    },
+    {
+      "file": "bfbb-custom.yaml",
+      "game": "Battle for Bikini Bottom",
+      "player": "Daniel",
+      "options": 23,
+      "valid": true
+    }
+  ],
+  "checkedAt": "2026-10-22T10:03:46.427603+00:00",
+  "archipelagoCommit": "debe4cf035c7c15efe6fb95f72343af0d420c68c",
+  "source": "https://github.com/Cyb3RGER/bfbb_ap_world/releases/tag/v1.2.5",
+  "scope": "Generate.roll_settings and actual APworld option classes; no seed or ROM patch"
+}

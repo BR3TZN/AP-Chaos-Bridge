@@ -2,6 +2,8 @@
 import argparse
 import hashlib
 import json
+import subprocess
+import sys
 import zipfile
 from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
@@ -15,6 +17,7 @@ package = json.loads((ROOT / 'package.json').read_text(encoding='utf-8'))
 lock = json.loads((ROOT / 'package-lock.json').read_text(encoding='utf-8'))
 runtime = {name for name, info in lock['packages'].items() if name.startswith('node_modules/') and not info.get('dev')}
 if not args.source:
+    subprocess.run([sys.executable, str(ROOT / 'scripts/prepare_large_apworlds.py')], check=True)
     for name in runtime:
         if not (ROOT / name / 'package.json').is_file(): raise SystemExit('Laufzeitpaket fehlt: ' + name)
 manifest = {'schema': 1, 'name': package['name'], 'version': package['version'], 'files': []}

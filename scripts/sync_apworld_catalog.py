@@ -2,12 +2,13 @@
 import concurrent.futures, hashlib, html.parser, io, json, re, time, urllib.parse, urllib.request, zipfile, xml.etree.ElementTree as E, sys, ipaddress
 from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
+LIMITS = json.loads((ROOT / 'assets/apworld-import-limits.json').read_text(encoding='utf-8'))
 OUT = ROOT / 'apworlds'
 CACHE = ROOT / '.catalog-cache'
 OUT.mkdir(exist_ok=True)
 CACHE.mkdir(exist_ok=True)
 SOURCE = 'https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002#gid=58422002'
-MAX = 40 * 1024 * 1024
+MAX = LIMITS['maxArchiveBytes']
 
 class Links(html.parser.HTMLParser):
 
@@ -23,7 +24,7 @@ class Links(html.parser.HTMLParser):
         if tag == 'include-fragment' and '/releases/expanded_assets/' in a.get('src', ''):
             self.fragments.append(a['src'])
 
-def fetch(url, limit=MAX):
+def fetch(url, limit=LIMITS['maxBundleBytes']):
     p = urllib.parse.urlsplit(url)
     if p.scheme not in ('https', 'http') or not p.hostname or p.username or p.password or (p.hostname in ('localhost', '127.0.0.1', '::1')):
         raise ValueError('Kein öffentlicher Download')
@@ -39,16 +40,19 @@ def fetch(url, limit=MAX):
     if path.exists() and meta.exists() and (time.time() - path.stat().st_mtime < 300 or p.path.lower().endswith(('.apworld', '.zip')) or '/releases/download/' in p.path):
         try:
             m = json.loads(meta.read_text(encoding='utf-8'))
-            return (path.read_bytes(), m['url'])
+            cached = path.read_bytes()
+            if len(cached) > limit:
+                raise ValueError('Download überschreitet Größenlimit')
+            return (cached, m['url'])
         except ValueError:
             pass
     with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'AP-Chaos-Bridge/0.3 public APworld catalog'}), timeout=20) as res:
         if int(res.headers.get('Content-Length', '0')) > limit:
-            raise ValueError('Download größer als 40 MiB')
+            raise ValueError('Download größer als ' + str(limit // (1024 * 1024)) + ' MiB')
         data = res.read(limit + 1)
         final = res.url
         if len(data) > limit:
-            raise ValueError('Download größer als 40 MiB')
+            raise ValueError('Download größer als ' + str(limit // (1024 * 1024)) + ' MiB')
     temp = CACHE / (key + '.' + str(__import__('threading').get_ident()) + '.tmp')
     temp.write_bytes(data)
     temp.replace(path)
@@ -90,18 +94,23 @@ def read_catalog():
         return rows
 
 def package(data, name, url):
+    if len(data) > MAX:
+        raise ValueError('APworld überschreitet Größenlimit')
     with zipfile.ZipFile(io.BytesIO(data)) as z:
         entries = z.infolist()
-        if len(entries) > 12000 or sum((e.file_size for e in entries)) > 100 * 1024 * 1024:
+        if len(entries) > LIMITS['maxEntries'] or sum((e.file_size for e in entries)) > LIMITS['maxUncompressedBytes']:
             raise ValueError('Archiv überschreitet Import-Limit')
         if not any((e.filename.endswith('.py') for e in entries)):
             raise ValueError('Keine World-Quelldateien')
+        source_bytes = 0
         for e in entries:
             n = e.filename.replace('\\', '/')
             if e.flag_bits & 1 or '..' in n.split('/') or n.startswith('/') or re.match('^[a-zA-Z]:', n):
                 raise ValueError('Ungültiger Archiveintrag')
-            if (n.endswith('.py') or n.split('/')[-1] == 'archipelago.json') and e.file_size > 8 * 1024 * 1024:
-                raise ValueError('Textdatei zu groß')
+            if (n.endswith('.py') or n.split('/')[-1] == 'archipelago.json') and '__pycache__' not in n:
+                source_bytes += e.file_size
+                if e.file_size > LIMITS['maxSourceFileBytes'] or source_bytes > LIMITS['maxSourceBytes']:
+                    raise ValueError('Quelldateien überschreiten Import-Limit')
         if z.testzip():
             raise ValueError('ZIP-Prüfsumme ungültig')
     p = urllib.parse.urlsplit(url)
@@ -130,7 +139,7 @@ def direct(url):
     if name.lower().endswith('.zip'):
         with zipfile.ZipFile(io.BytesIO(data)) as z:
             entries = z.infolist()
-            if len(entries) > 12000 or sum((e.file_size for e in entries)) > 100 * 1024 * 1024:
+            if len(entries) > LIMITS['maxEntries'] or sum((e.file_size for e in entries)) > LIMITS['maxUncompressedBytes']:
                 raise ValueError('Download-Bundle überschreitet Import-Limit')
             selected = [e for e in entries if e.filename.lower().endswith('.apworld') and e.file_size <= MAX][:30]
             if not selected:

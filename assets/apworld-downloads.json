@@ -1,12 +1,12 @@
 {
   "schema": 1,
   "source": "https://docs.google.com/spreadsheets/d/1iuzDTOAvdoNe8Ne8i461qGNucg5OuEoF-Ikqs8aUQZw/edit?gid=58422002#gid=58422002",
-  "retrievedAt": "2026-10-21T13:23:41Z",
+  "retrievedAt": "2026-10-22T09:59:57Z",
   "total": 867,
   "processed": 867,
   "stats": {
-    "downloaded": 759,
-    "manual": 52,
+    "downloaded": 760,
+    "manual": 51,
     "core": 56
   },
   "entries": [
@@ -8268,12 +8268,17 @@
           "https://discord.com/channels/731205301247803413/1098766534035386458"
         ]
       },
-      "files": [],
-      "errors": [
-        "Download größer als 40 MiB; Download-Bundle enthält keine .apworld-Datei"
+      "files": [
+        {
+          "file": "github-com-Cyb3RGER/83a74e2d/bfbb.apworld",
+          "originalName": "bfbb.apworld",
+          "url": "https://github.com/Cyb3RGER/bfbb_ap_world/releases/download/v1.2.5/bfbb_apworld-v1_2_5-win_amd64_py3_13.zip",
+          "sha256": "83a74e2d433308f557088916af214fd3f2242725ef512013c02e556d53020fe5",
+          "bytes": 79701854
+        }
       ],
-      "status": "manual",
-      "reason": "Download größer als 40 MiB; Download-Bundle enthält keine .apworld-Datei"
+      "errors": [],
+      "status": "downloaded"
     },
     {
       "game": "Spyro 2: Ripto's Rage",
