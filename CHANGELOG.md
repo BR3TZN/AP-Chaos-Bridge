@@ -1,3 +1,13 @@
+# AP Chaos Bridge 0.5.1
+
+- Paketierung für bestehende Updater korrigiert: Die Liste der fehlenden Spiele liegt im vollständigen ZIP unter `assets/FEHLENDE-SPIELE.md`. Auf GitHub bleibt sie direkt im Repo erreichbar. Der bisherige Updater verweigerte 0.5.0 wegen dieser neuen Datei im Paket-Hauptordner, bevor Programmdateien geändert wurden.
+- Der Paketbau prüft nun jedes Dateimanifest mit den tatsächlichen Update-Pfadregeln vor der Veröffentlichung. Ein Integrationstest baut ein echtes ZIP, entpackt und verifiziert es mit dem Updater und weist unbekannte Hauptordner-Dateien zurück.
+- Alle Funktionen aus 0.5.0 bleiben enthalten: **55 Core-Spiele**, 1.978 Felder, Donkey Kong 64 und Spirit Tracks sowie FNF-Hinweise. **123 Tests**, 110 akzeptierte Core-YAML-Konfigurationen und 839 YAML-Roundtrips.
+
+Unter **Updates → Nach Updates suchen → Herunterladen & prüfen → Update installieren** auf **0.5.1** aktualisieren. Falls 0.5.0 bereits manuell installiert wurde, 0.5.1 über das vollständige ZIP ersetzen und `data` beibehalten. Alternativ **AP-Chaos-Bridge-v0.5.1.zip** verwenden. Räume und eigene Daten bleiben erhalten. Core-YAMLs sind für **Archipelago 0.6.8** vorbereitet.
+
+---
+
 # AP Chaos Bridge 0.5.0
 
 - **55 Core-Spiele** direkt im Katalog: **1.978 Einstellungsfelder** aus den echten offiziellen Archipelago-0.6.8-Optionsklassen. Dropdowns, Bereiche und strukturierte Felder funktionieren ohne zusätzliche APworlds und ohne Python. Die YAML enthält `requires.version: 0.6.8`.
@@ -5,7 +15,7 @@
 - **Donkey Kong 64** erkannt: World-Klasse und Imports innerhalb einer Bedingung sowie Imports relativ zur Archivwurzel werden statisch gelesen. **100 Felder**.
 - **Spirit Tracks** erkannt: Basisklassenalias innerhalb eines `try`-Imports unterstützt. **90 Felder**, einschließlich Plando-Eingabe. Standard und geänderte YAML mit 91 echten Optionsklassen akzeptiert.
 - **Friday Night Funkin**: kopierte Standard-Songliste, Textauswahl und Trap-Bereich ergänzt; **46 Felder**. Die enthaltene Spiel-World war bereits vorhanden. `APAPI.apworld` wird korrekt als zusätzliche Hilfsbibliothek erklärt. Diese FNF-Version verlangt für unterstützte YAMLs den Export aus der **Mixtape Engine**; die Spielseite enthält Hinweis und Anleitung. Kein vollständiger FNF-Seed validiert.
-- **[50 noch fehlende Spiele mit manuellen Downloadlinks](FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen)** bereinigt; Core-Einträge stehen nun als verfügbar. Es werden weiterhin keine reinen YAML- oder Tabellen-Vorlagen als Spiele angelegt.
+- **[50 noch fehlende Spiele mit manuellen Downloadlinks](https://github.com/BR3TZN/AP-Chaos-Bridge/blob/main/FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen)** bereinigt; Core-Einträge stehen nun als verfügbar. Es werden weiterhin keine reinen YAML- oder Tabellen-Vorlagen als Spiele angelegt.
 - Prüfung: **122 automatisierte Tests**, **110 Core-YAMLs von Archipelago 0.6.8 akzeptiert**, **839 YAML-1.1-/PyYAML-Roundtrips**. Der Katalog umfasst **815 Spielnamen**: 760 aus APworlds und 55 zusätzliche Core-Spiele. Der Release-Workflow reproduziert die offiziellen Core-Metadaten und prüft die exportierten Core-Optionen vor der Veröffentlichung.
 
 ## Update

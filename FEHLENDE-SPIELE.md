@@ -1,6 +1,6 @@
 # Noch fehlende Spiele im YAML-Katalog
 
-Stand: Bridge **0.5.0**, 22.10.2026. Es fehlen noch die unten aufgeführten **50 manuell zu beschaffenden Spiele**. Die **55 Core-Einträge** sind jetzt direkt aus den offiziellen Archipelago-0.6.8-Optionstypen vorbereitet; Donkey Kong 64 und Spirit Tracks werden ebenfalls erkannt.
+Stand: Bridge **0.5.1**, 22.10.2026. Es fehlen noch die unten aufgeführten **50 manuell zu beschaffenden Spiele**. Die **55 Core-Einträge** sind jetzt direkt aus den offiziellen Archipelago-0.6.8-Optionstypen vorbereitet; Donkey Kong 64 und Spirit Tracks werden ebenfalls erkannt.
 
 Kingdom Hearts III, APQuest und SpongeBob / Battle for Bikini Bottom sind bereits enthalten und stehen deshalb nicht auf dieser Liste.
 

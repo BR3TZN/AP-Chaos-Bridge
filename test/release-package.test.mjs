@@ -1,0 +1,35 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import { GameLibrary } from '../lib/game-library.mjs';
+import { extractRelease } from '../lib/updater.mjs';
+import { verifyPreparedPackage } from '../lib/update-files.mjs';
+
+const root = dirname(dirname(fileURLToPath(import.meta.url)));
+test('the real packager creates an updater-compatible manifest and rejects unknown root files', async t => {
+  const directory = mkdtempSync(join(tmpdir(), 'ap-package-')); t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const app = join(directory, 'app'), output = join(directory, 'release.zip');
+  const save = (name, content) => { const path = join(app, name); mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, content); };
+  const pkg = { name: 'ap-chaos-bridge', version: '0.5.1', engines: { node: '>=22' } };
+  save('package.json', JSON.stringify(pkg));
+  save('package-lock.json', JSON.stringify({ packages: Object.fromEntries(['ws', 'yaml', 'yauzl'].map(name => ['node_modules/' + name, {}])) }));
+  for (const name of ['ws', 'yaml', 'yauzl']) save('node_modules/' + name + '/package.json', '{}');
+  for (const name of ['scripts/package_release.py', 'scripts/validate_release_manifest.mjs', 'scripts/apply-update.mjs', 'lib/update-files.mjs']) save(name, readFileSync(join(root, name)));
+  save('scripts/prepare_large_apworlds.py', '# No upstream downloads needed by this fixture.\n');
+  save('server.mjs', 'export {};'); save('README.md', 'Setup'); save('FEHLENDE-SPIELE.md', '50 missing games · [Metadata](assets/core-world-settings.json)');
+  save('assets/core-world-settings.json', '{"schema":1,"worlds":[]}');
+  const python = new GameLibrary(directory, root, { memory: true }).pythonCommand();
+  const run = () => spawnSync(python[0], [...python.slice(1), '-X', 'utf8', join(app, 'scripts/package_release.py'), output], { encoding: 'utf8', timeout: 30000, windowsHide: true });
+  const result = run(); assert.equal(result.status, 0, result.stdout + result.stderr);
+  const stage = join(directory, 'stage'), files = await extractRelease(output, stage);
+  const manifest = await verifyPreparedPackage(stage, pkg.version, files);
+  assert(!existsSync(join(stage, 'FEHLENDE-SPIELE.md')));
+  assert.equal(readFileSync(join(stage, 'assets/FEHLENDE-SPIELE.md'), 'utf8'), '50 missing games · [Metadata](core-world-settings.json)');
+  assert(manifest.files.some(f => f.path === 'assets/core-world-settings.json'));
+  save('future-root-file.md', 'Not supported by existing updaters');
+  const rejected = run(); assert.notEqual(rejected.status, 0); assert.match(rejected.stderr, /Nicht erlaubtes Update-Ziel/);
+});

@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.5.0
+# AP Chaos Bridge 0.5.1
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -14,11 +14,11 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.5.0
+## Update auf 0.5.1
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-Neu in 0.5.0: **55 Core-Spiele mit 1.978 echten Optionsfeldern**, vorbereitet für **Archipelago 0.6.8**, zusätzlich zum APworld-Katalog. Donkey Kong 64 und Spirit Tracks werden jetzt erkannt. FNF zeigt die vollständigen deklarierten Felder und den erforderlichen Mixtape-Engine-Ablauf. Die [50 noch fehlenden Spiele samt Downloadlinks](FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen) kannst du manuell ergänzen.
+Neu in 0.5.0: **55 Core-Spiele mit 1.978 echten Optionsfeldern**, vorbereitet für **Archipelago 0.6.8**, zusätzlich zum APworld-Katalog. Donkey Kong 64 und Spirit Tracks werden jetzt erkannt. FNF zeigt die vollständigen deklarierten Felder und den erforderlichen Mixtape-Engine-Ablauf. Die [50 noch fehlenden Spiele samt Downloadlinks](https://github.com/BR3TZN/AP-Chaos-Bridge/blob/main/FEHLENDE-SPIELE.md#50-spiele-apworld-manuell-beschaffen) kannst du manuell ergänzen.
 
 Seit 0.4.0: klarere Menüs und geführte Regeln mit **Auslöser → Aktion → Empfänger**, zehn benannten Aktionsarten, neutralem Darkmode, Lightmode und einem farbigen klassischen Design. Die Akzentfarbe lässt sich frei wählen. **Stream-Alerts** unterstützen eigene GIFs, animierte Bilder und Videos. Anmeldung und Verbindungsaufbau bleiben unverändert.
 

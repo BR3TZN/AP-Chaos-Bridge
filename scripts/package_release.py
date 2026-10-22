@@ -35,9 +35,16 @@ with zipfile.ZipFile(args.output, 'w', compression=zipfile.ZIP_DEFLATED, compres
             continue
         if rel.parts[0] == 'node_modules' and not any(rel.as_posix().startswith(name + '/') for name in runtime): continue
         if rel.as_posix() == 'release-manifest.json': continue
+        # Existing updaters allow assets but reject new files at the package root.
+        relocated = not args.source and rel.as_posix() == 'FEHLENDE-SPIELE.md'
+        if relocated: rel = Path('assets') / rel.name
         if not args.source:
             raw = path.read_bytes()
+            if relocated: raw = raw.replace(b'](assets/', b'](')
             manifest['files'].append({'path': rel.as_posix(), 'size': len(raw), 'sha256': hashlib.sha256(raw).hexdigest(), 'mode': 0o755 if rel.as_posix() == 'start.sh' else 0o644})
-        archive.write(path, 'AP-Chaos-Bridge/' + rel.as_posix(), compress_type=zipfile.ZIP_STORED if path.suffix == '.apworld' else zipfile.ZIP_DEFLATED)
-    if not args.source: archive.writestr('AP-Chaos-Bridge/release-manifest.json', json.dumps(manifest, ensure_ascii=False, indent=2))
+        if relocated: archive.writestr('AP-Chaos-Bridge/' + rel.as_posix(), raw)
+        else: archive.write(path, 'AP-Chaos-Bridge/' + rel.as_posix(), compress_type=zipfile.ZIP_STORED if path.suffix == '.apworld' else zipfile.ZIP_DEFLATED)
+    if not args.source:
+        subprocess.run(['node', str(ROOT / 'scripts/validate_release_manifest.mjs')], input=json.dumps(manifest), text=True, check=True)
+        archive.writestr('AP-Chaos-Bridge/release-manifest.json', json.dumps(manifest, ensure_ascii=False, indent=2))
 print(args.output.resolve(), args.output.stat().st_size)

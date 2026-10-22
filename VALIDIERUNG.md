@@ -1,10 +1,10 @@
-# Prüfung der Version 0.5.0
+# Prüfung der Version 0.5.1
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Automatisierte Prüfungen
 
-**122 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**123 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -88,3 +88,7 @@ Das vollständige ZIP wurde mit dem echten Update-Entpacker und Dateimanifest ge
 Der allgemeine Bestandslauf umfasst **839 YAML-1.1-/PyYAML-Roundtrips**, einschließlich der 55 Core-Worlds. Die Core-Prüfung bestätigt Optionsannahme; sie erzeugt keine vollständigen Seeds oder ROM-Patches und startet keine Spielclients.
 
 **Spirit Tracks 0.8.4:** Standard und geänderte YAML wurden zusätzlich mit der originalen APworld und Archipelago 0.6.8 durch `Generate.roll_settings` akzeptiert, jeweils 91 reale Optionstypen. **Donkey Kong 64:** 100 Felder werden statisch erkannt; die vollständige World wurde für diese Prüfung nicht importiert. **Friday Night Funkin 2.3.1:** 46 Felder einschließlich kopierter Standard-Songliste, Textauswahl und Trap-Gewichtung erkannt. Die Upstream-World fordert bei Initialisierung interaktive Eingaben und verlangt unterstützte YAMLs aus der Mixtape Engine; ein vollständiger FNF-Seed wurde hier nicht validiert. Diese Grenze steht in der Spieloberfläche und Anleitung.
+
+## Paketprüfung 0.5.1
+
+Der echte Download von 0.5.0 wurde korrekt per SHA-256 geprüft, aber vor der Installation wegen der neuen Hauptordner-Datei `FEHLENDE-SPIELE.md` abgewiesen. 0.5.1 verlagert sie im Laufzeitpaket in den erlaubten Ordner `assets`; Quellcode-Paket und GitHub-Liste behalten den bisherigen Pfad. Der Paketbau prüft nun das vollständige Manifest mit `validateManifest`. Ein Integrationstest baut ein echtes Paket, entpackt es über `extractRelease`, prüft alle Hashes und verifiziert die Zurückweisung unbekannter Hauptordner-Dateien.
