@@ -296,9 +296,11 @@ test('catalog scan reports successful catalog availability and separate skipped 
   const { app, window, document } = await ui(t);
   app.library.scan = async () => ({ imported: [], unchanged: 771, errors: [], skipped: [{ file: 'known.apworld', reason: 'Keine auswertbare World-Deklaration.' }] });
   window.location.hash = 'katalog'; await until(() => document.querySelector('#studio-scan-form'), 'Katalog fehlt.');
-  document.querySelector('#studio-scan-form [type="submit"]').click();
+  const submit = document.querySelector('#studio-scan-form [type="submit"]'); submit.click();
   await until(() => document.querySelector('.scan-summary'), 'Einlesebericht fehlt.');
-  await until(() => !document.querySelector('#studio-scan-form [type=submit]').disabled, 'Einlesen wurde nicht abgeschlossen.');
+  // Rendering replaces the form. Its new button is enabled before the original
+  // submit handler has finished; wait for that handler's own finally block.
+  await until(() => !submit.disabled, 'Einlesen wurde nicht abgeschlossen.');
   assert(document.querySelector('.scan-summary').textContent.includes('Spiele bereit'));
   assert(document.querySelector('.scan-report summary').textContent.includes('übersprungen'));
   assert(!document.querySelector('.scan-report details').open);
