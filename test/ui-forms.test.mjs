@@ -31,7 +31,7 @@ async function ui(t, options = {}) {
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   window.scrollTo = () => {};
-  window.eval(readFileSync(new URL('../public/studio.js', import.meta.url), 'utf8') + '\n' + readFileSync(new URL('../public/updates.js', import.meta.url), 'utf8') + '\n' + readFileSync(new URL('../public/app.js', import.meta.url), 'utf8') + '\nwindow.__bridgeRefresh = refresh;');
+  window.eval(['appearance.js', 'alerts.js', 'studio.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__bridgeRefresh = refresh;');
   await until(() => window.document.querySelector('[data-action="new-rule"]'), 'Regelseite wurde nicht geladen.');
   t.after(() => { dom.window.close(); app.close(); rmSync(directory, { recursive: true, force: true }); });
   return { app, window, document: window.document, requests, directory };
@@ -249,4 +249,53 @@ test('update UI masks private access and displays a new release through the real
   assert(!document.documentElement.innerHTML.includes('only-test-github-token'));
   document.querySelector('[data-action="update-check"]').click(); await until(() => document.querySelector('#update-version').textContent === 'Release ' + version, 'Neue Version fehlt.');
   assert.equal(document.querySelector('[data-action="update-download"]').hidden, false); assert.equal(document.querySelector('[data-action="update-install"]').hidden, true); assert(document.querySelector('[data-update-link]').textContent.includes(version));
+});
+
+test('design page previews and saves a neutral light theme with a custom accent', async t => {
+  const { app, window, document } = await ui(t);
+  window.location.hash = 'design';
+  await until(() => document.querySelector('#appearance-form'), 'Designseite fehlt.');
+  document.querySelector('[data-action="appearance-mode"][data-id="light"]').click();
+  await until(() => document.documentElement.dataset.theme === 'light', 'Lightmode-Vorschau fehlt.');
+  const input = document.querySelector('[name="accent"]'); input.value = '#ff0000'; input.dispatchEvent(new window.Event('input', { bubbles: true }));
+  assert.equal(document.documentElement.style.getPropertyValue('--accent'), '#ff0000');
+  document.querySelector('#appearance-form [type="submit"]').click();
+  await until(() => app.snapshot().appearance.mode === 'light' && app.snapshot().appearance.accent === '#ff0000', 'Design wurde nicht gespeichert.');
+});
+
+test('guided rules get their game filters from connected slots and save custom item pools', async t => {
+  const { app, window, document } = await ui(t);
+  app.ap.loadDemo();
+  app.store.state.approvals[app.ap.roomKey] = Object.fromEntries(app.ap.players.map(p => [`${p.team}:${p.slot}`, { enabled: true, items: Object.keys(app.ap.items(p.game)), traps: [] }]));
+  await window.__bridgeRefresh(true); document.querySelector('[data-action="new-rule"]').click();
+  const game = document.querySelector('#rule-game'); assert([...game.options].some(o => o.value === 'Factorio'));
+  assert(![...game.options].some(o => o.value === 'UI Fixture'));
+  game.value = 'Factorio'; game.dispatchEvent(new window.Event('change', { bubbles: true }));
+  const recipients = document.querySelector('#rule-recipient-preview'); assert(recipients.textContent.includes('Factorio-Demo')); assert(!recipients.textContent.includes('Stardew-Demo'));
+  const effect = document.querySelector('#rule-effect'); assert.equal(effect.options.length, 10);
+  effect.value = 'random_choice'; effect.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert(!document.querySelector('#rule-pool-field').hidden);
+  const form = document.querySelector('#rule-form'); form.elements.namedItem('name').value = 'Custom Pool'; form.elements.namedItem('itemPool').value = 'Attack Trap\nTeleport Trap'; form.querySelector('[type="submit"]').click();
+  await until(() => app.store.state.rules.some(r => r.name === 'Custom Pool'), 'Eigene Zufallsliste wurde nicht gespeichert.');
+  assert.deepEqual(app.store.state.rules.at(-1).itemPool, ['Attack Trap', 'Teleport Trap']);
+});
+
+test('alert preview button calls only the visual preview endpoint', async t => {
+  const { app, window, document, requests } = await ui(t);
+  window.location.hash = 'alerts'; await until(() => document.querySelector('[data-action="alerts-test"]'), 'Alert-Seite fehlt.');
+  const jobs = app.store.state.queue.length; document.querySelector('[data-action="alerts-test"]').click();
+  await until(() => requests.some(r => r.path === '/api/alerts/preview'), 'Vorschau wurde nicht angefordert.');
+  assert.equal(app.store.state.queue.length, jobs);
+  assert(!requests.some(r => r.path === '/api/test-rule'));
+});
+
+test('catalog scan reports successful catalog availability and separate skipped packages', async t => {
+  const { app, window, document } = await ui(t);
+  app.library.scan = async () => ({ imported: [], unchanged: 771, errors: [], skipped: [{ file: 'known.apworld', reason: 'Keine auswertbare World-Deklaration.' }] });
+  window.location.hash = 'katalog'; await until(() => document.querySelector('#studio-scan-form'), 'Katalog fehlt.');
+  document.querySelector('#studio-scan-form [type="submit"]').click();
+  await until(() => document.querySelector('.scan-summary'), 'Einlesebericht fehlt.');
+  assert(document.querySelector('.scan-summary').textContent.includes('Spiele bereit'));
+  assert(document.querySelector('.scan-report summary').textContent.includes('übersprungen'));
+  assert(!document.querySelector('.scan-report details').open);
 });

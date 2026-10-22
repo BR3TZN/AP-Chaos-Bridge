@@ -1,8 +1,9 @@
 'use strict';
 const Studio = {
-  roomFilter: 'active', catalogLimit: 24, catalogQuery: '', entry: null, loadingGame: '', gameError: '', logGame: '', scanReport: '', indexLoading: false,
+  roomFilter: 'active', catalogLimit: 24, catalogQuery: '', entry: null, loadingGame: '', gameError: '', logGame: '', scanReport: null, indexLoading: false,
   commonKeys: new Set(['progression_balancing', 'accessibility', 'local_items', 'non_local_items', 'start_inventory', 'start_hints', 'start_location_hints', 'exclude_locations', 'priority_locations', 'item_links', 'plando_items']),
   shell() {
+    const workspaceName = document.querySelector('#workspace-name'); if (workspaceName) workspaceName.textContent = S.rooms?.rooms.find(r => r.id === S.rooms.active)?.name || 'Dein Run';
     const select = document.querySelector('#room-select');
     if (select && S.rooms) {
       const html = options(Object.fromEntries(S.rooms.rooms.filter(r => !r.archived).map(r => [r.id, r.name])), S.rooms.active);
@@ -43,8 +44,12 @@ const Studio = {
   catalogPage() {
     void this.loadIndex();
     return pageHead('SPIELEKATALOG', 'Deine Spiele. Deine Settings.', 'Suche ein Spiel, hinterlege seine Einstellungen und exportiere eine YAML für jeden Spieler.', '<button class="primary" data-action="studio-import">+ APworld hinzufügen</button>')
-      + `<section class="panel panel-pad"><form id="studio-scan-form"><label>APworld-Ordner<input name="folder" value="${esc(S.gameLibrary?.folder || '')}" required></label><div class="button-row section-gap"><button type="submit">Ordner neu einlesen</button><span class="tiny">Nur .apworld · Unterordner werden mit eingelesen</span></div></form><p class="help">Vorbereitete APworld-Versionen werden am Dateiinhalt erkannt und funktionieren auch in deinem eigenen Ordner oder nach Umbenennen ohne Python. Für bisher unbekannte Versionen ist Python 3.10 oder neuer nötig.</p><p class="help">${S.gameLibrary?.games.length || 0} Spiele eingelesen · <a href="/apworlds-manual" download>Liste der manuellen Downloads</a></p>${this.scanReport ? `<pre role="status">${esc(this.scanReport)}</pre>` : ''}</section>`
+      + `<section class="panel panel-pad"><form id="studio-scan-form"><label>APworld-Ordner<input name="folder" value="${esc(S.gameLibrary?.folder || '')}" required></label><div class="button-row section-gap"><button type="submit">Ordner neu einlesen</button><span class="tiny">Nur .apworld · Unterordner werden mit eingelesen</span></div></form><p class="help">Vorbereitete APworld-Versionen werden am Dateiinhalt erkannt und funktionieren auch in deinem eigenen Ordner oder nach Umbenennen ohne Python. Für bisher unbekannte Versionen ist Python 3.10 oder neuer nötig.</p><p class="help">${S.gameLibrary?.games.length || 0} Spiele eingelesen · <a href="/apworlds-manual" download>Liste der manuellen Downloads</a></p>${this.scanReport ? this.scanReportHTML() : ''}</section>`
       + `<label class="section-gap">Spiel suchen<input id="studio-search" type="search" placeholder="Stardew Valley, Kingdom Hearts …" autocomplete="off"></label><div id="studio-catalog-results" class="grid catalog-grid section-gap">${this.catalogCards()}</div>`;
+  },
+  scanReportHTML() {
+    const report = this.scanReport;
+    return `<div class="scan-report"><div class="scan-summary" role="status">${badge('Einlesen abgeschlossen', 'good')}<span>${S.gameLibrary.games.length} Spiele bereit · ${report.imported.length} neu eingelesen · ${report.unchanged} Dateien unverändert</span></div>${report.skipped?.length ? `<details class="disclosure"><summary>${report.skipped.length} nicht auswertbare Pakete übersprungen · übriger Katalog ist nutzbar</summary><p class="help">Diese Dateien liefern noch keine Einstellungen. Sie blockieren deine anderen Spiele nicht; Python allein behebt diese bekannten Pakete nicht.</p><ul>${report.skipped.map(e => `<li><code>${esc(e.file)}</code><br>${esc(e.reason)}</li>`).join('')}</ul></details>` : ''}${report.errors.length ? `<details class="disclosure" open><summary>${report.errors.length} Dateien prüfen</summary><ul>${report.errors.map(e => `<li><code>${esc(e.file)}</code><br>${esc(e.error)}</li>`).join('')}</ul></details>` : ''}</div>`;
   },
   importDrawer() {
     showDrawer(drawerHead('APworlds hinzufügen', 'Mehrere Dateien auswählen oder deinen APworld-Ordner im Spielekatalog einlesen.') + `<form id="studio-import-form"><div class="drawer-body"><label class="section-gap">Dateien<input name="files" type="file" accept=".apworld" multiple required></label><p class="help">APworlds liefern deklarierte Optionen für den Editor. Spielaktionen werden weiterhin mit dem Itemkatalog des verbundenen AP-Raums abgeglichen.</p><div id="studio-import-progress" class="help" role="status"></div></div><div class="drawer-foot"><button type="button" class="ghost" data-action="close-drawer">Abbrechen</button><button class="primary" type="submit">Importieren</button></div></form>`);
@@ -115,7 +120,7 @@ const Studio = {
   teamPlayers() { return S.players.filter(p => p.team === S.ap.team && p.type === 1); },
   playerStatus(player) {
     const match = this.teamPlayers().find(p => p.name === player.name && (!player.game || p.game === player.game));
-    return match ? `AP-Slot ${match.slot} · ${match.approval.enabled ? 'für Aktionen freigegeben' : 'Effekte unter Spielslots freigeben'}` : player.name ? 'Wird beim Verbinden mit einem passenden AP-Slot verknüpft.' : 'Slotnamen aus eurem AP-Raum eintragen.';
+    return match ? `AP-Slot ${match.slot} · ${match.approval.enabled ? 'für Aktionen freigegeben' : 'Items unter Spieler & Effekte auswählen'}` : player.name ? 'Wird beim Verbinden mit einem passenden AP-Slot verknüpft.' : 'Slotnamen aus eurem AP-Raum eintragen.';
   },
   playerRow(player, index, prefix) {
     return `<fieldset class="player-row" data-player-row><legend>Spieler ${index + 1}</legend><input type="hidden" name="playerId" value="${esc(player.id || '')}"><div class="form-grid"><label>Slotname<input name="playerName" value="${esc(player.name || '')}" list="${prefix}-names" maxlength="16" required autocomplete="off" placeholder="Exakter Name im AP-Raum"></label><label>Spiel <span class="muted">(optional)</span><input name="playerGame" value="${esc(player.game || '')}" list="${prefix}-games" placeholder="Spiel auswählen"></label></div><div class="button-row"><span class="help" data-player-status>${esc(this.playerStatus(player))}</span><button type="button" class="small ghost" data-action="studio-player-remove">Spieler entfernen</button></div></fieldset>`;
@@ -124,7 +129,7 @@ const Studio = {
     return `<datalist id="${prefix}-names">${this.teamPlayers().map(p => `<option value="${esc(p.name)}">${esc(p.game)}</option>`).join('')}</datalist><datalist id="${prefix}-games">${this.knownGames().map(g => `<option value="${esc(g)}"></option>`).join('')}</datalist><p data-empty-players class="help ${(S.playerProfiles || []).length ? 'hidden' : ''}">Noch keine Spieler gespeichert. Mit „+ Spieler“ fügt ihr den nächsten Teilnehmer hinzu.</p><div data-player-rows>${(S.playerProfiles || []).map((p, i) => this.playerRow(p, i, prefix)).join('')}</div><button type="button" class="section-gap" data-action="studio-player-add">+ Spieler</button>`;
   },
   playersPanel() {
-    return `<section class="panel panel-pad section-gap"><div class="section-title"><h2>Eure Spieler & Slots</h2><button data-action="studio-players">Spielerliste öffnen</button></div><p class="help">Pro Teilnehmer ein Slotname. Verbundene AP-Slots werden zugeordnet. Regeln können einen Spieler, mehrere, alle freigegebenen oder eine zufällige Person treffen.</p><form id="studio-player-list-form" data-player-prefix="studio-player-list">${this.playerFields('studio-player-list')}<div class="button-row section-gap"><button class="primary" type="submit">Spieler speichern</button></div><p class="help">Die Liste bleibt in diesem Raum gespeichert und steht auch für die Verbindung und den YAML-Export bereit. Effekte werden je AP-Slot unter „Effekte & Freigabe“ ausgewählt.</p></form></section>`;
+    return `<details class="panel saved-player-list section-gap"><summary>Optional: Namen für YAMLs und Spielerauswahl merken</summary><p class="help">Verbundene Spieler erscheinen bereits oben. Diese Namensliste ist eine Hilfe vor der Generierung und für wiederkehrende Mitspieler.</p><button class="small" data-action="studio-players">Spielerliste öffnen</button><form id="studio-player-list-form" data-player-prefix="studio-player-list">${this.playerFields('studio-player-list')}<div class="button-row section-gap"><button class="primary" type="submit">Spieler speichern</button></div><p class="help">Die Liste bleibt in diesem Raum gespeichert und steht auch für die Verbindung und den YAML-Export bereit. Items und Fallen werden oben beim jeweiligen Spieler ausgewählt.</p></form></details>`;
   },
   playersDrawer(add = false) {
     showDrawer(drawerHead('Eure Spieler & Slots', 'Mit + Spieler für jeden Teilnehmer eine eigene Zeile hinzufügen.') + `<form id="studio-players-form" data-player-prefix="studio-player-drawer"><div class="drawer-body">${this.playerFields('studio-player-drawer')}<p class="help">Die Slotnamen müssen mit eurem AP-Raum übereinstimmen. Über die Regeln lassen sich einzelne, mehrere, alle oder zufällige Spieler auswählen.</p></div><div class="drawer-foot"><button type="button" class="ghost" data-action="close-drawer">Abbrechen</button><button class="primary" type="submit">Spieler speichern</button></div></form>`);
@@ -167,19 +172,48 @@ const Studio = {
     return node.innerHTML;
   },
   extendRule(rule) {
-    const form = $('#rule-form');
-    const target = form.elements.namedItem('target'); target.add(new Option('Mehrere ausgewählte Spieler', 'selected')); target.add(new Option('Zufällig aus ausgewählten Spielern', 'random_selected'));
+    const form = $('#rule-form'), target = form.elements.namedItem('target');
+    target.add(new Option('Mehrere ausgewählte Spieler', 'selected')); target.add(new Option('Eine zufällige Person aus der Auswahl', 'random_selected'));
     if (['selected', 'random_selected'].includes(rule.target)) target.value = rule.target;
     const panel = document.createElement('div'); panel.className = 'full'; panel.id = 'rule-selected-targets';
-    panel.innerHTML = `<b class="tiny">Spieler auswählen</b><button type="button" class="small ghost" data-action="studio-rule-players">Gespeicherte Spieler auswählen</button>${S.players.filter(p => p.team === S.ap.team && p.type === 1).map(p => `<label class="check-label"><input name="targetKeys" type="checkbox" value="${p.team}:${p.slot}" ${rule.targetKeys?.includes(`${p.team}:${p.slot}`) ? 'checked' : ''}><span>${esc(p.name)} · ${esc(p.game)}</span></label>`).join('') || '<p class="help">Zuerst deinen AP-Raum verbinden.</p>'}`;
-    form.querySelector('.form-grid').append(panel);
-    const note = document.createElement('div'); note.className = 'random-help'; note.innerHTML = `<p class="help">„Zufälliges Item“ wählt aus allen für den Slot erlaubten Items: hilfreiche Items und Fallen. „Zufallsaktion“ kann zusätzlich DeathLink enthalten.</p><label class="check-label"><input name="includeDeathLink" type="checkbox" ${rule.includeDeathLink ? 'checked' : ''}><span>DeathLink in Zufallsaktionen einschließen · Gruppenfreigabe zusätzlich erforderlich</span></label>`;
-    form.querySelector('.drawer-body').append(note); this.ruleVisibility();
+    panel.innerHTML = `<b class="tiny">Spieler auswählen</b><button type="button" class="small ghost" data-action="studio-rule-players">Gespeicherte Spieler auswählen</button>${S.players.filter(p => p.team === S.ap.team && p.type === 1).map(p => `<label class="check-label"><input name="targetKeys" type="checkbox" value="${p.team}:${p.slot}" ${rule.targetKeys?.includes(`${p.team}:${p.slot}`) ? 'checked' : ''}><span>${esc(p.name)} · ${esc(p.game)}${p.approval.enabled ? '' : ' · noch nicht freigegeben'}</span></label>`).join('') || '<p class="help">Zuerst deinen AP-Raum verbinden.</p>'}`;
+    form.querySelector('#rule-recipient-fields').append(panel); this.ruleVisibility();
   },
   ruleVisibility() {
-    $('#rule-selected-targets')?.classList.toggle('hidden', !['selected', 'random_selected'].includes($('#rule-target')?.value));
-    $('.random-help')?.classList.toggle('hidden', !['random_item', 'random_action'].includes($('#rule-effect')?.value));
-    $('.random-help .check-label')?.classList.toggle('hidden', $('#rule-effect')?.value !== 'random_action');
+    const form = $('#rule-form'); if (!form) return;
+    const effect = form.elements.namedItem('effect').value, group = ['deathlink', 'message', 'alert'].includes(effect);
+    const mixed = [...form.querySelectorAll('[name="randomEffects"]:checked')].map(e => e.value), has = action => effect === action || effect === 'random_action' && mixed.includes(action);
+    const target = form.elements.namedItem('target');
+    if (group) target.value = 'group'; else if (target.value === 'group') target.value = 'random';
+    const groupOption = [...target.options].find(o => o.value === 'group'); groupOption.hidden = !group;
+    $('#rule-selected-targets').classList.toggle('hidden', group || !['selected', 'random_selected'].includes(target.value));
+    for (const id of ['rule-game-field', 'rule-target-field']) $('#' + id).hidden = group;
+    $('#rule-quantity-field').hidden = group || effect === 'hint';
+    $('#rule-action-mix').classList.toggle('hidden', effect !== 'random_action');
+    $('#rule-item-field').hidden = !has('item') && !has('hint');
+    $('#rule-pool-field').hidden = !has('random_choice');
+    $('#rule-message-field').hidden = !has('message') && !has('alert');
+    form.elements.namedItem('item').required = has('item') || has('hint');
+    form.elements.namedItem('message').required = has('message');
+    const descriptions = {
+      random_trap: 'Wählt für jeden getroffenen Spieler zufällig ein erlaubtes Item, das bei ihm als Falle markiert ist.',
+      random_nontrap: 'Wählt aus den erlaubten Items, die du nicht als Falle markiert hast. Die Markierung legst du unter Spieler & Effekte fest; die Bridge kann nicht jedes Item automatisch als gut oder schlecht erkennen.',
+      random_item: 'Wählt aus allen erlaubten Items des getroffenen Spielers. Fallen können dabei sein.',
+      random_choice: 'Wählt aus deiner unten eingetragenen Itemliste. Erlaubte Items und der Raumkatalog des jeweiligen Spielers begrenzen die Auswahl.',
+      item: 'Sendet das gewählte zusätzliche Item an die unten festgelegten Spieler. Itemnamen stammen aus eurem verbundenen AP-Raum.',
+      hint: 'Fordert einen kostenlosen Admin-Hinweis zum Item des gewählten Spielers an. Der Hinweis erscheint bei dessen AP-Team. Es wird kein zusätzliches Item gesendet.',
+      message: 'Sendet einmal eine Nachricht in den Chat des AP-Raums. Dafür ist keine Admin-Anmeldung nötig.',
+      alert: 'Zeigt nur einen Stream-Alert. Dabei wird kein Spielitem, Chatbefehl oder DeathLink gesendet.',
+      deathlink: 'Sendet einmal DeathLink an die teilnehmenden Clients deines AP-Teams. Einzelspieler- und Spielfilter begrenzen diese Gruppenaktion nicht.',
+      random_action: 'Wählt zuerst eine der unten aktivierten, aktuell möglichen Aktionsarten. Danach wird die Aktion für die passenden Empfänger ausgeführt.',
+    };
+    $('#rule-effect-description').textContent = descriptions[effect] || '';
+    const game = form.elements.namedItem('game').value;
+    let players = this.teamPlayers().filter(p => p.approval.enabled && (!game || p.game === game));
+    if (['selected', 'random_selected'].includes(target.value)) { const keys = [...form.querySelectorAll('[name="targetKeys"]:checked')].map(e => e.value); players = players.filter(p => keys.includes(`${p.team}:${p.slot}`)); }
+    else if (!['random', 'all', 'group'].includes(target.value)) players = players.filter(p => `${p.team}:${p.slot}` === target.value);
+    const groupDescription = effect === 'deathlink' ? 'Alle verbundenen DeathLink-Teilnehmer deines AP-Teams; nur mit Gruppenfreigabe.' : effect === 'message' ? 'Einmal im AP-Raumchat, unabhängig vom Spiel der Teilnehmer.' : 'Einmal als Stream-Alert; kein Empfänger im Spiel.';
+    $('#rule-recipient-preview').innerHTML = group ? `<strong>Wirkung</strong>${esc(groupDescription)}` : `<strong>${players.length} passende freigegebene Spieler</strong>${players.length ? players.map(p => esc(p.name) + ' · ' + esc(p.game)).join('<br>') : 'Noch kein passender Spieler. Raum verbinden, Spielfilter prüfen und Effekte für einen Spieler freigeben.'}${['random', 'random_selected'].includes(target.value) && players.length ? '<br>Pro Ereignis wird eine dieser Personen zufällig gewählt.' : ''}${effect === 'random_action' && mixed.includes('deathlink') ? '<br>DeathLink betrifft zusätzlich die ganze teilnehmende AP-Teamgruppe.' : ''}`;
   },
   eventsPage(renderEvents) {
     const original = S;
@@ -192,7 +226,7 @@ const Studio = {
     if (action === 'studio-player-add') { const form = button.closest('form[data-player-prefix]'); if (form) this.addPlayerRow(form); else this.playersDrawer(true); return; }
     if (action === 'studio-player-remove') { const form = button.closest('form'); button.closest('[data-player-row]').remove(); this.syncPlayerRows(form); return; }
     if (action === 'studio-rule-players') {
-      const profiles = S.playerProfiles || []; if (!profiles.length) throw new Error('Zuerst eure Spieler unter Spielslots speichern.');
+      const profiles = S.playerProfiles || []; if (!profiles.length) throw new Error('Zuerst eure Spieler unter Spieler & Effekte speichern.');
       const keys = new Set(this.teamPlayers().filter(p => profiles.some(saved => saved.name === p.name && (!saved.game || saved.game === p.game))).map(p => `${p.team}:${p.slot}`));
       $('#rule-form').querySelectorAll('[name="targetKeys"]').forEach(input => { input.checked = keys.has(input.value); }); return;
     }
@@ -230,7 +264,7 @@ const Studio = {
       await api('players', { players }); if (id === 'studio-players-form') $('#drawer').close(); await refresh(true); toast('Spieler in diesem Raum gespeichert.');
     } else if (id === 'studio-scan-form') {
       const report = await api('worlds/scan', { folder: data.get('folder') });
-      this.scanReport = `${report.imported.length} Dateien eingelesen · ${report.unchanged} unverändert` + report.errors.map(e => '\n' + e.file + ': ' + e.error).join(''); this.entry = null; this.loadingGame = ''; await refresh(true);
+      this.scanReport = report; this.entry = null; this.loadingGame = ''; await refresh(true);
     } else if (id === 'studio-import-form') {
       const files = form.elements.namedItem('files').files;
       if (!files.length) throw new Error('Mindestens eine Datei auswählen.');

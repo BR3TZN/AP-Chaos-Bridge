@@ -50,7 +50,7 @@ def main():
     with concurrent.futures.ProcessPoolExecutor(max_workers=4) as pool:
         for name, data, error in pool.map(analyze, pending):
             if error:
-                result['errors'].append({'file': name, 'error': error})
+                result['errors'].append({'file': name, 'error': error, 'sha256': hashlib.sha256((ROOT / 'apworlds' / name).read_bytes()).hexdigest()})
             else:
                 result['files'][name] = data
     out = ROOT / 'assets/apworld-settings.json'
