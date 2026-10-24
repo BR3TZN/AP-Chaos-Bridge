@@ -35,10 +35,10 @@ const Studio = {
   catalogCards(query = this.catalogQuery) {
     if (query !== this.catalogQuery) { this.catalogQuery = query; this.catalogLimit = 24; }
     const normalize = name => name.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
-    const imported = new Map((S.gameLibrary?.games || []).filter(g => ['apworld', 'core', 'yaml'].includes(g.kind)).map(g => [normalize(g.game), g]));
+    const imported = new Map((S.gameLibrary?.games || []).filter(g => ['apworld', 'core', 'yaml'].includes(g.kind)).map(g => [g.game, g]));
     const list = imported;
-    const sorted = [...list.values()].filter(g => [g.game, ...(g.aliases || [])].some(name => normalize(name).includes(normalize(query)))).sort((a, b) => Number(imported.has(normalize(b.game))) - Number(imported.has(normalize(a.game))) || a.game.localeCompare(b.game));
-    const cards = sorted.slice(0, this.catalogLimit).map(g => { const entry = imported.get(normalize(g.game)); return `<article class="panel catalog-card"><div class="section-title"><h3>${esc(g.game)}</h3>${badge(entry?.kind === 'core' ? 'Core ' + entry.coreVersion : entry?.kind === 'yaml' ? 'YAML-Vorlage' : 'APworld', 'good')}</div><p>${entry ? `${entry.optionCount} Einstellungen · ${esc(entry.kind === 'core' ? 'In Archipelago enthalten' : entry.source)}` : 'Die .apworld-Datei hinzufügen, um Einstellungen zu bearbeiten.'}</p><button class="small section-gap" data-action="studio-game" data-id="${esc(entry?.game || g.game)}">${entry ? 'Einstellungen & YAML' : 'Spiel öffnen'}</button></article>`; }).join('');
+    const sorted = [...list.values()].filter(g => [g.game, ...(g.aliases || [])].some(name => normalize(name).includes(normalize(query)))).sort((a, b) => a.game.localeCompare(b.game));
+    const cards = sorted.slice(0, this.catalogLimit).map(g => { const entry = imported.get(g.game); return `<article class="panel catalog-card"><div class="section-title"><h3>${esc(g.game)}</h3>${badge(entry?.kind === 'core' ? 'Core ' + entry.coreVersion : entry?.kind === 'yaml' ? 'YAML-Vorlage' : 'APworld', 'good')}</div><p>${entry ? `${entry.optionCount} Einstellungen · ${esc(entry.kind === 'core' ? 'In Archipelago enthalten' : entry.source)}` : 'Die .apworld-Datei hinzufügen, um Einstellungen zu bearbeiten.'}</p><button class="small section-gap" data-action="studio-game" data-id="${esc(entry?.game || g.game)}">${entry ? 'Einstellungen & YAML' : 'Spiel öffnen'}</button></article>`; }).join('');
     return cards + (sorted.length > this.catalogLimit ? `<button data-action="studio-catalog-more">Weitere Spiele anzeigen · ${sorted.length - this.catalogLimit} verbleibend</button>` : '') || empty('Kein Spiel gefunden', 'Eine eigene APworld oder Spieler-YAML fügt das Spiel hinzu.');
   },
   catalogPage() {

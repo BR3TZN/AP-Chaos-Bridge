@@ -1,4 +1,4 @@
-# Prüfung der Version 0.6.0
+# Prüfung der Version 0.6.1
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
@@ -118,3 +118,7 @@ Die Tests prüfen geänderte Dropdowns, Zahlenbereiche, DeathLink, Trap-Gewichte
 Der JSDOM-Test bedient die echte Dateiauswahl, importiert die vollständige Peliarch-Datei über die lokale API, bearbeitet die Dropdowns, speichert zwei Spielernamen und erstellt eine YAML-Vorschau. Er wechselt anschließend zur absichtlich anderen APworld und zurück: Beide Quellen behalten ihre eigenen Werte und Raum-Voreinstellungen. Das Entfernen stellt die verbleibende APworld-Quelle wieder her. Der Python-Aufruf wird für diese YAML-Abläufe ausdrücklich gesperrt.
 
 Dies bestätigt Dateiimport, Wertübernahme und YAML-Format. Es ist **keine Prüfung aller Peliarch-Optionen mit einer konkreten Peliarch-APworld und keine Elden-Ring-Seed-Generierung**. Eindeutige `Values:`-Kommentare sind Eingabehilfen, keine vollständige World-Spezifikation. Die passende World und ihre Laufzeitbedingungen bleiben für den Generator erforderlich.
+
+## Katalogeinträge 0.6.1
+
+Der erweiterte JSDOM-Test enthält gleichzeitig `EldenRing` als APworld und `Elden Ring` als importierte Peliarch-Vorlage. Beide müssen bei der Suche nach `elden` mit ihrer exakten Spiel-ID erscheinen. Die vorherige Normalisierung führte beide zu einem Eintrag zusammen; der Test scheitert mit 0.6.0. Die Suche bleibt tolerant gegenüber Leerzeichen und Satzzeichen, die Katalogidentität verwendet die unveränderte Spiel-ID.

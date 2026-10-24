@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.6.0 · Einrichtung
+# AP Chaos Bridge 0.6.1 · Einrichtung
 
 ## Start und Update
 
@@ -38,6 +38,8 @@ Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **
 Bis zu **2 MiB je YAML-Datei**; mehrere Dateien und mehrere Spieler-Dokumente sind möglich. Der normale Ordnerscan liest weiterhin APworlds. Importierte YAMLs bleiben unabhängig davon nach Neustarts erhalten. Über **YAML-Vorlage entfernen** kannst du eine Quelle aus dem gemeinsamen Katalog entfernen.
 
 Eine YAML enthält Werte und gegebenenfalls Beschreibungen, aber kein garantiert vollständiges Optionsschema. Die Bridge kann daraus nicht alle unbekannten Auswahlwerte oder Spielbedingungen ableiten. Für die Seed-Generierung brauchst du weiterhin die zur Vorlage passende World im Archipelago-Generator. Eine vollständige Elden-Ring-Seed-Generierung wurde durch den Importtest nicht bestätigt.
+
+Peliarch verwendet die Spiel-ID **`Elden Ring` mit Leerzeichen**. Die andere mitgelieferte World heißt **`EldenRing` ohne Leerzeichen**. Beide werden in der Suche gefunden und bleiben getrennt; für die bereitgestellte Vorlage den Eintrag mit Leerzeichen und Kennzeichnung **YAML-Vorlage** öffnen.
 
 **Donkey Kong 64** und **Spirit Tracks** werden jetzt erkannt. Die zusätzliche `APAPI.apworld` ist eine Hilfsbibliothek ohne eigenes Spiel und wird separat erklärt. **Friday Night Funkin** liegt als eigene World vor, verlangt für unterstützte YAMLs aber den Export aus der **Mixtape Engine**; die Spielseite enthält den Hinweis und die Anleitung.
 

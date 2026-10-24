@@ -1,3 +1,8 @@
+# 0.6.1 – Unterschiedliche Elden-Ring-Worlds sichtbar halten
+
+- `EldenRing` und `Elden Ring` bleiben eigene Katalogeinträge. Die tolerante Suche darf unterschiedliche Spiel-IDs nicht zu einem Eintrag zusammenfassen.
+- Anleitung für die Peliarch-YAML ergänzt. Import, Kommentare, 91 Einstellungen und Mehrspieler-Export aus 0.6.0 bleiben erhalten.
+
 # 0.6.0 – Spieler-YAMLs importieren und bearbeiten
 
 - `.yaml` und `.yml` direkt über **Spielekatalog → + APworld / YAML hinzufügen** importieren. Das funktioniert ohne Python und ohne eine in der Bridge lesbare APworld.

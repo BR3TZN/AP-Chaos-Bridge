@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.6.0
+# AP Chaos Bridge 0.6.1
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -14,11 +14,11 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.6.0
+## Update auf 0.6.1
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.6.0:** Eigene `.yaml`- und `.yml`-Spielerdateien direkt im Spielekatalog importieren, ohne Python und ohne eine in der Bridge lesbare APworld. Alle enthaltenen Spieleinstellungen werden bearbeitbar, klare Auswahl- und Zahlenbereichskommentare liefern Dropdowns. Die mitgelieferte Peliarch-Beispiel-YAML enthält 91 Felder. Mehrere Vorlagen und eine APworld desselben Spielnamens bleiben getrennte Quellen; eigene Werte und Slotnamen werden pro Quelle und Raum gespeichert.
+**Neu in 0.6.1:** Eigene `.yaml`- und `.yml`-Spielerdateien direkt im Spielekatalog importieren, ohne Python und ohne eine in der Bridge lesbare APworld. Alle enthaltenen Spieleinstellungen werden bearbeitbar, klare Auswahl- und Zahlenbereichskommentare liefern Dropdowns. Die mitgelieferte Peliarch-Beispiel-YAML enthält 91 Felder. Mehrere Vorlagen und eine APworld desselben Spielnamens bleiben getrennte Quellen; eigene Werte und Slotnamen werden pro Quelle und Raum gespeichert. Unterschiedliche Spiel-IDs wie `EldenRing` und `Elden Ring` bleiben als eigene Katalogeinträge sichtbar.
 
 **Neu in 0.5.3:** 33 weitere Spiele aus den neuen Uploads, mit vorbereiteten Formularen und Mehrspieler-YAMLs ohne Python. Grandia (43 MiB) und Metroid: Samus Returns (32 MiB) liegen dem vollständigen Paket bereits unverändert bei. Made in Abyss ist als APworld gepackt; Crash 3, LEGO Harry Potter 5–7 und Codename: Kids Next Door wurden ergänzt. Ältere Optionswörterbücher, Trap-Gewichtungen, DeathLink-Mixins und entfernte Optionen werden korrekt gelesen. Der Katalog umfasst jetzt 848 Spiele.
 

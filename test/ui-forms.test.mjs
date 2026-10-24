@@ -384,7 +384,9 @@ test('Core search recognizes the table name and opens a versioned dropdown edito
 
 test('the YAML picker edits all Peliarch fields, switches sources without mixing presets and previews two players', async t => {
   const { app, window, document, requests } = await ui(t);
-  app.library.importWorld(writeZip([{ name: 'other/__init__.py', content: "class Different(Toggle):\n pass\nclass Settings(PerGameCommonOptions):\n unrelated_world_option: Different\nclass OtherWorld(World):\n game = 'Elden Ring'\n options_dataclass = Settings" }]), 'other.apworld');
+  const otherWorld = "class Different(Toggle):\n pass\nclass Settings(PerGameCommonOptions):\n unrelated_world_option: Different\nclass OtherWorld(World):\n game = 'Elden Ring'\n options_dataclass = Settings";
+  app.library.importWorld(writeZip([{ name: 'other/__init__.py', content: otherWorld }]), 'other.apworld');
+  app.library.importWorld(writeZip([{ name: 'other/__init__.py', content: otherWorld.replace("'Elden Ring'", "'EldenRing'") }]), 'original.apworld');
   app.store.state.yamlPresets['Elden Ring'] = { values: { unrelated_world_option: true }, players: ['WorldSlot'], extra: 'world_extra: 1' };
   app.library.pythonCommand = () => { throw new Error('Python must not run for YAML'); };
   window.location.hash = 'katalog'; await until(() => document.querySelector('#studio-search'), 'Katalog fehlt.');
@@ -396,7 +398,8 @@ test('the YAML picker edits all Peliarch fields, switches sources without mixing
   await until(() => app.library.yamlTemplates.entries().length && !document.querySelector('#drawer').open && !form.querySelector('[type=submit]').disabled, 'YAML wurde nicht importiert.');
   const search = document.querySelector('#studio-search'); search.value = 'elden'; search.dispatchEvent(new window.Event('input', { bubbles: true }));
   assert(document.querySelector('#studio-catalog-results').textContent.includes('YAML-Vorlage'));
-  document.querySelector('#studio-catalog-results [data-action="studio-game"]').click();
+  assert.deepEqual([...document.querySelectorAll('#studio-catalog-results [data-action="studio-game"]')].map(button => button.dataset.id).sort(), ['Elden Ring', 'EldenRing']);
+  document.querySelector('#studio-catalog-results [data-action="studio-game"][data-id="Elden Ring"]').click();
   await until(() => document.querySelector('#studio-yaml-form'), 'YAML-Editor fehlt.');
   assert.equal(document.querySelectorAll('.option-field').length, 91);
   const sourceId = app.library.get('Elden Ring').sourceId;

@@ -1,6 +1,6 @@
 # Noch fehlende Spiele im YAML-Katalog
 
-Stand: Bridge **0.6.0**. Noch **18 Spiele** aus der Quelltabelle benötigen eine passende World-Datei. Der mitgelieferte Katalog enthält **793 Spiele aus APworlds** sowie **55 vorbereitete Core-Spiele**. Eigene Spieler-YAMLs können zusätzlich manuell importiert werden.
+Stand: Bridge **0.6.1**. Noch **18 Spiele** aus der Quelltabelle benötigen eine passende World-Datei. Der mitgelieferte Katalog enthält **793 Spiele aus APworlds** sowie **55 vorbereitete Core-Spiele**. Eigene Spieler-YAMLs können zusätzlich manuell importiert werden.
 
 Die neue Upload-Runde ergänzt 33 Spiele einschließlich Grandia und Metroid: Samus Returns. Made in Abyss wurde aus dem hochgeladenen World-Ordner gepackt. Für Crash 3 und LEGO Harry Potter 5–7 wurden die zu den Clients gehörenden World-Quellen beziehungsweise Original-APworlds ergänzt.
 
