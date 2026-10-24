@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.6.1 · Einrichtung
+# AP Chaos Bridge 0.6.2 · Einrichtung
 
 ## Start und Update
 
@@ -27,6 +27,12 @@ Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **
 5. **Einstellungen speichern** behält die Vorlage in diesem Raum. **YAML-Vorschau** zeigt den Export. **YAMLs herunterladen** erzeugt eine einzelne YAML oder ein ZIP mit einer Datei pro Spieler.
 6. Die Dateien anschließend mit der passenden APworld-Version in Archipelago zum Seed generieren. Die Bridge verändert durch den YAML-Export keinen bereits laufenden Seed.
 
+Ein Bridge-Raum ist der gespeicherte Arbeitsbereich für euren Run: Dort bleiben Spieler, Spieleinstellungen und Regeln zusammen. Für die YAML-Vorbereitung ist noch keine Serververbindung nötig. Nach dem Export erzeugt ihr den Seed mit Archipelago, startet beziehungsweise hostet dort den Serverraum und verbindet anschließend die Bridge.
+
+**Eingaben im Editor:** Ja/Nein und bekannte Einzelwerte sind Dropdowns. Kleine Zahlenbereiche sind auswählbar; größere Bereiche zeigen Grenzen und erlauben eigene Werte. Bei bekannten Listen **Werte auswählen** öffnen und die gewünschten Einträge einzeln ankreuzen. **Weitere Werte** ergänzt eigene Texte, einen pro Zeile. Eine leere Auswahl bleibt eine leere Liste. Freie Felder zeigen Datentyp, Vorlagenwert und dokumentierte Schlüssel; die vollständige Beschreibung bleibt darunter erhalten. Wenn die Quelle keinen verbindlichen Wertebereich enthält, wird das ausdrücklich kenntlich gemacht.
+
+Die APworld liefert die technischen Definitionen; eine zur verwendeten Version passende Spieler-YAML kann ausführlichere Beschreibungen bieten. Beide bleiben getrennte Einstellungsquellen. Eine andere World mit ähnlichem Spielnamen wird nicht automatisch dazu gemischt.
+
 ### Eigene YAMLs, etwa Elden Ring / Peliarch
 
 1. **Spielekatalog → + APworld / YAML hinzufügen** öffnen.
@@ -40,6 +46,10 @@ Bis zu **2 MiB je YAML-Datei**; mehrere Dateien und mehrere Spieler-Dokumente si
 Eine YAML enthält Werte und gegebenenfalls Beschreibungen, aber kein garantiert vollständiges Optionsschema. Die Bridge kann daraus nicht alle unbekannten Auswahlwerte oder Spielbedingungen ableiten. Für die Seed-Generierung brauchst du weiterhin die zur Vorlage passende World im Archipelago-Generator. Eine vollständige Elden-Ring-Seed-Generierung wurde durch den Importtest nicht bestätigt.
 
 Peliarch verwendet die Spiel-ID **`Elden Ring` mit Leerzeichen**. Die andere mitgelieferte World heißt **`EldenRing` ohne Leerzeichen**. Beide werden in der Suche gefunden und bleiben getrennt; für die bereitgestellte Vorlage den Eintrag mit Leerzeichen und Kennzeichnung **YAML-Vorlage** öffnen.
+
+Unter **Trap Types / traps** sind die sieben beschriebenen Peliarch-Fallen als Mehrfachauswahl verfügbar. Die leere Liste bedeutet keine Fallen im Seed-Pool, auch wenn `trap_count` einen positiven Wert hat. Unter **spawn_traps** stehen weitere Gegnernamen und Modell-IDs in der Beschreibung; dieses Feld bleibt als JSON-Liste bearbeitbar.
+
+Die mitgelieferte **KH3-World 0.16.11** implementiert **Burn Trap** und **Sneeze Trap**. **Animal Crossing: Wild World 0.1.1** implementiert **Bee Trap** und **Invisible Bee Trap**. Diese zwei Arten sind jeweils tatsächlich im World- und Clientcode hinterlegt. YAML-Import und ein höherer Trap-Anteil erzeugen keine zusätzlichen Effekte. Für Live-Aktionen unter **Spieler & Effekte** neben den Items auch die übergeordnete Slot-Freigabe aktivieren und speichern.
 
 **Donkey Kong 64** und **Spirit Tracks** werden jetzt erkannt. Die zusätzliche `APAPI.apworld` ist eine Hilfsbibliothek ohne eigenes Spiel und wird separat erklärt. **Friday Night Funkin** liegt als eigene World vor, verlangt für unterstützte YAMLs aber den Export aus der **Mixtape Engine**; die Spielseite enthält den Hinweis und die Anleitung.
 

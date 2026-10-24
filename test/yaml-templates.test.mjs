@@ -17,6 +17,19 @@ const noPython = () => { throw new Error('YAML-Import darf Python nicht aufrufen
 const fresh = () => { const library = new GameLibrary('.', root, { memory: true }); library.pythonCommand = noPython; return library; };
 function temporary(t) { const path = mkdtempSync(join(tmpdir(), 'ap-yaml-import-')); t.after(() => rmSync(path, { recursive: true, force: true })); return path; }
 
+test('documented YAML list values become suggestions without restricting custom or ordered values', () => {
+  const library = fresh(); library.importYaml({ name: 'EldenRing.yaml', content: source });
+  const option = library.get('Elden Ring').options.find(option => option.key === 'traps');
+  assert.equal(option.kind, 'json');
+  assert.deepEqual(option.listChoices.map(choice => choice.value), ['rune_thief', 'no_flask', 'blackout', 'runebear', 'basilisk', 'malenia', 'aging_untouchable']);
+  assert(option.listChoices.find(choice => choice.value === 'no_flask').description.includes('20 seconds'));
+  const files = library.generate({ game: 'Elden Ring', players: ['Daniel'], values: { traps: ['malenia', 'custom_trap', 'rune_thief'] } });
+  assert.deepEqual(parse(files[0].content)['Elden Ring'].traps, ['malenia', 'custom_trap', 'rune_thief']);
+  library.importYaml({ name: 'names.yaml', content: 'game: Named\nNamed:\n  # Names: first, second\n  picks: [custom, second]\n' });
+  assert.deepEqual(library.get('Named').options[0].listChoices.map(choice => choice.value), ['first', 'second']);
+  assert.deepEqual(parse(library.generate({ game: 'Named', players: ['Daniel'] })[0].content).Named.picks, ['custom', 'second']);
+});
+
 test('the supplied Peliarch YAML imports all 91 settings and retains comments and root metadata for multiple players', () => {
   const library = fresh(), result = library.importYaml({ name: 'EldenRing.yaml', content: source });
   assert.deepEqual(result.games, ['Elden Ring']); assert.equal(library.list().games.length, 1);

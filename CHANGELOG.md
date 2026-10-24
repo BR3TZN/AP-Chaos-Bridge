@@ -1,3 +1,10 @@
+# 0.6.2 – Mehrfachauswahl und verständliche Wertehinweise
+
+- Dokumentierte YAML-Listen und bekannte APworld-Set-Werte als aufklappbare Mehrfachauswahl mit einzelnen Häkchen anzeigen. Beschreibungen der Einträge bleiben sichtbar; eigene Werte sind zeilenweise möglich.
+- Die sieben Fallen aus der Peliarch-Vorlage lassen sich ohne JSON-Eingabe auswählen. Listenhinweise sind Vorschläge, keine erfundene vollständige Werteliste. Vorhandene eigene Werte, Listenreihenfolge und leere Listen bleiben erhalten.
+- Freie Felder nennen Eingabeformat, Vorlagenwert und vorhandene Schlüssel- oder Wertelisten. Fehlende Wertehinweise werden ausdrücklich erklärt.
+- Anleitung zum Ablauf Bridge-Raum → Spieler-YAMLs → Archipelago-Seed und Serverraum ergänzt. Die tatsächlich implementierten zwei Fallen in KH3 0.16.11 und ACWW 0.1.1 sowie die Slot-Freigabe erklärt.
+
 # 0.6.1 – Unterschiedliche Elden-Ring-Worlds sichtbar halten
 
 - `EldenRing` und `Elden Ring` bleiben eigene Katalogeinträge. Die tolerante Suche darf unterschiedliche Spiel-IDs nicht zu einem Eintrag zusammenfassen.

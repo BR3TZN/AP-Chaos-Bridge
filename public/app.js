@@ -270,6 +270,7 @@ document.addEventListener('change', async event => {
     if (['playerName', 'playerGame'].includes(t.name)) Studio.updatePlayerRow(t);
     if (t.dataset.optionCustom !== undefined) { const input = document.querySelector('[data-custom-input="' + t.dataset.optionCustom + '"]'); input.classList.toggle('hidden', t.value !== '__custom__'); input.disabled = t.value !== '__custom__'; }
     if (t.dataset.optionEnable !== undefined) document.querySelector('[data-option-fieldset="' + t.dataset.optionEnable + '"]').disabled = !t.checked;
+    if (t.dataset.optionList !== undefined) Studio.listSummary(t.dataset.optionList);
     if (t.id === 'room-select') { await api('rooms/activate', { id: t.value }); Studio.entry = null; Studio.loadingGame = ''; Studio.logGame = ''; await refresh(true); }
     if (t.id === 'studio-log-game') { Studio.logGame = t.value; render(true); }
     if (t.id === 'ap-address-mode') $('#ap-host-label').classList.toggle('hidden', t.value !== 'custom');

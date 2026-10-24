@@ -382,6 +382,53 @@ test('Core search recognizes the table name and opens a versioned dropdown edito
   assert(document.querySelector('#studio-yaml-preview').textContent.includes('game: Super Mario Land 2'));
 });
 
+test('Peliarch traps use individual list choices and retain custom values in the real YAML preview', async t => {
+  const { app, window, document, requests } = await ui(t);
+  app.library.importYaml({ name: 'EldenRing.yaml', content: readFileSync(new URL('../examples/elden-ring-peliarch.yaml', import.meta.url), 'utf8') });
+  window.location.hash = 'spiel/Elden%20Ring';
+  await until(() => document.querySelector('#studio-yaml-form'), 'Peliarch-Editor fehlt.');
+  const entry = app.library.get('Elden Ring'), index = entry.options.findIndex(option => option.key === 'traps');
+  const field = document.querySelector('[data-option-search$=" traps"]');
+  assert.equal(field.querySelectorAll('input[type=checkbox]').length, 7);
+  assert(field.textContent.includes('20 seconds'));
+  for (const value of ['rune_thief', 'blackout']) { const checkbox = field.querySelector('input[value="' + value + '"]'); checkbox.checked = true; checkbox.dispatchEvent(new window.Event('change', { bubbles: true })); }
+  const extra = field.querySelector('[name="list-extra-' + index + '"]'); extra.value = 'custom_trap\nrune_thief'; extra.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert(field.querySelector('summary').textContent.includes('3 ausgewählt'));
+  assert(document.querySelector('[data-option-search$=" spawn_traps"] .option-value-help').textContent.includes('JSON-Liste'));
+  assert(document.querySelector('[data-option-search$=" curated_filler"] .option-value-help').textContent.includes('JSON-Objekt'));
+  document.querySelector('[data-action="studio-yaml-preview"]').click();
+  await until(() => document.querySelector('#studio-yaml-preview')?.textContent.includes('custom_trap'), 'Listenwerte fehlen in der Vorschau.');
+  const payload = JSON.parse(requests.filter(request => request.path === '/api/yaml/generate').at(-1).body);
+  assert.deepEqual(payload.values.traps, ['rune_thief', 'blackout', 'custom_trap']);
+  for (const checkbox of field.querySelectorAll('input[type=checkbox]')) checkbox.checked = false;
+  extra.value = ''; const save = document.querySelector('[data-action="studio-yaml-save"]'); save.click();
+  await until(() => app.store.state.yamlPresets[entry.sourceId] && !save.disabled && document.querySelector('[data-studio-message]').textContent.includes('gespeichert'), 'Leere Liste wurde nicht gespeichert.');
+  assert.deepEqual(app.store.state.yamlPresets[entry.sourceId].values.traps, []);
+});
+
+test('APworld set choices preserve existing custom order and free fields explain input formats', async t => {
+  const { app, window, document, requests } = await ui(t);
+  const entry = app.library.data.games['UI Fixture'];
+  entry.options.push({ key: 'allowed', label: 'Allowed', kind: 'set', validKeys: ['A', 'B'], default: ['outside', 'B'] }, { key: 'message', label: 'Message', kind: 'text', default: 'hello' }, { key: 'mapping', label: 'Mapping', kind: 'dict', default: { count: 2 }, validKeys: ['count', 'extra'] }, { key: 'unset', label: 'Unset', kind: 'set', validKeys: ['A', 'B'] });
+  Object.assign(entry.base['UI Fixture'], { allowed: ['outside', 'B'], message: 'hello', mapping: { count: 2 } });
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#studio-yaml-form'), 'Editor fehlt.');
+  const field = document.querySelector('[data-option-search="allowed allowed"]');
+  assert.equal(field.querySelector('textarea').value, 'outside');
+  assert(field.querySelector('input[value="B"]').checked);
+  field.querySelector('input[value="A"]').checked = true;
+  assert(document.querySelector('[data-option-search="message message"] .option-value-help').textContent.includes('Text'));
+  const mapping = document.querySelector('[data-option-search="mapping mapping"]');
+  assert(mapping.querySelector('.option-value-help').textContent.includes('JSON-Objekt'));
+  assert(mapping.querySelector('.option-values').textContent.includes('extra'));
+  const unset = document.querySelector('[data-option-search="unset unset"]');
+  assert(unset.querySelector('fieldset').disabled); assert.equal(unset.querySelectorAll('.option-list input[type=checkbox]').length, 2);
+  document.querySelector('[data-action="studio-yaml-preview"]').click();
+  await until(() => document.querySelector('#studio-yaml-preview')?.textContent.includes('outside'), 'Set-Vorschau fehlt.');
+  const payload = JSON.parse(requests.filter(request => request.path === '/api/yaml/generate').at(-1).body);
+  assert.deepEqual(payload.values.allowed, ['outside', 'B', 'A']);
+  assert(!Object.hasOwn(payload.values, 'unset'));
+});
+
 test('the YAML picker edits all Peliarch fields, switches sources without mixing presets and previews two players', async t => {
   const { app, window, document, requests } = await ui(t);
   const otherWorld = "class Different(Toggle):\n pass\nclass Settings(PerGameCommonOptions):\n unrelated_world_option: Different\nclass OtherWorld(World):\n game = 'Elden Ring'\n options_dataclass = Settings";

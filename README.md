@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.6.1
+# AP Chaos Bridge 0.6.2
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -14,11 +14,13 @@ node server.mjs
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.6.1
+## Update auf 0.6.2
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.6.1:** Eigene `.yaml`- und `.yml`-Spielerdateien direkt im Spielekatalog importieren, ohne Python und ohne eine in der Bridge lesbare APworld. Alle enthaltenen Spieleinstellungen werden bearbeitbar, klare Auswahl- und Zahlenbereichskommentare liefern Dropdowns. Die mitgelieferte Peliarch-Beispiel-YAML enthält 91 Felder. Mehrere Vorlagen und eine APworld desselben Spielnamens bleiben getrennte Quellen; eigene Werte und Slotnamen werden pro Quelle und Raum gespeichert. Unterschiedliche Spiel-IDs wie `EldenRing` und `Elden Ring` bleiben als eigene Katalogeinträge sichtbar.
+**Neu in 0.6.2:** Dokumentierte Listenwerte lassen sich in einer aufklappbaren Mehrfachauswahl einzeln anklicken, einschließlich der sieben Fallen aus der Peliarch-YAML. Beschreibungen stehen direkt bei den Werten; eigene Werte bleiben möglich. Freie Felder zeigen Eingabeformat, Vorlagenwert und vorhandene Schlüssel- oder Wertelisten. Unbekannte Grenzen werden nicht erfunden.
+
+**Seit 0.6.0/0.6.1:** Eigene `.yaml`- und `.yml`-Spielerdateien direkt im Spielekatalog importieren, ohne Python und ohne eine in der Bridge lesbare APworld. Alle enthaltenen Spieleinstellungen werden bearbeitbar, klare Auswahl- und Zahlenbereichskommentare liefern Dropdowns. Die mitgelieferte Peliarch-Beispiel-YAML enthält 91 Felder. Mehrere Vorlagen und eine APworld desselben Spielnamens bleiben getrennte Quellen; eigene Werte und Slotnamen werden pro Quelle und Raum gespeichert. Unterschiedliche Spiel-IDs wie `EldenRing` und `Elden Ring` bleiben als eigene Katalogeinträge sichtbar.
 
 **Neu in 0.5.3:** 33 weitere Spiele aus den neuen Uploads, mit vorbereiteten Formularen und Mehrspieler-YAMLs ohne Python. Grandia (43 MiB) und Metroid: Samus Returns (32 MiB) liegen dem vollständigen Paket bereits unverändert bei. Made in Abyss ist als APworld gepackt; Crash 3, LEGO Harry Potter 5–7 und Codename: Kids Next Door wurden ergänzt. Ältere Optionswörterbücher, Trap-Gewichtungen, DeathLink-Mixins und entfernte Optionen werden korrekt gelesen. Der Katalog umfasst jetzt 848 Spiele.
 
@@ -132,7 +134,7 @@ Unter **Design** zwischen neutralem **Darkmode**, **Lightmode** und **Klassisch*
 
 Der **Spielekatalog** enthält eingelesene APworlds und 55 vorbereitete Core-Worlds aus dem offiziellen Archipelago 0.6.8. Eigene Spieler-YAMLs lassen sich zusätzlich ausdrücklich importieren und erscheinen als **YAML-Vorlage**. Tabellenreferenzen und zufällig im APworld-Ordner liegende YAMLs erzeugen weiterhin keine Einträge. Die Referenzeinträge aus deiner Tabelle dienen als Downloadnachweis und manuelle Ergänzungsliste. Stand, Downloadquellen und SHA-256-Prüfsummen sind unter `assets/apworld-downloads.json` dokumentiert. **[APWORLDS-MANUELL.md](APWORLDS-MANUELL.md)** nennt Discord-Downloads, nicht erreichbare Dateien, den Core-Status und teilweise dynamische Optionen. Die Referenzliste ist kein Nachweis getesteter Spieleffekte.
 
-Im Katalog ein Spiel suchen und **Einstellungen & YAML** öffnen. Choice- und Toggle-Optionen erscheinen als Dropdown; kleine Zahlenbereiche ebenfalls. Größere Bereiche erlauben eigene Werte und Zufallsbereiche. Bekannte Set-Werte bieten eine Mehrfachauswahl; freie Dictionaries und andere komplexe Angaben bleiben strukturierte Eingaben. Ein Slotname pro Zeile erzeugt eine YAML pro Spieler, mehrere Spieler werden als ZIP exportiert. Einstellungen und Namen bleiben pro Raum gespeichert.
+Im Katalog ein Spiel suchen und **Einstellungen & YAML** öffnen. Choice- und Toggle-Optionen erscheinen als Dropdown; kleine Zahlenbereiche ebenfalls. Größere Bereiche erlauben eigene Werte und Zufallsbereiche. Bekannte Set-Werte und dokumentierte YAML-Listen bieten eine aufklappbare Mehrfachauswahl mit einzelnen Häkchen. Zusätzliche Texte lassen sich zeilenweise ergänzen; bestehende eigene Werte und ihre Reihenfolge bleiben erhalten. Freie Felder zeigen Datentyp, Vorlagenwert und vorhandene Schlüssel- oder Wertelisten. Dictionaries und andere komplexe Angaben bleiben JSON-Eingaben mit ihren Beschreibungen. Ein Slotname pro Zeile erzeugt eine YAML pro Spieler, mehrere Spieler werden als ZIP exportiert. Einstellungen und Namen bleiben pro Raum gespeichert.
 
 Eigene `.apworld`-Dateien in **`apworlds/`** oder einen Unterordner legen und **Ordner neu einlesen** wählen. Alternativ über **+ APworld / YAML hinzufügen** hochladen. Beim Start wird ebenfalls gescannt. Eigene Dateien direkt im APworld-Ordner haben Vorrang vor mitgelieferten Varianten in Unterordnern. YAML-Dateien werden in diesem Ordner nicht eingelesen. Vorbereitete APworld-Versionen werden am Dateiinhalt erkannt und benötigen auch nach Umbenennen oder in eigenen Ordnern **kein Python**. Für bisher unbekannte Versionen wird **Python 3.10 oder neuer** benötigt, automatisch über `py -3`, `python` oder `python3` erkannt. Bei Bedarf gibt `AP_BRIDGE_PYTHON` den vollständigen Pfad vor. Die mitgelieferten Metadaten sind bereits vorbereitet und werden nur bei passenden Datei-Prüfsummen verwendet.
 
@@ -145,6 +147,8 @@ Eigene `.apworld`-Dateien in **`apworlds/`** oder einen Unterordner legen und **
 Das Original bleibt als Vorlage erhalten: Kommentare, zusätzliche Spieleinstellungen, Top-Level-Metadaten, gewichtete Einstellungen und Sammlungen werden beim Export übernommen. Texte wie `off`, `on` und `no` bleiben für Archipelagos YAML-1.1-Leser Texte. Die angeforderten Slotnamen ersetzen `name`; `quantity` wird für separate Spielerdateien entfernt.
 
 Eine YAML definiert ihre vorhandenen Werte. Sie enthält nicht zwingend alle erlaubten Auswahlmöglichkeiten, Bedingungen oder sämtliche World-Optionen. Die Bridge übernimmt eindeutige `Values:`-Kommentare als Eingabehilfe; ohne solche Angaben bleiben Text-, Zahlen- oder JSON-Felder. Die passende World muss für die eigentliche Seed-Generierung weiterhin in Archipelago installiert sein. Die mitgelieferte Datei [elden-ring-peliarch.yaml](examples/elden-ring-peliarch.yaml) ist die bereitgestellte Peliarch-Vorlage mit 91 Einstellungen; sie wird nicht automatisch mit einer anderen Elden-Ring-World gleichgesetzt.
+
+Listenhinweise wie `Names: first, second` oder beschriebene Schlüssel wie `rune_thief: you lose half your runes` werden als Vorschläge übernommen. Sie werden nicht als vollständiges Optionsschema behandelt. Die Peliarch-Liste `traps` enthält dadurch sieben auswählbare Typen; `spawn_traps` bleibt mit seinen Namen- und Modell-ID-Hinweisen als JSON-Liste bearbeitbar.
 
 Die Dateien liegen nach Quelle und Hash in Unterordnern; ihre **Originalnamen bleiben erhalten**. Für die eigentliche Archipelago-Generierung die gewünschte Datei in Archipelagos `custom_worlds` installieren. Abweichende Installationsnamen einzelner Entwicklerpakete stehen in der manuellen Liste. Nicht alle mitgelieferten Versionen gleichzeitig in Archipelago installieren. Den verwendeten Dateipfad zeigt der Editor als Quelle an.
 

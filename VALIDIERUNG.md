@@ -1,10 +1,10 @@
-# Prüfung der Version 0.6.1
+# Prüfung der Version 0.6.2
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Automatisierte Prüfungen
 
-**144 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**147 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -122,3 +122,9 @@ Dies bestätigt Dateiimport, Wertübernahme und YAML-Format. Es ist **keine Prü
 ## Katalogeinträge 0.6.1
 
 Der erweiterte JSDOM-Test enthält gleichzeitig `EldenRing` als APworld und `Elden Ring` als importierte Peliarch-Vorlage. Beide müssen bei der Suche nach `elden` mit ihrer exakten Spiel-ID erscheinen. Die vorherige Normalisierung führte beide zu einem Eintrag zusammen; der Test scheitert mit 0.6.0. Die Suche bleibt tolerant gegenüber Leerzeichen und Satzzeichen, die Katalogidentität verwendet die unveränderte Spiel-ID.
+
+## Eingabehilfen 0.6.2
+
+Die echte Peliarch-Vorlage liefert sieben dokumentierte Vorschläge für `traps`, einschließlich der 20-Sekunden-Beschreibung für `no_flask`. Der neue Modelltest prüft diese Hinweise sowie freie und geordnete Listenwerte. Die Vorschläge ändern weder den JSON-Optionstyp noch die zulässigen benutzerdefinierten Eingaben.
+
+Zwei zusätzliche JSDOM-Tests prüfen einzelne Häkchen, Zähler, eigene Texte, Deduplizierung, leere Listen, erhaltene Reihenfolge und eigene Werte in APworld-Sets. Die echten Vorschau- und Speicher-Routen übernehmen die ausgewählten Werte. Formatbeschreibungen für Text, Listen und Wörterbücher sowie dokumentierte Schlüssel werden geprüft. Es werden keine zusätzlichen Falleneffekte implementiert und keine Spielclients gestartet.

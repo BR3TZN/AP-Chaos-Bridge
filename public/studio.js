@@ -71,9 +71,30 @@ const Studio = {
   removeYamlDrawer() {
     showDrawer(drawerHead('YAML-Vorlage entfernen', this.entry.source) + `<form id="studio-yaml-remove-form"><input type="hidden" name="sourceId" value="${esc(this.entry.sourceId)}"><div class="drawer-body"><p>Entfernt diese gespeicherte YAML-Vorlage für alle Räume aus dem Katalog. Du kannst sie anschließend erneut importieren.</p></div><div class="drawer-foot"><button type="button" class="ghost" data-action="close-drawer">Abbrechen</button><button class="primary" type="submit">Vorlage entfernen</button></div></form>`);
   },
+  listValue(index, form = $('#studio-yaml-form')) {
+    const original = JSON.parse(form.elements.namedItem('option-' + index).value);
+    const checked = [...form.querySelectorAll('[data-option-list="' + index + '"][type="checkbox"]:checked')].map(input => input.value);
+    const extra = form.elements.namedItem('list-extra-' + index)?.value.split(/\r?\n/).map(value => value.trim()).filter(Boolean) || [];
+    const selected = [...new Set([...checked, ...extra])];
+    return [...original.filter(value => selected.includes(value)), ...selected.filter(value => !original.includes(value))];
+  },
+  listSummary(index) {
+    const summary = document.querySelector('[data-list-summary="' + index + '"]');
+    if (summary) summary.textContent = this.listValue(index).length + ' ausgewählt · Werte auswählen';
+  },
+  valueHelp(option) {
+    const kind = option.kind, value = option.default;
+    let format = kind === 'text' ? 'Text' : kind === 'number' ? 'Zahl' : kind === 'dict' ? 'JSON-Objekt mit Schlüssel/Wert-Paaren' : ['list', 'set'].includes(kind) ? 'JSON-Liste' : Array.isArray(value) ? 'JSON-Liste' : value && typeof value === 'object' ? 'JSON-Objekt mit Schlüssel/Wert-Paaren' : 'Gültiger JSON-Wert';
+    let example = value === undefined ? '' : JSON.stringify(value);
+    if (example?.length > 180) example = example.slice(0, 177) + '…';
+    const known = option.validKeys?.length ? `<details class="disclosure"><summary>${option.validKeys.length} dokumentierte Schlüssel / Werte</summary><pre class="option-values">${esc(option.validKeys.join('\n'))}</pre></details>` : '';
+    return `<span class="help option-value-help">Erwartet: ${esc(format)}.${example ? ' Vorlagenwert: ' + esc(example) + '.' : ''}${option.inferred ? ' Kommentare liefern Hinweise; eine vollständige Werteliste ist nicht garantiert.' : !option.description && !option.validKeys?.length ? ' Die Quelle gibt keine weiteren Wertehinweise an.' : ''}</span>${known}`;
+  },
   field(option, i, values) {
     const value = Object.hasOwn(values, option.key) ? values[option.key] : option.default, name = 'option-' + i;
-    let control = '';
+    let control = '', list = false;
+    const listChoices = option.listChoices || (option.kind === 'set' ? option.validKeys?.map(value => ({ value, label: value })) : null);
+    const listDefault = value === undefined && option.kind === 'set' ? [] : value;
     if (option.kind === 'toggle') control = `<select name="${name}">${options({ true: 'Ja', false: 'Nein' }, String(value === true || value === 'true' || value === 1))}</select>`;
     else if (['choice', 'textchoice', 'range'].includes(option.kind)) {
       const choices = option.kind === 'range' ? [
@@ -87,12 +108,16 @@ const Studio = {
       control = `<select name="${name}" ${custom ? `data-option-custom="${i}"` : ''}>${options(Object.fromEntries(choices.map(c => [c.value, c.label])), present ? String(value) : custom ? '__custom__' : String(choices[0]?.value))}</select>`;
       if (custom) control += `<input name="custom-${i}" data-custom-input="${i}" class="${present ? 'hidden' : ''}" ${present ? 'disabled' : ''} value="${esc(value ?? '')}" placeholder="${option.kind === 'range' ? option.min + ' bis ' + option.max + ' oder random-range-1-5' : 'Eigener Text'}">`;
       if (option.kind === 'range') control += `<span class="tiny">${option.min}–${option.max} · Zufallswerte oder eigener Wert möglich</span>`;
-    } else if (option.kind === 'set' && option.validKeys?.length && option.validKeys.length <= 500) {
-      control = `<select multiple name="${name}" size="6">${option.validKeys.map(k => `<option value="${esc(k)}" ${Array.isArray(value) && value.includes(k) ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select><span class="tiny">Mehrfachauswahl mit Strg / Cmd</span>`;
+    } else if (listChoices?.length && listChoices.length <= 500 && Array.isArray(listDefault) && new Set(listDefault).size === listDefault.length && [...listDefault, ...listChoices.map(choice => choice.value)].every(item => typeof item === 'string' && item.trim() === item && item && !/[\r\n]/.test(item))) {
+      list = true;
+      const extra = listDefault.filter(item => !listChoices.some(choice => choice.value === item));
+      control = `<input type="hidden" name="${name}" value="${esc(JSON.stringify(listDefault))}"><details class="option-list"><summary data-list-summary="${i}" aria-labelledby="studio-label-${i}">${listDefault.length} ausgewählt · Werte auswählen</summary><div class="option-list-options">${listChoices.map(choice => `<label class="check-label"><input type="checkbox" name="list-${i}" data-option-list="${i}" value="${esc(choice.value)}" ${listDefault.includes(choice.value) ? 'checked' : ''}><span><b>${esc(choice.label)}</b><span class="tiny mono">${esc(choice.value)}</span>${choice.description ? `<span class="help">${esc(choice.description)}</span>` : ''}</span></label>`).join('')}</div></details><label>Weitere Werte · ein Wert pro Zeile<textarea name="list-extra-${i}" data-option-list="${i}" rows="2" spellcheck="false">${esc(extra.join('\n'))}</textarea></label><span class="help">Mehrere Werte einzeln anklicken. Keine Auswahl ergibt eine leere Liste.${option.inferred ? ' Auswahlhilfen aus den YAML-Kommentaren; weitere Werte bleiben möglich.' : ' Zusätzliche Werte werden vom Archipelago-Generator geprüft.'}</span>`;
     } else if (['dict', 'set', 'list', 'json'].includes(option.kind)) control = `<textarea name="${name}" rows="4" spellcheck="false">${esc(JSON.stringify(value ?? (option.kind === 'dict' ? {} : option.kind === 'json' ? null : []), null, 2))}</textarea>`;
     else control = `<input name="${name}" ${option.kind === 'number' ? 'type="number" step="any"' : ''} value="${esc(value ?? '')}">`;
     if (value === undefined) control = `<label class="check-label"><input type="checkbox" name="enable-${i}" data-option-enable="${i}"><span>Option ausdrücklich setzen</span></label><fieldset class="option-control" data-option-fieldset="${i}" disabled>${control}</fieldset>`;
-    return `<div class="option-field ${['dict', 'set', 'list', 'json'].includes(option.kind) ? 'full' : ''}" data-option-search="${esc((option.label + ' ' + option.key).toLowerCase())}"><label for="studio-option-${i}"><b>${esc(option.label)}</b></label><span class="tiny mono option-key">${esc(option.key)}</span>${control.replace('name="' + name + '"', 'id="studio-option-' + i + '" name="' + name + '"')}${option.description ? `<span class="help option-description">${esc(option.description)}</span>` : ''}</div>`;
+    const label = list ? `<span id="studio-label-${i}"><b>${esc(option.label)}</b></span>` : `<label for="studio-option-${i}"><b>${esc(option.label)}</b></label>`;
+    const help = !list && ['text', 'number', 'dict', 'set', 'list', 'json'].includes(option.kind) ? this.valueHelp(option) : '';
+    return `<div class="option-field ${['dict', 'set', 'list', 'json'].includes(option.kind) ? 'full' : ''}" data-option-search="${esc((option.label + ' ' + option.key).toLowerCase())}">${label}<span class="tiny mono option-key">${esc(option.key)}</span>${control.replace('name="' + name + '"', 'id="studio-option-' + i + '" name="' + name + '"')}${help}${option.description ? `<span class="help option-description">${esc(option.description)}</span>` : ''}</div>`;
   },
   gamePage() {
     let game; try { game = decodeURIComponent(currentPage.slice('spiel/'.length)); } catch { game = ''; }
@@ -121,7 +146,8 @@ const Studio = {
       if (option.kind === 'toggle') value = raw === 'true';
       if (option.kind === 'range' && /^-?\d+$/.test(raw)) value = Number(raw);
       if (option.kind === 'number') { value = Number(raw); if (!raw.trim() || !Number.isFinite(value)) throw new Error(option.label + ': gültige Zahl eingeben.'); }
-      if (element.multiple) value = [...element.selectedOptions].map(o => o.value);
+      if (form.elements.namedItem('list-extra-' + i)) value = this.listValue(i, form);
+      else if (element.multiple) value = [...element.selectedOptions].map(o => o.value);
       else if (['dict', 'set', 'list', 'json'].includes(option.kind)) { try { value = JSON.parse(raw); } catch { throw new Error(option.label + ': gültiges JSON eingeben.'); } }
       values[option.key] = value;
     }
