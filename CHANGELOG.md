@@ -1,3 +1,12 @@
+# 0.6.0 – Spieler-YAMLs importieren und bearbeiten
+
+- `.yaml` und `.yml` direkt über **Spielekatalog → + APworld / YAML hinzufügen** importieren. Das funktioniert ohne Python und ohne eine in der Bridge lesbare APworld.
+- Alle enthaltenen Spieleinstellungen bleiben bearbeitbar. Eindeutige Auswahlwerte und Zahlenbereiche aus Kommentaren werden zu Dropdowns; andere Werte bleiben Texte, Zahlen oder JSON. Die bereitgestellte Peliarch-YAML umfasst 91 Felder.
+- Kommentare, Zusatzfelder, Metadaten, gewichtete Einstellungen, Werte aus Aliasen und Sammlungen bleiben beim Export erhalten. Texte wie `off`, `on` und `no` bleiben unter YAML 1.1 Texte. Mehrspieler-Export und YAML-Vorschau sind weiterhin möglich.
+- Mehrere YAML-Vorlagen und APworlds desselben Spielnamens sind getrennte Einstellungsquellen. Eigene Raum-Voreinstellungen bleiben pro Quelle erhalten. APworld-Defaults einer anderen Implementierung werden nicht untergemischt.
+- Vorlagen bleiben bei Neustart und Ordnerscan gespeichert, die Quellenauswahl gilt pro Raum. Importierte Vorlagen lassen sich wieder entfernen. Mehrere Dokumente je Datei werden getrennt übernommen; ungültige Imports ändern den Bestand nicht.
+- YAML-Import ersetzt keine passende World im Archipelago-Generator. Kommentare sind Eingabehilfen; sie bestätigen weder sämtliche Optionen noch eine vollständige Seed-Generierung.
+
 # 0.5.3 – Neue APworlds und Importkorrekturen
 
 - 33 weitere Spiele aus den Nutzerdateien und dazugehörigen World-Quellen vorbereitet; insgesamt 848 Katalogspiele. Alle neuen Versionen funktionieren auch umbenannt oder in eigenen Ordnern ohne Python.

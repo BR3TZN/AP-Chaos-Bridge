@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.5.3 · Einrichtung
+# AP Chaos Bridge 0.6.0 · Einrichtung
 
 ## Start und Update
 
@@ -18,14 +18,26 @@ Slotnamen für die Generierung: eindeutig, maximal 16 Zeichen. Die gespeicherte 
 
 ## APworlds und YAML-Editor
 
-Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **[Liste manueller Downloads](APWORLDS-MANUELL.md)** nennt fehlende Dateien und teilweise dynamische Einstellungen. Die Unterordner des APworld-Ordners werden mit eingelesen; YAML-Vorlagen werden dort ignoriert.
+Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **[Liste manueller Downloads](APWORLDS-MANUELL.md)** nennt fehlende Dateien und teilweise dynamische Einstellungen. Die Unterordner des APworld-Ordners werden mit eingelesen; YAML-Vorlagen werden über die Dateiauswahl ausdrücklich importiert.
 
-1. `.apworld`-Dateien mit Originalnamen in den Ordner **`apworlds`** neben `Start.cmd` kopieren. Alternativ im Spielekatalog über **APworld hinzufügen** mehrere Dateien auswählen.
+1. `.apworld`-Dateien mit Originalnamen in den Ordner **`apworlds`** neben `Start.cmd` kopieren. Alternativ im Spielekatalog über **+ APworld / YAML hinzufügen** mehrere Dateien auswählen.
 2. Unter **Spielekatalog → Ordner neu einlesen** aktualisieren. Ein anderer Ordner kann dort eingetragen werden.
 3. Spiel suchen und **Einstellungen & YAML** öffnen.
 4. Einstellungen setzen und Slotnamen eintragen, ein Name pro Zeile. **Gespeicherte Spielernamen übernehmen** füllt die zum Spiel passenden Profile ein.
 5. **Einstellungen speichern** behält die Vorlage in diesem Raum. **YAML-Vorschau** zeigt den Export. **YAMLs herunterladen** erzeugt eine einzelne YAML oder ein ZIP mit einer Datei pro Spieler.
 6. Die Dateien anschließend mit der passenden APworld-Version in Archipelago zum Seed generieren. Die Bridge verändert durch den YAML-Export keinen bereits laufenden Seed.
+
+### Eigene YAMLs, etwa Elden Ring / Peliarch
+
+1. **Spielekatalog → + APworld / YAML hinzufügen** öffnen.
+2. Deine `EldenRing.yaml` beziehungsweise eine andere Archipelago-Spieler-YAML auswählen und **Importieren** klicken. Dafür ist kein Python erforderlich.
+3. Das Spiel suchen und **Einstellungen & YAML** öffnen. Deine Peliarch-Datei zeigt **91 Felder**. Eindeutige Auswahlwerte und Zahlenbereiche aus den Kommentaren werden als Dropdown angeboten; andere Werte bleiben frei oder als JSON bearbeitbar.
+4. Bei mehreren Dateien oder einer vorhandenen APworld unter **Einstellungsquelle** die gewünschte Vorlage wählen. Jede Quelle behält ihre Werte und ihre pro Raum gespeicherten Einstellungen; es wird nichts aus einer anderen World ergänzt.
+5. Für jeden Spieler einen Slotnamen eintragen, Einstellungen speichern und YAMLs herunterladen. Kommentare und weitere Einstellungen bleiben erhalten.
+
+Bis zu **2 MiB je YAML-Datei**; mehrere Dateien und mehrere Spieler-Dokumente sind möglich. Der normale Ordnerscan liest weiterhin APworlds. Importierte YAMLs bleiben unabhängig davon nach Neustarts erhalten. Über **YAML-Vorlage entfernen** kannst du eine Quelle aus dem gemeinsamen Katalog entfernen.
+
+Eine YAML enthält Werte und gegebenenfalls Beschreibungen, aber kein garantiert vollständiges Optionsschema. Die Bridge kann daraus nicht alle unbekannten Auswahlwerte oder Spielbedingungen ableiten. Für die Seed-Generierung brauchst du weiterhin die zur Vorlage passende World im Archipelago-Generator. Eine vollständige Elden-Ring-Seed-Generierung wurde durch den Importtest nicht bestätigt.
 
 **Donkey Kong 64** und **Spirit Tracks** werden jetzt erkannt. Die zusätzliche `APAPI.apworld` ist eine Hilfsbibliothek ohne eigenes Spiel und wird separat erklärt. **Friday Night Funkin** liegt als eigene World vor, verlangt für unterstützte YAMLs aber den Export aus der **Mixtape Engine**; die Spielseite enthält den Hinweis und die Anleitung.
 
@@ -44,7 +56,7 @@ Die [Liste der 50 weiterhin fehlenden Spiele](https://github.com/BR3TZN/AP-Chaos
 Andere Spiele werden häufig ebenfalls als Release-ZIP mit einer enthaltenen `.apworld` und zusätzlichen Client-Dateien verteilt:
 
 1. Das passende Release des World-Entwicklers herunterladen und das ZIP entpacken.
-2. Die originale `.apworld` unter **Spielekatalog → + APworld hinzufügen** hochladen oder in den APworld-Ordner kopieren und **Ordner neu einlesen** wählen. Bis **128 MiB pro APworld** werden unterstützt.
+2. Die originale `.apworld` unter **Spielekatalog → + APworld / YAML hinzufügen** hochladen oder in den APworld-Ordner kopieren und **Ordner neu einlesen** wählen. Bis **128 MiB pro APworld** werden unterstützt.
 3. Alternativ den **APworld-Ordner** der Bridge auf Archipelagos **`custom_worlds`** setzen, wenn die Worlds dort bereits installiert sind. Bekannte Dateiversionen brauchen kein Python; bisher unbekannte Versionen benötigen Python ab 3.10 für die statische Analyse.
 4. Das eingelesene Spiel öffnen und die Spieler-YAMLs exportieren. Reine Quellcode-Repositories benötigen zunächst eine passende APworld-Datei.
 
@@ -175,4 +187,4 @@ Die erste Installation der Updatefunktion erfolgt manuell mit dem vollständigen
 
 ## Spieler-YAMLs verwenden
 
-Der Katalog zeigt nur eingelesene APworlds. Nach diesem Update alte Platin-YAMLs erneut exportieren. Die angezeigte World-Version und Mindestversion von Archipelago beachten. Die passende `.apworld` in Archipelagos `custom_worlds` installieren, Spieler-YAMLs in `Players` legen und daraus den Seed generieren. Die YAML ist eine Konfigurationsdatei für den Generator.
+Der Katalog zeigt eingelesene APworlds, vorbereitete Core-Worlds und ausdrücklich importierte Spieler-YAMLs. Nach diesem Update alte Platin-YAMLs erneut exportieren. Die angezeigte World-Version und Mindestversion von Archipelago beachten. Die passende `.apworld` in Archipelagos `custom_worlds` installieren, Spieler-YAMLs in `Players` legen und daraus den Seed generieren. Die YAML ist eine Konfigurationsdatei für den Generator.

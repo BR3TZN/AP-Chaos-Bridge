@@ -1,10 +1,10 @@
-# Prüfung der Version 0.5.3
+# Prüfung der Version 0.6.0
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Automatisierte Prüfungen
 
-**132 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**144 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -13,7 +13,7 @@ Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 is
 | Programmupdates | Versionsvergleich, Token ohne Weitergabe bei Redirects, SHA-256, ZIP-Pfade, vollständiges Manifest, erhaltene Räume und eigene APworlds, Sicherungen, Rücknahme bei Schreibfehlern, echter Neustart und Rückkehr zu Programm und Daten der vorherigen Version bei Startfehlern |
 | Raumarchiv | Archivieren des geöffneten Raums mit Wechsel, Wiederherstellung nach Neustart, erhaltene Regeln, Historie und Zugangsdaten |
 | Löschen | Exakte Namensbestätigung, eigene Raumdateien und Zugangsdaten entfernen, gemeinsame Daten erhalten, kein Wiederanlegen des gelöschten Standardraums |
-| APworlds | CRC-Prüfung, Pfade, Größenbegrenzung, rekursive Ordner, Vorrang eigener APworlds, Windows-Archivpfade, Ausschluss reiner YAML-Vorlagen, passende Metadaten-Hashes unabhängig von Dateiname und Ordner, HTTP-Upload aller sieben Nutzerdateien ohne Python, keine Ausführung des World-Codes |
+| APworlds | CRC-Prüfung, Pfade, Größenbegrenzung, rekursive Ordner, Vorrang eigener APworlds, Windows-Archivpfade, getrennter manueller YAML-Import, passende Metadaten-Hashes unabhängig von Dateiname und Ordner, HTTP-Upload aller sieben Nutzerdateien ohne Python, keine Ausführung des World-Codes |
 | AST-Analyse | Modulbereiche, Import-Aliase, Konstanten, gleichnamige Klassen, Choice, TextChoice, NamedRange, dynamische Standards und Manifest-Fallback |
 | Spielerziele | Einzelperson, alle, markierte Gruppe oder Zufall aus der Auswahl; nur freigegebene eigene Team-Slots; gespeicherte Profil-IDs beim Bearbeiten erhalten |
 | YAMLs | Separate Spielerdateien, Slotvalidierung, gewichtete Zusatzoptionen, skalare Sammlungs-Presets und Zufallsbereiche |
@@ -108,3 +108,13 @@ Die Parserkorrektur liest ältere Optionswörterbücher einschließlich importie
 **66 Konfigurationen aller 33 Ergänzungen** wurden mit Archipelago 0.6.8 akzeptiert: je Standard und ein geänderter Wert. `scripts/validate_user_worlds.py` lädt ausschließlich ausdrücklich geprüfte, per SHA-256 festgelegte Optionsmodule und erforderliche Datendeklarationen. Die Original-Optionsdataclass wird vorübergehend bei `Generate.roll_settings` registriert, anschließend folgen `Option.verify` und ein vorhandener Dataclass-Validator. Die eigentlichen World-Initialisierungen und Clients werden dabei nicht geladen. Für das ältere Space-Engineers-Wörterbuch werden die ursprünglichen Optionstypen in einer temporären Dataclass geprüft. Das bestätigt deren YAML-Eingaben, jedoch keine vollständige World-Kompatibilität oder Seed-Generierung; dieser Unterschied wird im Editor angezeigt. Ergebnisse: `assets/user-worlds-validation.json`; reproduzierbar mit `npm run validate:user-worlds -- --archipelago PFAD` und den Entwicklerabhängigkeiten aus `scripts/requirements-core-cache.txt`. Die normale Anwendung führt diesen Prüfcode nicht aus.
 
 Der vollständige Bestandslauf bestätigt **858 YAML-1.1-/PyYAML-Roundtrips ohne Abweichungen**. Die 55 Core-Spiele wurden weiterhin mit 110 echten Optionskonfigurationen geprüft. APAPI bleibt als Hilfsbibliothek separat übersprungen. Die aktualisierte Liste nennt noch 18 Spiele ohne passende World-Datei.
+
+## Manueller YAML-Import 0.6.0
+
+Die bereitgestellte Peliarch-Datei `examples/elden-ring-peliarch.yaml` wird unverändert als Test- und Beispielvorlage mitgeliefert. Der Import erkennt **91 Einstellungen**, einschließlich zusätzlicher Felder, Gewichte und Sammlungseinstellungen. Ein Standardexport für zwei Spieler wird mit JavaScript-YAML 1.1 und PyYAML 6.0.3 gegen die eingelesenen Werte geprüft. `off`, `on`, `no`, Datumszeichenfolgen und exponentielle Zahlen behalten die erwarteten Datentypen. Kommentare und Top-Level-Metadaten bleiben erhalten; Slotname und Anzahl werden gezielt für die einzelnen Spielerdateien angepasst.
+
+Die Tests prüfen geänderte Dropdowns, Zahlenbereiche, DeathLink, Trap-Gewichte, freie Zusatzfelder, YAML-Aliase und Merges, explizite Sets, Minimaldateien und mehrere Spieler-Dokumente. Eine gleichnamige APworld mit absichtlich anderen Feldern bestätigt, dass fremde World-Defaults nicht in die YAML gelangen. Neustart, geänderter APworld-Ordner, Quellenauswahl und Presets pro Raum, identische umbenannte Uploads und Entfernen von Vorlagen sind geprüft. Fehlende Spielnamen, ungültiges YAML, doppelte Schlüssel, unbekannte Tags, unsichere Schlüssel, übergroße Dateien und mehrdeutige Spielauswahl werden vor dem Speichern abgewiesen.
+
+Der JSDOM-Test bedient die echte Dateiauswahl, importiert die vollständige Peliarch-Datei über die lokale API, bearbeitet die Dropdowns, speichert zwei Spielernamen und erstellt eine YAML-Vorschau. Er wechselt anschließend zur absichtlich anderen APworld und zurück: Beide Quellen behalten ihre eigenen Werte und Raum-Voreinstellungen. Das Entfernen stellt die verbleibende APworld-Quelle wieder her. Der Python-Aufruf wird für diese YAML-Abläufe ausdrücklich gesperrt.
+
+Dies bestätigt Dateiimport, Wertübernahme und YAML-Format. Es ist **keine Prüfung aller Peliarch-Optionen mit einer konkreten Peliarch-APworld und keine Elden-Ring-Seed-Generierung**. Eindeutige `Values:`-Kommentare sind Eingabehilfen, keine vollständige World-Spezifikation. Die passende World und ihre Laufzeitbedingungen bleiben für den Generator erforderlich.

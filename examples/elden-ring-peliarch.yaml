@@ -1,0 +1,1196 @@
+# ============================================================================
+#  ELDEN RING -- Archipelago player config (v0.3)
+#
+#  Drop this in your Archipelago  Players/  folder and generate.
+#
+#  THE GAME ID IS `Elden Ring` -- WITH A SPACE.
+#  It was `EldenRing` in v0.1. A v0.1 yaml is rejected with:
+#      "No world found to handle game EldenRing. Did you mean 'Elden Ring'?"
+#  Do NOT retrofit an old yaml. Start from this one. Archipelago IGNORES
+#  unknown options (it prints one easily-missed warning line per option while
+#  generating), so an old yaml can generate a seed that is not the one you
+#  configured.
+#
+#  Every key below is a REAL option. If you add a key that is not in this
+#  file, Archipelago ignores it and only logs that warning -- that is
+#  Archipelago behaviour, not a bug in this world.
+# ============================================================================
+#
+#  HOW PROGRESSION WORKS (one paragraph, and the options below make sense):
+#
+#  The world is split into regions, each sealed behind a "<Region> Lock" item
+#  in the multiworld pool. Receiving a Lock lights ALL of that region's
+#  graces, and you warp in. That is the ONLY way in: vanilla key items and
+#  routes gate NOTHING here -- no Rold Medallion for the Mountaintops, no
+#  Mohg fight for the DLC. Enter a region whose Lock you do not hold and the
+#  client warps you back out. You start at Roundtable Hold with one region
+#  already open; the default goal is to hold four Great Runes and beat the
+#  final boss (see Final Boss and Great Runes Needed to Finish below).
+#
+#  TWO regions used to be different, and this was the most-reported non-bug
+#  in the mod. Raya Lucaria Academy (the seal) and Leyndell (the main gate)
+#  sat behind a wall the GAME enforced, so receiving their Lock LIT NOTHING.
+#  Both walls are retired now: every Lock lights its region's graces,
+#  including the capital's. The Shunning-Grounds sewer is part of Leyndell (v0.4.10 merged them): once the
+#  capital opens, the well is yours, and its graces ride the Leyndell Lock's
+#  bundle.
+# ============================================================================
+
+name: Player1
+game: Elden Ring
+description: Elden Ring -- Archipelago v0.3
+
+Elden Ring:
+
+  # ---- The shape of the run -------------------------------------------------
+
+  # Number of Regions (0 = all)
+  #
+  # How many map regions (Limgrave, Caelid...) your seed uses. Fewer = a shorter run.
+  #
+  # 0 uses the whole map (28 with the DLC, 17 without, 11 with DLC Only). The seed can
+  # outgrow the number: a region behind another brings it along (Leyndell brings Altus),
+  # and your Final Boss or Allowed Starting Regions can add more.
+  #
+  # Values: a whole number from 0 to 28 (default 6)
+  num_regions: 6
+
+  # Allowed Starting Regions
+  #
+  # Which regions your run may start in, by name (e.g. Caelid). Empty = any region.
+  #
+  # Regions Open at Start says how many it opens, so list at least that many. Adds regions
+  # only if the draw missed. Naming Leyndell, Raya Lucaria Academy, your Final Boss's region
+  # or a region your DLC setting removes stops generation. Base-game names beat DLC ones
+  # unless start_region_selection is uniform. Ignored by Natural Progression and Vanilla
+  # Placement.
+  start_region_pool: []
+
+  # Starting Region Odds
+  #
+  # How the game picks your starting region when you do not name one.
+  #
+  # Also decides among Allowed Starting Regions. With weighted, the first starting region
+  # also prefers one that hosts a major boss. Ignored by Natural Progression and Vanilla
+  # Placement.
+  # weighted: base-game regions before DLC ones, bigger ones likelier (default)
+  # uniform: any region that can start a run, equally likely, small and DLC too
+  #
+  # Values: weighted, uniform (default weighted)
+  start_region_selection: weighted
+
+  # How Regions Are Chosen
+  #
+  # Whether your seed's regions are picked at random or in the game's own order.
+  #
+  # Only matters when Number of Regions (N) is below the whole map. It does not choose
+  # where you start. Change it only for a predictable early-game run. Ignored by Natural
+  # Progression and Vanilla Placement.
+  # rolled: N random regions, different every seed (default)
+  # vanilla_order: first N in game order, DLC last; same regions every seed
+  #
+  # Values: rolled, vanilla_order (default rolled)
+  num_regions_order: rolled
+
+  # Regions Open at Start
+  #
+  # How many regions are already open when your run starts.
+  #
+  # You begin holding that many Region Locks (the items that open regions), so more of the
+  # map is reachable and fewer Region Locks are left to find. Keep it well below Number of
+  # Regions: too high a number stops generation (Leyndell, Raya Lucaria Academy and your
+  # Final Boss's region can never start a run). Ignored by Natural Progression and Vanilla
+  # Placement.
+  #
+  # Values: a whole number from 1 to 10 (default 1)
+  start_regions: 1
+
+  # How the kept regions are chosen when num_regions > 0. It picks WHICH
+  # regions you keep -- not where you START, which is a separate draw weighted
+  # by region size over whatever was kept, unless start_region_pool names it.
+  #   rolled        -- a random N (the default). Wilder; every base region
+  #                    turns up in roughly a third of seeds.
+  #   vanilla_order -- the first N of the game's own progression path
+  #                    (Limgrave first). Fully predictable, and the later
+  #                    regions never appear at a small N.
+  # `vanilla_order` was called `spine` before 0.3.12; that name still works.
+  # Either way the seed is winnable: on any seed with the base game in play
+  # the run ends at the Elden Beast, which you reach from the Roundtable
+  # once the Ashen Capital Lock finds you -- no particular region required.
+
+  # Dungeon Sweep
+  #
+  # Which boss kills also collect the rest of their area's checks for you (a "sweep").
+  #
+  # Kill such a boss and the other checks in its dungeon or area arrive at once, so you can
+  # skip walking to them. Nothing is lost or required either way. Never collected this way:
+  # boss rewards, quest keys, shop stock, and by default collectibles such as Golden Seeds
+  # and Sacred Tears (see full_area_sweeps). By default some checks in a sweep may hold
+  # progression; to reduce that, remove SweepSlot from Progression Surface (where
+  # progression can land). In a multiworld, other players' progression then has fewer of
+  # your checks to land on.
+  # none: no sweeps; pick up every check where it lies
+  # minidungeons: catacombs, caves, tunnels and other small dungeons
+  # all: minidungeons plus legacy dungeons, castles and DLC open-world bosses
+  # bosses: all plus base-game open-world bosses (default)
+  #
+  # Values: none, minidungeons, all, bosses (default bosses)
+  dungeon_sweep: bosses
+
+  # "Does killing a boss give me EVERY item in the area?" (siffrin + bobler,
+  # #1033). Off by default, and off is the current behaviour: a sweep pays out
+  # the area's ordinary loot but leaves the classes you put on
+  # progression_surface where they lie, because that is where this seed hid its
+  # key items -- at the default surface, Golden Seeds, Sacred Tears, Scadutree
+  # Fragments and Revered Spirit Ashes.
+  # Turn it on and nothing is held back: the boss hands over its whole area,
+  # progression included. It cannot strand you -- a sweep only grants checks in
+  # a region you kept, behind a boss you could already reach.
+  # Still never swept, whatever this says: another boss's reward, remembrance
+  # or Great Rune, quest/gate key items, and merchant stock.
+
+  # Full Area Sweeps
+  #
+  # Boss kills that sweep up an area also take the pickups they usually skip.
+  #
+  # A sweep skips what Progression Surface reserves for progression (by default Golden
+  # Seeds, Sacred Tears, Scadutree Fragments, Revered Spirit Ashes). On: it takes those too,
+  # so a kill may hand you an item that opens a region or another player's progression. It
+  # cannot strand you. Boss rewards, quest keys and shop stock are never swept. No effect if
+  # Dungeon Sweep is none.
+  #
+  # Values: true or false (default false)
+  full_area_sweeps: false
+
+  # Region Sweep
+  #
+  # Kill a region's own gating boss and the rest of its checks arrive at once.
+  #
+  # Its gating boss is its Great Rune boss, else its biggest Remembrance boss, else its
+  # major boss. Adds to whatever Dungeon Sweep already grants. Never takes another boss's
+  # own reward, remembrance or rune, quest-gate keys, or merchant stock. Cannot strand you.
+  # No effect if Dungeon Sweep is none.
+  #
+  # Values: true or false (default false)
+  region_sweep: false
+
+  # Reveal Hidden Sweep Boss Names
+  #
+  # The F6 tracker shows boss names for sweeps in regions that are still locked.
+  #
+  # Off by default, so the tracker does not spoil which bosses wait in locked regions. This
+  # changes only the display; checks, sweeps and item placement stay identical. On needs an
+  # up-to-date client; older ones refuse the seed.
+  #
+  # Values: true or false (default false)
+  reveal_sweep_boss_names: false
+
+  # Final Boss
+  #
+  # Which boss fight ends your run.
+  #
+  # Leave it on auto unless you want a DLC or Malenia ending. You finish by meeting the
+  # ending requirements (see Great Runes Needed to Finish and Regions Needed to Finish) and
+  # beating that boss. A Final Boss your settings rule out stops generation: elden_beast and
+  # malenia with DLC Only, promised_consort with Enable DLC off.
+  #
+  # auto: as elden_beast; Promised Consort Radahn with DLC Only (default)
+  # elden_beast: Hoarah Loux + Elden Beast (what auto picks, unless DLC Only)
+  # promised_consort: Promised Consort Radahn; adds Enir Ilim to your seed
+  # malenia: Malenia only; adds the Haligtree; warp to its Canopy, then walk
+  #
+  # Values: auto, elden_beast, promised_consort, malenia (default auto)
+  goal: auto
+
+  # Extra local defeats required alongside Final Boss (default: none).
+  # Choose starscourge_radahn (base game), promised_consort_radahn (DLC), or both.
+  # Their regions are included. DLC Radahn needs Enable DLC; base-game Radahn
+  # cannot be used with DLC Only. Requires a new seed and a compatible client.
+  # Example: goal: elden_beast + required_bosses: [starscourge_radahn]
+  required_bosses: []
+
+  # Keep Royal Capital After Erdtree Burn
+  #
+  # Keeps Leyndell's Royal Capital reachable after the Erdtree burns.
+  #
+  # Vanilla swaps it for the Ashen Capital for good, leaving its checks unreachable. On
+  # (default), warp anywhere but the Ashen Capital or Elden Throne, then walk in from Altus
+  # and it is back; its checks may hold progression. Off gives vanilla's one-way burn and
+  # bars progression from them. Not fully tested in game: if Leyndell misbehaves (repeated
+  # wrong respawns, say), turn it off.
+  #
+  # Values: true or false (default true)
+  capital_reconciler: true
+
+  # Unlock Merchant Shops at Roundtable Hold
+  #
+  # Opening a merchant's shop unlocks their Bell Bearing shop at the Twin Maiden Husks.
+  #
+  # No bearing needed: you get the shop, not the bell, which stays in the multiworld as an
+  # item to find. Covers roving merchants and named vendors, normal buy menu only (not
+  # peddlers, several Shadow of the Erdtree sellers such as the Herbalist and Igon, or Ash
+  # of War, tailoring and upgrade counters). Needs an up-to-date client; older ones refuse
+  # the seed.
+  #
+  # Values: true or false (default false)
+  merchant_bells_on_talk: false
+
+
+  # Ending Condition
+  #
+  # Whether finishing needs Great Runes at all.
+  #
+  # Despite its name, region_locks does not make Region Locks (the items that open regions)
+  # required; Regions Needed to Finish does. With that at none, no Great Rune or Region Lock
+  # gates the ending. Great Runes Needed to Finish sets the count for great_runes.
+  # great_runes: the ending needs the Great Runes count you set (default)
+  # region_locks: no Great Runes needed
+  #
+  # Values: region_locks, great_runes (default great_runes)
+  ending_condition: great_runes
+
+  # Great Runes Needed to Finish
+  #
+  # How many of the seven Great Runes you must hold to finish.
+  #
+  # Raise it for a longer hunt, lower it for a shorter one. Any of the seven count,
+  # the Great Rune of the Unborn included; none is mandatory. You must hold the Great
+  # Rune itself: beating its boss is not enough, because they are shuffled items that
+  # land on Progression Surface checks, possibly in other players' worlds. Only used
+  # when Ending Condition is great_runes.
+  #
+  # Values: a whole number from 1 to 7 (default 4)
+  goal_great_runes: 4
+
+  # Regions Needed to Finish
+  #
+  # Whether finishing also needs your seed's other regions unlocked or cleared.
+  #
+  # regions_completed needs an up-to-date client; older ones refuse the seed. items_held
+  # does nothing under Natural Progression or Vanilla Placement (no Region Locks there).
+  # none: no region requirement (default)
+  # items_held: hold every Region Lock (the item that opens a region)
+  # regions_completed: check off every Progression Surface check in each region
+  #
+  # Values: items_held, regions_completed, none (default none)
+  goal_region_unlock_policy: none
+
+  # ---- DLC ------------------------------------------------------------------
+
+  # Enable DLC
+  #
+  # Includes the Shadow of the Erdtree DLC in your run.
+  #
+  # Turn this off without the DLC, or you may get checks in areas you cannot enter.
+  # On (default; DLC Only forces it): Number of Regions can draw DLC regions and DLC items
+  # can appear. Off: no DLC region or item appears (except Enable DLC Gear's gear); Final
+  # Boss promised_consort, or a DLC name in Allowed Starting Regions, stops generation
+  # (Natural Progression and Vanilla Placement ignore that list).
+  #
+  # Values: true or false (default true)
+  enable_dlc: false
+
+  # Enable DLC Gear
+  #
+  # Lets Shadow of the Erdtree gear drop in a run that has the DLC turned off.
+  #
+  # For owners who keep Enable DLC off: DLC weapons, armor, talismans, Ashes of War, spells,
+  # spirit ashes and crystal tears can show up as rewards; two DLC tears (Bloodsucking
+  # Cracked Tear, Deflecting Hardtear) always do. Nothing else DLC is added; off (default)
+  # keeps gear base-game only. No effect with Enable DLC or DLC Only on, and almost none
+  # with Original Item Pool on.
+  #
+  # Values: true or false (default false)
+  enable_dlc_gear: false
+
+  # Enable Tarnished Pack
+  #
+  # Includes the paid Tarnished Pack's gear, and its shop and field checks, in your run.
+  #
+  # Turn this on only if you own the pack, or you may receive items you cannot use. On lets
+  # its 26 weapons, shields and armor pieces appear as rewards and adds up to 14 checks (3
+  # field pickups, 11 merchant purchases that need Shop Checks on). Its Spectral Steed
+  # outfits and NPC invasion rewards are not included. Off (default): none of it is in your
+  # seed.
+  #
+  # Values: true or false (default false)
+  enable_tarnished_pack: false
+
+  # DLC Only
+  #
+  # Limits your run to Shadow of the Erdtree; base-game regions are locked out.
+  #
+  # Forces Enable DLC on. Final Boss auto ends on Promised Consort Radahn in Enir Ilim, a
+  # region always included on top of Number of Regions. Final Boss elden_beast or malenia
+  # stops generation, as do base-game names in Allowed Starting Regions (Natural
+  # Progression and Vanilla Placement ignore that list). The default Great Runes ending
+  # works; all seven runes join the pool.
+  #
+  # Values: true or false (default false)
+  dlc_only: false
+
+  # Scadutree Blessing Scope
+  #
+  # Where the Scadutree Blessing, the DLC's power bonus from Scadutree Fragments, applies.
+  #
+  # It changes only your damage and defense, and matters only when the DLC is on (Enable DLC
+  # or DLC Only). With anywhere, Maximum Enemy Difficulty auto may also raise base-game
+  # enemies to DLC strength.
+  # anywhere: works in every region; extra fragments added as needed (default)
+  # dlc_only: the game's own rule, only inside the DLC; no fragments added
+  #
+  # Values: dlc_only, anywhere (default anywhere)
+  scadutree_blessing_scope: anywhere
+
+  # DLC Blessing Catch-up
+  #
+  # Lifts your Scadutree Blessing, the DLC power bonus, to a minimum inside DLC regions.
+  #
+  # DLC enemies assume some blessing, but fragments are scattered checks, so you can arrive
+  # with none. When on, you get the higher of your own level and that region's minimum, a
+  # few levels below what the DLC expects. No effect if your seed has no DLC region. With
+  # scadutree_blessing_scope dlc_only, older clients refuse the seed regardless.
+  #
+  # Values: true or false (default false)
+  dlc_blessing_catchup: false
+
+  # ---- PLAYING WITH THE DLC -------------------------------------------------
+  #
+  #  Uncomment this block AS A SET and delete the two `false` lines above. It is
+  #  written as one block because the DLC changes more than one number: with it
+  #  on there are 28 regions rather than 17, so a `num_regions` tuned for the
+  #  base game samples a much thinner slice of a much bigger map.
+  #
+  #  enable_dlc: true
+  #  dlc_only: false          # true = DLC only, base game sealed
+  #  num_regions: 10          # 6 of 28 is a very thin seed; 10 keeps the run
+  #                           # recognisable. 0 = the whole thing.
+  #  goal: auto               # `promised_consort` ends the run in the DLC and
+  #                           # force-keeps Enir Ilim -- the only choice that
+  #                           # still forces anything. With `auto` on a
+  #                           # base+DLC seed the ending is the Elden Beast and
+  #                           # the entire DLC is optional -- which is usually
+  #                           # not what someone enabling the DLC wants.
+  #
+  #  Two things happen on their own and need no keys. Hefty vessels are added to
+  #  your starting kit so DLC throwing pots are usable, and the Land of Shadow
+  #  map layer is unlocked so the map paints (it silently did not, before v0.3).
+  #
+  #  🛑 `global_scadutree_blessing` above is the one combination with no playtest
+  #  behind it: the blessing is native to the DLC, so turning it on there stacks
+  #  with what the DLC already gives you. Base-game-only is the tested path.
+
+  # ---- Item pool ------------------------------------------------------------
+
+  # Original Item Pool
+  #
+  # Uses the original loot instead of this randomizer's tuned mix.
+  #
+  # The pool keeps nearly what vanilla's checks held, still shuffled between checks (Vanilla
+  # Placement keeps items in place). No extra gear, stones or runes, and no guarantee of
+  # physick tears, bell bearings or Talisman Pouches, so a seed that leaves regions out may
+  # lack them. Armor sets still arrive as set items (Armor Set Bundling changes that).
+  # Overrides curated_filler.
+  #
+  # Values: true or false (default false)
+  vanilla_pool: false
+
+
+  # Protect Missable Checks
+  #
+  # What may sit on checks you can permanently miss (e.g. NPC quest rewards).
+  #
+  # A missable check can be lost for good: an NPC dies, a limited item runs out, or a quest
+  # step is skipped. If a tiny seed fails to generate, use progression or off.
+  # progression_and_useful: filler or traps only; a miss is harmless (default)
+  # progression: no progression items there, but useful gear can be lost
+  # off: anything goes; a seed may require a missable quest step
+  #
+  # Values: off, progression, progression_and_useful (default progression_and_useful)
+  protect_missable_locations: progression_and_useful
+
+  # Armor Set Bundling
+  #
+  # How armor sets arrive: as one whole-set item, or piece by piece.
+  #
+  # Set items grant every piece; the other pieces' checks pay other items. sets and mixed
+  # need an up-to-date client; older ones refuse the seed. Ignored by Vanilla Placement.
+  # sets: one item per armor set, holding its matching pieces (default)
+  # mixed: one item per set, holding random pieces from any set
+  # off: every helm, chest, gauntlet and greave is its own item
+  #
+  # Values: off, sets, mixed (default sets)
+  armor_bundles: sets
+
+  # Filler Recipe
+  #
+  # What your junk checks (plain Runes, minor pickups) pay, by category weight.
+  #
+  # Weights are relative. A recipe replaces the default: omitted categories get nothing.
+  # Names: juice (gear), stones, somber_stones, runes, throwables, pots, greases, foods,
+  # boluses, perfumes, ammunition, firepots, utility, funny, rare (keep tiny), junk_gear
+  # (trivial gear), junk (unchanged). No juice: no gear. Empty: no stones or runes either.
+  # Ignored by Original Item Pool.
+  curated_filler:
+    juice: 63
+    stones: 6
+    somber_stones: 6
+    runes: 10
+    throwables: 6
+    pots: 4
+    greases: 3
+    foods: 2
+    boluses: 1
+    perfumes: 2
+
+  # Warp Points When a Region Opens
+  #
+  # How many warp points (Sites of Grace) light up when you unlock a region.
+  #
+  # Leave it on all unless you want to explore: the others are experimental and can strand
+  # you; please report it. Pacing only: no item or check moves. Ignored by Vanilla
+  # Placement. For a gradual unlock on top of all, see grace_attunement. Final Boss malenia
+  # opens Haligtree at its Canopy only.
+  # all: every warp point in the region at once (default)
+  # landmarks: one per sub-area, so a few hops still cross a big region
+  # entrance: front door only (two in Ainsel River, Mountaintops); rest on foot
+  #
+  # Values: all, landmarks, entrance (default all)
+  region_grace_unlock: all
+
+  # Warp Points Needed to Light the Rest
+  #
+  # A region opens with only its starter warp points; discover this many more for the rest.
+  #
+  # 0 (default) is off. Regions with this many or fewer other warp points light normally.
+  # Meant for Warp Points When a Region Opens set to all: nothing happens with entrance,
+  # little with landmarks. Experimental: you walk more and could get stuck, so please report
+  # it. No item or check moves. Needs an up-to-date client; older ones refuse a seed it
+  # applies to.
+  #
+  # Values: a whole number from 0 to 10 (default 0)
+  grace_attunement: 0
+
+  # Starter Warp Point per Region
+  #
+  # Which warp point a region gives you first, when it starts with just one.
+  #
+  # Only used when grace_attunement is above 0, in regions big enough for it. Ainsel River
+  # and Mountaintops of the Giants always give both entrances. Every candidate is a real
+  # warp point, never a sealed boss arena.
+  # front_door: the region's preset starter, not always its entrance (default)
+  # random_grace: any warp point it would light; you may start deeper in
+  #
+  # Values: front_door, random_grace (default front_door)
+  grace_attunement_anchor: front_door
+
+  # Gear Pool Size
+  #
+  # How many gear items can replace your junk checks; a smaller list can only cut gear.
+  #
+  # The gear is the juice share of curated_filler, handed out best first from a built-in S,
+  # A, B tier list. A smaller list never improves it; unfilled slots become junk.
+  # normal: S tier only (roughly 150 items)
+  # high: S and A tier (roughly 500 items)
+  # max: S, A and B tier, the most gear, roughly 1,000 items (default)
+  #
+  # Values: normal, high, max (default max)
+  pool_builder_intensity: max
+
+  # Gear Mix: Weapons
+  #
+  # How much of the gear in your junk checks is weapons, relative to other types.
+  #
+  # Five sliders (weapons, armor, spells, talismans, Ashes of War) split the gear share
+  # (juice) of curated_filler. Values are relative: 3 and 1 equals 75 and 25. All 0
+  # (default) takes the best gear of any type. Once any is above 0, a type left at 0 gets
+  # none (spirit ashes too), and slots a type cannot fill become junk.
+  #
+  # Values: a whole number from 0 to 100 (default 0)
+  pool_builder_pct_weapons: 0
+  # Gear Mix: Armor
+  #
+  # How much of the gear in your junk checks is armor, relative to other types.
+  #
+  # Five sliders (weapons, armor, spells, talismans, Ashes of War) split the gear share
+  # (juice) of curated_filler. Values are relative: 3 and 1 equals 75 and 25. All 0
+  # (default) takes the best gear of any type. Once any is above 0, a type left at 0 gets
+  # none (spirit ashes too), and slots a type cannot fill become junk.
+  #
+  # Values: a whole number from 0 to 100 (default 0)
+  pool_builder_pct_armor: 0
+  # Gear Mix: Talismans
+  #
+  # How much of the gear in your junk checks is talismans, relative to other types.
+  #
+  # Five sliders (weapons, armor, spells, talismans, Ashes of War) split the gear share
+  # (juice) of curated_filler. Values are relative: 3 and 1 equals 75 and 25. All 0
+  # (default) takes the best gear of any type. Once any is above 0, a type left at 0 gets
+  # none (spirit ashes too), and slots a type cannot fill become junk.
+  #
+  # Values: a whole number from 0 to 100 (default 0)
+  pool_builder_pct_talismans: 0
+  # Gear Mix: Spells and Incantations
+  #
+  # How much of the gear in your junk checks is spells, relative to other types.
+  #
+  # Five sliders (weapons, armor, spells, talismans, Ashes of War) split the gear share
+  # (juice) of curated_filler. Values are relative: 3 and 1 equals 75 and 25. All 0
+  # (default) takes the best gear of any type. Once any is above 0, a type left at 0 gets
+  # none (spirit ashes too), and slots a type cannot fill become junk.
+  #
+  # Values: a whole number from 0 to 100 (default 0)
+  pool_builder_pct_spells: 0
+  # Gear Mix: Ashes of War
+  #
+  # How much of the gear in your junk checks is Ashes of War, relative to other types.
+  #
+  # Five sliders (weapons, armor, spells, talismans, Ashes of War) split the gear share
+  # (juice) of curated_filler. Values are relative: 3 and 1 equals 75 and 25. All 0
+  # (default) takes the best gear of any type. Once any is above 0, a type left at 0 gets
+  # none (spirit ashes too), and slots a type cannot fill become junk.
+  #
+  # Values: a whole number from 0 to 100 (default 0)
+  pool_builder_pct_ashes_of_war: 0
+
+  # Progressive Flask Upgrades
+  #
+  # Replaces every Golden Seed and Sacred Tear with a Progressive Flask Upgrade item.
+  #
+  # Upgrades alternate: the 1st, 3rd, 5th... add a flask charge automatically; the 2nd,
+  # 4th... give a Sacred Tear to spend at a Site of Grace on flask potency. If your regions
+  # hold no seeds or tears, the seed still gets 24 upgrades. On by default; off keeps them
+  # as separate pickups. Winnable either way. Ignored by Vanilla Placement (items stay in
+  # their vanilla spots).
+  #
+  # Values: true or false (default true)
+  progressive_flasks: true
+
+  # Flask Upgrade Minimum
+  #
+  # The fewest Progressive Flask Upgrades your seed will hold.
+  #
+  # Each Golden Seed or Sacred Tear check in a kept region pays one upgrade, so a small
+  # num_regions draw can end up with very few. This tops it up in place of junk. auto is
+  # 2 x num_regions; a number from 1 to 24 sets it yourself (24 maxes charges and potency,
+  # more does nothing); off is 0. A seed that already has more keeps them. Ignored when
+  # Progressive Flask Upgrades is off.
+  #
+  # Values: auto, off, or a whole number from 1 to 24 (default auto)
+  flask_upgrade_minimum: auto
+
+  # Progressive Upgrade Bell Bearings
+  #
+  # Makes the upgrade Bell Bearings progressive, so their shops unlock one tier at a time.
+  #
+  # On: the smithing-stone, somberstone and two glovewort bearings become four progressive
+  # items. Each copy you receive unlocks the next tier of its Twin Maiden Husks shop,
+  # nothing to hand in, and the seed tries to place one copy of each where you can reach it
+  # from the start. Off (default): vanilla bearings, found and handed in as usual. Never
+  # required to finish.
+  #
+  # Values: true or false (default false)
+  progressive_stone_bells: false
+
+  # Trap Types
+  #
+  # Trap items that hit you the moment you get them, from lost runes to a surprise boss.
+  #
+  # Empty (default) means no traps. Traps replace filler items only, never progression. Trap
+  # Count sets how many; for other enemies see spawn_traps. No traps appear with Vanilla
+  # Placement. blackout, basilisk, malenia and aging_untouchable need an up-to-date client;
+  # older ones refuse the seed.
+  # rune_thief: you lose half your runes
+  # no_flask: your flask heals nothing for 20 seconds; the charge is spent
+  # blackout: the screen goes dark for 2 seconds
+  # runebear: a Runebear appears where you stand
+  # basilisk: three Basilisks appear; their Death Blight can kill you outright
+  # malenia: Malenia, in her first phase, appears where you stand
+  # aging_untouchable: an Aging Untouchable appears; immune until parried
+  traps: []
+
+  # Extra Enemy Traps
+  #
+  # Drops extra enemies on your head, picked by name or by model id.
+  #
+  # For enemies Trap Types does not offer. About 30 have a name to write, such as Blaidd the
+  # Half-Wolf (case does not matter); the rest use a model id, a number such as 4980. The
+  # shipped EldenRing.yaml lists every name. Needs Trap Count above 0; older clients refuse
+  # the seed. A name or id that cannot spawn stops generation.
+  #
+  # Every enemy that has a name (32; case does not matter):
+  #   Aging Untouchable, Alexander Warrior Jar, Asimi Silver Tear, Basilisk,
+  #   Blaidd the Half-Wolf, Boc the Seamster, Demi-Human Boc, Finger Reader Crone,
+  #   Finger Reader Enia, Gatekeeper Gostoc, Gurranq Beast Clergyman, Hornsent Grandam,
+  #   Jar-Bairn, Latenna the Albinauric, Malenia (Phase 1), Melina, Merchant Kale,
+  #   Miriel Pastor of Vows, Pidia Carian Servant, Primeval Sorcerer Azur,
+  #   Primeval Sorcerer Lusat, Ranni the Witch, Rennala Queen of the Full Moon,
+  #   Runebear, Smithing Master Hewg, Smithing Master Iji, Sorceress Sellen, St. Trina,
+  #   Tanith's Knight, The Noble Goldmask, The Two Fingers, Zorayas the Scout
+  # Commas are left out (write Alexander Warrior Jar): a comma would split a yaml list.
+  # The other 355 spawnable enemies have no name in the game's data: write their model id, a
+  # number such as 4980. The web options wizard lists them.
+  spawn_traps: []
+
+  # Trap Count
+  #
+  # How many trap items to add; nothing happens until you pick a trap type.
+  #
+  # The types you pick in Trap Types or spawn_traps share the number out evenly, and each
+  # trap replaces one filler item, so the seed does not grow. Keep it at least as high as
+  # the number of types, or some of them never appear. 0 turns every trap off.
+  #
+  # Values: a whole number from 0 to 40 (default 8)
+  trap_count: 8
+
+  # Filler That May Leave Your World (%)
+  #
+  # How much of your filler can be placed in other players' worlds (multiworld only).
+  #
+  # Filler means supplies, not gear: Runes, consumables, materials, cookbooks. Of the filler
+  # that Keep Local does not already hold at home, about this percent may leave and the rest
+  # stays: 100 adds no limit, 0 keeps it all home. Which items stay is random per seed.
+  # Default 70 assumes the default Keep Local settings.
+  #
+  # Values: a whole number from 0 to 100 (default 70)
+  filler_foreign_pct: 70
+
+  # On: every real vanilla item this seed produces stays in YOUR world.
+
+  # Keep Local (items that stay in your world)
+  #
+  # Kinds of item that always stay in your world instead of going to other players' worlds.
+  #
+  # Multiworld only. Add kinds to keep more at home; remove them to send more out. Small
+  # runes and some filler also stay home even if this list is empty (see
+  # keep_local_rune_cap and filler_foreign_pct).
+  # Held by default: consumables, crafting, upgrade_materials, crystal_tears, cookbooks,
+  # upgrade_bells (stone and glovewort Bell Bearings, progressive ones too), merchant_bells
+  # (all other Bell Bearings), other (Remembrances, notes, maps).
+  # Travel by default: weapons, armor, talismans, ashes (Ashes of War), spells,
+  # spirit_ashes, runes (bigger ones), scadutree_fragments, progressive (Progressive items
+  # except bells), key_items (quest keys, Great Runes; naming it keeps Great Runes home).
+  # Groups: bell_bearings (both Bell Bearing kinds), goods (all but weapons, armor,
+  # talismans, ashes, progressive), everything.
+  keep_local: [consumables, cookbooks, crafting, crystal_tears, merchant_bells, other, upgrade_bells, upgrade_materials]
+
+  # Keep Local: Small Runes Up To
+  #
+  # Rune items worth this many runes or fewer stay in your world; bigger ones may travel.
+  #
+  # Default 12,500 keeps every rune up to Numen's Rune at home (all Golden Runes, Broken
+  # Rune, three Shadow Realm Runes); Hero's, Leda's, Lord's, Marika's and other bigger runes
+  # travel. 0 = hold none. Ignored if Keep Local lists runes. Multiworld only. Examples:
+  # Broken Rune 500, Numen's Rune 12,500, Leda's Rune 40,000, Lord's Rune 50,000,
+  # Marika's Rune 80,000.
+  #
+  # Values: a whole number from 0 to 80000 (default 12500)
+  keep_local_rune_cap: 12500
+
+  # Progression Sharing (with other players)
+  #
+  # How progression travels between your world and other players.
+  #
+  # balanced (default): your Region Locks can travel. Incoming progression uses the
+  # advanced Incoming Progression Confinement setting (100: surface only by default).
+  # open: Locks and runes stay in Elden Ring worlds; incoming progression uses any safe
+  # check. Use this if a partner game cannot take early Elden Ring progression.
+  #
+  # Values: balanced, open (default balanced)
+  progression_sharing: balanced
+
+  # Incoming Progression Confinement (advanced)
+  # Share of foreign progression item names restricted to Progression Surface checks.
+  # 100: surface only (default). 0: any safe check. Intermediate values apply per name.
+  # Your outgoing Region Locks are unchanged. Progression Sharing open forces 0;
+  # Multiworld Scope surface forces 100. Empty surfaces and solo play have no effect.
+  confine_foreign_progression: 100
+
+  # Multiworld Scope
+  #
+  # Which of your checks can hold other players' items.
+  #
+  # surface keeps the multiworld on your Progression Surface: other players' items land only
+  # there, and every other check holds your own items, shuffled in your world. Your items that
+  # leave are as many as the foreign items your surface takes, progression first. Overrides
+  # keep_local and filler_foreign_pct; stops generation with progression_sharing open.
+  # all: every check (default)
+  # surface: Progression Surface only; the rest shuffle your own items at home
+  #
+  # Values: all, surface (default all)
+  multiworld_scope: all
+
+  # ---- Where progression may hide -------------------------------------------
+
+  # Progression Surface (where progression can land)
+  #
+  # Which kinds of check may hold progression items.
+  #
+  # Fewer kinds = a tighter hunt; more = wider scatter. A list too small for your
+  # progression widens itself; it stops generation only if every safe check is too few.
+  # Ability Unlock items ignore this list. Empty = no limit, except unsafe checks (missable
+  # ones and similar). Incoming Progression Confinement controls foreign progression.
+  # Default: MajorBoss (major boss drops, incl. Remembrance and GreatRune), KeyItem (quest
+  # keys), Church (Sacred Tears), Seedtree (Golden Seeds), Fragment, Revered (DLC pickups),
+  # ShopSlot (one ware per merchant), SweepSlot (some checks per boss sweep; none if Dungeon
+  # Sweep is none).
+  # Optional: Basin (Crystal Tears), Legendary (rarest items), Boss (every boss drop, incl.
+  # FieldBoss, MinorDungeonBoss), Shop, ShopNonSpell (merchant wares; farm runes, buy your
+  # progression).
+  progression_surface:
+    - MajorBoss
+    - KeyItem
+    - Church
+    - Seedtree
+    - Fragment
+    - Revered
+    - ShopSlot
+    - SweepSlot
+
+
+  # ---- Runtime rerolls ------------------------------------------------------
+
+  # Reroll Farmable Enemy Drops
+  #
+  # Enemies you can farm drop random consumables and materials instead of their usual ones.
+  #
+  # Each repeatable consumable or material drop is swapped for another (pot, grease, Golden
+  # Rune, smithing stone...), chosen per seed, at the same drop rate. The enemies, one-time
+  # drops (the checks), weapons and armor are untouched. On by default; off keeps vanilla
+  # drops. Original Item Pool and Vanilla Placement do not turn this off.
+  #
+  # Values: true or false (default true)
+  reroll_enemy_drops: true
+
+  # Reroll Mine Materials
+  #
+  # Mine deposits give a random consumable instead of smithing stones, chosen per seed.
+  #
+  # The respawning stone deposits in mines are not checks. Each stone tier gives one
+  # consumable (grease, bolus, throwing dagger, Rune Arc...), the same at every deposit of
+  # that tier. Ancient Dragon deposits are unchanged, and stones still arrive as check
+  # rewards. On by default; off keeps vanilla mining. Original Item Pool and Vanilla
+  # Placement do not turn this off.
+  #
+  # Values: true or false (default true)
+  reroll_mine_materials: true
+
+  # Reroll Infinite Shop Stock
+  #
+  # Replaces the wares on merchants' infinite-stock shelves with random items.
+  #
+  # On (default): the 14 shelves that sell unlimited stock of one item (Somber Smithing
+  # Stones, throwing daggers and similar) get a random consumable, stone or Golden Rune each
+  # seed, priced at its worth (a rune at up to its worth). Arrow and bolt shelves are left
+  # alone. Off: base-game shelves. Never checks, so nothing else moves. Kinds in
+  # keep_out_of_shops stay off them.
+  #
+  # Values: true or false (default true)
+  reroll_infinite_shop_stock: true
+
+  # Infinite Wares at Roundtable Hold
+  #
+  # Chooses what Roundtable Hold's infinite shelves always sell.
+  #
+  # Example: infinite_hub_wares: Rune Arc, Larval Tear. Give up to four exact in-game names
+  # of farmable items (a misspelled or non-goods name stops generation). Unlimited Rune Arcs
+  # or Larval Tears change how a run plays. Needs reroll_infinite_shop_stock on, and no name
+  # kept out by keep_out_of_shops. Empty (default): shelves are rerolled. Which merchant
+  # sells them is unconfirmed in game.
+  infinite_hub_wares: []
+
+  # Categories of YOUR OWN item that merchants may never stock -- both the shop
+  # checks themselves (bell-bearing shops included) and the unlimited shelves
+  # above. The items still exist and are still shuffled; they just land out in
+  # the world instead of behind a purchase menu, so finding them is a matter of
+  # going somewhere rather than of having enough runes.
+  #   keep_out_of_shops: [weapons, armor]
+  # Categories: weapons, armor, talismans, ashes (ashes of WAR), spells,
+  # spirit_ashes, consumables, crafting, cookbooks, upgrade_materials,
+  # upgrade_bells, merchant_bells, runes, crystal_tears, key_items, other,
+  # progressive -- plus the umbrellas `goods`, `key_items` (the whole inventory
+  # tab: key items, cookbooks and both kinds of bell bearing), `bell_bearings`
+  # and `everything`. Other players' items at your shops are never affected.
+  #
+  # On a SMALL seed there may not be room: the hub alone is 184 shop rows out of
+  # 224 locations, and a category holding more items than there are non-shop
+  # slots to move them to is skipped -- the generation log names which one and
+  # by how much. Full-world seeds have room to spare.
+
+  # Shop Checks
+  #
+  # Whether buying from a merchant can pay out an item, yours or another player's.
+  #
+  # On (default): purchases are checks, so an item can sit behind a purchase, and a few
+  # merchants may sell something you need to progress. Off: merchants sell only their normal
+  # wares and nothing is locked behind a purchase, but the seed shrinks, most on small seeds
+  # (shops are most of Roundtable Hold's checks). For only some of your own items, see
+  # keep_out_of_shops.
+  #
+  # Values: true or false (default true)
+  shop_checks: true
+
+  # Keep Your Items Out of Shops
+  #
+  # Keeps kinds of your own items, like weapons and talismans, off merchants' shelves.
+  #
+  # Covers purchases and rerolled infinite shelves. Not kept out: other players' items,
+  # Region Locks, stacked pickups (Arrow x20) and armor sets, so armor does little while
+  # Armor Set Bundling is on (default). Small seeds may skip a kind. Stops generation with
+  # Vanilla Placement or a listed kind pinned in infinite_hub_wares. With Progressive
+  # Upgrade Bell Bearings on, list progressive too.
+  # Kinds: weapons, armor, talismans, spells, spirit_ashes, ashes (Ashes of War), crafting,
+  # consumables, upgrade_materials, crystal_tears, cookbooks, runes, scadutree_fragments,
+  # upgrade_bells (stone, glovewort bearings), merchant_bells (all other bearings),
+  # progressive, other (Remembrances, notes, maps).
+  # Groups: goods (all but weapons, armor, talismans, ashes, progressive), key_items (whole
+  # key tab), bell_bearings, everything.
+  keep_out_of_shops: []
+
+  # No Runes in Shops
+  #
+  # Keeps your own money runes (Golden Runes etc.) off merchants' shelves.
+  #
+  # On: no purchase pays out one of your runes and no infinite shelf stocks one. Great
+  # Runes, stacked runes (Golden Rune [1] x3) and other players' items are unaffected.
+  # Skipped (log note) if runes outnumber the room outside shops. Stops generation if
+  # infinite_hub_wares names a rune. No effect on purchases with Vanilla Placement.
+  #
+  # Values: true or false (default false)
+  no_runes_in_shops: false
+
+  # ---- Difficulty -----------------------------------------------------------
+
+  # Enemies get stronger the FURTHER INTO YOUR RUN a region is -- not by where it
+  # sits on the map. Unlock the Weeping Peninsula last and it will be tuned like
+  # endgame territory. This is always on; the two knobs below only shape it.
+  #
+  # Both are 0-100, and on both, HIGHER IS HARDER. Leave them at 0 for the
+  # standard curve. Enemy rune rewards never change, at any setting.
+
+  # Minimum Enemy Difficulty
+  #
+  # Raises your weakest enemies' strength so no region is ever trivial.
+  #
+  # 0 (default) changes nothing; raise it if the early game feels easy. 25 gives every enemy
+  # at least 2.3x its base HP, 50 at least 4.1x, 100 puts every region at max. Must not
+  # exceed Maximum Enemy Difficulty (auto rises to match; a lower one stops generation, even
+  # with Enemy Scaling off, which otherwise ignores this). Rune rewards stay vanilla unless
+  # scale_rune_rewards is on.
+  #
+  # Values: a whole number from 0 to 100 (default 0)
+  minimum_enemy_difficulty: 0
+
+  # Enemy Scaling
+  #
+  # Choose scaled or vanilla enemy strength.
+  #
+  # Auto (default): scaled for ordinary runs, vanilla for bingo.
+  # On: scale by region unlock order, or geographic order without region locks.
+  # Off: vanilla strength; enemy difficulty limits and ramp speed have no effect.
+  #
+  # Values: auto, on, off (default auto); existing true/false values still work.
+  enemy_scaling: auto
+
+  # Maximum Enemy Difficulty
+  #
+  # Caps how strong the toughest enemies can get.
+  #
+  # 25 = 2.3x base HP, 50 = 4.1x, 100 = 7.4x (no cap); 50+ is DLC strength. auto (default):
+  # 3.7x, the base game's top, unless the Scadutree Blessing applies everywhere or a DLC
+  # region is drawn; then it grows with Number of Regions (4.1x at 6, 7.4x at 28) and adds
+  # Scadutree Fragments. No effect on enemies with Enemy Scaling off. A cap under 100 (auto
+  # too) needs a current client; older ones refuse it.
+  #
+  # Values: a whole number from 0 to 100 (default -1)
+  maximum_enemy_difficulty: auto
+
+  # Difficulty Ramp Speed
+  #
+  # How quickly enemy strength climbs from your first regions to your last.
+  #
+  # 0 (default) climbs evenly, so only your final region reaches full strength. 50 gets
+  # there halfway through the regions your seed opens and stays, 75 by a quarter of the way,
+  # 100 almost at once. Raise it to spend more of the run at full strength. Maximum Enemy
+  # Difficulty sets what full strength is. No effect if Enemy Scaling is off.
+  #
+  # Values: a whole number from 0 to 100 (default 0)
+  difficulty_ramp_speed: 0
+
+  # Seamless Co-op Difficulty
+  #
+  # Makes enemies tougher for each Seamless Co-op partner. Solo players: leave at 0.
+  #
+  # Each point makes every enemy one strength step tougher per partner: about 10% more HP on
+  # average, plus more damage. 0 (default) is off. No effect if Enemy Scaling is off.
+  # Seamless's own enemy-HP scaling stacks with the extra HP: turn it down or expect
+  # spongier fights. Older clients ignore it.
+  #
+  # Values: a whole number from 0 to 9 (default 0)
+  coop_difficulty: 0
+
+  # Scale Rune Rewards
+  #
+  # Makes rune drops from enemies and bosses follow their region's difficulty.
+  #
+  # Turn it on to keep rewards in step with effort when the randomizer moves an early enemy
+  # late or a late boss early; a bigger enemy still pays more. Golden Rune items never
+  # change. No effect if Enemy Scaling is off, but the seed still needs an up-to-date
+  # client; older ones refuse it.
+  #
+  # Values: true or false (default false)
+  scale_rune_rewards: false
+
+  # Equipment Weight
+  #
+  # Lets you wear heavy gear without a slow, fat dodge roll.
+  #
+  # Your roll is light, medium or fat depending on how heavy your gear is. Handy for heavy
+  # armor builds. Only medium needs an up-to-date client; older ones refuse the seed.
+  # off: equipment weighs what it weighs (default)
+  # medium: no real kit fat-rolls, but heavy gear can cost you the light roll
+  # light: equipment weighs nothing, so you always get the light roll
+  #
+  # Values: off, light, medium (default off)
+  no_equip_load: off
+
+  # No Weapon Requirements
+  #
+  # Lets you use any weapon, shield, catalyst or spell whatever your stats are.
+  #
+  # It removes the stat requirements, so gear the multiworld sends you works on any build.
+  # On by default, since a randomizer hands you gear no build was made for. Turn it off to
+  # bring requirements back and let your stats decide what you can hold; the seed is
+  # generated the same either way, so nothing becomes unwinnable.
+  #
+  # Values: true or false (default true)
+  no_weapon_requirements: true
+
+  # Auto-Equip Received Gear
+  #
+  # Puts on every weapon, armor piece and talisman you receive the moment it arrives.
+  #
+  # It replaces whatever was in that slot, even mid-boss-fight and even if the gear does not
+  # suit your build. Meant for use-what-you-get challenge runs; leave it off otherwise.
+  # Random gear can weigh you down; the Equipment Weight option counters that. Needs an
+  # up-to-date client; older ones refuse the seed.
+  #
+  # Values: true or false (default false)
+  auto_equip: false
+
+  # Auto-Upgrade Weapons
+  #
+  # Raises every weapon you receive or pick up to your best upgrade level.
+  #
+  # It matches the highest level you hold on that weapon's track (regular up to +25, somber
+  # up to +10; the two never mix) and never lowers one. To catch up a weapon you got early,
+  # put it down with Leave (not Discard, which destroys it) and pick it up again. On by
+  # default; off leaves weapons at their found level and you pay for upgrades.
+  #
+  # Values: true or false (default true)
+  auto_upgrade: true
+
+  # Smithing Stone Cost Cap (0 = vanilla)
+  #
+  # Caps how many Smithing Stones each upgrade level of a regular weapon costs.
+  #
+  # Vanilla charges 2, 4, then 6 stones for each set of three levels that share a stone
+  # type, and 0 keeps that. Any other number caps every level at that many stones, so lower
+  # is cheaper. Default 2, cheaper than vanilla. Somber weapons and the final step to +25 do
+  # not change. A randomized seed sizes its early stone supply to match.
+  #
+  # Values: a whole number from 0 to 4 (default 2)
+  flatten_regular_upgrades: 2
+
+  # Start With All Whetblades
+  #
+  # Gives you all five whetblade items in your inventory at the start.
+  #
+  # Grants the items only. Unconfirmed: the game unlocks Ash of War affinities by event
+  # flag, which this does not set, so it may unlock none. The whetblade pickups in the
+  # world are unchanged. Ignored by Vanilla Placement, which keeps items where the game
+  # puts them.
+  #
+  # Values: true or false (default false)
+  start_with_whetblades: false
+
+  # Open Catacomb Boss Doors
+  #
+  # Opens base-game catacomb boss doors from the start, so there is no lever to hunt first.
+  #
+  # Covers 18 dungeons that have a lever door; the four Hero's Graves are left alone (two
+  # open by a fight, two have no lever). Also lights the two Siofra River altars that lead
+  # to the Ancestor Spirit bosses. Nothing is granted and no check is skipped. Takes effect
+  # when you connect; re-enter a dungeon you are already in.
+  #
+  # Values: true or false (default false)
+  open_boss_doors: false
+
+  # Locked Abilities
+  #
+  # A challenge: switches off actions such as rolling, jumping, attacking or healing.
+  #
+  # Names: jump, crouch, roll, r1, r2, l1, l2, heal. R1, R2, L1 and L2 are the attack
+  # buttons (spells cast on them too). Lock all four and Unlock: R1 is placed early. Heal
+  # stops flasks healing. Crouch is untested and may lock the wrong input. Default: none.
+  # Each returns as an Unlock item; Ability Lock Mode and Ability Unlocks Needed to Finish
+  # can change that.
+  locked_abilities: []
+
+  # Ability Lock Mode
+  #
+  # Whether locked abilities come back as items you find, or stay off for good.
+  #
+  # Only matters when Locked Abilities is set. Progressive needs an up-to-date client; older
+  # ones refuse the seed. It places Unlock: Roll early (if locked), and Unlock: R1 if all
+  # four attacks are locked. Vanilla Placement keeps them permanent.
+  # progressive: each locked ability becomes an Unlock item to find (default)
+  # static: the abilities stay off for the whole seed; no items
+  #
+  # Values: static, progressive (default progressive)
+  ability_lock_mode: progressive
+
+  # Ability Unlocks Needed to Finish
+  #
+  # Whether you must find every Unlock item (each gives back a locked ability) to finish.
+  #
+  # Only matters in progressive mode with Locked Abilities set, and not under Vanilla
+  # Placement. On (default): if another player holds your Unlock: Roll, you cannot finish
+  # until they send it. Off: finishing never depends on the Unlock items, though you may
+  # still want them.
+  #
+  # Values: true or false (default true)
+  ability_unlocks_required: true
+
+  # ---- Standard Archipelago options -----------------------------------------
+
+  # region_lock seeds want `minimal`, not `full`.
+  accessibility: minimal
+  progression_balancing: 50
+
+  # Death Link
+  #
+  # Shares deaths with other players who have Death Link turned on.
+  #
+  # When you die, everyone else with it on dies too, and the other way round. Deaths caused
+  # by traps count. For a gentler version, set death_link_amnesty_inbound or
+  # death_link_amnesty_outbound in your yaml.
+  #
+  # Values: true or false (default false)
+  death_link: false
+
+  # Death Link Amnesty (Incoming)
+  #
+  # Makes incoming Death Links less deadly: only every Nth one kills you.
+  #
+  # Only matters when Death Link is on. With 3, only every 3rd Death Link you receive kills
+  # you and the rest are ignored; 1 (default) counts every one. The count restarts when your
+  # client reconnects. Above 1 needs an up-to-date client; older ones refuse the seed.
+  #
+  # Values: a whole number from 1 to 100 (default 1)
+  death_link_amnesty_inbound: 1
+
+  # Death Link Amnesty (Outgoing)
+  #
+  # Sends fewer of your deaths to others: only every Nth death is shared.
+  #
+  # Only matters when Death Link is on. With 3, only every 3rd time you die is sent as a
+  # Death Link; 1 (default) sends every death. The count restarts when your client
+  # reconnects. Above 1 needs an up-to-date client; older ones refuse the seed.
+  #
+  # Values: a whole number from 1 to 100 (default 1)
+  death_link_amnesty_outbound: 1
+
+  # Trap Link
+  #
+  # Sends the traps you get to other Trap Link players, and receives theirs.
+  #
+  # Trap Link lets games in a multiworld trigger each other's traps. Off by default; only
+  # useful if other players use it too. A trap from another player hits you only if this
+  # client recognizes its name; the rest are ignored. Needs an up-to-date client; older ones
+  # refuse the seed.
+  #
+  # Values: true or false (default false)
+  trap_link: false
+
+  # Region Sync (Seamless Co-op)
+  #
+  # In Seamless Co-op, opens a region for all players with this on once anyone unlocks it.
+  #
+  # Co-op players share one game on separate slots, so a region only some have unlocked
+  # kicks the rest out. With this on, when anyone unlocks a region, its door opens for
+  # everyone else who has it on. Doors only: nobody receives the Region Lock (the item that
+  # opens a region). Turn it on for every co-op player. Needs an up-to-date client; older
+  # ones refuse the seed.
+  #
+  # Values: true or false (default false)
+  region_sync: false
+
+  # Experimental Mario moveset randomizer (requires the compatible er-mario bridge).
+  # Progressive Jump has two copies: Double Jump, then Triple Jump. Eight other moves
+  # unlock individually. Basic jumping and punching remain available. Gear and spells
+  # become runes, except Law of Regression: carry it and Interact at Radagon's statue.
+  # Equipment pickup checks and key progression stay in the seed. This quest route
+  # needs a new seed and both updated DLLs; old seeds cannot gain the reserved spell.
+  # Requires Vanilla Placement, Auto Equip, DeathLink, TrapLink and Locked Abilities off;
+  # remove no_flask from traps. Supply your own SM64 ROM and follow er-mario setup.
+  mario_mode: false
+
+  # Optional Mario health/power items; requires Mario Mode and a new seed.
+  # Start at 4 health wedges and 75% damage; four Health items reach 8 wedges,
+  # three Power items reach 150%. Needs compatible updated Mario/client DLLs.
+  mario_stat_upgrades: false
+
+  # Optional FLUDD: Hover/Rocket/Turbo nozzle items and three tank upgrades.
+  # Capacity starts at 60 and reaches 120; tank receipts never refill water.
+  # Requires Mario Mode, a new seed and compatible paired development DLLs.
+  mario_fludd: false
+  # Optional independent Cap Throw/Cap Bounce; requires mario_mode and paired DLLs.
+  mario_cappy: false
+  # Optional Spin/Drop/Air Dash; requires mario_mode. No homing or logic gates.
+  mario_sonic_movement: false
+
+
+# ============================================================================
+#  FIXED IN v0.2 -- these are NOT options. Do not add them to the file above.
+#
+#  v0.2 froze a large part of the old option surface to one sensible setting
+#  each, so the config is something you can actually read. Adding any of these
+#  keys does NOTHING -- Archipelago will ignore it silently. Listed here so you
+#  know what the game is doing, because it is not always the vanilla behaviour:
+#
+#    item_shuffle              ON   -- each check pays out a shuffled vanilla item
+#    pool_builder              ON
+#    pool_builder_intensity    max  -- (not "high")
+#    varied_filler             ON
+#    start_with_region_lock    ON   -- you start with a region already open
+#    start_regions             1    -- how many are open at start; must stay below
+#                                      the number of regions the seed KEPT
+#    start_with_lantern        ON   -- hands-free pouch light (replaces the old start Torch)
+#    start_with_steed          ON   -- Torrent from the start
+#    start_with_flasks         ON
+#    start_with_whetstone      ON   -- Whetstone Knife: Ashes of War from the start
+#    reveal_all_maps           ON
+#    early_leveling            ON   -- level up without meeting Melina
+#    no_weapon_requirements    ON   -- any gear the multiworld sends you is usable
+#    buyable_stonesword_keys   ON
+#    flatten_regular_upgrades  2    -- a UNIFORM 2-stone ladder, NOT the vanilla 2/4/6
+#    global_scadutree_blessing off    -- fully vanilla by DEFAULT, but the knob is now
+#                                          reachable (unfrozen 2026-07-31) and the blessing
+#                                          is game-wide when you turn it on
+#
+#  `grace_rando` no longer exists at all.
+# ============================================================================
+
+  # Experimental bingo: objectives choose their regions; Num Regions is ignored.
+  # Requires the matching bingo client and a fresh character.
+  bingo_mode: false
+  # boss_board or full; full draws from the bundled catalogue.
+  bingo_catalogue: boss_board
+  bingo_board_size: 5         # side length 5..12; default 5x5; larger boards require updated client
+  # Curated bingo starting graces; false grants safe graces in admitted regions.
+  bingo_graces: false
+  bingo_region_limit: 6
+  bingo_goal: line             # line, count, blackout
+  bingo_square_count: 13       # 1..144, used only for count; cannot exceed board area
+  bingo_line_sweep_size: 20    # first-line native check bonus; 0 disables

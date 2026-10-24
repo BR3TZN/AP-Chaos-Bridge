@@ -10,6 +10,7 @@ import { CharitySource, TwitchSource, TWITCH_EVENTS, verifyCharity } from './lib
 import { Vault } from './lib/vault.mjs';
 import { Rooms } from './lib/rooms.mjs';
 import { GameLibrary } from './lib/game-library.mjs';
+import { YAML_IMPORT_LIMIT } from './lib/yaml-templates.mjs';
 import { writeZip, APWORLD_LIMITS, APWORLD_BASE64_LIMIT } from './lib/zip.mjs';
 import { connectionConfig } from './lib/address.mjs';
 import { Updater } from './lib/updater.mjs';
@@ -91,12 +92,23 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     for (const filename of ['kh2.yaml', 'factorio.yaml', 'stardew.yaml']) try { store.state.yamlProfiles.push(...parseYamlProfiles(readFileSync(join(root, 'examples', filename), 'utf8'))); } catch { /* Examples are not required at runtime. */ }
     store.save();
   }
+  function gameEntry(game, sourceId) {
+    if (sourceId !== undefined) return library.get(game, sourceId);
+    const saved = store.state.yamlSources[game];
+    return library.get(game, saved && library.sources(game).some(source => source.id === saved) ? saved : undefined);
+  }
+  const catalogEntries = () => library.catalogEntries().map(entry => gameEntry(entry.game));
+  function gameLibraryList() {
+    const result = library.list();
+    result.games = catalogEntries().map(({ base, ...entry }) => ({ ...entry, optionCount: entry.options.length }));
+    return result;
+  }
   function snapshot() {
     const s = store.state;
     return { name: 'AP Chaos Bridge', version: VERSION, session, config: s.config, ap: ap.status(), charity: charity.status(), twitch: twitch.status(),
       appearance: presentation.appearance, updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
       rooms: rooms.list(), savedCredentials: vault.status(rooms.id), playerProfiles: s.players, yamlPresets: s.yamlPresets,
-      gameLibrary: { importLimits: APWORLD_LIMITS, folder: library.data.folder, coreVersion: library.coreVersion || '', games: Object.values(library.data.games).map(g => ({ game: g.game, kind: g.kind, source: g.source, coreVersion: g.coreVersion, aliases: g.aliases, optionCount: g.options.length, unresolved: g.unresolved })) },
+      gameLibrary: { importLimits: { ...APWORLD_LIMITS, maxYamlBytes: YAML_IMPORT_LIMIT }, folder: library.data.folder, coreVersion: library.coreVersion || '', games: catalogEntries().map(g => ({ game: g.game, kind: g.kind, source: g.source, sourceId: g.sourceId, sources: g.sources, coreVersion: g.coreVersion, aliases: g.aliases, optionCount: g.options.length, unresolved: g.unresolved })) },
       queue: s.queue, events: s.events, logs: s.logs, profiles: PROFILES, yamlProfiles: s.yamlProfiles, twitchEvents: TWITCH_EVENTS,
       stats: { queued: s.queue.filter(j => j.status === 'queued').length, confirmed: s.queue.filter(j => j.status === 'confirmed').length, uncertain: s.queue.filter(j => j.status === 'uncertain').length, simulated: s.queue.filter(j => j.status === 'simulated').length },
     };
@@ -150,10 +162,10 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
       if (req.method === 'GET' && path === '/apworlds-manual') { res.writeHead(200, { 'Content-Type': 'text/markdown; charset=utf-8', 'Content-Disposition': 'attachment; filename=APWORLDS-MANUELL.md' }); res.end(readFileSync(join(root, 'APWORLDS-MANUELL.md'))); return; }
       if (req.method === 'GET' && path === '/api/game-index') {
         const references = new Map(gameIndex.games.map(game => [game.game, game]));
-        return json(res, { ...gameIndex, games: library.list().games.filter(game => ['apworld', 'core'].includes(game.kind)).map(game => ({ ...references.get(game.game), game: game.game, kind: game.kind, source: game.source, coreVersion: game.coreVersion, aliases: game.aliases })) });
+        return json(res, { ...gameIndex, games: catalogEntries().filter(game => ['apworld', 'core', 'yaml'].includes(game.kind)).map(game => ({ ...references.get(game.game), game: game.game, kind: game.kind, source: game.source, sourceId: game.sourceId, sources: game.sources, coreVersion: game.coreVersion, aliases: game.aliases })) });
       }
-      if (req.method === 'GET' && path === '/api/game-library') return json(res, library.list());
-      if (req.method === 'GET' && path === '/api/game-settings') return json(res, library.get(url.searchParams.get('game')));
+      if (req.method === 'GET' && path === '/api/game-library') return json(res, gameLibraryList());
+      if (req.method === 'GET' && path === '/api/game-settings') return json(res, gameEntry(url.searchParams.get('game'), url.searchParams.get('sourceId') || undefined));
       if (req.method === 'GET' && path === '/api/export') {
         res.setHeader('Content-Disposition', 'attachment; filename="AP-Chaos-Bridge-Konfiguration.json"');
         return json(res, { schema: 1, config: { ...store.state.config, mode: 'test', paused: true, deathLinkArmed: false }, rules: store.state.rules, approvals: store.state.approvals });
@@ -167,7 +179,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (isExternal) {
           if (!secretEquals(req.headers.authorization, 'Bearer ' + integrationKey)) return json(res, { error: 'Integration-Token ungültig.' }, 401);
         } else if (!isCharityHook && !secretEquals(req.headers['x-bridge-session'], session)) return json(res, { error: 'Sitzung fehlt. Seite neu laden.' }, 403);
-        const raw = await body(req, path === '/api/worlds/upload' ? APWORLD_BASE64_LIMIT + 2048 : path === '/api/alerts/media' ? 14 * 1024 * 1024 : 800000);
+        const raw = await body(req, path === '/api/worlds/upload' ? APWORLD_BASE64_LIMIT + 2048 : ['/api/yaml/import', '/api/yaml/generate', '/api/yaml/bundle', '/api/yaml/preset'].includes(path) ? YAML_IMPORT_LIMIT * 6 + 2048 : path === '/api/alerts/media' ? 14 * 1024 * 1024 : 800000);
         if (isCharityHook && !verifyCharity(raw, req.headers['x-signature'])) return json(res, { error: 'Charity-Signatur ungültig.' }, 401);
         let data; try { data = JSON.parse(raw.toString('utf8') || '{}'); } catch { throw new Error('Ungültiges JSON.'); }
         if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('JSON-Objekt erwartet.');
@@ -221,9 +233,20 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         } else if (path === '/api/worlds/scan') {
           const report = await library.scan(data.folder || library.data.folder); changed(); return json(res, report);
         } else if (path === '/api/worlds/upload') { const result = library.upload(data); changed(); return json(res, result);
+        } else if (path === '/api/yaml/import') {
+          const result = library.importYaml(data);
+          for (const template of result.templates) store.state.yamlSources[template.game] = template.id;
+          store.save(); changed(); return json(res, result);
+        } else if (path === '/api/yaml/source') {
+          const entry = library.get(data.game, data.sourceId); store.state.yamlSources[entry.game] = entry.sourceId;
+          store.save(); changed(); return json(res, { ok: true });
+        } else if (path === '/api/yaml/remove') {
+          const result = library.removeYaml(data); delete store.state.yamlPresets[data.sourceId];
+          if (store.state.yamlSources[result.game] === data.sourceId) delete store.state.yamlSources[result.game];
+          store.save(); changed(); return json(res, result);
         } else if (path === '/api/yaml/generate' || path === '/api/yaml/bundle' || path === '/api/yaml/preset') {
-          const files = library.generate(data);
-          if (path === '/api/yaml/preset') { store.state.yamlPresets[data.game] = { values: data.values || {}, players: data.players, extra: data.extra || '' }; store.save(); changed(); return json(res, { ok: true }); }
+          const entry = gameEntry(data.game, data.sourceId), files = library.generate({ ...data, sourceId: entry.sourceId });
+          if (path === '/api/yaml/preset') { store.state.yamlPresets[library.presetKey(data.game, entry.sourceId)] = { values: data.values || {}, players: data.players, extra: data.extra || '', sourceId: entry.sourceId }; store.save(); changed(); return json(res, { ok: true }); }
           if (path === '/api/yaml/generate') return json(res, { files });
           res.writeHead(200, { 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="Archipelago-Spieler-YAMLs.zip"' }); res.end(writeZip(files)); return;
         } else if (path === '/api/credentials/forget') {

@@ -281,12 +281,15 @@ Statisch deklarierte Optionen stehen als Auswahl, Zahlenfeld oder strukturierte 
 
 ## Eigene Dateien einlesen
 
-1. Die originale `.apworld` in `apworlds/` oder einen Unterordner legen.
-2. Die Bridge starten und im Spielekatalog **Ordner neu einlesen** wählen. Vorbereitete Versionen werden am Dateiinhalt erkannt, auch in eigenen Ordnern oder nach Umbenennen; dafür ist kein Python nötig. Unbekannte Versionen benötigen Python 3.10 oder neuer.
-3. Das Spiel öffnen, Einstellungen und Slotnamen festlegen und YAMLs exportieren.
+1. Die originale `.apworld` in `apworlds/` oder einen Unterordner legen. Alternativ **Spielekatalog → + APworld / YAML hinzufügen** verwenden.
+2. Für Dateien im Ordner **Ordner neu einlesen** wählen. Vorbereitete Versionen werden am Dateiinhalt erkannt, auch in eigenen Ordnern oder nach Umbenennen; dafür ist kein Python nötig. Unbekannte APworld-Versionen benötigen Python 3.10 oder neuer.
+3. Vorhandene `.yaml`- oder `.yml`-Spielerdateien über dieselbe Dateiauswahl importieren, bis 2 MiB pro Datei. Dafür ist kein Python nötig. Der Ordnerscan übernimmt weiterhin nur APworlds.
+4. Das Spiel öffnen, gegebenenfalls die Einstellungsquelle wählen, Einstellungen und Slotnamen festlegen und YAMLs exportieren. YAML-Vorlagen bleiben von anderen Worlds desselben Spielnamens getrennt; Quellenauswahl und eigene Werte werden pro Raum gespeichert.
 
-Die mitgelieferten Dateien liegen nach Quelle und Dateihash in Unterordnern. Ihre Originalnamen bleiben erhalten. Zum Installieren in Archipelago die betreffende Datei in dessen `custom_worlds` kopieren; abweichende Installationsnamen stehen oben. Unterschiedliche Versionen desselben Spiels bitte nicht gleichzeitig installieren.
+YAML-Vorlagen enthalten ihre vorhandenen Werte und Kommentare, aber kein vollständiges World-Schema. Eindeutige Auswahl- und Zahlenbereichskommentare liefern Eingabehilfen. Für die eigentliche Seed-Generierung muss die passende World in Archipelago installiert sein.
+
+Die mitgelieferten APworld-Dateien liegen nach Quelle und Dateihash in Unterordnern. Ihre Originalnamen bleiben erhalten. Zum Installieren in Archipelago die betreffende Datei in dessen `custom_worlds` kopieren; abweichende Installationsnamen stehen oben. Unterschiedliche Versionen desselben Spiels bitte nicht gleichzeitig installieren.
 
 Importgrenzen: 128 MiB pro APworld, 512 MiB entpackt, 8 MiB pro ausgewählter Python-/Manifestdatei und zusammen 32 MiB ausgewählter Quelltext. Release-ZIPs zuerst entpacken; die enthaltenen .apworld-Dateien verwenden. Größere Worlds lassen sich nicht allein durch manuelles Kopieren freischalten.
 
-Der Import liest Python-Deklarationen, führt die APworlds aber nicht aus. Die Prüfung ersetzt keine Seed-Generierung mit einer passenden Archipelago-Version. Das Einlesen installiert keine Spiel-Clients und erzeugt keine zusätzlichen Trap- oder Reset-Funktionen.
+Der APworld-Import liest Python-Deklarationen, führt die Worlds aber nicht aus. Die Prüfung ersetzt keine Seed-Generierung mit einer passenden Archipelago-Version. Das Einlesen installiert keine Spiel-Clients und erzeugt keine zusätzlichen Trap- oder Reset-Funktionen.

@@ -274,6 +274,7 @@ document.addEventListener('change', async event => {
     if (t.id === 'studio-log-game') { Studio.logGame = t.value; render(true); }
     if (t.id === 'ap-address-mode') $('#ap-host-label').classList.toggle('hidden', t.value !== 'custom');
     if (t.closest('#rule-form')) Studio.ruleVisibility();
+    if (t.id === 'studio-source') { t.disabled = true; await Studio.selectSource(t.value); }
     if (t.id === 'mode') { await api('mode', { mode: t.value }); await refresh(true); }
     if (t.id === 'deathlink-armed') { await api('config', { deathLinkArmed: t.checked }); await refresh(); }
     if (t.id === 'rule-game') await updateRuleCatalog();
