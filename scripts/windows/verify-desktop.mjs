@@ -57,7 +57,10 @@ try {
   const packageInfo = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
   const next = packageInfo.version.split('.').map(Number); next[2]++; const version = next.join('.');
   const id = randomUUID(), stage = join(root, 'data/updates', id, 'package'); await mkdir(stage, { recursive: true });
-  const programFiles = (await files(root)).filter(path => !relative(root, path).startsWith('data' + '\\') && relative(root, path) !== 'AP-Chaos-Bridge.exe');
+  const programFiles = (await files(root)).filter(path => {
+    const name = relative(root, path).replaceAll('\\', '/');
+    return !name.startsWith('data/') && name !== 'AP-Chaos-Bridge.exe' && name.split('/').every(part => !part.startsWith('.'));
+  });
   for (const file of programFiles) { const target = join(stage, relative(root, file)); await mkdir(dirname(target), { recursive: true }); await cp(file, target); }
   await writeFile(join(stage, 'package.json'), JSON.stringify({ ...packageInfo, version }));
   // Harmless PE overlays make both executables different. This catches Windows
@@ -90,7 +93,7 @@ try {
   console.log('Ältere Updater öffnen das neue Desktop-Fenster über server.mjs ohne vorzeitigen Prozessabbruch.');
 } catch (error) {
   await mkdir(join(source, 'data'), { recursive: true });
-  try { for (const path of await files(join(root, 'data'))) if (/\.(log|json)$/.test(path) && /desktop-|install\.log|restart\.log|result\.json/.test(path)) { await cp(path, join(source, 'data', 'verify-' + relative(root, path).replaceAll(/[\\/]/g, '-'))); if (path.endsWith('.log')) console.error(relative(root, path), (await readFile(path, 'utf8')).slice(-8000)); } } catch {}
+  try { for (const path of await files(join(root, 'data'))) if (!path.includes('desktop-profile') && /\.(log|json)$/.test(path) && /desktop-|install\.log|restart\.log|result\.json/.test(path)) { await cp(path, join(source, 'data', 'verify-' + relative(root, path).replaceAll(/[\\/]/g, '-'))); if (path.endsWith('.log')) console.error(relative(root, path), (await readFile(path, 'utf8')).slice(-8000)); } } catch {}
   throw error;
 } finally {
   for (const child of processes) if (child.pid && alive(child.pid)) { const kill = spawn('taskkill.exe', ['/PID', String(child.pid), '/T', '/F'], { windowsHide: true, stdio: 'ignore' }); await new Promise(resolve => { kill.once('exit', resolve); kill.once('error', resolve); }); }
