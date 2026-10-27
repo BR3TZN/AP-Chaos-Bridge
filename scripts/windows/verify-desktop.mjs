@@ -10,6 +10,7 @@ import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { setTimeout as delay } from 'node:timers/promises';
 import { validateManifest } from '../../lib/update-files.mjs';
+import { parse } from 'yaml';
 if (process.platform !== 'win32') throw new Error('Dieser Integrationstest benötigt Windows.');
 const source = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const folder = await mkdtemp(join(tmpdir(), 'ap-desktop-check-')), root = join(folder, 'app');
@@ -45,8 +46,11 @@ try {
   const smoke = launch(canonical, ['--smoke-test']);
   await until(() => smoke.exitCode !== null, 'Der Fenster-/Tray-Test wurde nicht beendet.', 90000);
   assert.equal(smoke.exitCode, 0, 'Details stehen in desktop-error.log.');
-  const result = JSON.parse(await readFile(join(root, 'data/desktop-smoke.json'), 'utf8'));
-  assert.equal(result.ready, true); assert.equal(result.tray, true); assert.equal(result.noConsole, true); assert.equal(result.rules, '0');
+  const smokePath = join(root, 'data/desktop-smoke.json');
+  await until(async () => { try { return (await readFile(smokePath, 'utf8')).length > 0; } catch { return false; } }, 'Der native Start hat kein Ergebnis geschrieben.', 10000);
+  const result = JSON.parse(await readFile(smokePath, 'utf8'));
+  assert.equal(result.ready, true); assert.equal(result.tray, true); assert.equal(result.noConsole, true); assert.equal(result.rules, '0'); assert.equal(result.download, true);
+  const yaml = parse(await readFile(join(root, 'data/desktop-download.yaml'), 'utf8')); assert.equal(yaml.game, 'Factorio'); assert.equal(yaml.name, 'SmokePlayer');
   assert((await readFile(join(root, 'AP-Chaos-Bridge.exe'))).length > 10000);
   console.log('Echtes WebView2-Fenster, Schließen in den Tray und versteckter Hintergrunddienst geprüft:', result.runtime);
 
@@ -86,7 +90,7 @@ try {
   console.log('Ältere Updater öffnen das neue Desktop-Fenster über server.mjs ohne vorzeitigen Prozessabbruch.');
 } catch (error) {
   await mkdir(join(source, 'data'), { recursive: true });
-  try { for (const path of await files(join(root, 'data'))) if (/\.(log|json)$/.test(path) && /desktop-|install\.log|restart\.log|result\.json/.test(path)) await cp(path, join(source, 'data', 'verify-' + relative(root, path).replaceAll(/[\\/]/g, '-'))); } catch {}
+  try { for (const path of await files(join(root, 'data'))) if (/\.(log|json)$/.test(path) && /desktop-|install\.log|restart\.log|result\.json/.test(path)) { await cp(path, join(source, 'data', 'verify-' + relative(root, path).replaceAll(/[\\/]/g, '-'))); if (path.endsWith('.log')) console.error(relative(root, path), (await readFile(path, 'utf8')).slice(-8000)); } } catch {}
   throw error;
 } finally {
   for (const child of processes) if (child.pid && alive(child.pid)) { const kill = spawn('taskkill.exe', ['/PID', String(child.pid), '/T', '/F'], { windowsHide: true, stdio: 'ignore' }); await new Promise(resolve => { kill.once('exit', resolve); kill.once('error', resolve); }); }

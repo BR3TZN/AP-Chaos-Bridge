@@ -542,3 +542,12 @@ test('adding a Twitch colleague in the native window opens OAuth externally and 
   const savedForm = settings.querySelector('form'); savedForm.elements.namedItem('clientId').value = 'unfinished-edit';
   await window.__bridgeRefresh(); assert.equal(document.getElementById('twitch-settings-' + channel.id), settings); assert(settings.open); assert.equal(savedForm.elements.namedItem('clientId').value, 'unfinished-edit');
 });
+
+test('a blurred search in the YAML editor keeps its text and filtered fields during status refreshes', async t => {
+  const { window, document } = await ui(t);
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#studio-yaml-form'), 'YAML editor missing');
+  const form = document.querySelector('#studio-yaml-form'), search = document.querySelector('#studio-option-search');
+  search.value = 'no matching field'; search.dispatchEvent(new window.Event('input', { bubbles: true })); search.blur();
+  const hidden = form.querySelectorAll('[data-option-search].hidden').length; assert(hidden > 0);
+  await window.__bridgeRefresh(); assert.equal(document.querySelector('#studio-yaml-form'), form); assert.equal(search.value, 'no matching field'); assert.equal(form.querySelectorAll('[data-option-search].hidden').length, hidden);
+});

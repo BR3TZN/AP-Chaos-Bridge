@@ -1,10 +1,10 @@
-# AP Chaos Bridge 0.6.2
+# AP Chaos Bridge 0.7.0
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
-**Windows starten:** ZIP vollständig in einen beschreibbaren Ordner entpacken, **Node.js 22 oder neuer** installieren und **`Start.cmd`** doppelklicken. Alle npm-Abhängigkeiten liegen dem Paket bei. Die Oberfläche öffnet sich unter **http://127.0.0.1:17381**. Das minimierte Node-Fenster gehört zur laufenden Anwendung. Beenden unter **Einstellungen → Tool beenden**.
+**Windows starten:** Das vollständige Release-ZIP in einen beschreibbaren Ordner entpacken und einmal **`Start.cmd`** öffnen. Die Bridge startet als **eigenes Programmfenster** und legt **`AP-Chaos-Bridge.exe`** im Hauptordner an. Danach direkt diese EXE starten. Die portable Node-Laufzeit liegt bei; eine Node-Installation ist im Windows-Vollpaket nicht nötig.
 
-[Node.js herunterladen](https://nodejs.org/en/download)
+**Schließen und Minimieren** legen die Bridge in den **Infobereich (Tray)**. Doppelklick auf das Tray-Symbol öffnet sie wieder; **Rechtsklick → Beenden** schließt Fenster und Hintergrunddienst. Es bleibt kein Node-Konsolenfenster offen. Falls die Microsoft WebView2 Runtime fehlt, bietet die Bridge die offizielle Downloadseite an. Die Twitch-Freigabe öffnet sich im Standardbrowser und übernimmt die Verbindung danach ins Programmfenster.
 
 Für macOS/Linux oder zum direkten Start:
 
@@ -12,13 +12,17 @@ Für macOS/Linux oder zum direkten Start:
 node server.mjs
 ```
 
+Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.cs` gebaut; `powershell -File scripts/windows/build.ps1` erstellt es auch lokal. Die Laufzeitquellen und SHA256-Werte stehen in `scripts/windows/runtime-sources.json`. Quellcodekopien ohne gebaute EXE und macOS/Linux verwenden weiterhin die lokale Browseroberfläche.
+
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.6.2
+## Update auf 0.7.0
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.6.2:** Dokumentierte Listenwerte lassen sich in einer aufklappbaren Mehrfachauswahl einzeln anklicken, einschließlich der sieben Fallen aus der Peliarch-YAML. Beschreibungen stehen direkt bei den Werten; eigene Werte bleiben möglich. Freie Felder zeigen Eingabeformat, Vorlagenwert und vorhandene Schlüssel- oder Wertelisten. Unbekannte Grenzen werden nicht erfunden.
+**Neu in 0.7.0:** Windows-Fenster, Tray und portable Laufzeit; mehrere getrennt angemeldete Twitch-Kanäle mit Kanalfilter und Herkunft im Protokoll; verständliche Felder je Ereignistyp; leere Regeln in neuen Räumen. Datenaktualisierungen erhalten Dropdowns, offene Dialoge, Listen, Suchfilter und ungespeicherte Eingaben. Kontextabhängige Felder wechseln mit kurzen Animationen, die sich unter Design abschalten lassen.
+
+**Seit 0.6.2:** Dokumentierte Listenwerte lassen sich in einer aufklappbaren Mehrfachauswahl einzeln anklicken, einschließlich der sieben Fallen aus der Peliarch-YAML. Beschreibungen stehen direkt bei den Werten; eigene Werte bleiben möglich. Freie Felder zeigen Eingabeformat, Vorlagenwert und vorhandene Schlüssel- oder Wertelisten. Unbekannte Grenzen werden nicht erfunden.
 
 **Seit 0.6.0/0.6.1:** Eigene `.yaml`- und `.yml`-Spielerdateien direkt im Spielekatalog importieren, ohne Python und ohne eine in der Bridge lesbare APworld. Alle enthaltenen Spieleinstellungen werden bearbeitbar, klare Auswahl- und Zahlenbereichskommentare liefern Dropdowns. Die mitgelieferte Peliarch-Beispiel-YAML enthält 91 Felder. Mehrere Vorlagen und eine APworld desselben Spielnamens bleiben getrennte Quellen; eigene Werte und Slotnamen werden pro Quelle und Raum gespeichert. Unterschiedliche Spiel-IDs wie `EldenRing` und `Elden Ring` bleiben als eigene Katalogeinträge sichtbar.
 

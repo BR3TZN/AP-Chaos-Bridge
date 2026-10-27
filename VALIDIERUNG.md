@@ -1,14 +1,22 @@
-# Prüfung der Version 0.6.2
+# Prüfung der Version 0.7.0
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
+## Windows-Fenster und Updates
+
+Der Workflow `windows-desktop.yml` baut die x64-WinForms-EXE mit dem Windows-.NET-Framework-Compiler. WebView2 SDK **1.0.4314.35** und die portable Node-Laufzeit **24.19.0** werden anhand fester SHA256-Werte vorbereitet. Das vollständige Release enthält die gebauten Dateien unter `assets/windows`; Quellcodepakete enthalten deren Bauanleitung und Quellen.
+
+Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. Er generiert eine Factorio-YAML über die Oberfläche, prüft den Dateidownload, schließt das Fenster in den Tray und öffnet es wieder. Ein zweiter Start verwendet die vorhandene Instanz. Anschließend ersetzt ein Update sowohl die EXE als auch die portable Node-Laufzeit, startet das Fenster neu und prüft erhaltene Regeln und Raumdaten. Ein weiterer Start über `server.mjs` deckt den Einstieg älterer Updater ab. Die Release-Veröffentlichung hängt von diesem erfolgreichen Windows-Test ab.
+
 ## Automatisierte Prüfungen
 
-**147 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**158 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
 | Regeln und Versand | Ereignisse, Deduplizierung, Limits, Cooldowns, Pause, Notaus, Testmodus, persistierte Aufträge und AP-Protokoll |
+| Live-Oberfläche | Unveränderte DOM-Knoten bei periodischer und SSE-Aktualisierung, offene Dialoge und Bereiche, fokussierte Dropdowns, ungespeicherte Spieler und Verbindungen sowie Suchfilter im YAML-Editor |
+| Twitch-Kanäle | Zwei echte lokale EventSub-WebSocket-Gegenstellen, unabhängige Anmeldung und Trennung, falsches Konto abweisen, identische Ereignis-IDs verschiedener Broadcaster, kanalbezogene Regeln, Herkunft im Auftrag, parallele OAuth-States, Raumwechsel, verschlüsselte Persistenz und Wiederverbindung nach Neustart |
 | Verbindungen | Maskierte und verschlüsselte Zugangsdaten, AP-Wiederverbindung, Twitch-Code-Flow, Tokenwechsel, Refresh und Origin-Schutz |
 | Programmupdates | Versionsvergleich, Token ohne Weitergabe bei Redirects, SHA-256, ZIP-Pfade, vollständiges Manifest, erhaltene Räume und eigene APworlds, Sicherungen, Rücknahme bei Schreibfehlern, echter Neustart und Rückkehr zu Programm und Daten der vorherigen Version bei Startfehlern |
 | Raumarchiv | Archivieren des geöffneten Raums mit Wechsel, Wiederherstellung nach Neustart, erhaltene Regeln, Historie und Zugangsdaten |
@@ -128,3 +136,7 @@ Der erweiterte JSDOM-Test enthält gleichzeitig `EldenRing` als APworld und `Eld
 Die echte Peliarch-Vorlage liefert sieben dokumentierte Vorschläge für `traps`, einschließlich der 20-Sekunden-Beschreibung für `no_flask`. Der neue Modelltest prüft diese Hinweise sowie freie und geordnete Listenwerte. Die Vorschläge ändern weder den JSON-Optionstyp noch die zulässigen benutzerdefinierten Eingaben.
 
 Zwei zusätzliche JSDOM-Tests prüfen einzelne Häkchen, Zähler, eigene Texte, Deduplizierung, leere Listen, erhaltene Reihenfolge und eigene Werte in APworld-Sets. Die echten Vorschau- und Speicher-Routen übernehmen die ausgewählten Werte. Formatbeschreibungen für Text, Listen und Wörterbücher sowie dokumentierte Schlüssel werden geprüft. Es werden keine zusätzlichen Falleneffekte implementiert und keine Spielclients gestartet.
+
+## Regeln und Eingabehilfen 0.7.0
+
+Neue Räume haben keine Beispielregel. Die Migration entfernt ausschließlich das alte unveränderte, unbenutzte Beispiel; bearbeitete, normalisiert gespeicherte oder bereits verwendete Regeln bleiben erhalten. Charity-, Twitch- und manuelle Auslöser zeigen passende Felder. Ausgeblendete Betragsschwellen und Belohnungsfilter werden serverseitig normalisiert, damit frühere Eingaben die aktuelle Plattformregel nicht unbemerkt blockieren.

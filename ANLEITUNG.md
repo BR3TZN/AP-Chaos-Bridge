@@ -1,10 +1,10 @@
-# AP Chaos Bridge 0.6.2 · Einrichtung
+# AP Chaos Bridge 0.7.0 · Einrichtung
 
 ## Start und Update
 
 1. ZIP vollständig entpacken. Für ein Update die neue Version über den bisherigen Programmordner kopieren und **`data` beibehalten**. Die laufende Bridge vorher unter Einstellungen beenden.
-2. [Node.js 22 oder neuer](https://nodejs.org/en/download) installieren. Die npm-Pakete liegen bereits bei.
-3. `Start.cmd` öffnen. Oberfläche: **http://127.0.0.1:17381**. Nach einem Update mit Strg+F5 neu laden.
+2. Das **vollständige Windows-Release** enthält Node und die npm-Pakete bereits. Eine zusätzliche Node-Installation ist dafür nicht nötig. Quellcodekopien und macOS/Linux benötigen Node ab 22 sowie `npm ci --ignore-scripts`.
+3. Beim ersten Start **`Start.cmd`** öffnen. Es öffnet das eigene Fenster und legt **`AP-Chaos-Bridge.exe`** im Hauptordner an. Danach diese EXE verwenden. Schließen oder Minimieren legt die Bridge in den Tray; Doppelklick auf das Symbol öffnet sie, **Rechtsklick → Beenden** beendet alles. Die Oberfläche bleibt für OBS und Integrationen lokal unter **http://127.0.0.1:17381** erreichbar. Fehlt WebView2, die vom Programm angebotene offizielle Runtime installieren und die Bridge erneut starten.
 4. Vorbereitete APworld-Versionen einschließlich der sieben Nutzerdateien funktionieren ohne Python, auch in einem eigenen Ordner. Für bisher unbekannte Versionen zusätzlich [Python 3.10 oder neuer](https://www.python.org/downloads/windows/) installieren und bei der Installation zu PATH hinzufügen. Bereits vorhandenes Python wird über `py -3`, `python` oder `python3` erkannt. Anschließend die Bridge neu starten.
 
 ## Räume und mehrere Spieler
@@ -94,13 +94,14 @@ Dann einen **bereits existierenden Slotnamen** wählen. Raumpasswort eintragen, 
 
 ## Twitch verbinden
 
-1. [Twitch Developer Console](https://dev.twitch.tv/console/apps) öffnen und eine Anwendung registrieren.
-2. OAuth Redirect URL exakt **`http://localhost:17381/oauth/callback`** eintragen. Anwendungstyp **Confidential**. Bei einem anderen Bridge-Port die Redirect-URL entsprechend ändern.
-3. Unter **Verbindungen → Twitch EventSub** die **Client-ID** eintragen.
-4. Für automatische Token-Erneuerung in Twitch ein **Client Secret** erstellen und zusätzlich eintragen. Ohne Secret funktioniert die Anmeldung ebenfalls; nach Ablauf des gespeicherten Tokens ist eine erneute Anmeldung nötig.
-5. Gewünschte Ereignisse auswählen. Die Broadcaster-ID kann leer bleiben; sie wird aus dem Token erkannt.
-6. **Mit Twitch anmelden** klicken und mit dem Twitch-Kanal anmelden, dessen Ereignisse die Bridge auslösen sollen. Berechtigungen bestätigen.
-7. Die Rückleitung meldet die übernommene Anmeldung. Das Anmeldefenster schließen; in der Bridge steht bei Twitch **Verbunden**. Fehlende Berechtigungen erscheinen direkt unter dem Status.
+1. [Twitch Developer Console](https://dev.twitch.tv/console/apps) öffnen und eine Anwendung verwenden.
+2. OAuth Redirect URL exakt **`http://localhost:17381/oauth/callback`** eintragen. Anwendungstyp **Confidential**. Bei einem anderen Bridge-Port die Redirect-URL ändern.
+3. **Verbindungen → + Twitch-Kanal hinzufügen** öffnen. Den **Kanalnamen** ohne Link und die **Client-ID** eintragen. Für mehrere Kanäle darf dieselbe Client-ID verwendet werden.
+4. Die gewünschten Ereignisse auswählen. Unter **Erweitert** ist ein **Client Secret** für automatische Token-Erneuerung optional. Ohne Secret bleibt die Anmeldung bis zum Tokenablauf gültig.
+5. **Kanal hinzufügen & anmelden** klicken. Die Twitch-Anmeldung öffnet sich im Standardbrowser. **Jeder Kanalbesitzer muss seinen eigenen Kanal autorisieren**; Name und Client-ID allein reichen dafür nicht. Mit einem anderen Konto bricht die Bridge mit einer verständlichen Meldung ab.
+6. Nach der Freigabe das Anmeldefenster schließen. Der jeweilige Kanal zeigt **Verbunden**, seine aktiven Ereignisse und gegebenenfalls fehlende Berechtigungen.
+7. Für weitere Kollegen wieder **+ Twitch-Kanal hinzufügen** verwenden. Jeder Kanal lässt sich einzeln trennen, erneut anmelden oder entfernen. Gespeicherte Anmeldungen und die automatische Wiederverbindung gelten pro Kanal und Bridge-Raum.
+8. In einer Twitch-Regel unter **Kanal** alle verbundenen Kanäle oder einen bestimmten Kollegen wählen. Im Protokoll und bei Aufträgen steht die Herkunft als **@Kanalname**; in Nachrichten und Alerts ist `{channel}` verfügbar.
 
 | Ereignisse | Twitch-Berechtigung |
 | --- | --- |
@@ -114,14 +115,14 @@ Die in 0.1.1 blockierte Rückleitung von Twitch ist behoben. Zugangsdaten werden
 
 1. Unter **Verbindungen → Charity Royale** nur deinen Slug, z. B. **`br3tzn`**, eintragen; keine vollständige JSON-Adresse.
 2. Projekt **`charityroyale2026`**. **Spenden verbinden** klicken.
-3. In der Regel die genaue Aktion des Spendenbuttons eintragen. Ein Test mit `metadata.action: trap` braucht `trap`, nicht `random-trap`.
+3. In der Regel als Quelle **Charity Royale** wählen und den Mindestbetrag in Euro eintragen. Für einen bestimmten Spendenbutton unter **Optional: Aktionscode filtern** zusätzlich dessen exakten `metadata.action`-Wert verwenden; ohne Aktionscode reagieren Regeln auf alle Spenden ab dem Betrag.
 4. Der Netto-Betrag wird in Cent ausgewertet: `amount_net: 1000` entspricht 10 Euro.
 5. Offizielle Testspenden bzw. `id: null` werden als Simulation verarbeitet. Die Bridge filtert nach dem Streamer-Slug; eine noch fehlende öffentliche JSON-Seite verhindert solche Testereignisse nicht.
 
 ## Regeln und mehrere Ziele
 
 1. Unter **Spieler & Effekte → Items & Fallen auswählen** den gewünschten Slot aktivieren. **Erlaubt** nimmt ein Item in den erlaubten Pool auf; **Falle** markiert es zusätzlich für Fallenaktionen. Die Bridge kann nicht alle schädlichen Items automatisch erkennen.
-2. Unter **Regeln → + Neue Regel** zuerst Quelle, Ereignisart und Schwellen festlegen. Exakte Aktionscodes und Twitch-Reward-IDs stehen unter den erweiterten Filtern.
+2. Neue Räume starten **ohne Regeln**. Unter **Regeln → + Neue Regel** die Quelle wählen. Charity zeigt den Spendenbetrag; Twitch bietet neue Subs, Resub-Mitteilungen, Geschenk-Abo-Pakete, Bits und Kanalpunkte. Die Menge gilt **pro einzelnem Cheer oder Geschenkpaket**, nicht als laufender Zähler. Bei Kanalpunkten eine geladene Belohnung oder **Belohnungs-ID selbst eintragen** wählen. Manuelle Auslöser benötigen keine Plattformschwellen. Unpassende Felder werden ausgeblendet und blockieren die Regel nicht.
 3. Die Aktion wählen:
 
 | Aktion | Verhalten |
@@ -200,3 +201,7 @@ Die erste Installation der Updatefunktion erfolgt manuell mit dem vollständigen
 ## Spieler-YAMLs verwenden
 
 Der Katalog zeigt eingelesene APworlds, vorbereitete Core-Worlds und ausdrücklich importierte Spieler-YAMLs. Nach diesem Update alte Platin-YAMLs erneut exportieren. Die angezeigte World-Version und Mindestversion von Archipelago beachten. Die passende `.apworld` in Archipelagos `custom_worlds` installieren, Spieler-YAMLs in `Players` legen und daraus den Seed generieren. Die YAML ist eine Konfigurationsdatei für den Generator.
+
+## Eingaben bei laufendem Betrieb
+
+Die Statusdaten aktualisieren sich weiter, während offene Dropdowns, Dialoge, Suchfilter, aufgeklappte Abschnitte und ungespeicherte Eingaben erhalten bleiben. Erst ein bewusster Seiten- oder Raumwechsel schließt den bisherigen Dialog. Die kurzen Feldübergänge lassen sich unter **Design → Bewegung** abschalten; die Systemeinstellung für reduzierte Bewegung wird ebenfalls beachtet.

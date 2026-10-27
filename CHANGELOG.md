@@ -1,3 +1,13 @@
+# 0.7.0 – Eigenes Windows-Fenster, Tray und mehrere Twitch-Kanäle
+
+- Windows-Vollpaket mit eigener EXE, eingebetteter WebView2-Oberfläche und portabler Node-Laufzeit. Schließen/Minimieren legt die Bridge in den Tray; dessen Menü öffnet oder beendet sie. Kein dauerhaftes Node-Konsolenfenster. Der erste Start über Start.cmd legt die EXE im Hauptordner an.
+- Desktop-Updates warten auf Fenster und Hintergrunddienst. Der Installationshelfer verwendet eine eigene Laufzeitkopie, damit die portable node.exe ersetzt werden kann. Automatischer Fenster-Neustart und Kompatibilität mit älteren server.mjs-Updatern werden unter Windows geprüft.
+- Bis zu 20 getrennte Twitch-Kanäle pro Raum, je Kanalname, Client-ID, Ereignisauswahl, Autorisierung, verschlüsselten Zugangsdaten und Wiederverbindung. Kanalfilter in Regeln, @Kanal im Protokoll und Nachrichtenvariable {channel}. Jeder Kanal benötigt seine eigene Twitch-Freigabe.
+- Datenaktualisierungen gleichen bestehende Elemente ab. Dropdowns, Dialoge, offene Bereiche, Suchfilter und ungespeicherte Formulare bleiben erhalten; Statusdaten werden weiter aktualisiert.
+- Regeln sind in neuen Räumen leer. Nur das exakt unveränderte und unbenutzte alte Beispiel wird entfernt; eigene Regeln bleiben erhalten.
+- Regeln zeigen passende Auslöserfelder: Spendenbetrag für Charity; Subs, Resubs, Geschenkpakete, Bits und Kanalpunkte für Twitch, einschließlich benannter Belohnungen oder eigener ID. Versteckte, unpassende Schwellen werden beim Speichern gelöscht.
+- Kurze, abbrechbare Feldübergänge mit Rücksicht auf reduzierte Bewegung. Neue Regressionsprüfungen für Drafts, Kanäle und Ereigniszuordnung.
+
 # 0.6.2 – Mehrfachauswahl und verständliche Wertehinweise
 
 - Dokumentierte YAML-Listen und bekannte APworld-Set-Werte als aufklappbare Mehrfachauswahl mit einzelnen Häkchen anzeigen. Beschreibungen der Einträge bleiben sichtbar; eigene Werte sind zeilenweise möglich.

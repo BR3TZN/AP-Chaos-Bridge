@@ -23,6 +23,7 @@ internal static class Program
     internal static readonly JavaScriptSerializer Json = new JavaScriptSerializer();
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] internal static extern uint RegisterWindowMessage(string name);
     [DllImport("user32.dll")] private static extern bool PostMessage(IntPtr window, uint message, IntPtr wParam, IntPtr lParam);
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)] private static extern uint GetLongPathName(string path, StringBuilder result, uint length);
     internal static uint RestoreMessage;
 
     [STAThread]
@@ -33,7 +34,9 @@ internal static class Program
         {
             Root = FindRoot();
             string canonical = Path.Combine(Root, "assets", "windows", "AP-Chaos-Bridge.exe");
-            if (!String.Equals(Assembly.GetExecutingAssembly().Location, canonical, StringComparison.OrdinalIgnoreCase))
+            Directory.CreateDirectory(Path.Combine(Root, "data"));
+            File.AppendAllText(Path.Combine(Root, "data", "desktop-start.log"), DateTime.UtcNow.ToString("o") + " PID " + Process.GetCurrentProcess().Id + " " + Assembly.GetExecutingAssembly().Location + Environment.NewLine);
+            if (!String.Equals(LongPath(Assembly.GetExecutingAssembly().Location), LongPath(canonical), StringComparison.OrdinalIgnoreCase))
             {
                 Process.Start(new ProcessStartInfo(canonical, Smoke ? "--smoke-test" : "") { WorkingDirectory = Root, UseShellExecute = false, CreateNoWindow = true });
                 return 0;
@@ -53,6 +56,13 @@ internal static class Program
             return Environment.ExitCode;
         }
         catch (Exception error) { Fail(error); return 1; }
+    }
+
+    private static string LongPath(string path)
+    {
+        StringBuilder buffer = new StringBuilder(32768);
+        uint length = GetLongPathName(Path.GetFullPath(path), buffer, (uint)buffer.Capacity);
+        return length > 0 && length < buffer.Capacity ? buffer.ToString() : Path.GetFullPath(path);
     }
 
     private static string FindRoot()
@@ -108,7 +118,7 @@ internal sealed class BridgeForm : Form
     private Process backend;
     private int backendPid;
     private string session;
-    private bool exiting, stopping, ready;
+    private bool exiting, stopping, ready, downloaded;
     private readonly object logLock = new object();
 
     internal BridgeForm()
@@ -135,7 +145,7 @@ internal sealed class BridgeForm : Form
         if (message.Msg == Program.RestoreMessage) { RestoreWindow(); return; }
         base.WndProc(ref message);
     }
-    private void RestoreWindow() { Show(); ShowInTaskbar = true; WindowState = FormWindowState.Normal; Activate(); }
+    private void RestoreWindow() { WindowState = FormWindowState.Normal; ShowInTaskbar = true; Show(); Activate(); }
     private void HideWindow() { Hide(); ShowInTaskbar = false; }
     private static bool Alive(int pid) { try { using (Process process = Process.GetProcessById(pid)) return !process.HasExited; } catch { return false; } }
     private void ExitWindow() { if (exiting) return; exiting = true; monitor.Stop(); tray.Visible = false; if (view != null) view.Dispose(); Close(); }
@@ -183,7 +193,9 @@ internal sealed class BridgeForm : Form
                 if (MessageBox.Show("Die Microsoft Edge WebView2 Runtime fehlt. Downloadseite öffnen? Nach der Installation die Bridge erneut starten.", "WebView2 Runtime erforderlich", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes) Program.External("https://developer.microsoft.com/microsoft-edge/webview2/#download");
                 Environment.ExitCode = 1; ExitWindow(); return;
             }
-            if (!await Attach())
+            bool attached = await Attach();
+            if (exiting || stopping) return;
+            if (!attached)
             {
                 string node = Path.Combine(Program.Root, "assets", "windows", "node.exe");
                 if (!File.Exists(node)) throw new Exception("Die portable Node-Laufzeit fehlt. Das vollständige Release-ZIP erneut entpacken.");
@@ -196,6 +208,7 @@ internal sealed class BridgeForm : Form
                 bool found = false;
                 for (int i = 0; i < 100; i++)
                 {
+                    if (exiting || stopping) return;
                     if (await Attach()) { found = true; break; }
                     if (backend.HasExited) throw new Exception("Der Hintergrunddienst konnte nicht starten. Details: data\\error.log.");
                     await Task.Delay(200);
@@ -206,7 +219,9 @@ internal sealed class BridgeForm : Form
             view = new WebView2 { Dock = DockStyle.Fill };
             Controls.Add(view); view.BringToFront();
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Program.Root, "data", "desktop-profile"));
+            if (exiting || stopping) return;
             await view.EnsureCoreWebView2Async(environment);
+            if (exiting || stopping) return;
             view.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             view.CoreWebView2.Settings.IsStatusBarEnabled = false;
             view.CoreWebView2.Settings.IsPasswordAutosaveEnabled = false;
@@ -220,6 +235,12 @@ internal sealed class BridgeForm : Form
             };
             view.CoreWebView2.DownloadStarting += (sender, args) =>
             {
+                if (Program.Smoke)
+                {
+                    args.ResultFilePath = Path.Combine(Program.Root, "data", "desktop-download.yaml"); args.Handled = true;
+                    args.DownloadOperation.StateChanged += (downloadSender, downloadArgs) => { if (args.DownloadOperation.State == CoreWebView2DownloadState.Completed) downloaded = true; };
+                    return;
+                }
                 CoreWebView2Deferral deferral = args.GetDeferral();
                 // A modal dialog must run after the WebView2 event has returned.
                 BeginInvoke(new Action(() =>
@@ -235,7 +256,7 @@ internal sealed class BridgeForm : Form
             if (Program.Smoke) await SmokeTest();
         }
         catch (Exception error) { failure = error; }
-        if (failure != null) { Program.Fail(failure); await Quit(); }
+        if (failure != null && !exiting) { Program.Fail(failure); await Quit(); }
     }
 
     private async Task UpdateRootLauncher()
@@ -256,15 +277,31 @@ internal sealed class BridgeForm : Form
             string result = await view.ExecuteScriptAsync("Boolean(document.querySelector('#main [data-action]') && document.querySelector('#breadcrumb').textContent)");
             if (result == "true")
             {
+                await SmokeDownload();
                 Close(); if (Visible || ShowInTaskbar || !tray.Visible) throw new Exception("Tray-Test fehlgeschlagen.");
                 RestoreWindow();
                 string bridgeRules = await view.ExecuteScriptAsync("S.rules.length");
-                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, nativeWindow = true, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
+                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, nativeWindow = true, download = downloaded, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
                 await Quit(); return;
             }
             await Task.Delay(250);
         }
         throw new Exception("Die eingebettete Oberfläche wurde nicht rechtzeitig geladen.");
+    }
+
+    private async Task SmokeDownload()
+    {
+        await view.ExecuteScriptAsync("location.hash = 'spiel/Factorio'");
+        bool formReady = false;
+        for (int i = 0; i < 100; i++)
+        {
+            if (await view.ExecuteScriptAsync("Boolean(document.querySelector('#studio-yaml-form'))") == "true") { formReady = true; break; }
+            await Task.Delay(200);
+        }
+        if (!formReady) throw new Exception("YAML-Editor im eigenen Fenster fehlt.");
+        await view.ExecuteScriptAsync("document.querySelector('#studio-yaml-form [name=playerNames]').value = 'SmokePlayer'; document.querySelector('#studio-yaml-form [type=submit]').click()");
+        for (int i = 0; i < 100 && !downloaded; i++) await Task.Delay(200);
+        if (!downloaded) throw new Exception("YAML-Download im eigenen Fenster fehlgeschlagen.");
     }
 
     private async Task Quit()
