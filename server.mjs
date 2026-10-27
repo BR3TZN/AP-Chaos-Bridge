@@ -413,7 +413,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   if (process.platform === 'win32' && !desktopParent() && process.env.AP_BRIDGE_BROWSER !== '1' && existsSync(desktopExecutable(root))) {
     // Old update helpers still launch server.mjs. Keep this proxy alive while
     // the new desktop owns its hidden backend, so their health checks succeed.
-    const desktop = spawn(desktopExecutable(root), [], { cwd: root, windowsHide: true, stdio: 'ignore' });
+    const desktop = spawn(desktopExecutable(root), [], { cwd: root, windowsHide: false, stdio: 'ignore' });
     desktop.once('exit', code => { process.exitCode = code ?? 1; });
     desktop.once('error', error => { console.error(error.message); process.exitCode = 1; });
   } else createApp({ port, updateRestart: true }).then(app => {

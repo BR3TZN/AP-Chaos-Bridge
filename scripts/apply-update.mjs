@@ -10,7 +10,7 @@ async function launch(job) {
   try {
     const executable = job.desktop ? join(job.root, 'assets/windows/AP-Chaos-Bridge.exe') : process.execPath;
     const env = { ...process.env, AP_BRIDGE_PORT: String(job.port) }; delete env.AP_BRIDGE_DESKTOP_PID;
-    const child = spawn(executable, job.desktop ? [] : [join(job.root, 'server.mjs')], { cwd: job.root, env, detached: true, windowsHide: true, stdio: ['ignore', output.fd, output.fd] });
+    const child = spawn(executable, job.desktop ? [] : [join(job.root, 'server.mjs')], { cwd: job.root, env, detached: true, windowsHide: !job.desktop, stdio: ['ignore', output.fd, output.fd] });
     await new Promise((resolve, reject) => { child.once('spawn', resolve); child.once('error', reject); }); child.unref(); return child;
   } finally { await output.close(); }
 }
