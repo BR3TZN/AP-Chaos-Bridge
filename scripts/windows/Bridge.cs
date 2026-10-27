@@ -270,7 +270,11 @@ internal sealed class BridgeForm : Form
                 {
                     if (exiting || stopping) return;
                     if (await Attach()) { found = true; break; }
-                    if (backend.HasExited) throw new Exception("Der Hintergrunddienst konnte nicht starten. Details: data\\error.log.");
+                    if (backend.HasExited)
+                    {
+                        if (backend.ExitCode == 0) { ExitWindow(); return; }
+                        throw new Exception("Der Hintergrunddienst konnte nicht starten. Details: data\\error.log.");
+                    }
                     await Task.Delay(200);
                 }
                 if (!found) throw new Exception("Der Hintergrunddienst antwortet nicht. Details: data\\error.log.");
@@ -286,6 +290,7 @@ internal sealed class BridgeForm : Form
             view.CoreWebView2.Settings.IsStatusBarEnabled = false;
             view.CoreWebView2.Settings.IsPasswordAutosaveEnabled = false;
             view.CoreWebView2.Settings.IsGeneralAutofillEnabled = false;
+            view.CoreWebView2.DOMContentLoaded += async (sender, args) => await MarkReady();
             view.CoreWebView2.NavigationStarting += (sender, args) => { if (!Program.IsLocal(args.Uri) && args.Uri != "about:blank") { args.Cancel = true; Program.External(args.Uri); } };
             view.CoreWebView2.NewWindowRequested += (sender, args) => { args.Handled = true; Program.External(args.Uri); };
             view.CoreWebView2.WebMessageReceived += (sender, args) =>
@@ -327,6 +332,22 @@ internal sealed class BridgeForm : Form
             catch (IOException) { }
             catch (Exception error) { Log("desktop-error.log", "Startverknüpfung: " + error.Message); return; }
             await Task.Delay(200);
+        }
+    }
+
+    private async Task MarkReady()
+    {
+        for (int attempt = 0; attempt < 100 && !exiting && !stopping; attempt++)
+        {
+            try
+            {
+                if (await view.ExecuteScriptAsync("Boolean(document.querySelector('#main [data-action]'))") == "true")
+                {
+                    File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-ready.json"), Program.Json.Serialize(new { pid = Process.GetCurrentProcess().Id, backendPid, rootId = Program.RootId })); return;
+                }
+            }
+            catch { return; }
+            await Task.Delay(100);
         }
     }
 

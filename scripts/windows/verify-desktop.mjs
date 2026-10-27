@@ -31,6 +31,9 @@ async function post(path, value = {}) {
   const response = await fetch(base + '/api/' + path, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Bridge-Session': desktop.session }, body: JSON.stringify(value) });
   const result = await response.json(); assert.equal(response.status, 200, JSON.stringify(result)); return result;
 }
+async function windowReady(pid) {
+  return until(async () => { try { return JSON.parse(await readFile(join(root, 'data/desktop-ready.json'), 'utf8')).pid === pid; } catch { return false; } }, 'Die native Oberfläche wurde nicht vollständig geladen.', 30000);
+}
 function launch(executable, args = []) { const child = spawn(executable, args, { cwd: root, env, windowsHide: true, stdio: 'ignore' }); processes.push(child); return child; }
 async function files(folder) {
   const result = [];
@@ -74,6 +77,7 @@ try {
   await writeFile(join(root, 'data/preserved-test.txt'), 'my room data');
   const desktop = launch(canonical);
   await until(async () => (await state())?.updates.phase === 'ready', 'Vorbereitetes Desktop-Update fehlt.');
+  await windowReady(desktop.pid);
   await post('rule', { name: 'Preserved rule', source: 'charity', type: 'donation', effect: 'alert', target: 'random', enabled: false });
   const duplicate = launch(join(root, 'AP-Chaos-Bridge.exe'));
   await until(() => duplicate.exitCode !== null, 'Zweiter Start sollte das vorhandene Fenster öffnen.', 10000);
@@ -82,14 +86,16 @@ try {
   await until(() => desktop.exitCode !== null, 'Altes Fenster wurde vor dem Update nicht beendet.', 15000);
   const updated = await until(async () => { const value = await state(); return value?.version === version && value.updates.lastResult?.phase === 'installed' ? value : null; }, 'Desktop-Update oder automatischer Neustart fehlgeschlagen.', 90000);
   const newDesktop = await state('/api/desktop'); assert(newDesktop.desktopPid > 0); processes.push({ pid: newDesktop.desktopPid });
+  await windowReady(newDesktop.desktopPid);
   assert.equal(updated.rules[0].name, 'Preserved rule'); assert.equal(await readFile(join(root, 'data/preserved-test.txt'), 'utf8'), 'my room data');
   assert.equal(hash(await readFile(join(root, 'assets/windows/node.exe'))), manifest.files.find(file => file.path === 'assets/windows/node.exe').sha256);
-  await post('shutdown'); await until(() => !alive(newDesktop.desktopPid), 'Das aktualisierte Fenster wurde nicht beendet.', 15000);
+  await post('shutdown'); await until(async () => !alive(newDesktop.desktopPid) && !await state('/api/desktop'), 'Das aktualisierte Fenster wurde nicht beendet.', 15000);
   console.log('Desktop-Update ersetzt laufende EXE und portable Node-Laufzeit; Fenster, Regeln und Daten starten korrekt neu.');
 
   const proxy = launch(join(root, 'assets/windows/node.exe'), [join(root, 'server.mjs')]);
   const compatible = await until(() => state('/api/desktop'), 'Kompatibler Start über server.mjs fehlt.');
   processes.push({ pid: compatible.desktopPid }); assert(compatible.desktopPid > 0); assert.equal(proxy.exitCode, null);
+  await windowReady(compatible.desktopPid);
   await post('shutdown'); await until(() => proxy.exitCode !== null, 'Kompatibler Startprozess wurde nicht beendet.', 15000); assert.equal(proxy.exitCode, 0);
   console.log('Ältere Updater öffnen das neue Desktop-Fenster über server.mjs ohne vorzeitigen Prozessabbruch.');
 } catch (error) {
