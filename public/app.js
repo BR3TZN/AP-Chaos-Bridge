@@ -15,7 +15,7 @@ const options = (object, selected) => Object.entries(object).map(([value, label]
 // forms that the user is editing. Native dropdowns keep the same DOM node.
 const LiveUI = {
   baselines: new WeakMap(), accepted: new WeakSet(), page: '', room: '',
-  signature(form) { return JSON.stringify([...form.elements].filter(el => el.name && !['submit', 'button'].includes(el.type)).map(el => [el.name, el.type, el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.tagName === 'SELECT' && el.multiple ? [...el.selectedOptions].map(option => option.value) : el.value])); },
+  signature(form) { return JSON.stringify([...form.elements].filter(el => ['INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName) && !['submit', 'button'].includes(el.type)).map(el => [el.name || el.id, el.type, el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.tagName === 'SELECT' && el.multiple ? [...el.selectedOptions].map(option => option.value) : el.value])); },
   committed(form) { if (form?.isConnected) this.baselines.set(form, this.signature(form)); },
   key(node) {
     if (node.nodeType !== 1) return '';
@@ -312,12 +312,12 @@ document.addEventListener('change', async event => {
   const t = event.target;
   try {
     if (['playerName', 'playerGame'].includes(t.name)) Studio.updatePlayerRow(t);
-    if (t.dataset.optionCustom !== undefined) { const input = document.querySelector('[data-custom-input="' + t.dataset.optionCustom + '"]'); input.classList.toggle('hidden', t.value !== '__custom__'); input.disabled = t.value !== '__custom__'; }
+    if (t.dataset.optionCustom !== undefined) { const input = document.querySelector('[data-custom-input="' + t.dataset.optionCustom + '"]'); Studio.reveal(input, t.value === '__custom__'); input.disabled = t.value !== '__custom__'; }
     if (t.dataset.optionEnable !== undefined) document.querySelector('[data-option-fieldset="' + t.dataset.optionEnable + '"]').disabled = !t.checked;
     if (t.dataset.optionList !== undefined) Studio.listSummary(t.dataset.optionList);
     if (t.id === 'room-select') { await api('rooms/activate', { id: t.value }); Studio.entry = null; Studio.loadingGame = ''; Studio.logGame = ''; await refresh(true); }
     if (t.id === 'studio-log-game') { Studio.logGame = t.value; render(true); }
-    if (t.id === 'ap-address-mode') $('#ap-host-label').classList.toggle('hidden', t.value !== 'custom');
+    if (t.id === 'ap-address-mode') Studio.reveal($('#ap-host-label'), t.value === 'custom');
     if (t.closest('#rule-form')) Studio.ruleVisibility();
     if (t.id === 'studio-source') { t.disabled = true; await Studio.selectSource(t.value); }
     if (t.id === 'mode') { await api('mode', { mode: t.value }); await refresh(true); }

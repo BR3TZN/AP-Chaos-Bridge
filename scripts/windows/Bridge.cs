@@ -171,6 +171,7 @@ internal sealed class BridgeForm : Form
 
     private async Task Start()
     {
+        Exception failure = null;
         try
         {
             Directory.CreateDirectory(Path.Combine(Program.Root, "data"));
@@ -219,18 +220,22 @@ internal sealed class BridgeForm : Form
             };
             view.CoreWebView2.DownloadStarting += (sender, args) =>
             {
-                using (SaveFileDialog dialog = new SaveFileDialog { FileName = Path.GetFileName(args.ResultFilePath), RestoreDirectory = true })
+                CoreWebView2Deferral deferral = args.GetDeferral();
+                // A modal dialog must run after the WebView2 event has returned.
+                BeginInvoke(new Action(() =>
                 {
-                    if (dialog.ShowDialog(this) == DialogResult.OK) { args.ResultFilePath = dialog.FileName; args.Handled = false; }
-                    else args.Cancel = true;
-                }
+                    try { using (SaveFileDialog dialog = new SaveFileDialog { FileName = Path.GetFileName(args.ResultFilePath), RestoreDirectory = true })
+                    { if (dialog.ShowDialog(this) == DialogResult.OK) { args.ResultFilePath = dialog.FileName; args.Handled = false; } else args.Cancel = true; } }
+                    finally { deferral.Complete(); }
+                }));
             };
             view.Source = new Uri(Program.Origin);
             loading.Visible = false; ready = true;
             await UpdateRootLauncher();
             if (Program.Smoke) await SmokeTest();
         }
-        catch (Exception error) { Program.Fail(error); await Quit(); }
+        catch (Exception error) { failure = error; }
+        if (failure != null) { Program.Fail(failure); await Quit(); }
     }
 
     private async Task UpdateRootLauncher()
@@ -238,8 +243,9 @@ internal sealed class BridgeForm : Form
         for (int i = 0; i < 20; i++)
         {
             try { File.Copy(Assembly.GetExecutingAssembly().Location, Path.Combine(Program.Root, "AP-Chaos-Bridge.exe"), true); return; }
-            catch (IOException) { await Task.Delay(200); }
+            catch (IOException) { }
             catch (Exception error) { Log("desktop-error.log", "Startverknüpfung: " + error.Message); return; }
+            await Task.Delay(200);
         }
     }
 

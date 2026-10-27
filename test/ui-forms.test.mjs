@@ -27,7 +27,7 @@ async function ui(t, options = {}) {
     requests.push({ path, method: init?.method || 'GET', body: init?.body });
     return fetch(new URL(path, app.url), init);
   };
-  window.EventSource = class { addEventListener() {} close() {} };
+  window.EventSource = class { constructor() { this.listeners = {}; window.__liveEvents = this; } addEventListener(type, callback) { this.listeners[type] = callback; } close() {} };
   window.setInterval = (callback, delay) => { intervals.push({ callback, delay }); return intervals.length; };
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
@@ -475,4 +475,70 @@ test('the YAML picker edits all Peliarch fields, switches sources without mixing
   const remove = document.querySelector('#studio-yaml-remove-form'); remove.querySelector('[type=submit]').click();
   await until(() => app.library.yamlTemplates.entries().length === 0 && !document.querySelector('#drawer').open && !remove.querySelector('[type=submit]').disabled, 'YAML-Vorlage wurde nicht entfernt.');
   assert.equal(app.library.get('Elden Ring').kind, 'apworld'); assert.equal(app.store.state.yamlPresets['Elden Ring'].players[0], 'WorldSlot');
+});
+
+test('empty rules stay empty and a rule draft survives periodic, SSE and explicit data refreshes', async t => {
+  const { app, window, document, intervals } = await ui(t, { seedRules: false });
+  assert.equal(app.store.state.rules.length, 0); assert(document.querySelector('#main').textContent.includes('Keine Regeln'));
+  document.querySelector('[data-action="new-rule"]').click();
+  const dialog = document.querySelector('#drawer'), form = document.querySelector('#rule-form');
+  form.elements.namedItem('name').value = 'My unfinished draft';
+  const target = form.elements.namedItem('target'); target.value = 'all'; target.focus();
+  const openDetails = form.querySelector('details'); if (openDetails) openDetails.open = true;
+  const periodic = intervals.find(interval => interval.delay === 15000); assert(periodic); await periodic.callback();
+  assert.equal(document.querySelector('#rule-form'), form); assert(dialog.open); assert.equal(document.activeElement, target);
+  window.__liveEvents.listeners.change(); await new Promise(resolve => setTimeout(resolve, 130)); await window.__bridgeRefresh(true);
+  assert.equal(form.elements.namedItem('name').value, 'My unfinished draft'); assert.equal(target.value, 'all'); assert(dialog.open);
+  if (openDetails) assert(openDetails.open);
+  window.location.hash = 'quellen'; await until(() => document.querySelector('#ap-form'), 'Connections missing'); assert(!dialog.open);
+});
+
+test('player rows, open disclosures and native dropdown nodes survive background updates while statuses change', async t => {
+  const { app, window, document } = await ui(t);
+  window.location.hash = 'spielslots'; await until(() => document.querySelector('#studio-player-list-form'), 'Players missing');
+  const form = document.querySelector('#studio-player-list-form'), details = form.closest('details'); details.open = true;
+  form.querySelector('[data-action="studio-player-add"]').click();
+  const row = form.querySelector('[data-player-row]'), name = row.querySelector('[name="playerName"]'); name.value = 'Unsaved friend'; name.blur();
+  app.ap.loadDemo(); await window.__bridgeRefresh();
+  assert.equal(document.querySelector('#studio-player-list-form'), form); assert.equal(form.querySelector('[data-player-row]'), row); assert.equal(name.value, 'Unsaved friend'); assert(details.open);
+  assert(document.querySelector('#connection-pill').textContent.includes('Demo')); assert(document.querySelector('#main').textContent.includes('Stardew-Demo'));
+  window.location.hash = 'quellen'; await until(() => document.querySelector('#ap-address-mode'), 'Address fields missing');
+  const select = document.querySelector('#ap-address-mode'); select.focus(); select.value = 'custom'; select.dispatchEvent(new window.Event('change', { bubbles: true }));
+  const apForm = document.querySelector('#ap-form'); apForm.elements.namedItem('host').value = 'my.unsaved.host';
+  await window.__bridgeRefresh(true); assert.equal(document.querySelector('#ap-address-mode'), select); assert.equal(document.activeElement, select); assert.equal(select.value, 'custom'); assert.equal(apForm.elements.namedItem('host').value, 'my.unsaved.host');
+});
+
+test('rule fields follow Charity, Twitch and manual triggers and hidden thresholds cannot block saved rules', async t => {
+  const { app, window, document } = await ui(t, { seedRules: false });
+  document.querySelector('[data-action="new-rule"]').click(); const form = document.querySelector('#rule-form');
+  const source = form.elements.namedItem('source'), type = form.elements.namedItem('type');
+  assert.equal(form.elements.namedItem('euros').disabled, false); assert(form.elements.namedItem('minimumUnits').disabled); assert(document.querySelector('#rule-type-field').hidden);
+  form.elements.namedItem('euros').value = '999'; source.value = 'twitch'; source.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert(form.elements.namedItem('euros').disabled); assert.equal(type.options.length, 6); assert(form.elements.namedItem('minimumUnits').disabled);
+  type.value = 'cheer'; type.dispatchEvent(new window.Event('change', { bubbles: true })); assert(!form.elements.namedItem('minimumUnits').disabled); assert(document.querySelector('[data-units-label]').textContent.includes('Bits'));
+  form.elements.namedItem('minimumUnits').value = '200'; type.value = 'channel_points'; type.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert(form.elements.namedItem('minimumUnits').disabled); assert(!form.elements.namedItem('rewardId').disabled);
+  form.elements.namedItem('rewardId').value = '__custom__'; form.elements.namedItem('rewardId').dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert(form.elements.namedItem('customRewardId').required); form.elements.namedItem('customRewardId').value = 'my-reward';
+  form.elements.namedItem('name').value = 'Points only'; form.elements.namedItem('effect').value = 'alert'; form.querySelector('[type="submit"]').click();
+  await until(() => app.store.state.rules.length === 1, 'Twitch rule missing');
+  const saved = app.store.state.rules[0]; assert.equal(saved.minimumCents, 0); assert.equal(saved.minimumUnits, 0); assert.equal(saved.rewardId, 'my-reward');
+  document.querySelector('[data-action="new-rule"]').click(); const manual = document.querySelector('#rule-form'); manual.elements.namedItem('source').value = 'manual'; manual.elements.namedItem('source').dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert(manual.elements.namedItem('euros').disabled); assert(manual.elements.namedItem('rewardId').disabled); assert.equal(manual.elements.namedItem('type').value, 'manual');
+});
+
+test('adding a Twitch colleague in the native window opens OAuth externally and keeps independent channel settings', async t => {
+  const { app, window, document } = await ui(t);
+  const external = []; window.chrome = { webview: { postMessage: message => external.push(message) } };
+  window.location.hash = 'quellen'; await until(() => document.querySelector('[data-action="studio-twitch-add"]'), 'Twitch channels missing');
+  document.querySelector('[data-action="studio-twitch-add"]').click(); const form = document.querySelector('#studio-twitch-add-form');
+  form.elements.namedItem('channelName').value = 'alice'; form.elements.namedItem('clientId').value = 'shared-app';
+  form.querySelector('[type="submit"]').click();
+  await until(() => external.length === 1, 'Native OAuth message missing');
+  assert.equal(external[0].type, 'openExternal'); assert.equal(new URL(external[0].url).hostname, 'id.twitch.tv');
+  await until(() => document.querySelector('.twitch-channel'), 'Channel card missing');
+  const channel = app.snapshot().twitch.channels[0]; assert.equal(channel.channelName, 'alice');
+  const settings = document.getElementById('twitch-settings-' + channel.id); settings.open = true;
+  const savedForm = settings.querySelector('form'); savedForm.elements.namedItem('clientId').value = 'unfinished-edit';
+  await window.__bridgeRefresh(); assert.equal(document.getElementById('twitch-settings-' + channel.id), settings); assert(settings.open); assert.equal(savedForm.elements.namedItem('clientId').value, 'unfinished-edit');
 });

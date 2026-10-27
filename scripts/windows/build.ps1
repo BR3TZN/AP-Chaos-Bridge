@@ -1,4 +1,5 @@
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 $bridgeRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $bridgeSources = Get-Content (Join-Path $PSScriptRoot 'runtime-sources.json') -Raw | ConvertFrom-Json
 $bridgeOutput = Join-Path $bridgeRoot 'assets/windows'
@@ -8,7 +9,7 @@ try {
     foreach ($bridgeDependency in @('node', 'webview2')) {
         $bridgeSource = $bridgeSources.$bridgeDependency
         $bridgeArchive = Join-Path $bridgeTemp "$bridgeDependency.zip"
-        Invoke-WebRequest -UseBasicParsing -Uri $bridgeSource.url -OutFile $bridgeArchive
+        Invoke-WebRequest -UseBasicParsing -TimeoutSec 180 -Uri $bridgeSource.url -OutFile $bridgeArchive
         if ((Get-FileHash $bridgeArchive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $bridgeSource.sha256) { throw "SHA256 stimmt nicht: $bridgeDependency" }
         Expand-Archive -Path $bridgeArchive -DestinationPath (Join-Path $bridgeTemp $bridgeDependency)
     }
@@ -22,7 +23,7 @@ try {
     $bridgeVersion = Join-Path $bridgeTemp 'Version.cs'
     Set-Content -Encoding UTF8 -Path $bridgeVersion -Value "using System.Reflection; [assembly: AssemblyTitle(`"AP Chaos Bridge`")] [assembly: AssemblyProduct(`"AP Chaos Bridge`")] [assembly: AssemblyVersion(`"$($bridgePackage.version).0`")] [assembly: AssemblyFileVersion(`"$($bridgePackage.version).0`")]"
     $bridgeCompiler = Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
-    & $bridgeCompiler /nologo /target:winexe /platform:x64 /optimize+ /utf8output /langversion:5 /reference:System.dll /reference:System.Core.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll /reference:System.Web.Extensions.dll "/reference:$bridgeOutput/Microsoft.Web.WebView2.Core.dll" "/reference:$bridgeOutput/Microsoft.Web.WebView2.WinForms.dll" "/win32manifest:$PSScriptRoot/app.manifest" "/win32icon:$PSScriptRoot/bridge.ico" "/out:$bridgeOutput/AP-Chaos-Bridge.exe" (Join-Path $PSScriptRoot 'Bridge.cs') $bridgeVersion
+    & $bridgeCompiler /nologo /target:winexe /platform:x64 /optimize+ /utf8output /codepage:65001 /langversion:5 /reference:System.dll /reference:System.Core.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll /reference:System.Web.Extensions.dll "/reference:$bridgeOutput/Microsoft.Web.WebView2.Core.dll" "/reference:$bridgeOutput/Microsoft.Web.WebView2.WinForms.dll" "/win32manifest:$PSScriptRoot/app.manifest" "/win32icon:$PSScriptRoot/bridge.ico" "/out:$bridgeOutput/AP-Chaos-Bridge.exe" (Join-Path $PSScriptRoot 'Bridge.cs') $bridgeVersion
     if ($LASTEXITCODE -ne 0) { throw 'Windows-Programm konnte nicht kompiliert werden.' }
     Write-Host "Windows-Fenster, Tray und portable Laufzeit gebaut: $bridgeOutput"
 } finally { Remove-Item -LiteralPath $bridgeTemp -Recurse -Force }
