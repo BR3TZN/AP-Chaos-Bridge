@@ -128,6 +128,7 @@ internal sealed class BridgeForm : Form
     private bool exiting, stopping, ready, downloaded;
     private bool restoring;
     private FormWindowState restoreState = FormWindowState.Normal;
+    private Rectangle normalBounds;
     private readonly object logLock = new object();
 
     internal BridgeForm()
@@ -135,6 +136,7 @@ internal sealed class BridgeForm : Form
         Rectangle area = Screen.FromPoint(Cursor.Position).WorkingArea;
         Text = "AP Chaos Bridge"; Width = Math.Min(1320, area.Width); Height = Math.Min(900, area.Height);
         MinimumSize = new Size(Math.Min(900, area.Width), Math.Min(620, area.Height)); StartPosition = FormStartPosition.CenterScreen;
+        normalBounds = new Rectangle(area.Left + (area.Width - Width) / 2, area.Top + (area.Height - Height) / 2, Width, Height);
         Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
         loading = new Label { Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter, Text = "AP Chaos Bridge wird gestartet …", Font = new Font("Segoe UI", 13) };
         Controls.Add(loading);
@@ -150,8 +152,9 @@ internal sealed class BridgeForm : Form
         {
             if (restoring || exiting) return;
             if (WindowState == FormWindowState.Minimized) { if (ready) HideWindow(); }
-            else restoreState = WindowState;
+            else { restoreState = WindowState; RememberBounds(); }
         };
+        Move += (sender, args) => RememberBounds();
         FormClosing += (sender, args) => { if (!exiting && args.CloseReason == CloseReason.UserClosing) { args.Cancel = true; HideWindow(); } };
         Shown += async (sender, args) => await Start();
     }
@@ -169,13 +172,17 @@ internal sealed class BridgeForm : Form
         {
             // ShowInTaskbar changes recreate the top-level HWND and can detach
             // WebView2. Keep that handle alive throughout the entire tray cycle.
-            WindowState = FormWindowState.Normal;
-            Rectangle area = Screen.FromRectangle(Bounds).WorkingArea;
-            int width = Math.Min(Width, area.Width), height = Math.Min(Height, area.Height);
-            SetBounds(Math.Max(area.Left, Math.Min(Left, area.Right - width)), Math.Max(area.Top, Math.Min(Top, area.Bottom - height)), width, height);
-            Show(); WindowState = restoreState;
-            ShowWindow(Handle, restoreState == FormWindowState.Maximized ? 3 : 9);
-            SetWindowPos(Handle, IntPtr.Zero, 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0040);
+            // A minimized hidden window can report the icon position (-32000,
+            // -32000) as Bounds. Restore the last normal rectangle only AFTER
+            // Windows has restored its native window placement.
+            Rectangle area = Screen.FromRectangle(normalBounds).WorkingArea;
+            int width = Math.Min(normalBounds.Width, area.Width), height = Math.Min(normalBounds.Height, area.Height);
+            Rectangle target = new Rectangle(Math.Max(area.Left, Math.Min(normalBounds.Left, area.Right - width)), Math.Max(area.Top, Math.Min(normalBounds.Top, area.Bottom - height)), width, height);
+            WindowState = FormWindowState.Normal; Show(); ShowWindow(Handle, 9);
+            Bounds = target;
+            SetWindowPos(Handle, IntPtr.Zero, target.X, target.Y, target.Width, target.Height, 0x0040);
+            normalBounds = target;
+            if (restoreState == FormWindowState.Maximized) { WindowState = FormWindowState.Maximized; ShowWindow(Handle, 3); }
             if (view != null && !view.IsDisposed) { view.Show(); view.BringToFront(); view.Invalidate(true); }
             Activate(); SetForegroundWindow(Handle);
         }
@@ -184,8 +191,13 @@ internal sealed class BridgeForm : Form
     private void HideWindow()
     {
         if (restoring || exiting) return;
-        if (WindowState != FormWindowState.Minimized) restoreState = WindowState;
+        if (WindowState != FormWindowState.Minimized) { restoreState = WindowState; RememberBounds(); }
         Hide();
+    }
+    private void RememberBounds()
+    {
+        if (restoring || WindowState != FormWindowState.Normal || !IsHandleCreated || IsIconic(Handle)) return;
+        foreach (Screen screen in Screen.AllScreens) if (screen.WorkingArea.IntersectsWith(Bounds)) { normalBounds = Bounds; return; }
     }
     private bool WindowIsUsable()
     {

@@ -1,6 +1,6 @@
 # 0.7.1 – Fenster zuverlässig aus dem Tray öffnen
 
-- Beim Ausblenden wird der Fenster-Handle beibehalten. Das Umschalten von ShowInTaskbar konnte den WebView2-Fensterverbund unterbrechen und einen unsichtbaren Taskleisteneintrag erzeugen.
+- Beim Minimieren konnte Windows die Position des ausgeblendeten Fensters als -32000/-32000 melden. Die letzte normale Fensterposition wird nun separat gespeichert und erst nach dem nativen Wiederherstellen gesetzt. Der Fenster-Handle und der WebView2-Verbund bleiben erhalten.
 - Wiederherstellung hebt Minimieren und Ausblenden direkt über Windows auf, setzt den Fokus und holt ein außerhalb der sichtbaren Bildschirme liegendes Fenster zurück. Maximierte Fenster behalten ihren Zustand.
 - Fenstergröße beim Start auf den verfügbaren Bildschirm begrenzen.
 - Windows-Test um zehn Tray-Zyklen, erhaltenen Fenster-Handle und Oberflächenzustand, sichtbare native Fenster, maximierte Fenster und Bildschirmwechsel ergänzt.
