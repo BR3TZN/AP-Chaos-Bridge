@@ -137,3 +137,14 @@ test('Twitch rejects tokens for another client and app-only tokens', async () =>
   await assert.rejects(make({ client_id: 'wrong', user_id: '42' }).connect('token'), /Client-ID/);
   await assert.rejects(make({ client_id: 'right' }).connect('token'), /User Access Token/);
 });
+
+test('a late Twitch token validation cannot overwrite newly granted reward permissions', async () => {
+  let release;
+  const source = new TwitchSource({ getConfig: () => ({ clientId: 'app', broadcasterId: '', channelName: 'alice', events: [] }), ingest() {}, log() {}, changed() {}, fetchImpl: async (url, request) => {
+    if (request.headers.Authorization === 'OAuth old') return await new Promise(resolve => { release = resolve; });
+    return Response.json({ client_id: 'app', user_id: '11', login: 'alice', scopes: ['channel:manage:redemptions'] });
+  } });
+  source.token = 'old'; const previous = source.validate(); source.generation++; source.token = 'new'; await source.validate();
+  release(Response.json({ client_id: 'app', user_id: '11', login: 'alice', scopes: ['channel:read:redemptions'] }));
+  await assert.rejects(previous, /gewechselt/); assert.equal(source.token, 'new'); assert.deepEqual(source.scopes, ['channel:manage:redemptions']);
+});

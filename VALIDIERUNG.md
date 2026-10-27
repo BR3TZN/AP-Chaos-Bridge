@@ -1,4 +1,4 @@
-# Prüfung der Version 0.7.1
+# Prüfung der Version 0.8.0
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
@@ -10,7 +10,7 @@ Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. E
 
 ## Automatisierte Prüfungen
 
-**159 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**182 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -144,3 +144,9 @@ Neue Räume haben keine Beispielregel. Die Migration entfernt ausschließlich da
 ## Tray-Korrektur 0.7.1
 
 Der Windows-Integrationstest prüft zehn aufeinanderfolgende Zyklen über Minimieren und Schließen, IsWindowVisible und IsIconic am nativen Fenster, einen unveränderten HWND und erhaltenen JavaScript-Zustand. Ein außerhalb der Bildschirme liegendes Fenster wird zurückgeholt; ein maximiertes Fenster wird wieder maximiert geöffnet.
+
+## Kanalpunkte und Regelvorlagen 0.8.0
+
+Zusätzliche Tests führen die echten HTTP-Routen, Formularhandler und lokale Twitch-WebSocket-Gegenstellen aus: Belohnung erstellen → einlösen → Regelauftrag; korrekte Kanal-/Tokenwahl; fehlende Rechte; Eingabegrenzen; Raumwechsel während der Anfrage; erweiterte OAuth-Rechte bei erhaltenem Dialog. Der gemeinsame Abo-Auslöser ergänzt alle drei Subscription-Typen auf derselben Verbindung und zählt Geschenkempfänger nicht doppelt. Veraltete Token-Antworten überschreiben keine neu erteilten Rechte.
+
+Regeltests prüfen JSON-Export ohne Verbindungsdaten, gemeinsame Vorlagen nach Neustart und Quellraum-Löschung, Empfänger- und Kanalzuordnung, recycelte Kanalnamen, aktive/inaktive Regeln, Auswahlimport, atomare Fehlerbehandlung, alte Konfigurationsexporte und die Bestätigung ungeklärter Zuordnungen. Oberflächentests prüfen Exportdateien, Quellenwahl und Vorlagen-/JSON-Import über die echten Endpunkte. Zufallshinweise werden aus jedem erlaubten Spielerpool gezogen und als /hint statt /send versendet.

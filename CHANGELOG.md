@@ -1,3 +1,12 @@
+# 0.8.0 – Kanalpunkte, gemeinsame Abo-Regeln, Regelvorlagen und Zufallshinweise
+
+- Kanalpunkte-Belohnungen mit Titel, Preis, Beschreibung, Farbe, Abklingzeit und optionaler Zuschauernachricht direkt aus der Bridge in Twitch anlegen. Ein zusätzlicher Dialog erhält offene Regelentwürfe und übernimmt die neue Belohnung automatisch. Getrennte Kanalwahl und OAuth-Freigabe mit channel:manage:redemptions.
+- „Alle Abos“ bündelt neue Abos, geteilte Resubs und Geschenk-Abos. Fehlende Abo-EventSub-Typen werden beim Speichern auf der bestehenden Verbindung ergänzt. Geschenkempfänger werden nicht zusätzlich zum Paket gezählt. Stille Verlängerungen ohne Twitch-Ereignis werden ausdrücklich erklärt.
+- Regeln einzeln auswählen und als JSON exportieren, als gemeinsame Vorlage speichern sowie aus anderen Räumen, archivierten Räumen, Vorlagen und Dateien übernehmen. Vorlagen überstehen Neustarts und das Löschen ihres Ursprungsraums.
+- Importierte Regeln beginnen inaktiv, erhalten neue IDs und übernehmen keine Verbindungen oder Slot-Freigaben. Spieler- und Kanalidentitäten werden zugeordnet; ungeklärte Zuordnungen blockieren die Aktivierung bis zur Prüfung. Die Vorschau bleibt beim Import unverändert, auch bei Dateien ohne Regel-IDs.
+- Neue Aktion „Zufälliger Hinweis aus allen erlaubten Items“, auch im Zufallsaktions-Mix. Je Zielspieler ein zufälliges, freigegebenes Item aus seinem eigenen Raumkatalog; Versand über den bestehenden AP-Admin-Hinweis, ohne zusätzliche Items.
+- Enthält den Tray-Fix aus 0.7.1 einschließlich nativer Sichtbarkeitsprüfung und Wiederherstellung der normalen Fensterposition.
+
 # 0.7.1 – Fenster zuverlässig aus dem Tray öffnen
 
 - Beim Minimieren konnte Windows die Position des ausgeblendeten Fensters als -32000/-32000 melden. Die letzte normale Fensterposition wird nun separat gespeichert und erst nach dem nativen Wiederherstellen gesetzt. Der Fenster-Handle und der WebView2-Verbund bleiben erhalten.

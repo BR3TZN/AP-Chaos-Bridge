@@ -28,3 +28,9 @@ html[data-motion=off] *{transition:none!important;animation:none!important;scrol
 .twitch-channel .disclosure { margin-top: 14px; }
 .rule-trigger-fields > label, #rule-form [data-rule-field] { min-width: 0; }
 @media (prefers-reduced-motion: reduce) { .twitch-channel, .event-selection { transition: none; } }
+
+#twitch-reward-dialog { width: min(660px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); padding: 0; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); color: var(--text); overflow: auto; }
+#twitch-reward-dialog::backdrop { background: rgb(0 0 0 / .65); }
+#rules-import-preview .check-label { align-items: flex-start; }
+#rules-import-preview .check-label > span { min-width: 0; }
+#rules-import-preview .connection-error { display: block; }

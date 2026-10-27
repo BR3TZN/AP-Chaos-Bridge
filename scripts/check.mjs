@@ -11,7 +11,7 @@ for (const p of files.filter(p => /\.(m?js)$/.test(p))) {
   if (result.status !== 0) { console.error(result.stderr); process.exit(1); }
 }
 for (const p of files.filter(p => /\.json$/.test(p))) JSON.parse(readFileSync(p, 'utf8'));
-const localRoutes = { '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth.js': 'public/oauth.js' };
+const localRoutes = { '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/rules.js': 'public/rules.js', '/rewards.js': 'public/rewards.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth.js': 'public/oauth.js' };
 for (const p of files.filter(p => p.endsWith('.html'))) {
   const html = readFileSync(p, 'utf8');
   for (const match of html.matchAll(/(?:src|href)="(\/[^"#]*)"/g)) if (localRoutes[match[1]] && !existsSync(join(root, localRoutes[match[1]]))) throw new Error('Fehlendes Asset: ' + match[1]);

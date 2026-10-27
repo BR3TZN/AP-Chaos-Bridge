@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.1 · Einrichtung
+# AP Chaos Bridge 0.8.0 · Einrichtung
 
 ## Start und Update
 
@@ -111,6 +111,20 @@ Dann einen **bereits existierenden Slotnamen** wählen. Raumpasswort eintragen, 
 
 Die in 0.1.1 blockierte Rückleitung von Twitch ist behoben. Zugangsdaten werden lokal gespeichert; mit Client Secret wird ein Refresh Token für die Erneuerung genutzt. Nach Widerruf einer Anmeldung ist erneut zu autorisieren.
 
+## Kanalpunkte-Belohnungen im Programm anlegen
+
+1. Unter **Verbindungen** beim gewünschten Twitch-Kanal **Kanalpunkte-Belohnungen** öffnen. Alternativ in einer Regel mit **Twitch → Kanalpunkte-Belohnung** auf **+ Belohnung bei Twitch anlegen** klicken; der Regelentwurf bleibt dabei offen.
+2. Beim ersten Mal **Belohnungen freigeben** wählen. Twitch benötigt dafür zusätzlich `channel:manage:redemptions`. Die Freigabe öffnet sich im Standardbrowser; danach übernimmt die Bridge den aktualisierten Verbindungsstatus.
+3. Kanal, eindeutigen Titel und Kanalpunkte-Preis eintragen. Beschreibung ist optional; unter **Weitere Einstellungen** stehen Farbe, Abklingzeit und die Zuschauernachricht.
+4. **Bei Twitch anlegen** erstellt die Belohnung tatsächlich im ausgewählten Kanal. Twitch erlaubt höchstens 50 Belohnungen pro Kanal und Titel bis 45 Zeichen.
+5. Aus der Liste **Regel für diese Belohnung** wählen oder die neu angelegte Belohnung im bisherigen Regelentwurf verwenden. Die Belohnungs-ID und der zugehörige Kanal werden übernommen. Danach die Spielaktion auswählen und die Regel speichern.
+
+## Alle Twitch-Abos mit einer Regel
+
+Unter **Regeln → Twitch → Alle Abos · neu, Resub & Geschenk** wählen. Neue Abos, geteilte Resub-Nachrichten und Geschenk-Abos verwenden damit dieselbe Aktion. Beim Speichern aktiviert die Bridge diese drei EventSub-Typen für den gewählten Kanal bzw. alle eingetragenen Kanäle; bereits verbundene Kanäle werden dafür nicht getrennt. Bei fehlender Abo-Berechtigung Twitch erneut anmelden.
+
+Ein Geschenkpaket löst einmal aus; seine enthaltenen Abos werden nicht zusätzlich gezählt. **Stille automatische Verlängerungen stellt Twitch nicht als Ereignis bereit.** Resubs erscheinen, wenn der Zuschauer seine Resub-Nachricht teilt. Für gezielte Regeln bleiben die einzelnen Abo-Arten auswählbar.
+
 ## Charity Royale
 
 1. Unter **Verbindungen → Charity Royale** nur deinen Slug, z. B. **`br3tzn`**, eintragen; keine vollständige JSON-Adresse.
@@ -118,6 +132,21 @@ Die in 0.1.1 blockierte Rückleitung von Twitch ist behoben. Zugangsdaten werden
 3. In der Regel als Quelle **Charity Royale** wählen und den Mindestbetrag in Euro eintragen. Für einen bestimmten Spendenbutton unter **Optional: Aktionscode filtern** zusätzlich dessen exakten `metadata.action`-Wert verwenden; ohne Aktionscode reagieren Regeln auf alle Spenden ab dem Betrag.
 4. Der Netto-Betrag wird in Cent ausgewertet: `amount_net: 1000` entspricht 10 Euro.
 5. Offizielle Testspenden bzw. `id: null` werden als Simulation verarbeitet. Die Bridge filtert nach dem Streamer-Slug; eine noch fehlende öffentliche JSON-Seite verhindert solche Testereignisse nicht.
+
+## Regeln exportieren, speichern und übernehmen
+
+- **Regeln → Exportieren:** gewünschte Regeln auswählen und eine JSON-Datei herunterladen. Diese Datei kann auch auf einem anderen PC eingelesen werden.
+- **Regeln → Als Vorlage speichern:** einen Namen vergeben. Die Vorlage bleibt nach Neustarts erhalten und steht in allen lokalen Bridge-Räumen zur Verfügung, auch wenn der Ursprungsraum später gelöscht wird.
+- **Regeln → Regeln übernehmen:** einen anderen Raum (auch archivierte Räume), eine gespeicherte Vorlage oder eine JSON-Datei wählen. Bestehende vollständige Bridge-Konfigurationsexporte sind hier ebenfalls als Regelquelle verwendbar.
+- **Regeln anzeigen** lädt die Vorschau. Die gewünschten Regeln markieren und zu den vorhandenen Regeln hinzufügen oder diese ausdrücklich ersetzen. Beim Ersetzen wird die Ausführung pausiert.
+
+Alle übernommenen Regeln starten **inaktiv** mit neuen IDs. Spieler werden anhand von Slotname und Spiel, Twitch-Kanäle bevorzugt anhand ihrer Broadcaster-ID zugeordnet. Fehlende Zuordnungen stehen als **Zuordnung prüfen** an der Regel. Diese Regeln vor der Aktivierung öffnen, Ziele/Kanal/Belohnung für den Zielraum wählen und die Prüfung bestätigen. Verbindungen, Zugangsdaten und Slot-Freigaben werden nicht aus der Vorlage übernommen.
+
+## Zufällige Hinweise
+
+Als Aktion **Zufälliger Hinweis aus allen erlaubten Items** wählen. Für jeden getroffenen Spieler zieht die Bridge ein Item aus dessen freigegebenem Pool und fordert dazu einen kostenlosen AP-Admin-Hinweis an. Fallen und andere erlaubte Items können gezogen werden. Die Auswahl funktioniert mit einem Spieler, allen passenden Spielern oder den beiden Gruppenmodi.
+
+Pro getroffenem Spieler wird genau ein Hinweis angefordert. Das Server-Adminpasswort muss angemeldet sein. Der Hinweis erscheint im AP-Team; es wird kein Item verschickt. Ob das gezogene Item einen passenden Fundort im Seed hat oder bereits bekannt ist, bestimmt Archipelago.
 
 ## Regeln und mehrere Ziele
 
@@ -205,3 +234,9 @@ Der Katalog zeigt eingelesene APworlds, vorbereitete Core-Worlds und ausdrückli
 ## Eingaben bei laufendem Betrieb
 
 Die Statusdaten aktualisieren sich weiter, während offene Dropdowns, Dialoge, Suchfilter, aufgeklappte Abschnitte und ungespeicherte Eingaben erhalten bleiben. Erst ein bewusster Seiten- oder Raumwechsel schließt den bisherigen Dialog. Die kurzen Feldübergänge lassen sich unter **Design → Bewegung** abschalten; die Systemeinstellung für reduzierte Bewegung wird ebenfalls beachtet.
+
+## Quellen zu den Twitch-Funktionen
+
+- [Kanalpunkte-Belohnungen anlegen und Berechtigungen](https://dev.twitch.tv/docs/api/reference/#create-custom-rewards)
+- [EventSub-Abos und Resub-Mitteilungen](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/)
+- [Grenze bei stillen automatischen Verlängerungen](https://dev.twitch.tv/docs/pubsub/)

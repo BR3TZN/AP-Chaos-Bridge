@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import { JSDOM } from 'jsdom';
 import { writeZip } from '../lib/zip.mjs';
 import { createApp } from '../server.mjs';
+import { WebSocketServer } from 'ws';
+import { once } from 'node:events';
 
 async function until(predicate, message, timeout = 1800) {
   const end = Date.now() + timeout;
@@ -32,7 +34,7 @@ async function ui(t, options = {}) {
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   window.scrollTo = () => {};
-  window.eval(['appearance.js', 'alerts.js', 'studio.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading; window.__bridgeIndexLoaded = () => Boolean(indexData) && !Studio.indexLoading;');
+  window.eval(['appearance.js', 'alerts.js', 'studio.js', 'rules.js', 'rewards.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__captureDownload = callback => { Studio.download = callback; }; window.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading; window.__bridgeIndexLoaded = () => Boolean(indexData) && !Studio.indexLoading;');
   await until(() => window.document.querySelector('[data-action="new-rule"]'), 'Regelseite wurde nicht geladen.');
   t.after(() => { dom.window.close(); app.close(); rmSync(directory, { recursive: true, force: true }); });
   return { app, window, document: window.document, requests, directory, intervals };
@@ -324,7 +326,7 @@ test('guided rules get their game filters from connected slots and save custom i
   assert(![...game.options].some(o => o.value === 'UI Fixture'));
   game.value = 'Factorio'; game.dispatchEvent(new window.Event('change', { bubbles: true }));
   const recipients = document.querySelector('#rule-recipient-preview'); assert(recipients.textContent.includes('Factorio-Demo')); assert(!recipients.textContent.includes('Stardew-Demo'));
-  const effect = document.querySelector('#rule-effect'); assert.equal(effect.options.length, 10);
+  const effect = document.querySelector('#rule-effect'); assert.equal(effect.options.length, 11);
   effect.value = 'random_choice'; effect.dispatchEvent(new window.Event('change', { bubbles: true }));
   assert(!document.querySelector('#rule-pool-field').hidden);
   const form = document.querySelector('#rule-form'); form.elements.namedItem('name').value = 'Custom Pool'; form.elements.namedItem('itemPool').value = 'Attack Trap\nTeleport Trap'; form.querySelector('[type="submit"]').click();
@@ -514,7 +516,7 @@ test('rule fields follow Charity, Twitch and manual triggers and hidden threshol
   const source = form.elements.namedItem('source'), type = form.elements.namedItem('type');
   assert.equal(form.elements.namedItem('euros').disabled, false); assert(form.elements.namedItem('minimumUnits').disabled); assert(document.querySelector('#rule-type-field').hidden);
   form.elements.namedItem('euros').value = '999'; source.value = 'twitch'; source.dispatchEvent(new window.Event('change', { bubbles: true }));
-  assert(form.elements.namedItem('euros').disabled); assert.equal(type.options.length, 6); assert(form.elements.namedItem('minimumUnits').disabled);
+  assert(form.elements.namedItem('euros').disabled); assert.equal(type.options.length, 7); assert(form.elements.namedItem('minimumUnits').disabled);
   type.value = 'cheer'; type.dispatchEvent(new window.Event('change', { bubbles: true })); assert(!form.elements.namedItem('minimumUnits').disabled); assert(document.querySelector('[data-units-label]').textContent.includes('Bits'));
   form.elements.namedItem('minimumUnits').value = '200'; type.value = 'channel_points'; type.dispatchEvent(new window.Event('change', { bubbles: true }));
   assert(form.elements.namedItem('minimumUnits').disabled); assert(!form.elements.namedItem('rewardId').disabled);
@@ -564,4 +566,96 @@ test('edits made while a save request is pending remain as a newer draft after t
   await until(() => app.store.state.players.length === 1 && !submit.disabled, 'Save response missing');
   assert.equal(app.store.state.players[0].name, 'Submitted'); assert.equal(name.value, 'Newer draft');
   await window.__bridgeRefresh(); assert.equal(document.querySelector('#studio-player-list-form'), form); assert.equal(name.value, 'Newer draft');
+});
+
+
+test('all subscriptions and random hints are selectable and persist through the real rule form', async t => {
+  const { app, window, document } = await ui(t, { seedRules: false });
+  await fetch(app.url + '/api/demo', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Bridge-Session': app.snapshot().session }, body: '{}' }); await window.__bridgeRefresh();
+  document.querySelector('[data-action="new-rule"]').click(); const form = document.querySelector('#rule-form');
+  const source = form.elements.namedItem('source'); source.value = 'twitch'; source.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert.equal(form.elements.namedItem('type').value, 'subscription'); assert(document.querySelector('#rule-source-description').textContent.includes('Stille automatische'));
+  form.elements.namedItem('name').value = 'Any sub gives a random hint'; const effect = form.elements.namedItem('effect'); effect.value = 'random_hint'; effect.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert(!form.elements.namedItem('item').required); assert(document.querySelector('#rule-item-field').hidden); assert(document.querySelector('#rule-quantity-field').hidden);
+  form.elements.namedItem('target').value = 'all'; form.querySelector('[type="submit"]').click();
+  await until(() => app.store.state.rules.length === 1 && document.querySelector('[data-action="test-rule"]'), 'Random hint rule missing');
+  assert.equal(app.store.state.rules[0].type, 'subscription'); assert.equal(app.store.state.rules[0].effect, 'random_hint');
+  document.querySelector('[data-action="test-rule"]').click(); await until(() => app.store.state.queue.length > 0, 'Random hint simulation missing'); assert(app.store.state.queue.every(job => job.effect === 'hint'));
+});
+
+test('rule presets can be saved in the UI and imported into another room as inactive rules', async t => {
+  const { app, window, document } = await ui(t);
+  document.querySelector('[data-action="rules-preset"]').click(); const preset = document.querySelector('#rules-preset-form'); preset.elements.namedItem('name').value = 'Charity pack'; preset.querySelector('[type="submit"]').click();
+  await until(() => app.ruleLibrary.list().length === 1 && !document.querySelector('#drawer').open, 'Preset not saved');
+  const response = await fetch(app.url + '/api/rooms/create', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Bridge-Session': app.snapshot().session }, body: JSON.stringify({ name: 'New run' }) }); const room = (await response.json()).room;
+  await fetch(app.url + '/api/rooms/activate', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Bridge-Session': app.snapshot().session }, body: JSON.stringify({ id: room.id }) }); await window.__bridgeRefresh(true);
+  document.querySelector('[data-action="rules-import"]').click(); await until(() => document.querySelector('#rules-import-form'), 'Import dialog missing');
+  const form = document.querySelector('#rules-import-form'); assert(form.elements.namedItem('source').value.startsWith('preset:'));
+  form.querySelector('[data-action="rules-preview"]').click(); await until(() => form.querySelector('[name="ids"]'), 'Import preview missing'); assert.equal(app.store.state.rules.length, 0);
+  form.querySelector('[type="submit"]').click(); await until(() => app.store.state.rules.length === 1, 'Preset not imported'); assert.equal(app.store.state.rules[0].enabled, false); assert.equal(app.store.state.rules[0].name, 'Fixture Charity');
+});
+
+test('JSON rule import preserves connection settings and invalid JSON leaves the dialog editable', async t => {
+  const { app, window, document } = await ui(t);
+  app.store.state.config.ap.slotName = 'Keep me';
+  document.querySelector('[data-action="rules-import"]').click(); await until(() => document.querySelector('#rules-import-form'), 'Import missing');
+  const form = document.querySelector('#rules-import-form'); form.elements.namedItem('source').value = 'file'; form.elements.namedItem('source').dispatchEvent(new window.Event('change', { bubbles: true }));
+  const json = form.elements.namedItem('json'); json.value = '{bad'; form.querySelector('[data-action="rules-preview"]').click(); await until(() => document.querySelector('#toast').textContent.includes('gültiges JSON'), 'JSON error missing'); assert(document.querySelector('#drawer').open);
+  json.value = JSON.stringify({ schema: 1, config: { ap: { slotName: 'Must not replace' } }, rules: [{ name: 'Imported visual', source: 'charity', type: 'donation', effect: 'alert', enabled: true }] }); json.dispatchEvent(new window.Event('input', { bubbles: true }));
+  form.querySelector('[data-action="rules-preview"]').click(); await until(() => form.querySelector('[name="ids"]'), 'Preview missing'); form.elements.namedItem('mode').value = 'replace'; form.querySelector('[type="submit"]').click();
+  await until(() => app.store.state.rules[0]?.name === 'Imported visual', 'JSON import missing'); assert.equal(app.store.state.rules.length, 1); assert.equal(app.store.state.rules[0].enabled, false); assert.equal(app.store.state.config.ap.slotName, 'Keep me');
+});
+
+test('selected rule export downloads a rules-only JSON file through the real API', async t => {
+  const { app, window, document } = await ui(t); window.__captureDownload((blob, name) => { window.__ruleDownload = { blob, name }; });
+  document.querySelector('[data-action="rules-export"]').click(); document.querySelector('#rules-export-form [type="submit"]').click();
+  await until(() => window.__ruleDownload, 'JSON download missing'); assert.equal(window.__ruleDownload.name, 'AP-Chaos-Bridge-Regeln.json');
+  const content = await new Promise(resolve => { const reader = new window.FileReader(); reader.onload = () => resolve(reader.result); reader.readAsText(window.__ruleDownload.blob); });
+  const value = JSON.parse(content); assert.equal(value.kind, 'ap-chaos-bridge-rules'); assert.equal(value.rules.length, app.store.state.rules.length); assert.equal(value.config, undefined);
+});
+
+async function rewardsUi(t, initialScopes = ['channel:read:redemptions', 'channel:manage:redemptions']) {
+  const wss = new WebSocketServer({ host: '127.0.0.1', port: 0 }); await once(wss, 'listening');
+  wss.on('connection', socket => socket.send(JSON.stringify({ metadata: { message_type: 'session_welcome' }, payload: { session: { id: 'reward-session', keepalive_timeout_seconds: 120 } } })));
+  const created = [], requests = []; let scopes = initialScopes;
+  const result = await ui(t, { twitchSocketUrl: `ws://127.0.0.1:${wss.address().port}`, fetchImpl: async (url, init) => {
+    if (url.includes('/validate')) return Response.json({ login: 'alice', user_id: '11', client_id: 'test-app', scopes });
+    if (url.includes('/eventsub/subscriptions')) return Response.json({}, { status: 202 });
+    if (url.includes('/custom_rewards?')) {
+      if (init.method === 'POST') { const value = JSON.parse(init.body); requests.push({ url, ...init }); const reward = { id: 'new-reward-' + created.length, ...value }; created.push(reward); return Response.json({ data: [reward] }); }
+      return Response.json({ data: [{ id: 'existing-reward', title: 'Existing Bomb', cost: 100 }, ...created] });
+    }
+    throw new Error('Unexpected Twitch request');
+  } });
+  t.after(() => { for (const socket of wss.clients) socket.terminate(); wss.close(); });
+  const post = (path, data) => fetch(result.app.url + '/api/' + path, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Bridge-Session': result.app.snapshot().session }, body: JSON.stringify(data) });
+  const channel = (await (await post('twitch/channel', { channelName: 'alice', clientId: 'test-app', events: ['channel.channel_points_custom_reward_redemption.add'] })).json()).channel;
+  await post('twitch/connect', { channelId: channel.id, token: 'example-token' }); await until(() => result.app.snapshot().twitch.state === 'connected', 'Twitch not connected'); await result.window.__bridgeRefresh();
+  return { ...result, channel, created, requests, post, setScopes: value => { scopes = value; } };
+}
+
+test('creating a reward from an unfinished rule preserves the draft and selects the new reward', async t => {
+  const { app, window, document, channel, created } = await rewardsUi(t);
+  document.querySelector('[data-action="new-rule"]').click(); const rule = document.querySelector('#rule-form'); rule.elements.namedItem('name').value = 'Unfinished rule';
+  rule.elements.namedItem('source').value = 'twitch'; rule.elements.namedItem('source').dispatchEvent(new window.Event('change', { bubbles: true })); rule.elements.namedItem('type').value = 'channel_points'; rule.elements.namedItem('type').dispatchEvent(new window.Event('change', { bubbles: true }));
+  document.querySelector('[data-action="rewards-from-rule"]').click(); const form = document.querySelector('#rewards-create-form'); assert(document.querySelector('#twitch-reward-dialog').open); assert(document.querySelector('#drawer').open);
+  form.elements.namedItem('title').value = 'Random trap'; form.elements.namedItem('cost').value = '250'; await window.__bridgeRefresh(); assert.equal(form.elements.namedItem('title').value, 'Random trap');
+  form.querySelector('[type="submit"]').click(); await until(() => created.length === 1 && !document.querySelector('#twitch-reward-dialog').open, 'Reward not created');
+  assert.equal(document.querySelector('#rule-form'), rule); assert.equal(rule.elements.namedItem('name').value, 'Unfinished rule'); assert.equal(rule.elements.namedItem('rewardId').value, created[0].id); assert.equal(rule.elements.namedItem('twitchChannelId').value, channel.id);
+  rule.querySelector('[type="submit"]').click(); await until(() => app.store.state.rules.some(rule => rule.name === 'Unfinished rule'), 'Rule not saved'); assert.equal(app.store.state.rules.find(rule => rule.name === 'Unfinished rule').rewardId, created[0].id);
+});
+
+test('reward authorization can be extended while the creation dialog and its input stay open', async t => {
+  const { app, window, document, post, setScopes } = await rewardsUi(t, ['channel:read:redemptions']); const external = []; window.chrome = { webview: { postMessage: value => external.push(value) } };
+  window.location.hash = 'quellen'; await until(() => document.querySelector('[data-action="rewards-manage"]'), 'Channel controls missing'); document.querySelector('[data-action="rewards-manage"]').click(); await until(() => document.querySelector('[data-action="rewards-create"]'), 'Rewards missing');
+  document.querySelector('[data-action="rewards-create"]').click(); const form = document.querySelector('#rewards-create-form'); form.elements.namedItem('title').value = 'Preserve this title'; assert(form.querySelector('[type="submit"]').disabled);
+  form.querySelector('[data-action="rewards-authorize"]').click(); await until(() => external.length, 'Authorization URL missing'); const url = new URL(external[0].url); assert(url.searchParams.get('scope').includes('channel:manage:redemptions'));
+  setScopes(['channel:read:redemptions', 'channel:manage:redemptions']); assert.equal((await post('twitch/oauth', { state: url.searchParams.get('state'), token: 'example-token' })).status, 200); await until(() => app.snapshot().twitch.state === 'connected', 'Updated Twitch not connected'); await window.__bridgeRefresh();
+  assert.equal(form.elements.namedItem('title').value, 'Preserve this title'); assert(document.querySelector('#twitch-reward-dialog').open); assert(!form.querySelector('[type="submit"]').disabled);
+});
+
+test('a Twitch reward list can open a prefilled rule for the selected reward and channel', async t => {
+  const { window, document, channel } = await rewardsUi(t);
+  window.location.hash = 'quellen'; await until(() => document.querySelector('[data-action="rewards-manage"]'), 'Channels missing'); document.querySelector('[data-action="rewards-manage"]').click(); await until(() => document.querySelector('[data-action="rewards-rule"]'), 'Rewards list missing');
+  document.querySelector('[data-action="rewards-rule"]').click(); const form = document.querySelector('#rule-form'); assert(form); assert.equal(form.elements.namedItem('type').value, 'channel_points'); assert.equal(form.elements.namedItem('rewardId').value, 'existing-reward'); assert.equal(form.elements.namedItem('twitchChannelId').value, channel.id);
 });

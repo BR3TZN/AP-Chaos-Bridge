@@ -6,7 +6,7 @@ import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { Store, VERSION, PROFILES, normalizeRule, parseYamlProfiles, text, number } from './lib/model.mjs';
 import { Engine } from './lib/engine.mjs';
 import { Archipelago } from './lib/archipelago.mjs';
-import { CharitySource, TWITCH_EVENTS, verifyCharity } from './lib/sources.mjs';
+import { CharitySource, TWITCH_EVENTS, TWITCH_REWARDS_EVENT, twitchScopes, verifyCharity } from './lib/sources.mjs';
 import { TwitchChannels, normalizeTwitchChannel } from './lib/twitch-channels.mjs';
 import { Vault } from './lib/vault.mjs';
 import { Rooms } from './lib/rooms.mjs';
@@ -18,6 +18,7 @@ import { Updater } from './lib/updater.mjs';
 import { Presentation, normalizeAlerts } from './lib/presentation.mjs';
 import { desktopExecutable, desktopRootId, desktopParent } from './lib/desktop.mjs';
 import { spawn } from 'node:child_process';
+import { RuleLibrary, RULE_IMPORT_LIMIT, captureTargets, targetKeys, channelIdentities, exportRules, parseRules, planRules } from './lib/rule-library.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const secretEquals = (a, b) => typeof a === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b));
@@ -59,6 +60,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   const store = new Store(Rooms.initialDirectory(directory, { memory }), { memory }); const session = randomBytes(32).toString('hex');
   const rooms = new Rooms(store, directory, { memory }), vault = new Vault(directory, { memory });
   const presentation = new Presentation(directory, { memory }); let alertPreview;
+  const ruleLibrary = new RuleLibrary(directory, { memory });
   const library = new GameLibrary(directory, root, { memory, core, folder: worldsDirectory });
   if (worldsDirectory) library.data.folder = worldsDirectory;
   const keyFile = join(directory, 'integration-key.txt');
@@ -91,6 +93,24 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     const flow = typeof state === 'string' && pendingOAuth.get(state);
     if (!flow || flow.room !== rooms.id || flow.expires < Date.now() || twitch.config(flow.channelId).clientId !== flow.clientId) throw new Error('Twitch-Anmeldung ist abgelaufen oder gehört zu einem anderen Raum oder Kanal.');
     return flow;
+  }
+  function enableRewards(flow) { if (flow.enableRewards) { const config = twitch.config(flow.channelId); config.events = [...new Set([...config.events, TWITCH_REWARDS_EVENT])]; } }
+  function ruleContext(id = rooms.id) {
+    const room = rooms.require(id);
+    const state = id === rooms.id ? store.state : rooms.cache.get(id)?.state || (!memory && existsSync(join(rooms.location(id), 'state.json')) ? JSON.parse(readFileSync(join(rooms.location(id), 'state.json'), 'utf8')) : null);
+    if (!state || !Array.isArray(state.rules)) throw new Error('Regeln dieses Raums konnten nicht gelesen werden.');
+    return { room, rules: state.rules, config: state.config, players: id === rooms.id ? ap.players.filter(player => player.team === ap.team && player.type === 1) : [] };
+  }
+  function ruleBundle(data) {
+    if (data.presetId) return ruleLibrary.get(data.presetId).bundle;
+    if (data.sourceRoomId) return exportRules(ruleContext(data.sourceRoomId));
+    if (data.bundle) return data.bundle;
+    throw new Error('Einen Raum, eine Vorlage oder eine Regeldatei auswählen.');
+  }
+  function ruleImportPlan(data) {
+    if (data.roomId !== rooms.id) throw new Error('Der Zielraum wurde gewechselt. Import erneut öffnen.');
+    const bundle = parseRules(ruleBundle(data));
+    return { bundle, plan: planRules(bundle, { players: ruleContext().players, channels: channelIdentities(store.state.config), ids: data.ids }) };
   }
   async function resumeConnections() {
     const config = store.state.config, saved = vault.get(rooms.id);
@@ -156,7 +176,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (!tokenResponse.ok) throw new Error('Twitch-Code konnte nicht eingelöst werden. Client-ID, Client Secret und Redirect-URL prüfen.');
         const tokens = await tokenResponse.json();
         if (rooms.id !== room) throw new Error('Raum wurde während der Anmeldung gewechselt.');
-        await connectTwitch(tokens.access_token, { ...credentials, twitchRefresh: tokens.refresh_token || '' }, flow.channelId);
+        enableRewards(flow); await connectTwitch(tokens.access_token, { ...credentials, twitchRefresh: tokens.refresh_token || '' }, flow.channelId);
         twitchAuto(flow.channelId, true); store.save();
         res.writeHead(303, { Location: '/oauth/callback?complete=1' }); res.end(); return;
       }
@@ -192,6 +212,11 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
       if (req.method === 'GET' && path === '/api/game-library') return json(res, gameLibraryList());
       if (req.method === 'GET' && path === '/api/game-settings') return json(res, gameEntry(url.searchParams.get('game'), url.searchParams.get('sourceId') || undefined));
       if (req.method === 'GET' && path === '/api/twitch/rewards') return json(res, { rewards: await twitch.rewards(url.searchParams.get('channelId') || 'default') });
+      if (req.method === 'GET' && path === '/api/rules/library') return json(res, { presets: ruleLibrary.list(), rooms: rooms.list().rooms.map(room => ({ ...room, count: ruleContext(room.id).rules.length })), maxImportBytes: RULE_IMPORT_LIMIT });
+      if (req.method === 'GET' && path === '/api/rules/export') {
+        const bundle = url.searchParams.has('presetId') ? ruleLibrary.get(url.searchParams.get('presetId')).bundle : exportRules(ruleContext(url.searchParams.get('roomId') || rooms.id), url.searchParams.has('ids') ? url.searchParams.get('ids').split(',') : undefined);
+        res.setHeader('Content-Disposition', 'attachment; filename="AP-Chaos-Bridge-Regeln.json"'); return json(res, bundle);
+      }
       if (req.method === 'GET' && path === '/api/export') {
         res.setHeader('Content-Disposition', 'attachment; filename="AP-Chaos-Bridge-Konfiguration.json"');
         return json(res, { schema: 1, config: { ...store.state.config, mode: 'test', paused: true, deathLinkArmed: false }, rules: store.state.rules, approvals: store.state.approvals });
@@ -205,7 +230,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (isExternal) {
           if (!secretEquals(req.headers.authorization, 'Bearer ' + integrationKey)) return json(res, { error: 'Integration-Token ungültig.' }, 401);
         } else if (!isCharityHook && !secretEquals(req.headers['x-bridge-session'], session)) return json(res, { error: 'Sitzung fehlt. Seite neu laden.' }, 403);
-        const raw = await body(req, path === '/api/worlds/upload' ? APWORLD_BASE64_LIMIT + 2048 : ['/api/yaml/import', '/api/yaml/generate', '/api/yaml/bundle', '/api/yaml/preset'].includes(path) ? YAML_IMPORT_LIMIT * 6 + 2048 : path === '/api/alerts/media' ? 14 * 1024 * 1024 : 800000);
+        const raw = await body(req, path === '/api/worlds/upload' ? APWORLD_BASE64_LIMIT + 2048 : path.startsWith('/api/rules/') ? RULE_IMPORT_LIMIT : ['/api/yaml/import', '/api/yaml/generate', '/api/yaml/bundle', '/api/yaml/preset'].includes(path) ? YAML_IMPORT_LIMIT * 6 + 2048 : path === '/api/alerts/media' ? 14 * 1024 * 1024 : 800000);
         if (isCharityHook && !verifyCharity(raw, req.headers['x-signature'])) return json(res, { error: 'Charity-Signatur ungültig.' }, 401);
         let data; try { data = JSON.parse(raw.toString('utf8') || '{}'); } catch { throw new Error('Ungültiges JSON.'); }
         if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('JSON-Objekt erwartet.');
@@ -214,6 +239,20 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
           if (!data.id || !Number.isFinite(data.timestamp)) throw new Error('Externe Ereignisse benötigen id und timestamp (Unix-Millisekunden).');
           return json(res, engine.ingest({ ...data, source: 'external' }));
         }
+        if (path === '/api/rules/preview') return json(res, ruleImportPlan(data));
+        if (path === '/api/rules/import') {
+          const { plan } = ruleImportPlan(data), replace = data.mode === 'replace';
+          if (data.mode && !['add', 'replace'].includes(data.mode)) throw new Error('Regeln ergänzen oder ersetzen wählen.');
+          if (plan.length + (replace ? 0 : store.state.rules.length) > 100) throw new Error('Der Zielraum darf höchstens 100 Regeln enthalten.');
+          store.state.rules = [...(replace ? [] : store.state.rules), ...plan.map(entry => entry.rule)];
+          if (replace) engine.pause(); store.save(); changed(); return json(res, { count: plan.length, reviewCount: plan.filter(entry => entry.notes.length).length });
+        }
+        if (path === '/api/rules/presets') {
+          if (data.roomId !== rooms.id) throw new Error('Der Raum wurde gewechselt. Vorlage erneut speichern.');
+          const preset = ruleLibrary.save({ name: data.name, bundle: exportRules(ruleContext(), data.ids) }); changed(); return json(res, { id: preset.id });
+        }
+        if (path === '/api/rules/presets/delete') { ruleLibrary.remove(data.id); changed(); return json(res, { ok: true }); }
+        if (path === '/api/twitch/rewards/create') { const reward = await twitch.createReward(data.channelId || 'default', data); changed(); return json(res, { reward }); }
         if (path === '/api/appearance') { presentation.update(data); changed(); return json(res, presentation.appearance); }
         if (path === '/api/alerts/media') { const media = presentation.upload(data); changed(); return json(res, media); }
         if (path === '/api/alerts/preview') {
@@ -332,17 +371,27 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
           if (!config.clientId || !config.events.length) throw new Error('Client-ID und mindestens ein Ereignis speichern.');
           for (const [state, flow] of pendingOAuth) if (flow.expires < Date.now()) pendingOAuth.delete(state);
           if (pendingOAuth.size >= 20) throw new Error('Zu viele offene Twitch-Anmeldungen. Vorhandene Anmeldung abschließen.');
-          const state = randomBytes(24).toString('hex'); pendingOAuth.set(state, { state, expires: Date.now() + 600000, room: rooms.id, channelId, clientId: config.clientId });
+          const state = randomBytes(24).toString('hex'); pendingOAuth.set(state, { state, expires: Date.now() + 600000, room: rooms.id, channelId, clientId: config.clientId, enableRewards: data.enableRewards === true });
           const auth = new URL('https://id.twitch.tv/oauth2/authorize');
-          auth.search = new URLSearchParams({ response_type: twitchSecrets(channelId).twitchSecret ? 'code' : 'token', client_id: config.clientId, redirect_uri: `http://localhost:${actualPort}/oauth/callback`, scope: [...new Set(config.events.map(e => TWITCH_EVENTS[e].scope))].join(' '), state, force_verify: 'true' });
+          auth.search = new URLSearchParams({ response_type: twitchSecrets(channelId).twitchSecret ? 'code' : 'token', client_id: config.clientId, redirect_uri: `http://localhost:${actualPort}/oauth/callback`, scope: twitchScopes(config.events, data.enableRewards === true).join(' '), state, force_verify: 'true' });
           return json(res, { url: auth.href });
         } else if (path === '/api/twitch/oauth') {
           const flow = oauthFlow(data.state); pendingOAuth.delete(data.state);
-          await connectTwitch(data.token || '', { ...twitchSecrets(flow.channelId), twitchRefresh: '' }, flow.channelId); twitchAuto(flow.channelId, true);
+          enableRewards(flow); await connectTwitch(data.token || '', { ...twitchSecrets(flow.channelId), twitchRefresh: '' }, flow.channelId); twitchAuto(flow.channelId, true);
         }
         else if (path === '/api/rule') {
-          const rule = normalizeRule(data); const idx = store.state.rules.findIndex(r => r.id === rule.id);
+          const rule = normalizeRule(data); const idx = store.state.rules.findIndex(r => r.id === rule.id), existing = store.state.rules[idx];
+          if (existing?.reviewNotes?.length && data.reviewed !== true && data.reviewed !== 'on') rule.reviewNotes = existing.reviewNotes;
+          if (existing?.reviewNotes?.length && (data.reviewed === true || data.reviewed === 'on')) {
+            const players = ruleContext().players;
+            if (targetKeys(rule).some(key => !players.some(player => `${player.team}:${player.slot}` === key))) throw new Error('Zielspieler zuerst im verbundenen AP-Raum zuordnen.');
+            if (rule.twitchChannelId && !twitch.configs().some(channel => channel.id === rule.twitchChannelId)) throw new Error('Einen Twitch-Kanal dieses Raums oder alle Kanäle wählen.');
+            rule.reviewNotes = [];
+          }
+          if (rule.enabled && rule.reviewNotes.length) throw new Error('Die Zuordnung dieser importierten Regel für den Zielraum bestätigen.');
+          rule.targetPlayers = captureTargets({ ...rule, targetPlayers: existing?.targetPlayers || rule.targetPlayers }, ruleContext().players);
           if (idx >= 0) store.state.rules[idx] = rule; else { if (store.state.rules.length >= 100) throw new Error('Höchstens 100 Regeln.'); store.state.rules.push(rule); }
+          if (rule.source === 'twitch' && rule.type === 'subscription') twitch.enableSubscriptions(rule.twitchChannelId);
         } else if (path === '/api/rule/delete') store.state.rules = store.state.rules.filter(r => r.id !== data.id);
         else if (path === '/api/test-rule') return json(res, { ok: true, event: engine.runRule(data.id, data.live === true) });
         else if (path === '/api/test-event') return json(res, engine.ingest({ ...data, id: randomBytes(16).toString('hex'), timestamp: Date.now(), test: true }));
@@ -360,6 +409,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
           store.state.yamlProfiles.push(...profiles);
         } else if (path === '/api/yaml/delete') store.state.yamlProfiles = store.state.yamlProfiles.filter(p => p.id !== data.id);
         else if (path === '/api/import') {
+          if (data.kind === 'ap-chaos-bridge-rules') throw new Error('Regeldateien unter Regeln → Regeln übernehmen importieren.');
           if (data.schema !== 1 || !Array.isArray(data.rules) || data.rules.length > 100) throw new Error('Ungültiges Konfigurationsformat.');
           const rules = data.rules.map(normalizeRule), config = cleanConfig(store.state.config, data.config || {});
           if (new Set(rules.map(r => r.id)).size !== rules.length) throw new Error('Doppelte Regel-IDs.');
@@ -380,7 +430,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         store.save(); changed(); return json(res, { ok: true });
       }
       if (req.method === 'GET') {
-        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/appearance.js': 'public/appearance.js', '/alerts.js': 'public/alerts.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
+        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/rules.js': 'public/rules.js', '/rewards.js': 'public/rewards.js', '/appearance.js': 'public/appearance.js', '/alerts.js': 'public/alerts.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
         const file = staticFiles[path];
         if (file) { if (path === '/overlay') res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'"); const type = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' }[extname(file)]; res.writeHead(200, { 'Content-Type': type }); res.end(readFileSync(join(root, file))); return; }
       }
@@ -404,7 +454,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     void resumeConnections();
     void library.scan().then(report => { for (const e of report.errors) log('warn', 'Spielekatalog · ' + e.file + ': ' + e.error); if (report.skipped?.length) log('info', `Spielekatalog: ${report.skipped.length} nicht auswertbare Pakete übersprungen. Details im Spielekatalog.`); changed(); }).catch(e => log('warn', 'Spielekatalog: ' + e.message));
   }
-  return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, updater, url: `http://127.0.0.1:${server.address().port}` };
+  return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, ruleLibrary, updater, url: `http://127.0.0.1:${server.address().port}` };
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

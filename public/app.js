@@ -4,8 +4,8 @@ const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const names = { regie: 'Übersicht', quellen: 'Verbindungen', spielslots: 'Spieler & Effekte', regeln: 'Regeln', ereignisse: 'Protokoll', einrichtung: 'Einstellungen', katalog: 'Spielekatalog', raeume: 'Räume', spiel: 'Spieleinstellungen', design: 'Design', alerts: 'Stream-Alerts' };
 const sourceNames = { charity: 'Charity Royale', twitch: 'Twitch', external: 'Externer Trigger', manual: 'Manuell', any: 'Alle Quellen' };
-const typeNames = { donation: 'Spende', sub: 'Sub', resub: 'Resub-Nachricht', gift_sub: 'Gift-Sub-Paket', cheer: 'Bits', channel_points: 'Kanalpunkte', manual: 'Manuell', any: 'Alle Ereignisse' };
-const effectNames = { random_trap: 'Zufällige Falle', random_nontrap: 'Zufälliges Item ohne markierte Fallen', random_item: 'Zufälliges Item aus allen erlaubten', random_choice: 'Zufälliges Item aus eigener Liste', item: 'Bestimmtes Item senden', hint: 'Hinweis zu einem Item', message: 'Nachricht im AP-Chat', alert: 'Nur Stream-Alert', deathlink: 'DeathLink an die Gruppe', random_action: 'Zufall aus gewählten Aktionen' };
+const typeNames = { donation: 'Spende', subscription: 'Alle Abos', sub: 'Sub', resub: 'Resub-Nachricht', gift_sub: 'Gift-Sub-Paket', cheer: 'Bits', channel_points: 'Kanalpunkte', manual: 'Manuell', any: 'Alle Ereignisse' };
+const effectNames = { random_trap: 'Zufällige Falle', random_nontrap: 'Zufälliges Item ohne markierte Fallen', random_item: 'Zufälliges Item aus allen erlaubten', random_choice: 'Zufälliges Item aus eigener Liste', item: 'Bestimmtes Item senden', hint: 'Hinweis zu einem Item', random_hint: 'Zufälliger Hinweis aus allen erlaubten Items', message: 'Nachricht im AP-Chat', alert: 'Nur Stream-Alert', deathlink: 'DeathLink an die Gruppe', random_action: 'Zufall aus gewählten Aktionen' };
 const statusNames = { queued: 'Wartet', dispatching: 'Versand läuft', confirmed: 'AP bestätigt', sent: 'Gesendet', simulated: 'Simuliert', failed: 'Fehlgeschlagen', uncertain: 'Unklar', cancelled: 'Verworfen', expired: 'Abgelaufen', alerted: 'Alert ausgelöst' };
 const connectionNames = { connected: 'Verbunden', disconnected: 'Getrennt', connecting: 'Verbindet', reconnecting: 'Verbindet erneut', error: 'Fehler', demo: 'Demo' };
 const time = at => new Date(at).toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -55,7 +55,7 @@ const LiveUI = {
   },
   render(html) {
     const root = $('#main'), changed = this.page !== currentPage || this.room !== S.rooms?.active;
-    if (changed || !root.children.length) { root.innerHTML = html; if (this.room && changed) { $('#drawer').close(); approvalEditor = null; } }
+    if (changed || !root.children.length) { root.innerHTML = html; if (this.room && changed) { $('#drawer').close(); Rewards.close(); RuleTools.reset(); approvalEditor = null; } }
     else { const next = document.createElement('div'); next.innerHTML = html; this.children(root, next); }
     this.page = currentPage; this.room = S.rooms?.active;
     root.querySelectorAll('form').forEach(form => { if (!this.baselines.has(form) || this.baselines.get(form) === this.signature(form)) this.committed(form); });
@@ -88,7 +88,7 @@ function sourceLine(abbr, name, description, state, cls = '') { return `<div cla
 function renderRule(r) {
   const target = r.effect === 'deathlink' ? 'DeathLink-Gruppe' : r.effect === 'message' ? 'AP-Raumchat' : r.effect === 'alert' ? 'Nur Anzeige im Stream' : r.target === 'random' ? 'Zufälliger freigegebener Spieler' : r.target === 'all' ? 'Alle passenden Spieler' : r.target === 'random_selected' ? `Zufällig aus ${r.targetKeys?.length || 0} ausgewählten Spielern` : r.target === 'selected' ? `${r.targetKeys?.length || 0} ausgewählte Spieler` : S.players.find(p => `${p.team}:${p.slot}` === r.target)?.name || 'Slot ' + r.target;
   const min = [r.minimumCents ? `ab ${eur(r.minimumCents)}` : '', r.minimumUnits ? `ab ${r.minimumUnits} Einheiten` : '', r.action ? `Aktion: ${r.action}` : ''].filter(Boolean).join(' · ');
-  return `<article class="panel rule-card"><div class="rule-top"><h3>${esc(r.name)}</h3>${badge(r.enabled ? 'Aktiv' : 'Inaktiv', r.enabled ? 'good' : 'neutral')}</div><div class="flow"><div class="flow-cell"><span class="eyebrow">WENN</span><b>${esc(sourceNames[r.source])}${r.twitchChannelId ? ' @' + esc(S.twitch.channels?.find(c => c.id === r.twitchChannelId)?.channelName || 'entfernter Kanal') : ''} · ${esc(typeNames[r.type])}</b><span class="tiny">${esc(min || 'Jedes passende Ereignis')}</span></div><div class="flow-arrow">→</div><div class="flow-cell"><span class="eyebrow">DANN</span><b>${esc(r.effect === 'item' ? r.item : effectNames[r.effect])}</b><span class="tiny">${esc(target)}${r.quantity > 1 ? ' · ' + r.quantity + '×' : ''}</span></div></div><div class="rule-foot"><span class="tiny mono">${r.cooldownSec}s COOLDOWN${r.game ? ' · ' + esc(r.game) : ''}</span><div class="button-row"><button class="small ghost" data-action="test-rule" data-id="${r.id}">Simulieren</button>${S.config.mode === 'live' && !S.ap.demo && r.enabled ? `<button class="small danger" data-action="live-rule" data-id="${r.id}">Live-Test</button>` : ''}<button class="small" data-action="edit-rule" data-id="${r.id}">Bearbeiten</button></div></div></article>`;
+  return `<article class="panel rule-card"><div class="rule-top"><h3>${esc(r.name)}</h3>${badge(r.reviewNotes?.length ? 'Zuordnung prüfen' : r.enabled ? 'Aktiv' : 'Inaktiv', r.reviewNotes?.length ? 'warn' : r.enabled ? 'good' : 'neutral')}</div><div class="flow"><div class="flow-cell"><span class="eyebrow">WENN</span><b>${esc(sourceNames[r.source])}${r.twitchChannelId ? ' @' + esc(S.twitch.channels?.find(c => c.id === r.twitchChannelId)?.channelName || 'entfernter Kanal') : ''} · ${esc(typeNames[r.type])}</b><span class="tiny">${esc(min || 'Jedes passende Ereignis')}</span></div><div class="flow-arrow">→</div><div class="flow-cell"><span class="eyebrow">DANN</span><b>${esc(r.effect === 'item' ? r.item : effectNames[r.effect])}</b><span class="tiny">${esc(target)}${r.quantity > 1 ? ' · ' + r.quantity + '×' : ''}</span></div></div><div class="rule-foot"><span class="tiny mono">${r.cooldownSec}s COOLDOWN${r.game ? ' · ' + esc(r.game) : ''}</span><div class="button-row"><button class="small ghost" data-action="test-rule" data-id="${r.id}">Simulieren</button>${S.config.mode === 'live' && !S.ap.demo && r.enabled ? `<button class="small danger" data-action="live-rule" data-id="${r.id}">Live-Test</button>` : ''}<button class="small" data-action="edit-rule" data-id="${r.id}">Bearbeiten</button></div></div></article>`;
 }
 function queueTable(limit = 200) {
   const jobs = [...S.queue].reverse().slice(0, limit);
@@ -132,7 +132,7 @@ function slotsPage() {
     + `<details class="panel advanced-section section-gap"><summary>DeathLink · gemeinsame Todesaktion</summary><div class="advanced-body"><p class="help">DeathLink erreicht die dafür aktivierten Clients im eigenen AP-Team. Es ist eine Gruppenaktion, auch wenn eine Regel sonst einzelne Spieler auswählt. DeathLink muss zusätzlich im jeweiligen Spielclient eingeschaltet sein.</p><label class="check-label"><input id="deathlink-armed" type="checkbox" ${S.config.deathLinkArmed ? 'checked' : ''}><span>DeathLink aus der Bridge für diese Sitzung erlauben</span></label></div></details>`
     + `<details class="panel advanced-section section-gap"><summary>Erweitert: Fallen-Vorschläge aus alten YAMLs · optional</summary><div class="advanced-body"><p class="help">Wird für die Spielerzuordnung nicht benötigt. Vorhandene YAMLs können zusätzliche Fallennamen vorschlagen; Spieleinstellungen bearbeitest du im Spielekatalog.</p><button class="small" data-action="yaml-import">Fallenliste aus YAML hinzufügen</button><div class="grid rules-grid section-gap">${S.yamlProfiles.map(p => `<article class="panel panel-pad"><div class="section-title"><h3>${esc(p.game)}</h3><button class="icon-button" data-action="yaml-delete" data-id="${p.id}" aria-label="YAML-Profil entfernen">×</button></div><span class="tiny">${esc(p.name)}</span><p class="help">${p.traps.length} Fallen-Vorschläge · werden mit dem Raumkatalog abgeglichen.</p></article>`).join('')}</div></div></details>`;
 }
-function rulesPage() { return pageHead('ZUORDNUNGEN', 'Du bestimmst die Wirkung.', 'Quelle, Schwelle, Aktion und Ziel sind je Regel konfigurierbar. Alle passenden Regeln werden ausgewertet.', '<button class="primary" data-action="new-rule">+ Neue Regel</button>') + modeNotice() + `<div class="grid rules-grid">${S.rules.map(renderRule).join('') || `<div class="panel">${empty('Keine Regeln', 'Lege eine Zuordnung für deine erste Zuschaueraktion an.')}</div>`}</div>`; }
+function rulesPage() { return pageHead('ZUORDNUNGEN', 'Du bestimmst die Wirkung.', 'Quelle, Schwelle, Aktion und Ziel sind je Regel konfigurierbar. Alle passenden Regeln werden ausgewertet.', '<button class="primary" data-action="new-rule">+ Neue Regel</button>' + RuleTools.toolbar()) + modeNotice() + `<div class="grid rules-grid">${S.rules.map(renderRule).join('') || `<div class="panel">${empty('Keine Regeln', 'Lege eine Zuordnung für deine erste Zuschaueraktion an.')}</div>`}</div>`; }
 function eventsPage() {
   const tabs = { queue: 'Warteschlange', incoming: 'Eingänge', logs: 'Systemprotokoll' };
   let content = '';
@@ -168,16 +168,17 @@ function render(force = false) {
   if (searchSelection) {
     const next = $('#studio-search'); next.focus({ preventScroll: true }); next.setSelectionRange(...searchSelection);
   }
-  Updates.sync();
+  Updates.sync(); Rewards.sync();
 }
 function showDrawer(content) { $('#drawer-content').innerHTML = content; if (!$('#drawer').open) $('#drawer').showModal(); }
 const drawerHead = (title, description) => `<div class="drawer-head"><div><h2>${esc(title)}</h2><p>${esc(description)}</p></div><button type="button" class="icon-button" data-action="close-drawer" aria-label="Schließen">×</button></div>`;
-function editRule(id) {
-  const r = S.rules.find(x => x.id === id) || { name: 'Neue Regel', enabled: false, source: 'charity', type: 'donation', minimumCents: 1000, minimumUnits: 0, action: '', rewardId: '', effect: 'random_trap', target: 'random', quantity: 1, cooldownSec: 20, item: '', game: '', randomEffects: ['random_trap', 'random_nontrap'] };
+function editRule(id, preset = {}) {
+  const r = { ...(S.rules.find(x => x.id === id) || { name: 'Neue Regel', enabled: false, source: 'charity', type: 'donation', minimumCents: 1000, minimumUnits: 0, action: '', rewardId: '', effect: 'random_trap', target: 'random', quantity: 1, cooldownSec: 20, item: '', game: '', randomEffects: ['random_trap', 'random_nontrap'] }), ...preset };
   const games = [...new Set([...S.players.filter(p => p.team === S.ap.team && p.type === 1).map(p => p.game), r.game])].filter(Boolean).sort();
   const targets = { random: 'Ein zufälliger freigegebener Spieler', all: 'Alle passenden freigegebenen Spieler', ...Object.fromEntries(S.players.filter(p => p.team === S.ap.team && p.type === 1).map(p => [`${p.team}:${p.slot}`, `${p.name} · ${p.game}`])), group: 'Gruppe / Anzeige' };
   const selectedEffects = r.randomEffects?.length ? r.randomEffects : ['random_item', ...(r.includeDeathLink ? ['deathlink'] : [])];
-  showDrawer(drawerHead(id ? 'Regel bearbeiten' : 'Neue Regel', 'Lege fest, wann etwas passiert, was passiert und wen es trifft.') + `<form id="rule-form"><div class="drawer-body"><input type="hidden" name="id" value="${esc(r.id || '')}"><label class="section-gap">Name der Regel<input name="name" value="${esc(r.name)}" maxlength="100" required></label>
+  if (r.target && !['random', 'all', 'group', 'selected', 'random_selected'].includes(r.target) && !targets[r.target]) targets[r.target] = 'Quellslot ' + r.target + ' · neu zuordnen';
+  showDrawer(drawerHead(id ? 'Regel bearbeiten' : 'Neue Regel', 'Lege fest, wann etwas passiert, was passiert und wen es trifft.') + `<form id="rule-form"><div class="drawer-body"><input type="hidden" name="id" value="${esc(r.id || '')}">${r.reviewNotes?.length ? `<div class="notice"><div><b>Zuordnung für diesen Raum prüfen</b><p>${r.reviewNotes.map(esc).join('<br>')}</p><label class="check-label"><input type="checkbox" name="reviewed"><span>Spielerziele, Kanal und Belohnung für diesen Raum geprüft</span></label></div></div>` : ''}<label class="section-gap">Name der Regel<input name="name" value="${esc(r.name)}" maxlength="100" required></label>
   ${Studio.triggerFields(r)}
   <fieldset class="rule-section"><legend><span>2</span>Aktion</legend><label class="section-gap">Was soll passieren?<select name="effect" id="rule-effect">${options(effectNames, r.effect)}</select></label><div id="rule-effect-description" class="action-description"></div>
   <div class="random-help" id="rule-action-mix"><b class="tiny">Diese Aktionsarten dürfen zufällig gewählt werden</b><div class="mix-options">${Object.entries(effectNames).filter(([key]) => key !== 'random_action').map(([key, label]) => `<label class="check-label"><input type="checkbox" name="randomEffects" value="${key}" ${selectedEffects.includes(key) ? 'checked' : ''}><span>${esc(label)}</span></label>`).join('')}</div><p class="help">Jede aktuell mögliche, ausgewählte Aktionsart hat dieselbe Chance. Ist ein Pool leer oder eine Aktion gesperrt, wird sie ausgelassen. DeathLink braucht zusätzlich die Gruppenfreigabe.</p></div>
@@ -230,6 +231,8 @@ document.addEventListener('click', async event => {
     if (action.startsWith('appearance-')) return await Appearance.click(action, id);
     if (action.startsWith('alerts-')) return await Alerts.click(action);
     if (action.startsWith('update-')) return await Updates.click(action, button);
+    if (action.startsWith('rules-')) return await RuleTools.click(action, id, button);
+    if (action.startsWith('rewards-')) return await Rewards.click(action, id, button);
     if (action.startsWith('studio-')) return await Studio.click(action, id, button);
     if (action === 'close-drawer') { $('#drawer').close(); approvalEditor = null; integration = null; return; }
     if (action === 'new-rule' || action === 'edit-rule') return editRule(id);
@@ -274,6 +277,8 @@ document.addEventListener('submit', async event => {
     if (formId === 'appearance-form') { await Appearance.submit(); return; }
     if (formId === 'alerts-form' || formId === 'alerts-media-form') { await Alerts.submit(form); return; }
     if (formId === 'update-token-form') { await Updates.submit(form); return; }
+    if (formId.startsWith('rules-')) { await RuleTools.submit(form); return; }
+    if (formId === 'rewards-create-form') { await Rewards.submit(form); return; }
     if (formId.startsWith('studio-')) { await Studio.submit(form); return; }
     if (formId === 'ap-form') { await api('ap/connect', Object.fromEntries(d)); }
     else if (formId === 'charity-form') { await api('config', { charity: Object.fromEntries(d) }); await api('charity/connect', {}); }
@@ -312,6 +317,8 @@ document.addEventListener('submit', async event => {
 document.addEventListener('change', async event => {
   const t = event.target;
   try {
+    if (t.closest('#rules-import-form') && ['source', 'file', 'json'].includes(t.name)) RuleTools.sourceChanged();
+    if (t.closest('#rewards-create-form') && t.name === 'channelId') Rewards.sync();
     if (['playerName', 'playerGame'].includes(t.name)) Studio.updatePlayerRow(t);
     if (t.dataset.optionCustom !== undefined) { const input = document.querySelector('[data-custom-input="' + t.dataset.optionCustom + '"]'); Studio.reveal(input, t.value === '__custom__'); input.disabled = t.value !== '__custom__'; }
     if (t.dataset.optionEnable !== undefined) document.querySelector('[data-option-fieldset="' + t.dataset.optionEnable + '"]').disabled = !t.checked;
@@ -344,6 +351,7 @@ document.addEventListener('input', async event => {
     document.querySelectorAll('[data-option-search]').forEach(el => el.classList.toggle('hidden', !el.dataset.optionSearch.includes(query)));
     const common = $('.studio-common'); if (common) common.open = Boolean(query && common.querySelector('[data-option-search]:not(.hidden)'));
   }
+  if (event.target.closest('#rules-import-form') && event.target.name === 'json') RuleTools.sourceChanged();
   if (event.target.id === 'item-search') renderItemList();
   if (event.target.id === 'catalog-search') {
     try {

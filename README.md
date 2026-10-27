@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.1
+# AP Chaos Bridge 0.8.0
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -16,11 +16,13 @@ Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.c
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.7.1
+## Update auf 0.8.0
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.7.1:** Wiederöffnen aus dem Tray korrigiert. Das Fenster bleibt mit seiner Oberfläche verbunden und wird auf einem sichtbaren Bildschirm geöffnet.
+**Neu in 0.8.0:** Kanalpunkte-Belohnungen direkt unter **Verbindungen → Kanalpunkte-Belohnungen** oder aus einer offenen Regel anlegen. Twitch dafür einmal über **Belohnungen freigeben** mit den zusätzlichen Rechten anmelden. **Alle Abos** fasst neue Abos, geteilte Resubs und Geschenkpakete in einer Regel zusammen. Regeln lassen sich als JSON exportieren, als gemeinsame Vorlage speichern und aus anderen Räumen übernehmen. **Zufälliger Hinweis aus allen erlaubten Items** fordert pro getroffenem Spieler einen AP-Admin-Hinweis an. Der Tray-Fix aus 0.7.1 ist enthalten.
+
+**Seit 0.7.1:** Wiederöffnen aus dem Tray korrigiert. Das Fenster bleibt mit seiner Oberfläche verbunden und wird auf einem sichtbaren Bildschirm geöffnet.
 
 **Seit 0.7.0:** Windows-Fenster, Tray und portable Laufzeit; mehrere getrennt angemeldete Twitch-Kanäle mit Kanalfilter und Herkunft im Protokoll; verständliche Felder je Ereignistyp; leere Regeln in neuen Räumen. Datenaktualisierungen erhalten Dropdowns, offene Dialoge, Listen, Suchfilter und ungespeicherte Eingaben. Kontextabhängige Felder wechseln mit kurzen Animationen, die sich unter Design abschalten lassen.
 
