@@ -1,3 +1,10 @@
+# 0.7.1 – Fenster zuverlässig aus dem Tray öffnen
+
+- Beim Ausblenden wird der Fenster-Handle beibehalten. Das Umschalten von ShowInTaskbar konnte den WebView2-Fensterverbund unterbrechen und einen unsichtbaren Taskleisteneintrag erzeugen.
+- Wiederherstellung hebt Minimieren und Ausblenden direkt über Windows auf, setzt den Fokus und holt ein außerhalb der sichtbaren Bildschirme liegendes Fenster zurück. Maximierte Fenster behalten ihren Zustand.
+- Fenstergröße beim Start auf den verfügbaren Bildschirm begrenzen.
+- Windows-Test um zehn Tray-Zyklen, erhaltenen Fenster-Handle und Oberflächenzustand, sichtbare native Fenster, maximierte Fenster und Bildschirmwechsel ergänzt.
+
 # 0.7.0 – Eigenes Windows-Fenster, Tray und mehrere Twitch-Kanäle
 
 - Windows-Vollpaket mit eigener EXE, eingebetteter WebView2-Oberfläche und portabler Node-Laufzeit. Schließen/Minimieren legt die Bridge in den Tray; dessen Menü öffnet oder beendet sie. Kein dauerhaftes Node-Konsolenfenster. Der erste Start über Start.cmd legt die EXE im Hauptordner an.

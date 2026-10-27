@@ -50,6 +50,7 @@ try {
   await until(async () => { try { return (await readFile(smokePath, 'utf8')).length > 0; } catch { return false; } }, 'Der native Start hat kein Ergebnis geschrieben.', 10000);
   const result = JSON.parse(await readFile(smokePath, 'utf8'));
   assert.equal(result.ready, true); assert.equal(result.tray, true); assert.equal(result.noConsole, true); assert.equal(result.rules, '0'); assert.equal(result.download, true);
+  assert.equal(result.trayCycles, 10); assert.equal(result.restoredVisible, true); assert.equal(result.handlePreserved, true);
   const yaml = parse(await readFile(join(root, 'data/desktop-download.yaml'), 'utf8')); assert.equal(yaml.game, 'Factorio'); assert.equal(yaml.name, 'SmokePlayer');
   assert((await readFile(join(root, 'AP-Chaos-Bridge.exe'))).length > 10000);
   console.log('Echtes WebView2-Fenster, Schließen in den Tray und versteckter Hintergrunddienst geprüft:', result.runtime);

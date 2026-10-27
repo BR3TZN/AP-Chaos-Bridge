@@ -1,4 +1,4 @@
-# Prüfung der Version 0.7.0
+# Prüfung der Version 0.7.1
 
 Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
@@ -140,3 +140,7 @@ Zwei zusätzliche JSDOM-Tests prüfen einzelne Häkchen, Zähler, eigene Texte, 
 ## Regeln und Eingabehilfen 0.7.0
 
 Neue Räume haben keine Beispielregel. Die Migration entfernt ausschließlich das alte unveränderte, unbenutzte Beispiel; bearbeitete, normalisiert gespeicherte oder bereits verwendete Regeln bleiben erhalten. Charity-, Twitch- und manuelle Auslöser zeigen passende Felder. Ausgeblendete Betragsschwellen und Belohnungsfilter werden serverseitig normalisiert, damit frühere Eingaben die aktuelle Plattformregel nicht unbemerkt blockieren.
+
+## Tray-Korrektur 0.7.1
+
+Der Windows-Integrationstest prüft zehn aufeinanderfolgende Zyklen über Minimieren und Schließen, IsWindowVisible und IsIconic am nativen Fenster, einen unveränderten HWND und erhaltenen JavaScript-Zustand. Ein außerhalb der Bildschirme liegendes Fenster wird zurückgeholt; ein maximiertes Fenster wird wieder maximiert geöffnet.

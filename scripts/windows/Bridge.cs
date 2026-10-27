@@ -111,6 +111,13 @@ internal static class Program
 
 internal sealed class BridgeForm : Form
 {
+    [DllImport("user32.dll")] private static extern bool ShowWindow(IntPtr window, int command);
+    [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr window);
+    [DllImport("user32.dll")] private static extern bool SetWindowPos(IntPtr window, IntPtr after, int x, int y, int width, int height, uint flags);
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr window);
+    [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr window);
+    [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr window, out NativeRect rectangle);
+    [StructLayout(LayoutKind.Sequential)] private struct NativeRect { public int Left, Top, Right, Bottom; }
     private readonly Label loading;
     private readonly NotifyIcon tray;
     private readonly System.Windows.Forms.Timer monitor;
@@ -119,11 +126,15 @@ internal sealed class BridgeForm : Form
     private int backendPid;
     private string session;
     private bool exiting, stopping, ready, downloaded;
+    private bool restoring;
+    private FormWindowState restoreState = FormWindowState.Normal;
     private readonly object logLock = new object();
 
     internal BridgeForm()
     {
-        Text = "AP Chaos Bridge"; Width = 1320; Height = 900; MinimumSize = new Size(900, 620); StartPosition = FormStartPosition.CenterScreen;
+        Rectangle area = Screen.FromPoint(Cursor.Position).WorkingArea;
+        Text = "AP Chaos Bridge"; Width = Math.Min(1320, area.Width); Height = Math.Min(900, area.Height);
+        MinimumSize = new Size(Math.Min(900, area.Width), Math.Min(620, area.Height)); StartPosition = FormStartPosition.CenterScreen;
         Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
         loading = new Label { Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter, Text = "AP Chaos Bridge wird gestartet …", Font = new Font("Segoe UI", 13) };
         Controls.Add(loading);
@@ -135,7 +146,12 @@ internal sealed class BridgeForm : Form
         tray.DoubleClick += (sender, args) => RestoreWindow();
         monitor = new System.Windows.Forms.Timer { Interval = 500 };
         monitor.Tick += (sender, args) => { if (backendPid != 0 && !Alive(backendPid) && !stopping) ExitWindow(); };
-        Resize += (sender, args) => { if (WindowState == FormWindowState.Minimized && ready && !exiting) HideWindow(); };
+        Resize += (sender, args) =>
+        {
+            if (restoring || exiting) return;
+            if (WindowState == FormWindowState.Minimized) { if (ready) HideWindow(); }
+            else restoreState = WindowState;
+        };
         FormClosing += (sender, args) => { if (!exiting && args.CloseReason == CloseReason.UserClosing) { args.Cancel = true; HideWindow(); } };
         Shown += async (sender, args) => await Start();
     }
@@ -145,8 +161,40 @@ internal sealed class BridgeForm : Form
         if (message.Msg == Program.RestoreMessage) { RestoreWindow(); return; }
         base.WndProc(ref message);
     }
-    private void RestoreWindow() { WindowState = FormWindowState.Normal; ShowInTaskbar = true; Show(); Activate(); }
-    private void HideWindow() { Hide(); ShowInTaskbar = false; }
+    private void RestoreWindow()
+    {
+        if (exiting || restoring || IsDisposed) return;
+        restoring = true;
+        try
+        {
+            // ShowInTaskbar changes recreate the top-level HWND and can detach
+            // WebView2. Keep that handle alive throughout the entire tray cycle.
+            WindowState = FormWindowState.Normal;
+            Rectangle area = Screen.FromRectangle(Bounds).WorkingArea;
+            int width = Math.Min(Width, area.Width), height = Math.Min(Height, area.Height);
+            SetBounds(Math.Max(area.Left, Math.Min(Left, area.Right - width)), Math.Max(area.Top, Math.Min(Top, area.Bottom - height)), width, height);
+            Show(); WindowState = restoreState;
+            ShowWindow(Handle, restoreState == FormWindowState.Maximized ? 3 : 9);
+            SetWindowPos(Handle, IntPtr.Zero, 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0040);
+            if (view != null && !view.IsDisposed) { view.Show(); view.BringToFront(); view.Invalidate(true); }
+            Activate(); SetForegroundWindow(Handle);
+        }
+        finally { restoring = false; }
+    }
+    private void HideWindow()
+    {
+        if (restoring || exiting) return;
+        if (WindowState != FormWindowState.Minimized) restoreState = WindowState;
+        Hide();
+    }
+    private bool WindowIsUsable()
+    {
+        NativeRect rectangle;
+        if (!Visible || !IsWindowVisible(Handle) || IsIconic(Handle) || !GetWindowRect(Handle, out rectangle)) return false;
+        Rectangle bounds = Rectangle.FromLTRB(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom);
+        foreach (Screen screen in Screen.AllScreens) if (screen.WorkingArea.IntersectsWith(bounds)) return view != null && view.Visible && IsWindowVisible(view.Handle);
+        return false;
+    }
     private static bool Alive(int pid) { try { using (Process process = Process.GetProcessById(pid)) return !process.HasExited; } catch { return false; } }
     private void ExitWindow() { if (exiting) return; exiting = true; monitor.Stop(); tray.Visible = false; if (view != null) view.Dispose(); Close(); }
 
@@ -278,10 +326,23 @@ internal sealed class BridgeForm : Form
             if (result == "true")
             {
                 await SmokeDownload();
-                Close(); if (Visible || ShowInTaskbar || !tray.Visible) throw new Exception("Tray-Test fehlgeschlagen.");
-                RestoreWindow();
+                IntPtr originalHandle = Handle;
+                await view.ExecuteScriptAsync("window.__trayDraftMarker = 'draft-retained'");
+                for (int cycle = 0; cycle < 10; cycle++)
+                {
+                    if (cycle % 2 == 0) WindowState = FormWindowState.Minimized; else Close();
+                    await Task.Delay(80);
+                    if (Visible || IsWindowVisible(Handle) || !tray.Visible) throw new Exception("Tray-Ausblenden fehlgeschlagen.");
+                    RestoreWindow(); await Task.Delay(80);
+                    if (!WindowIsUsable() || Handle != originalHandle) throw new Exception("Tray-Fenster ist nach Wiederherstellung nicht sichtbar oder sein Handle wurde ersetzt.");
+                    if (await view.ExecuteScriptAsync("window.__trayDraftMarker") != "\"draft-retained\"") throw new Exception("Tray-Wiederherstellung hat den Oberflächenzustand verloren.");
+                }
+                Bounds = new Rectangle(-32000, -32000, 1100, 700); HideWindow(); RestoreWindow();
+                if (!WindowIsUsable()) throw new Exception("Fenster außerhalb des Bildschirms wurde nicht zurückgeholt.");
+                WindowState = FormWindowState.Maximized; await Task.Delay(80); WindowState = FormWindowState.Minimized; RestoreWindow();
+                if (!WindowIsUsable() || WindowState != FormWindowState.Maximized) throw new Exception("Maximiertes Fenster wurde aus dem Tray nicht wiederhergestellt.");
                 string bridgeRules = await view.ExecuteScriptAsync("S.rules.length");
-                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, nativeWindow = true, download = downloaded, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
+                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
                 await Quit(); return;
             }
             await Task.Delay(250);

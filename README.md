@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.0
+# AP Chaos Bridge 0.7.1
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -16,11 +16,13 @@ Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.c
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.7.0
+## Update auf 0.7.1
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.7.0:** Windows-Fenster, Tray und portable Laufzeit; mehrere getrennt angemeldete Twitch-Kanäle mit Kanalfilter und Herkunft im Protokoll; verständliche Felder je Ereignistyp; leere Regeln in neuen Räumen. Datenaktualisierungen erhalten Dropdowns, offene Dialoge, Listen, Suchfilter und ungespeicherte Eingaben. Kontextabhängige Felder wechseln mit kurzen Animationen, die sich unter Design abschalten lassen.
+**Neu in 0.7.1:** Wiederöffnen aus dem Tray korrigiert. Das Fenster bleibt mit seiner Oberfläche verbunden und wird auf einem sichtbaren Bildschirm geöffnet.
+
+**Seit 0.7.0:** Windows-Fenster, Tray und portable Laufzeit; mehrere getrennt angemeldete Twitch-Kanäle mit Kanalfilter und Herkunft im Protokoll; verständliche Felder je Ereignistyp; leere Regeln in neuen Räumen. Datenaktualisierungen erhalten Dropdowns, offene Dialoge, Listen, Suchfilter und ungespeicherte Eingaben. Kontextabhängige Felder wechseln mit kurzen Animationen, die sich unter Design abschalten lassen.
 
 **Seit 0.6.2:** Dokumentierte Listenwerte lassen sich in einer aufklappbaren Mehrfachauswahl einzeln anklicken, einschließlich der sieben Fallen aus der Peliarch-YAML. Beschreibungen stehen direkt bei den Werten; eigene Werte bleiben möglich. Freie Felder zeigen Eingabeformat, Vorlagenwert und vorhandene Schlüssel- oder Wertelisten. Unbekannte Grenzen werden nicht erfunden.
 
