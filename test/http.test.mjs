@@ -7,7 +7,7 @@ import { once } from 'node:events';
 const wait = ms => new Promise(r => setTimeout(r, ms));
 async function until(predicate, timeout = 3000) { const start = Date.now(); while (!predicate()) { if (Date.now() - start > timeout) throw new Error('Timed out'); await wait(20); } }
 async function setup(t) {
-  const app = await createApp({ memory: true, port: 0 }); t.after(() => app.close()); const state = app.snapshot();
+  const app = await createApp({ memory: true, port: 0 }); t.after(() => app.close()); app.store.state.rules.push({ id: 'fixture-rule', name: 'Fixture Charity', enabled: false, source: 'charity', type: 'donation', action: 'random-trap', minimumCents: 1000, minimumUnits: 0, rewardId: '', effect: 'random_trap', target: 'random', game: '', item: '', quantity: 1, cooldownSec: 20 }); const state = app.snapshot();
   const post = (path, data, headers = {}) => fetch(app.url + '/api/' + path, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Bridge-Session': state.session, ...headers }, body: JSON.stringify(data) });
   return { app, state, post };
 }

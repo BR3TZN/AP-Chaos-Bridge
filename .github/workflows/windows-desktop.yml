@@ -1,0 +1,35 @@
+name: Windows desktop
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches: [work/desktop-v0.7.0]
+permissions:
+  contents: read
+jobs:
+  desktop:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --omit=dev --ignore-scripts
+      - name: Native EXE und portable Laufzeit mit festen SHA256-Prüfsummen bauen
+        shell: powershell
+        run: ./scripts/windows/build.ps1
+      - name: Fenster, Tray, Hintergrunddienst und Desktop-Update prüfen
+        run: node scripts/windows/verify-desktop.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-runtime
+          path: assets/windows/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: windows-desktop-logs
+          path: |
+            data/*.log
+            data/desktop-smoke.json

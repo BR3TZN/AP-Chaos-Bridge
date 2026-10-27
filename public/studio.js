@@ -6,9 +6,9 @@ const Studio = {
     const workspaceName = document.querySelector('#workspace-name'); if (workspaceName) workspaceName.textContent = S.rooms?.rooms.find(r => r.id === S.rooms.active)?.name || 'Dein Run';
     const select = document.querySelector('#room-select');
     if (select && S.rooms) {
-      const html = options(Object.fromEntries(S.rooms.rooms.filter(r => !r.archived).map(r => [r.id, r.name])), S.rooms.active);
-      if (select.innerHTML !== html) select.innerHTML = html;
-      select.value = S.rooms.active;
+      const rooms = S.rooms.rooms.filter(r => !r.archived);
+      if (select !== document.activeElement && (select.options.length !== rooms.length || rooms.some((room, index) => select.options[index]?.value !== room.id || select.options[index]?.textContent !== room.name))) select.innerHTML = options(Object.fromEntries(rooms.map(r => [r.id, r.name])), S.rooms.active);
+      if (select !== document.activeElement && select.value !== S.rooms.active) select.value = S.rooms.active;
     }
   },
   knownGames() { return [...new Set([...(S.gameLibrary?.games || []).map(g => g.game), ...(indexData?.games || []).map(g => g.game), ...S.players.map(p => p.game)])].sort(); },
@@ -198,14 +198,38 @@ const Studio = {
     const apForm = node.querySelector('#ap-form');
     apForm.innerHTML = `<div class="statusbar">${badge(S.ap.connected ? 'AP verbunden' : 'AP getrennt', S.ap.connected ? 'good' : '')}${badge(S.ap.admin ? 'Admin angemeldet' : 'Admin nicht angemeldet', S.ap.admin ? 'good' : 'warn')}</div><div class="form-grid narrow"><label class="full">Server gehostet<select name="addressMode" id="ap-address-mode">${options({ local: 'Lokal · dieser PC', hosted: 'Extern · archipelago.gg', custom: 'Extern · eigener Host / IP' }, mode)}</select></label><label id="ap-host-label" class="full ${mode === 'custom' ? '' : 'hidden'}">Hostname / IP<input name="host" value="${esc(config.host || parsed.hostname)}" placeholder="ap.example.com"></label><label>Port<input name="port" type="number" min="1" max="65535" value="${config.port || parsed.port || 38281}" required></label><label class="check-label"><input name="secure" type="checkbox" ${config.secure || parsed.protocol === 'wss:' ? 'checked' : ''}><span>TLS / wss verwenden</span></label><label class="full">Existierender Slotname<input name="slotName" list="ap-slot-names" value="${esc(config.slotName)}" required autocomplete="off"><datalist id="ap-slot-names">${[...new Set([...(S.playerProfiles || []).map(p => p.name), ...S.players.map(p => p.name)])].map(name => `<option value="${esc(name)}"></option>`).join('')}</datalist></label><label>Raumpasswort<input type="password" name="roomPassword" autocomplete="off" value="${saved.roomPassword ? '••••••••' : ''}" placeholder="Falls gesetzt"></label><label>Server-Adminpasswort<input type="password" name="adminPassword" autocomplete="off" value="${saved.adminPassword ? '••••••••' : ''}" placeholder="Für zusätzliche Items nötig"></label><label class="full">Erwartete Seed-ID <span class="muted">(optional)</span><input name="expectedSeed" value="${esc(config.expectedSeed || '')}"></label></div><div class="button-row"><button type="submit" class="primary">Raum verbinden</button><button type="button" class="ghost" data-action="disconnect-ap">Trennen</button><button type="button" class="small ghost" data-action="studio-players">Slotnamen verwalten</button></div><p class="help">Lokal: 127.0.0.1 + Port. Bei archipelago.gg genügt der Raumport. Für andere externe Server wird zusätzlich deren Hostname benötigt. Gespeicherte Passwörter bleiben maskiert im Feld.</p><button type="button" class="small ghost section-gap" data-action="studio-forget-ap">Gespeicherte Passwörter vergessen</button>`;
     if (apForm.nextElementSibling) apForm.nextElementSibling.textContent = 'Verbindungen und Zugangsdaten werden für diesen Raum lokal gespeichert und beim nächsten Start wiederhergestellt. Admin-Status und Serververbindung werden getrennt angezeigt.';
-    const twitchForm = node.querySelector('#twitch-form');
-    const secretLabel = document.createElement('label'); secretLabel.className = 'section-gap'; secretLabel.innerHTML = `Client Secret <span class="muted">(optional, für automatische Token-Erneuerung)</span><input type="password" name="clientSecret" autocomplete="off" value="${saved.twitchSecret ? '••••••••' : ''}" placeholder="Aus deiner Twitch-App">`;
-    twitchForm.querySelector('.form-grid').append(secretLabel);
-    const help = twitchForm.nextElementSibling;
-    if (help) help.innerHTML = `Twitch-App vom Typ „Confidential“. Redirect-URL exakt: <code>http://localhost:${location.port}/oauth/callback</code>. Zugangsdaten werden lokal gespeichert. Mit Client Secret kann die Anmeldung automatisch erneuert werden; ohne Secret bleibt sie bis zum Tokenablauf erhalten.`;
-    const guide = document.createElement('details'); guide.className = 'disclosure section-gap'; guide.innerHTML = `<summary>Twitch Schritt für Schritt verbinden</summary><ol class="setup-steps"><li><a href="https://dev.twitch.tv/console/apps" target="_blank" rel="noreferrer">Twitch Developer Console</a> öffnen und eine Anwendung registrieren.</li><li>OAuth Redirect URL: <code>http://localhost:${location.port}/oauth/callback</code>. Typ: <b>Confidential</b>.</li><li>Client-ID hier eintragen. Für dauerhafte Anmeldung zusätzlich ein Client Secret erstellen und eintragen.</li><li>Gewünschte Ereignisse auswählen, „Mit Twitch anmelden“ klicken und dich mit dem sendenden Twitch-Kanal anmelden.</li><li>Nach der Rückleitung zeigt die Bridge „Verbunden“ und gegebenenfalls fehlende Berechtigungen.</li></ol><p class="help">Twitch-Login öffnet ein eigenes Fenster. Die Callback-Seite darf nach erfolgreicher Anmeldung geschlossen werden.</p></details><button type="button" class="small ghost section-gap" data-action="studio-forget-twitch">Gespeicherte Twitch-Anmeldung vergessen</button>`;
-    twitchForm.parentElement.append(guide);
+    node.querySelector('#twitch-form').parentElement.innerHTML = this.twitchPanel();
     return node.innerHTML;
+  },
+  twitchForm(channel = {}, adding = false) {
+    const events = channel.events || Object.keys(S.twitchEvents);
+    return `<form id="${adding ? 'studio-twitch-add-form' : 'studio-twitch-form-' + channel.id}" data-twitch-channel="${esc(channel.id || '')}"><div class="form-grid"><label>Kanalname<input name="channelName" value="${esc(channel.channelName || '')}" placeholder="br3tzn" maxlength="25" required autocomplete="off"><span class="help">Twitch-Name ohne Link.</span></label><label>Client-ID<input name="clientId" value="${esc(channel.clientId || '')}" required autocomplete="off"><span class="help">Die gleiche Twitch-App darf für mehrere Kanäle verwendet werden.</span></label></div><fieldset class="event-selection"><legend>Ereignisse aus diesem Kanal</legend>${Object.entries(S.twitchEvents).map(([event, info]) => `<label class="check-label"><input type="checkbox" name="event" value="${esc(event)}" ${events.includes(event) ? 'checked' : ''}><span>${esc(info.label)}</span></label>`).join('')}</fieldset><details class="disclosure"><summary>Erweitert: automatische Erneuerung oder vorhandener Token</summary><label class="section-gap">Client Secret <span class="muted">(optional)</span><input name="clientSecret" type="password" value="${channel.hasSecret ? '••••••••' : ''}" autocomplete="off"><span class="help">Mit Client Secret kann die Anmeldung über einen Refresh Token automatisch erneuert werden. Ohne Secret bleibt sie bis zum Tokenablauf gültig.</span></label><label class="section-gap">Vorhandener User Access Token <span class="muted">(optional)</span><input type="password" name="token" autocomplete="off"><span class="help">Muss vom angegebenen Kanalbesitzer stammen.</span></label></details><div class="button-row section-gap"><button type="submit" class="primary">${adding ? 'Kanal hinzufügen & anmelden' : 'Einstellungen speichern'}</button>${!adding ? `<button type="button" class="ghost" data-action="studio-twitch-auth" data-id="${esc(channel.id)}">Neu mit Twitch anmelden</button><button type="button" class="small ghost" data-action="studio-twitch-forget" data-id="${esc(channel.id)}">Anmeldung vergessen</button>` : ''}</div></form>`;
+  },
+  twitchPanel() {
+    const channels = S.twitch.channels || [];
+    return `<div class="section-title"><h2>Twitch-Kanäle</h2><span class="source-icon purple">TW</span></div><p class="help">Jeder Kanal hat eine eigene Anmeldung. Regeln können auf alle Kanäle oder gezielt auf einen Kollegen reagieren.</p><div class="twitch-channels">${channels.map(channel => `<article class="twitch-channel" data-live-key="twitch-${esc(channel.id)}"><div class="section-title"><h3>${esc(channel.channelName ? '@' + channel.channelName : 'Mein Twitch-Kanal')}</h3>${pill(channel.state)}</div><p class="tiny">${channel.subscriptions.length ? channel.subscriptions.map(event => esc(S.twitchEvents[event]?.label || event)).join(' · ') : 'Noch keine aktiven Ereignisse'}</p>${channel.error ? `<p class="connection-error">${esc(channel.error)}</p>` : ''}${channel.rejected.length ? `<p class="connection-error">${channel.rejected.map(esc).join('<br>')}</p>` : ''}<div class="button-row section-gap">${channel.state === 'connected' || ['connecting', 'reconnecting'].includes(channel.state) ? `<button type="button" class="ghost" data-action="studio-twitch-disconnect" data-id="${esc(channel.id)}">Trennen</button>` : `<button type="button" data-action="${channel.hasToken ? 'studio-twitch-connect' : 'studio-twitch-auth'}" data-id="${esc(channel.id)}">${channel.hasToken ? 'Verbinden' : 'Mit Twitch anmelden'}</button>`}<button type="button" class="small ghost" data-action="studio-twitch-remove" data-id="${esc(channel.id)}">Kanal entfernen</button></div><details class="disclosure" id="twitch-settings-${esc(channel.id)}"><summary>Verbindungseinstellungen</summary>${this.twitchForm(channel)}</details></article>`).join('') || '<p class="help">Noch kein Twitch-Kanal hinzugefügt.</p>'}</div><button type="button" class="primary section-gap" data-action="studio-twitch-add">+ Twitch-Kanal hinzufügen</button><details class="disclosure"><summary>Twitch einrichten</summary><ol class="setup-steps"><li>Eine Anwendung in der <a href="https://dev.twitch.tv/console/apps" target="_blank" rel="noreferrer">Twitch Developer Console</a> verwenden.</li><li>Redirect-URL exakt: <code>http://localhost:${location.port}/oauth/callback</code>.</li><li>Kanalname und Client-ID eintragen und die gewünschten Ereignisse auswählen.</li><li>Bei Twitch mit genau diesem Kanalbesitzer anmelden. Die Client-ID allein erteilt keine Kontoberechtigung.</li></ol><p class="help">Zugangsdaten bleiben verschlüsselt auf diesem PC und gelten pro Bridge-Raum. Gift-Pakete lösen einmal aus; die einzelnen Geschenk-Abos werden nicht zusätzlich gezählt.</p></details>`;
+  },
+  twitchAdd() { showDrawer(drawerHead('Twitch-Kanal hinzufügen', 'Name und Client-ID eintragen, danach den Kanalbesitzer bei Twitch anmelden.') + `<div class="drawer-body">${this.twitchForm({}, true)}</div>`); },
+  async saveTwitchChannel(form) {
+    const d = new FormData(form), id = form.dataset.twitchChannel;
+    const channel = await api('twitch/channel', { ...(id ? { id } : {}), channelName: d.get('channelName'), clientId: d.get('clientId'), events: d.getAll('event') });
+    await api('twitch/credentials', { channelId: channel.channel.id, clientSecret: d.get('clientSecret') || '' });
+    return { id: channel.channel.id, token: d.get('token') || '' };
+  },
+  async authorizeTwitch(form) {
+    const native = Boolean(window.chrome?.webview?.postMessage), popup = native ? null : window.open('about:blank', 'ap-twitch-auth-' + (form.dataset.twitchChannel || 'new'));
+    try {
+      const result = await this.saveTwitchChannel(form);
+      if (result.token) { popup?.close(); await api('twitch/connect', { channelId: result.id, token: result.token }); }
+      else {
+        const auth = await api('twitch/auth', { channelId: result.id });
+        if (native) window.chrome.webview.postMessage({ type: 'openExternal', url: auth.url });
+        else if (popup) { popup.opener = null; popup.location.href = auth.url; }
+        else { const link = document.createElement('a'); link.href = auth.url; link.target = '_blank'; link.rel = 'noreferrer'; link.textContent = 'Twitch-Anmeldung öffnen'; form.append(link); toast('Popup wurde blockiert. Den Link im Formular öffnen.'); }
+      }
+      if (form.id === 'studio-twitch-add-form' && (native || popup || result.token)) $('#drawer').close();
+      LiveUI.committed(form); await refresh(true);
+    } catch (error) { popup?.close(); throw error; }
   },
   extendRule(rule) {
     const form = $('#rule-form'), target = form.elements.namedItem('target');
@@ -213,22 +237,82 @@ const Studio = {
     if (['selected', 'random_selected'].includes(rule.target)) target.value = rule.target;
     const panel = document.createElement('div'); panel.className = 'full'; panel.id = 'rule-selected-targets';
     panel.innerHTML = `<b class="tiny">Spieler auswählen</b><button type="button" class="small ghost" data-action="studio-rule-players">Gespeicherte Spieler auswählen</button>${S.players.filter(p => p.team === S.ap.team && p.type === 1).map(p => `<label class="check-label"><input name="targetKeys" type="checkbox" value="${p.team}:${p.slot}" ${rule.targetKeys?.includes(`${p.team}:${p.slot}`) ? 'checked' : ''}><span>${esc(p.name)} · ${esc(p.game)}${p.approval.enabled ? '' : ' · noch nicht freigegeben'}</span></label>`).join('') || '<p class="help">Zuerst deinen AP-Raum verbinden.</p>'}`;
-    form.querySelector('#rule-recipient-fields').append(panel); this.ruleVisibility();
+    form.querySelector('#rule-recipient-fields').append(panel); this.ruleVisibility(false); form.dataset.ready = 'true';
   },
-  ruleVisibility() {
+  triggerFields(rule) {
+    const channels = Object.fromEntries((S.twitch.channels || []).map(channel => [channel.id, channel.channelName ? '@' + channel.channelName : 'Mein Twitch-Kanal']));
+    if (rule.twitchChannelId && !channels[rule.twitchChannelId]) channels[rule.twitchChannelId] = 'Nicht verbundener gespeicherter Kanal';
+    return `<fieldset class="rule-section"><legend><span>1</span>Auslöser</legend><div class="form-grid"><label>Quelle<select name="source">${options(sourceNames, rule.source)}</select></label><label id="rule-type-field">Ereignis<select name="type">${options(typeNames, rule.type)}</select></label><label class="full" id="rule-channel-field">Twitch-Kanal<select name="twitchChannelId"><option value="">Alle verbundenen Kanäle</option>${options(channels, rule.twitchChannelId || '')}</select></label><label id="rule-amount-field">Mindestens Euro netto<input type="number" name="euros" min="0" max="1000000" step="0.01" value="${rule.minimumCents / 100}"></label><label id="rule-units-field"><span data-units-label>Mindestens Einheiten pro Ereignis</span><input type="number" name="minimumUnits" min="0" max="10000000" step="1" value="${rule.minimumUnits}"><span class="help" data-units-help></span></label><label class="full" id="rule-reward-field">Kanalpunkte-Belohnung<select name="rewardId"><option value="">Alle benutzerdefinierten Belohnungen</option>${rule.rewardId ? `<option value="${esc(rule.rewardId)}" selected>Gespeicherte Belohnung · ${esc(rule.rewardId)}</option>` : ''}<option value="__custom__">Belohnungs-ID selbst eintragen …</option></select><span class="help" id="rule-rewards-help">Verbundene Kanäle liefern die Namen ihrer Belohnungen.</span></label><label class="full" id="rule-custom-reward-field">Belohnungs-ID<input name="customRewardId" value="${esc(rule.rewardId || '')}" placeholder="ID aus Twitch oder deinem Ereignisprotokoll"></label></div><p id="rule-source-description" class="help"></p><details class="disclosure" id="rule-action-filter" ${rule.action ? 'open' : ''}><summary>Optional: bestimmten Button oder externe Aktion filtern</summary><label class="section-gap">Button-/Aktionskennung<input name="action" value="${esc(rule.action || '')}" placeholder="Leer = alle passenden Ereignisse"><span class="help">Nur setzen, wenn dein Spendenbutton oder externer Trigger eine eigene Aktionskennung mitliefert.</span></label></details></fieldset>`;
+  },
+  reveal(element, visible, animate = true) {
+    if (!element) return;
+    const old = element._reveal; old?.animation?.cancel();
+    const state = element._reveal = { visible };
+    const wasVisible = !element.hidden && !element.classList.contains('hidden');
+    if (wasVisible === visible && !old?.animation) return;
+    const reduced = document.documentElement.dataset.motion === 'off' || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const done = () => { if (element._reveal !== state) return; element.hidden = !visible; element.classList.toggle('hidden', !visible); element.style.overflow = ''; state.animation = null; };
+    if (!animate || reduced || !element.animate) { done(); return; }
+    const height = element.getBoundingClientRect().height || element.scrollHeight;
+    element.hidden = false; element.classList.remove('hidden'); element.style.overflow = 'hidden';
+    const expanded = element.scrollHeight;
+    state.animation = element.animate(visible ? [{ height: '0px', opacity: 0, transform: 'translateY(-4px)' }, { height: expanded + 'px', opacity: 1, transform: 'translateY(0)' }] : [{ height: height + 'px', opacity: 1 }, { height: '0px', opacity: 0 }], { duration: visible ? 190 : 140, easing: 'cubic-bezier(.2,.75,.25,1)' });
+    state.animation.finished.then(done).catch(() => {});
+  },
+  triggerVisibility(animate) {
+    const form = $('#rule-form'), source = form.elements.namedItem('source').value, type = form.elements.namedItem('type');
+    const types = source === 'charity' ? { donation: 'Spende' } : source === 'twitch' ? { sub: 'Neues Abo', resub: 'Resub-Mitteilung', gift_sub: 'Verschenkte Abo-Pakete', cheer: 'Bits / Cheer', channel_points: 'Kanalpunkte-Belohnung', any: 'Alle Twitch-Ereignisse' } : source === 'manual' ? { manual: 'Manuell' } : typeNames;
+    const selected = Object.hasOwn(types, type.value) ? type.value : Object.keys(types)[0];
+    if ([...type.options].map(option => option.value + ':' + option.textContent).join('|') !== Object.entries(types).map(([value, label]) => value + ':' + label).join('|')) type.innerHTML = options(types, selected);
+    type.value = selected;
+    const show = (id, visible) => { const element = $('#' + id); this.reveal(element, visible, animate); element.querySelectorAll('input, select, textarea').forEach(control => { control.disabled = !visible; }); };
+    show('rule-type-field', Object.keys(types).length > 1); type.disabled = false;
+    show('rule-channel-field', source === 'twitch');
+    show('rule-amount-field', source === 'charity' || ['external', 'any'].includes(source) && ['donation', 'any'].includes(type.value));
+    show('rule-units-field', source === 'twitch' ? ['cheer', 'gift_sub'].includes(type.value) : ['external', 'any'].includes(source));
+    const reward = source === 'twitch' && type.value === 'channel_points';
+    show('rule-reward-field', reward); show('rule-custom-reward-field', reward && form.elements.namedItem('rewardId').value === '__custom__');
+    form.elements.namedItem('customRewardId').required = reward && form.elements.namedItem('rewardId').value === '__custom__';
+    show('rule-action-filter', ['charity', 'external', 'any'].includes(source));
+    form.querySelector('[data-units-label]').textContent = type.value === 'cheer' ? 'Mindestens Bits pro Cheer' : type.value === 'gift_sub' ? 'Mindestens verschenkte Abos pro Paket' : 'Mindestens Einheiten pro Ereignis';
+    form.querySelector('[data-units-help]').textContent = type.value === 'cheer' ? 'Jeder einzelne Cheer wird mit dieser Anzahl verglichen.' : type.value === 'gift_sub' ? 'Ein Geschenkpaket löst einmal aus. Einzelne Geschenk-Abos werden nicht zusätzlich gezählt.' : 'Vergleich mit units des externen Ereignisses.';
+    $('#rule-source-description').textContent = source === 'charity' ? 'Eine Spende ab dem eingetragenen Netto-Betrag löst die Regel aus.' : source === 'twitch' ? type.value === 'sub' ? 'Jedes neue, selbst bezahlte Abo löst einmal aus.' : type.value === 'resub' ? 'Löst aus, wenn ein Zuschauer seine Abo-Verlängerung als Resub-Mitteilung teilt.' : type.value === 'channel_points' ? 'Löst bei Einlösung der ausgewählten benutzerdefinierten Belohnung aus.' : 'Die Regel verarbeitet Ereignisse aus dem gewählten Twitch-Kanal.' : source === 'manual' ? 'Diese Regel wird über den lokalen Regeltest ausgelöst.' : 'Erweiterte Ereignisfilter für externe oder mehrere Quellen.';
+    const key = source + '|' + type.value + '|' + form.elements.namedItem('twitchChannelId').value;
+    if (form.dataset.triggerKey !== key) { form.dataset.triggerKey = key; if (reward) void this.loadRewards(form); }
+  },
+  async loadRewards(form) {
+    const generation = form._rewardsGeneration = (form._rewardsGeneration || 0) + 1, room = S.rooms.active;
+    const selectedChannel = form.elements.namedItem('twitchChannelId').value;
+    const channels = (S.twitch.channels || []).filter(channel => channel.state === 'connected' && (!selectedChannel || channel.id === selectedChannel));
+    const results = await Promise.allSettled(channels.map(async channel => ({ channel, ...(await api('twitch/rewards?channelId=' + encodeURIComponent(channel.id))) })));
+    if (!form.isConnected || room !== S.rooms.active || generation !== form._rewardsGeneration) return;
+    const rewards = results.filter(result => result.status === 'fulfilled').flatMap(result => result.value.rewards.map(reward => ({ ...reward, channel: result.value.channel.channelName })));
+    const select = form.elements.namedItem('rewardId');
+    const apply = () => {
+      if (!form.isConnected || room !== S.rooms.active || generation !== form._rewardsGeneration) return;
+      const selected = select.value;
+      const choices = { '': 'Alle benutzerdefinierten Belohnungen', ...Object.fromEntries(rewards.map(reward => [reward.id, (reward.channel ? '@' + reward.channel + ' · ' : '') + reward.title + ' · ' + reward.cost + ' Punkte'])) };
+      if (selected && selected !== '__custom__' && !Object.hasOwn(choices, selected)) choices[selected] = 'Gespeicherte Belohnung · ' + selected;
+      choices.__custom__ = 'Belohnungs-ID selbst eintragen …'; select.innerHTML = options(choices, selected);
+      $('#rule-rewards-help').textContent = rewards.length ? rewards.length + ' Belohnungen aus verbundenen Kanälen geladen.' : 'Für die Namensauswahl den passenden Twitch-Kanal verbinden. Eine eigene Belohnungs-ID kann auch direkt eingetragen werden.';
+    };
+    if (select === document.activeElement) select.addEventListener('blur', apply, { once: true }); else apply();
+  },
+  ruleVisibility(animate = true) {
     const form = $('#rule-form'); if (!form) return;
+    this.triggerVisibility(animate && form.dataset.ready === 'true');
     const effect = form.elements.namedItem('effect').value, group = ['deathlink', 'message', 'alert'].includes(effect);
     const mixed = [...form.querySelectorAll('[name="randomEffects"]:checked')].map(e => e.value), has = action => effect === action || effect === 'random_action' && mixed.includes(action);
     const target = form.elements.namedItem('target');
     if (group) target.value = 'group'; else if (target.value === 'group') target.value = 'random';
     const groupOption = [...target.options].find(o => o.value === 'group'); groupOption.hidden = !group;
-    $('#rule-selected-targets').classList.toggle('hidden', group || !['selected', 'random_selected'].includes(target.value));
-    for (const id of ['rule-game-field', 'rule-target-field']) $('#' + id).hidden = group;
-    $('#rule-quantity-field').hidden = group || effect === 'hint';
-    $('#rule-action-mix').classList.toggle('hidden', effect !== 'random_action');
-    $('#rule-item-field').hidden = !has('item') && !has('hint');
-    $('#rule-pool-field').hidden = !has('random_choice');
-    $('#rule-message-field').hidden = !has('message') && !has('alert');
+    this.reveal($('#rule-selected-targets'), !group && ['selected', 'random_selected'].includes(target.value), animate);
+    for (const id of ['rule-game-field', 'rule-target-field']) this.reveal($('#' + id), !group, animate);
+    this.reveal($('#rule-quantity-field'), !group && effect !== 'hint', animate);
+    this.reveal($('#rule-action-mix'), effect === 'random_action', animate);
+    this.reveal($('#rule-item-field'), has('item') || has('hint'), animate);
+    this.reveal($('#rule-pool-field'), has('random_choice'), animate);
+    this.reveal($('#rule-message-field'), has('message') || has('alert'), animate);
     form.elements.namedItem('item').required = has('item') || has('hint');
     form.elements.namedItem('message').required = has('message');
     const descriptions = {
@@ -259,6 +343,8 @@ const Studio = {
     return `<label class="log-game-filter">Spiel im geöffneten Raum<select id="studio-log-game"><option value="">Alle Spiele</option>${options(Object.fromEntries(games.map(g => [g, g])), this.logGame)}</select></label>` + html;
   },
   async click(action, id, button) {
+    if (action === 'studio-twitch-add') return this.twitchAdd();
+    if (action === 'studio-twitch-auth') return this.authorizeTwitch(document.getElementById('studio-twitch-form-' + id));
     if (action === 'studio-player-add') { const form = button.closest('form[data-player-prefix]'); if (form) this.addPlayerRow(form); else this.playersDrawer(true); return; }
     if (action === 'studio-player-remove') { const form = button.closest('form'); button.closest('[data-player-row]').remove(); this.syncPlayerRows(form); return; }
     if (action === 'studio-rule-players') {
@@ -279,17 +365,26 @@ const Studio = {
     if (action === 'studio-use-players') { const form = $('#studio-yaml-form'); form.elements.namedItem('playerNames').value = (S.playerProfiles || []).filter(p => !p.game || p.game === this.entry.game).map(p => p.name).join('\n'); return; }
     if (action === 'studio-all-items') { approvalEditor.catalog.items.forEach(i => approvalEditor.items.add(i)); return renderItemList(); }
     button.disabled = true;
+    button.dataset.busy = 'true';
     try {
-      if (action === 'studio-room-open') { await api('rooms/activate', { id }); this.logGame = ''; this.entry = null; this.loadingGame = ''; await refresh(true); }
+      if (action === 'studio-twitch-connect') { await api('twitch/connect', { channelId: id }); await refresh(true); }
+      else if (action === 'studio-twitch-disconnect') { await api('twitch/disconnect', { channelId: id }); await refresh(true); }
+      else if (action === 'studio-twitch-forget') { await api('credentials/forget', { source: 'twitch', channelId: id }); await refresh(true); }
+      else if (action === 'studio-twitch-remove') { await api('twitch/channel/delete', { channelId: id }); await refresh(true); }
+      else if (action === 'studio-room-open') { await api('rooms/activate', { id }); this.logGame = ''; this.entry = null; this.loadingGame = ''; await refresh(true); }
       else if (action === 'studio-room-archive' || action === 'studio-room-restore') { await api('rooms/archive', { id, archived: action === 'studio-room-archive' }); this.entry = null; this.loadingGame = ''; this.logGame = ''; await refresh(true); }
       else if (action === 'studio-forget-ap' || action === 'studio-forget-twitch') { await api('credentials/forget', { source: action.endsWith('-ap') ? 'ap' : 'twitch' }); await refresh(true); }
       else if (action === 'studio-yaml-save') { await api('yaml/preset', this.yamlData()); await refresh(); $('[data-studio-message]').textContent = 'Einstellungen in diesem Raum gespeichert.'; }
       else if (action === 'studio-yaml-preview') { const result = await api('yaml/generate', this.yamlData()); const pre = $('#studio-yaml-preview'); pre.textContent = result.files.map(f => '# Datei: ' + f.name + '\n' + f.content).join('\n'); pre.classList.remove('hidden'); }
-    } finally { button.disabled = false; }
+    } finally { button.disabled = false; delete button.dataset.busy; }
   },
   async submit(form) {
     const id = form.getAttribute('id'), data = new FormData(form);
-    if (id === 'studio-room-delete-form') {
+    if (id === 'studio-twitch-add-form') { await this.authorizeTwitch(form); }
+    else if (form.hasAttribute('data-twitch-channel')) {
+      const saved = await this.saveTwitchChannel(form); if (saved.token) await api('twitch/connect', { channelId: saved.id, token: saved.token });
+      LiveUI.committed(form); await refresh(true); toast('Twitch-Kanal gespeichert.');
+    } else if (id === 'studio-room-delete-form') {
       await api('rooms/delete', { id: data.get('roomId'), confirmName: data.get('confirmName') }); $('#drawer').close(); this.entry = null; this.loadingGame = ''; this.logGame = ''; await refresh(true);
     } else if (id === 'studio-room-form') {
       const roomId = data.get('roomId');

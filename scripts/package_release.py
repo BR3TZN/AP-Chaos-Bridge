@@ -33,6 +33,8 @@ with zipfile.ZipFile(args.output, 'w', compression=zipfile.ZIP_DEFLATED, compres
             continue
         if args.source and rel.as_posix() in ('assets/apworld-settings.json', 'assets/apworld-downloads.json', 'assets/apworld-validation.json'):
             continue
+        if rel.name == 'AP-Chaos-Bridge.exe' and len(rel.parts) == 1: continue
+        if args.source and rel.parts[:2] == ('assets', 'windows'): continue
         if rel.parts[0] == 'node_modules' and not any(rel.as_posix().startswith(name + '/') for name in runtime): continue
         if rel.as_posix() == 'release-manifest.json': continue
         # Existing updaters allow assets but reject new files at the package root.

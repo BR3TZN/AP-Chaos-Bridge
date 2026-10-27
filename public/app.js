@@ -11,6 +11,56 @@ const connectionNames = { connected: 'Verbunden', disconnected: 'Getrennt', conn
 const time = at => new Date(at).toLocaleTimeString('de-AT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 const eur = cents => new Intl.NumberFormat('de-AT', { style: 'currency', currency: 'EUR' }).format(cents / 100);
 const options = (object, selected) => Object.entries(object).map(([value, label]) => `<option value="${esc(value)}" ${value === selected ? 'selected' : ''}>${esc(label)}</option>`).join('');
+// Reconcile live text and status without replacing controls, open disclosures or
+// forms that the user is editing. Native dropdowns keep the same DOM node.
+const LiveUI = {
+  baselines: new WeakMap(), accepted: new WeakSet(), page: '', room: '',
+  signature(form) { return JSON.stringify([...form.elements].filter(el => el.name && !['submit', 'button'].includes(el.type)).map(el => [el.name, el.type, el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.tagName === 'SELECT' && el.multiple ? [...el.selectedOptions].map(option => option.value) : el.value])); },
+  committed(form) { if (form?.isConnected) this.baselines.set(form, this.signature(form)); },
+  key(node) {
+    if (node.nodeType !== 1) return '';
+    if (node.id) return 'id:' + node.id;
+    if (node.dataset.liveKey) return 'key:' + node.dataset.liveKey;
+    if (node.dataset.action && node.dataset.id) return 'action:' + node.dataset.action + ':' + node.dataset.id;
+    if (node.tagName === 'ARTICLE') { const action = node.querySelector('[data-action][data-id]'); if (action) return 'article:' + action.dataset.action + ':' + action.dataset.id; }
+    return '';
+  },
+  compatible(a, b) { return a.nodeType === b.nodeType && (a.nodeType !== 1 || a.tagName === b.tagName) && this.key(a) === this.key(b); },
+  patch(from, to, acceptedParent = false) {
+    if (from.nodeType !== 1) { if (from.nodeValue !== to.nodeValue) from.nodeValue = to.nodeValue; return; }
+    const accepted = acceptedParent || this.accepted.has(from); this.accepted.delete(from);
+    const focused = !accepted && (from === document.activeElement || from.contains(document.activeElement));
+    if (from.tagName === 'FORM' && !accepted && (focused || this.baselines.has(from) && this.baselines.get(from) !== this.signature(from))) return;
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(from.tagName) && focused) return;
+    const open = from.tagName === 'DETAILS' ? from.open : null, disabled = from.tagName === 'BUTTON' && from.dataset.busy === 'true';
+    for (const attr of [...from.attributes]) if (!to.hasAttribute(attr.name) && !(attr.name === 'open' && open !== null) && !(['disabled', 'data-busy'].includes(attr.name) && disabled)) from.removeAttribute(attr.name);
+    for (const attr of [...to.attributes]) if (!(attr.name === 'open' && open !== null) && from.getAttribute(attr.name) !== attr.value) from.setAttribute(attr.name, attr.value);
+    this.children(from, to, accepted);
+    if (open !== null) from.open = open;
+    if (disabled) from.disabled = true;
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(from.tagName)) { from.value = to.value; if ('checked' in from) from.checked = to.checked; if (from.multiple) [...from.options].forEach((option, i) => { option.selected = to.options[i]?.selected || false; }); }
+    if (from.tagName === 'FORM') this.committed(from);
+  },
+  children(from, to, accepted = false) {
+    const old = [...from.childNodes], used = new Set(), pools = new Map(); let cursor = from.firstChild;
+    const identity = node => node.nodeType + ':' + (node.tagName || '') + ':' + this.key(node);
+    for (const node of old) { const key = identity(node); if (!pools.has(key)) pools.set(key, { nodes: [], index: 0 }); pools.get(key).nodes.push(node); }
+    for (const wanted of [...to.childNodes]) {
+      const pool = pools.get(identity(wanted)); let current = pool?.nodes[pool.index++];
+      if (current) { used.add(current); if (current !== cursor) from.insertBefore(current, cursor); this.patch(current, wanted, accepted); }
+      else { current = wanted.cloneNode(true); from.insertBefore(current, cursor); }
+      cursor = current.nextSibling;
+    }
+    for (const node of old) if (!used.has(node)) node.remove();
+  },
+  render(html) {
+    const root = $('#main'), changed = this.page !== currentPage || this.room !== S.rooms?.active;
+    if (changed || !root.children.length) { root.innerHTML = html; if (this.room && changed) { $('#drawer').close(); approvalEditor = null; } }
+    else { const next = document.createElement('div'); next.innerHTML = html; this.children(root, next); }
+    this.page = currentPage; this.room = S.rooms?.active;
+    root.querySelectorAll('form').forEach(form => { if (!this.baselines.has(form) || this.baselines.get(form) === this.signature(form)) this.committed(form); });
+  },
+};
 const badge = (label, cls = 'neutral') => `<span class="badge ${cls}">${esc(label)}</span>`;
 const pill = state => `<span class="pill ${state === 'connected' ? 'good' : ['reconnecting', 'error'].includes(state) ? 'warn' : ''}">${esc(connectionNames[state] || state)}</span>`;
 const empty = (heading, description, symbol = '↳') => `<div class="empty"><div class="empty-icon">${symbol}</div><strong>${esc(heading)}</strong>${esc(description)}</div>`;
@@ -24,7 +74,7 @@ async function api(path, data) {
 }
 async function refresh(force = false) {
   try { S = await api('state'); render(force); }
-  catch { $('#footer-status').textContent = 'Lokale Bridge nicht erreichbar'; $('#connection-pill').textContent = 'Tool offline'; $('#connection-pill').className = 'pill warn'; }
+  catch { if (!document?.documentElement) return; $('#footer-status').textContent = 'Lokale Bridge nicht erreichbar'; $('#connection-pill').textContent = 'Tool offline'; $('#connection-pill').className = 'pill warn'; }
 }
 function pageHead(kicker, title, description, actions = '') {
   return `<div class="page-head"><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1><p>${esc(description)}</p></div><div class="button-row page-actions">${actions}</div></div>`;
@@ -38,12 +88,12 @@ function sourceLine(abbr, name, description, state, cls = '') { return `<div cla
 function renderRule(r) {
   const target = r.effect === 'deathlink' ? 'DeathLink-Gruppe' : r.effect === 'message' ? 'AP-Raumchat' : r.effect === 'alert' ? 'Nur Anzeige im Stream' : r.target === 'random' ? 'Zufälliger freigegebener Spieler' : r.target === 'all' ? 'Alle passenden Spieler' : r.target === 'random_selected' ? `Zufällig aus ${r.targetKeys?.length || 0} ausgewählten Spielern` : r.target === 'selected' ? `${r.targetKeys?.length || 0} ausgewählte Spieler` : S.players.find(p => `${p.team}:${p.slot}` === r.target)?.name || 'Slot ' + r.target;
   const min = [r.minimumCents ? `ab ${eur(r.minimumCents)}` : '', r.minimumUnits ? `ab ${r.minimumUnits} Einheiten` : '', r.action ? `Aktion: ${r.action}` : ''].filter(Boolean).join(' · ');
-  return `<article class="panel rule-card"><div class="rule-top"><h3>${esc(r.name)}</h3>${badge(r.enabled ? 'Aktiv' : 'Inaktiv', r.enabled ? 'good' : 'neutral')}</div><div class="flow"><div class="flow-cell"><span class="eyebrow">WENN</span><b>${esc(sourceNames[r.source])} · ${esc(typeNames[r.type])}</b><span class="tiny">${esc(min || 'Jedes passende Ereignis')}</span></div><div class="flow-arrow">→</div><div class="flow-cell"><span class="eyebrow">DANN</span><b>${esc(r.effect === 'item' ? r.item : effectNames[r.effect])}</b><span class="tiny">${esc(target)}${r.quantity > 1 ? ' · ' + r.quantity + '×' : ''}</span></div></div><div class="rule-foot"><span class="tiny mono">${r.cooldownSec}s COOLDOWN${r.game ? ' · ' + esc(r.game) : ''}</span><div class="button-row"><button class="small ghost" data-action="test-rule" data-id="${r.id}">Simulieren</button>${S.config.mode === 'live' && !S.ap.demo && r.enabled ? `<button class="small danger" data-action="live-rule" data-id="${r.id}">Live-Test</button>` : ''}<button class="small" data-action="edit-rule" data-id="${r.id}">Bearbeiten</button></div></div></article>`;
+  return `<article class="panel rule-card"><div class="rule-top"><h3>${esc(r.name)}</h3>${badge(r.enabled ? 'Aktiv' : 'Inaktiv', r.enabled ? 'good' : 'neutral')}</div><div class="flow"><div class="flow-cell"><span class="eyebrow">WENN</span><b>${esc(sourceNames[r.source])}${r.twitchChannelId ? ' @' + esc(S.twitch.channels?.find(c => c.id === r.twitchChannelId)?.channelName || 'entfernter Kanal') : ''} · ${esc(typeNames[r.type])}</b><span class="tiny">${esc(min || 'Jedes passende Ereignis')}</span></div><div class="flow-arrow">→</div><div class="flow-cell"><span class="eyebrow">DANN</span><b>${esc(r.effect === 'item' ? r.item : effectNames[r.effect])}</b><span class="tiny">${esc(target)}${r.quantity > 1 ? ' · ' + r.quantity + '×' : ''}</span></div></div><div class="rule-foot"><span class="tiny mono">${r.cooldownSec}s COOLDOWN${r.game ? ' · ' + esc(r.game) : ''}</span><div class="button-row"><button class="small ghost" data-action="test-rule" data-id="${r.id}">Simulieren</button>${S.config.mode === 'live' && !S.ap.demo && r.enabled ? `<button class="small danger" data-action="live-rule" data-id="${r.id}">Live-Test</button>` : ''}<button class="small" data-action="edit-rule" data-id="${r.id}">Bearbeiten</button></div></div></article>`;
 }
 function queueTable(limit = 200) {
   const jobs = [...S.queue].reverse().slice(0, limit);
   if (!jobs.length) return empty('Noch keine Aktionen', 'Ein passendes Ereignis oder ein Regeltest erzeugt hier einen Auftrag.');
-  return `<div class="table-wrap"><table><thead><tr><th>Aktion</th><th>Ziel</th><th>Modus</th><th>Status</th><th>Zeit</th><th></th></tr></thead><tbody>${jobs.map(j => `<tr><td><strong>${esc(j.item || effectNames[j.effect])}</strong><small>${esc(j.ruleName)} · ${esc(j.user)}</small></td><td>${esc(j.targetName)}<small>${esc(j.game || 'Eigenes AP-Team')}</small></td><td>${badge(j.dryRun ? 'Test' : 'LIVE', j.dryRun ? 'neutral' : 'warn')}</td><td>${badge(statusNames[j.status] || j.status, ['uncertain', 'failed'].includes(j.status) ? 'bad' : ['confirmed', 'simulated'].includes(j.status) ? 'good' : 'neutral')}<small>${esc(j.detail || '')}</small></td><td class="mono">${time(j.createdAt)}</td><td>${j.status === 'queued' ? `<button class="small ghost" data-action="cancel-job" data-id="${j.id}">Verwerfen</button>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
+  return `<div class="table-wrap"><table><thead><tr><th>Aktion</th><th>Ziel</th><th>Modus</th><th>Status</th><th>Zeit</th><th></th></tr></thead><tbody>${jobs.map(j => `<tr><td><strong>${esc(j.item || effectNames[j.effect])}</strong><small>${esc(j.ruleName)} · ${esc(j.user)}${j.channel ? ' · @' + esc(j.channel) : ''}</small></td><td>${esc(j.targetName)}<small>${esc(j.game || 'Eigenes AP-Team')}</small></td><td>${badge(j.dryRun ? 'Test' : 'LIVE', j.dryRun ? 'neutral' : 'warn')}</td><td>${badge(statusNames[j.status] || j.status, ['uncertain', 'failed'].includes(j.status) ? 'bad' : ['confirmed', 'simulated'].includes(j.status) ? 'good' : 'neutral')}<small>${esc(j.detail || '')}</small></td><td class="mono">${time(j.createdAt)}</td><td>${j.status === 'queued' ? `<button class="small ghost" data-action="cancel-job" data-id="${j.id}">Verwerfen</button>` : ''}</td></tr>`).join('')}</tbody></table></div>`;
 }
 function dashboard() {
   return pageHead('DEIN RUN IM BLICK', 'Übersicht', 'Verbindungen prüfen, Empfänger freigeben und Zuschaueraktionen steuern.', `<button class="ghost" data-action="demo">Demo öffnen</button><button class="primary" data-action="new-rule">+ Neue Regel</button>`)
@@ -87,7 +137,7 @@ function eventsPage() {
   const tabs = { queue: 'Warteschlange', incoming: 'Eingänge', logs: 'Systemprotokoll' };
   let content = '';
   if (eventTab === 'queue') content = queueTable();
-  if (eventTab === 'incoming') content = S.events.length ? `<div class="table-wrap"><table><thead><tr><th>Ereignis</th><th>Auslöser</th><th>Zuordnung</th><th>Modus</th><th>Zeit</th></tr></thead><tbody>${S.events.map(e => `<tr><td><strong>${esc(sourceNames[e.source])} · ${esc(typeNames[e.type])}</strong><small>${esc(e.user)} · ${esc(e.id)}</small></td><td>${e.amountCents ? esc(eur(e.amountCents)) : esc(e.units || '—')}<small>${esc(e.action || '')}</small></td><td>${e.jobs || 0} Aufträge<small>${esc(e.matchedRules?.join(', ') || 'Keine passende aktive Regel')}${e.errors?.length ? '<br>' + e.errors.map(esc).join('<br>') : ''}</small></td><td>${badge(e.dryRun ? 'Test' : 'LIVE', e.dryRun ? 'neutral' : 'warn')}</td><td class="mono">${time(e.receivedAt)}</td></tr>`).join('')}</tbody></table></div>` : empty('Noch keine Eingänge', 'Nur tatsächlich empfangene oder lokal simulierte Ereignisse erscheinen hier.');
+  if (eventTab === 'incoming') content = S.events.length ? `<div class="table-wrap"><table><thead><tr><th>Ereignis</th><th>Auslöser</th><th>Zuordnung</th><th>Modus</th><th>Zeit</th></tr></thead><tbody>${S.events.map(e => `<tr><td><strong>${esc(sourceNames[e.source])}${e.channel ? ' @' + esc(e.channel) : ''} · ${esc(typeNames[e.type])}</strong><small>${esc(e.user)} · ${esc(e.id)}</small></td><td>${e.amountCents ? esc(eur(e.amountCents)) : esc(e.units || '—')}<small>${esc(e.action || '')}</small></td><td>${e.jobs || 0} Aufträge<small>${esc(e.matchedRules?.join(', ') || 'Keine passende aktive Regel')}${e.errors?.length ? '<br>' + e.errors.map(esc).join('<br>') : ''}</small></td><td>${badge(e.dryRun ? 'Test' : 'LIVE', e.dryRun ? 'neutral' : 'warn')}</td><td class="mono">${time(e.receivedAt)}</td></tr>`).join('')}</tbody></table></div>` : empty('Noch keine Eingänge', 'Nur tatsächlich empfangene oder lokal simulierte Ereignisse erscheinen hier.');
   if (eventTab === 'logs') content = S.logs.length ? S.logs.map(l => `<div class="activity-row"><span class="activity-dot ${l.level === 'error' ? 'error' : ''}"></span><div class="message">${esc(l.message)}</div><span class="timestamp">${time(l.at)}</span></div>`).join('') : empty('Kein Systemprotokoll', 'Verbindungsinformationen erscheinen nach dem ersten Verbindungsversuch.');
   return pageHead('NACHVOLLZIEHBARKEIT', 'Jede Aktion sichtbar.', '„AP bestätigt“ bedeutet: am Server zugestellt. Ob der Effekt im Spiel ausgeführt wurde, quittiert Archipelago hier nicht.', '<button class="ghost" data-action="clear-queue">Wartende verwerfen</button>') + modeNotice() + `<div class="tabs">${Object.entries(tabs).map(([key, label]) => `<button class="${eventTab === key ? 'active' : ''}" data-action="event-tab" data-id="${key}">${label}</button>`).join('')}</div><section class="panel">${content}</section><p class="help">Unklare Zustellungen werden niemals automatisch wiederholt. Neu erzeugte Ereignisse mit neuer ID können dieselbe Aktion erneut auslösen.</p>`;
 }
@@ -98,7 +148,7 @@ function settingsPage() {
     + `<details class="panel advanced-section section-gap"><summary>Erweitert: Warteschlange & Zeitlimits</summary><div class="advanced-body"><form id="limits-form"><div class="form-grid narrow"><label>Abstand zwischen Aktionen (Sekunden)<input type="number" name="globalCooldownSec" min="0" max="3600" step="0.25" value="${S.config.globalCooldownSec}"></label><label>Maximal wartende Aktionen<input type="number" name="maxQueue" min="1" max="1000" value="${S.config.maxQueue}"></label><label>Auftrag gültig (Sekunden)<input type="number" name="queueTtlSec" min="30" max="86400" value="${S.config.queueTtlSec}"></label><label>Ereignis höchstens alt (Sekunden)<input type="number" name="eventMaxAgeSec" min="10" max="3600" value="${S.config.eventMaxAgeSec}"></label></div><button type="submit">Zeitlimits speichern</button></form><p class="help">Die Standards passen für die meisten Runs. Regelpausen und diese Zeitlimits verhindern zu viele gleichzeitig ausgeführte Aktionen.</p></div></details><section class="panel panel-pad section-gap"><h2>Bridge beenden</h2><p class="help">Schließt die Verbindungen und pausiert die Ausführung. Bereits im Spiel zugestellte Effekte bleiben bestehen.</p><button class="danger section-gap" data-action="shutdown">Tool beenden</button></section>`;
 }
 function render(force = false) {
-  if (!S) return;
+  if (!S || !document?.documentElement) return;
   const page = currentPage.split('/')[0];
   if (!names[page]) currentPage = 'regie';
   $('#breadcrumb').textContent = names[page] || names.regie;
@@ -106,23 +156,15 @@ function render(force = false) {
   Appearance.sync(S.appearance);
   document.querySelectorAll('[data-page]').forEach(a => a.classList.toggle('active', a.dataset.page === currentPage));
   const cp = $('#connection-pill'); cp.textContent = S.ap.demo ? 'AP · Demo' : S.ap.connected ? 'AP verbunden' : 'AP getrennt'; cp.className = 'pill ' + (S.ap.connected ? 'good' : '');
-  $('#mode').value = S.config.mode;
-  $('#source-count').textContent = [S.charity, S.twitch].filter(x => x.state === 'connected').length;
+  if ($('#mode') !== document.activeElement && $('#mode').value !== S.config.mode) $('#mode').value = S.config.mode;
+  $('#source-count').textContent = [S.charity, ...(S.twitch.channels || [])].filter(x => x.state === 'connected').length;
   $('#footer-status').textContent = S.ap.demo ? 'Demo · keine Spielverbindung' : S.ap.connected ? S.ap.seed + (S.ap.admin ? ' · Admin aktiv' : ' · Admin fehlt') : 'Lokal · kein AP-Raum verbunden';
   document.querySelectorAll('.version, footer b').forEach(el => el.textContent = el.classList.contains('version') ? S.version : 'V' + S.version);
   Updates.sync();
-  if (!force && ['quellen', 'einrichtung'].includes(currentPage) && $('#main').children.length) {
-    document.querySelectorAll('[data-status]').forEach(el => el.innerHTML = sourceStatus(el.dataset.status));
-    const authStatus = $('#ap-form .statusbar');
-    if (authStatus) authStatus.innerHTML = badge(S.ap.connected ? 'AP verbunden' : 'AP getrennt', S.ap.connected ? 'good' : '') + badge(S.ap.admin ? 'Admin angemeldet' : 'Admin nicht angemeldet', S.ap.admin ? 'good' : 'warn');
-    return;
-  }
-  if (!force && document.activeElement?.closest('form')) return;
-  if (!force && page === 'spiel' && $('#studio-yaml-form')) return;
   const search = page === 'katalog' ? $('#studio-search') : null;
   const searchSelection = search && search === document.activeElement ? [search.selectionStart, search.selectionEnd, search.selectionDirection] : null;
   const pages = { regie: dashboard, quellen: () => Studio.sourcesPage(sourcesPage()), spielslots: () => slotsPage() + Studio.playersPanel(), design: () => Appearance.page(), alerts: () => Alerts.page(), regeln: rulesPage, ereignisse: () => Studio.eventsPage(eventsPage), einrichtung: settingsPage, katalog: () => Studio.catalogPage(), raeume: () => Studio.roomsPage(), spiel: () => Studio.gamePage() };
-  $('#main').innerHTML = (pages[page] || dashboard)();
+  LiveUI.render((pages[page] || dashboard)());
   if (searchSelection) {
     const next = $('#studio-search'); next.focus({ preventScroll: true }); next.setSelectionRange(...searchSelection);
   }
@@ -136,7 +178,7 @@ function editRule(id) {
   const targets = { random: 'Ein zufälliger freigegebener Spieler', all: 'Alle passenden freigegebenen Spieler', ...Object.fromEntries(S.players.filter(p => p.team === S.ap.team && p.type === 1).map(p => [`${p.team}:${p.slot}`, `${p.name} · ${p.game}`])), group: 'Gruppe / Anzeige' };
   const selectedEffects = r.randomEffects?.length ? r.randomEffects : ['random_item', ...(r.includeDeathLink ? ['deathlink'] : [])];
   showDrawer(drawerHead(id ? 'Regel bearbeiten' : 'Neue Regel', 'Lege fest, wann etwas passiert, was passiert und wen es trifft.') + `<form id="rule-form"><div class="drawer-body"><input type="hidden" name="id" value="${esc(r.id || '')}"><label class="section-gap">Name der Regel<input name="name" value="${esc(r.name)}" maxlength="100" required></label>
-  <fieldset class="rule-section"><legend><span>1</span>Auslöser</legend><div class="form-grid"><label>Quelle<select name="source">${options(sourceNames, r.source)}</select></label><label>Ereignis<select name="type">${options(typeNames, r.type)}</select></label><label>Mindestens Euro netto<input type="number" name="euros" min="0" max="1000000" step="0.01" value="${r.minimumCents / 100}"></label><label>Mindestens Subs / Bits<input type="number" name="minimumUnits" min="0" max="10000000" value="${r.minimumUnits}"></label></div><details class="disclosure" ${r.action || r.rewardId ? 'open' : ''}><summary>Bestimmten Spendenbutton oder Kanalpunkte-Reward verwenden</summary><label class="section-gap">Button-/Aktionskennung <span class="muted">(leer = alle)</span><input name="action" value="${esc(r.action)}" placeholder="Zum Beispiel random-trap"><span class="help">Wird mit der Aktionskennung des eingehenden Ereignisses verglichen, bei Charity Royale mit metadata.action.</span></label><label class="section-gap">Kanalpunkte-Reward-ID <span class="muted">(optional)</span><input name="rewardId" value="${esc(r.rewardId || '')}"></label></details></fieldset>
+  ${Studio.triggerFields(r)}
   <fieldset class="rule-section"><legend><span>2</span>Aktion</legend><label class="section-gap">Was soll passieren?<select name="effect" id="rule-effect">${options(effectNames, r.effect)}</select></label><div id="rule-effect-description" class="action-description"></div>
   <div class="random-help" id="rule-action-mix"><b class="tiny">Diese Aktionsarten dürfen zufällig gewählt werden</b><div class="mix-options">${Object.entries(effectNames).filter(([key]) => key !== 'random_action').map(([key, label]) => `<label class="check-label"><input type="checkbox" name="randomEffects" value="${key}" ${selectedEffects.includes(key) ? 'checked' : ''}><span>${esc(label)}</span></label>`).join('')}</div><p class="help">Jede aktuell mögliche, ausgewählte Aktionsart hat dieselbe Chance. Ist ein Pool leer oder eine Aktion gesperrt, wird sie ausgelassen. DeathLink braucht zusätzlich die Gruppenfreigabe.</p></div>
   <label class="section-gap" id="rule-item-field">Itemname<input name="item" list="rule-items" value="${esc(r.item || '')}" placeholder="Item aus dem verbundenen Raum wählen"><datalist id="rule-items"></datalist></label><label class="section-gap" id="rule-pool-field">Eigene Zufallsliste · ein Itemname pro Zeile<textarea name="itemPool" rows="5" placeholder="Bomb Trap&#10;Potion">${esc((r.itemPool || []).join('\n'))}</textarea><span class="help">Pro Empfänger werden nur Namen verwendet, die in dessen Raumkatalog stehen und für ihn erlaubt sind.</span></label><label class="section-gap" id="rule-message-field">Text<input name="message" value="${esc(r.message || '')}" maxlength="300" placeholder="{user} hat eine Aktion ausgelöst!"><span class="help">{user} setzt den Zuschauernamen ein, {rule} den Regelnamen. AP-Chatnachrichten erhalten den Präfix [AP Chaos].</span></label></fieldset>
@@ -199,7 +241,7 @@ document.addEventListener('click', async event => {
     if (action === 'copy-overlay') { await navigator.clipboard.writeText(location.origin + '/overlay'); return toast('OBS-URL kopiert.'); }
     if (action === 'candidate-pool') { for (const i of approvalEditor.catalog.candidates) if (approvalEditor.catalog.items.includes(i)) { approvalEditor.items.add(i); approvalEditor.traps.add(i); } return renderItemList(); }
     if (action === 'empty-pool') { approvalEditor.items.clear(); approvalEditor.traps.clear(); return renderItemList(); }
-    button.disabled = true;
+    button.disabled = true; button.dataset.busy = 'true';
     if (action === 'demo') { await api('demo', {}); toast('Demo geöffnet. Simuliere eine Regel.'); }
     else if (action === 'pause') await api('pause', { paused: !S.config.paused });
     else if (action === 'disconnect-ap') await api('ap/disconnect', {});
@@ -214,7 +256,7 @@ document.addEventListener('click', async event => {
     else if (action === 'shutdown') { await api('shutdown', {}); toast('Tool wird beendet.'); return; }
     await refresh(true);
   } catch (error) { toast(error.message, true); }
-  finally { button.disabled = false; }
+  finally { button.disabled = false; delete button.dataset.busy; }
 });
 document.addEventListener('submit', async event => {
   const form = event.target;
@@ -226,7 +268,8 @@ document.addEventListener('submit', async event => {
   const d = new FormData(form), submit = form.querySelector('[type=submit]');
   const previousError = form.querySelector('[data-form-error]');
   if (previousError) previousError.textContent = '';
-  if (submit) submit.disabled = true;
+  if (submit) { submit.disabled = true; submit.dataset.busy = 'true'; }
+  let succeeded = true;
   try {
     if (formId === 'appearance-form') { await Appearance.submit(); return; }
     if (formId === 'alerts-form' || formId === 'alerts-media-form') { await Alerts.submit(form); return; }
@@ -241,7 +284,7 @@ document.addEventListener('submit', async event => {
     }
     else if (formId === 'limits-form') await api('config', Object.fromEntries([...d].map(([k, v]) => [k, Number(v)])));
     else if (formId === 'rule-form') {
-      const r = Object.fromEntries(d); r.enabled = d.has('enabled'); r.minimumCents = Math.round(Number(d.get('euros')) * 100); r.targetKeys = d.getAll('targetKeys'); r.randomEffects = d.getAll('randomEffects'); r.includeDeathLink = r.randomEffects.includes('deathlink'); r.itemPool = String(d.get('itemPool') || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean);
+      const r = Object.fromEntries(d); r.enabled = d.has('enabled'); r.minimumCents = Math.round(Number(d.get('euros') || 0) * 100); r.rewardId = d.get('rewardId') === '__custom__' ? d.get('customRewardId') || '' : d.get('rewardId') || ''; r.targetKeys = d.getAll('targetKeys'); r.randomEffects = d.getAll('randomEffects'); r.includeDeathLink = r.randomEffects.includes('deathlink'); r.itemPool = String(d.get('itemPool') || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean);
       if (r.effect === 'random_action' && !r.randomEffects.length) throw new Error('Mindestens eine Zufallsaktion auswählen.');
       await api('rule', r); $('#drawer').close(); toast('Regel gespeichert.');
     } else if (formId === 'approval-form') {
@@ -251,6 +294,7 @@ document.addEventListener('submit', async event => {
     else if (formId === 'config-form') { await api('import', JSON.parse(d.get('text'))); $('#drawer').close(); toast('Konfiguration importiert.'); }
     await refresh(true);
   } catch (error) {
+    succeeded = false;
     let errorMessage = form.querySelector('[data-form-error]');
     if (!errorMessage) {
       errorMessage = document.createElement('p');
@@ -262,7 +306,7 @@ document.addEventListener('submit', async event => {
     errorMessage.textContent = error.message;
     toast(error.message, true);
   }
-  finally { if (submit) submit.disabled = false; }
+  finally { if (succeeded) { LiveUI.committed(form); if (document?.querySelector('#main')?.contains(form)) { LiveUI.accepted.add(form); await refresh(true); } } if (submit) { submit.disabled = false; delete submit.dataset.busy; } }
 });
 document.addEventListener('change', async event => {
   const t = event.target;

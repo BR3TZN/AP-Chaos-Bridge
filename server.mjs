@@ -6,7 +6,8 @@ import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { Store, VERSION, PROFILES, normalizeRule, parseYamlProfiles, text, number } from './lib/model.mjs';
 import { Engine } from './lib/engine.mjs';
 import { Archipelago } from './lib/archipelago.mjs';
-import { CharitySource, TwitchSource, TWITCH_EVENTS, verifyCharity } from './lib/sources.mjs';
+import { CharitySource, TWITCH_EVENTS, verifyCharity } from './lib/sources.mjs';
+import { TwitchChannels, normalizeTwitchChannel } from './lib/twitch-channels.mjs';
 import { Vault } from './lib/vault.mjs';
 import { Rooms } from './lib/rooms.mjs';
 import { GameLibrary } from './lib/game-library.mjs';
@@ -15,6 +16,8 @@ import { writeZip, APWORLD_LIMITS, APWORLD_BASE64_LIMIT } from './lib/zip.mjs';
 import { connectionConfig } from './lib/address.mjs';
 import { Updater } from './lib/updater.mjs';
 import { Presentation, normalizeAlerts } from './lib/presentation.mjs';
+import { desktopExecutable, desktopRootId, desktopParent } from './lib/desktop.mjs';
+import { spawn } from 'node:child_process';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const secretEquals = (a, b) => typeof a === 'string' && Buffer.byteLength(a) === Buffer.byteLength(b) && timingSafeEqual(Buffer.from(a), Buffer.from(b));
@@ -39,7 +42,15 @@ function cleanConfig(old, raw) {
   if (raw.twitch) {
     const events = raw.twitch.events ?? c.twitch.events;
     if (!Array.isArray(events) || events.some(e => !Object.hasOwn(TWITCH_EVENTS, e))) throw new Error('Unbekannter Twitch-Ereignistyp.');
-    c.twitch = { clientId: text(raw.twitch.clientId ?? c.twitch.clientId), broadcasterId: text(raw.twitch.broadcasterId ?? c.twitch.broadcasterId), events: [...new Set(events)] };
+    c.twitch = { ...c.twitch, clientId: text(raw.twitch.clientId ?? c.twitch.clientId), broadcasterId: text(raw.twitch.broadcasterId ?? c.twitch.broadcasterId), channelName: text(raw.twitch.channelName ?? c.twitch.channelName ?? '', 25).replace(/^@/, '').toLowerCase(), events: [...new Set(events)] };
+    if (raw.twitch.channels !== undefined) {
+      if (!Array.isArray(raw.twitch.channels) || raw.twitch.channels.length > 20) throw new Error('Höchstens 20 Twitch-Kanäle.');
+      c.twitch.channels = raw.twitch.channels.map(channel => {
+        if (!/^[\w-]{1,80}$/.test(channel.id || '') || channel.id === 'default') throw new Error('Ungültige Twitch-Kanal-ID.');
+        return normalizeTwitchChannel(channel, { id: channel.id });
+      });
+      if (new Set(c.twitch.channels.map(channel => channel.id)).size !== c.twitch.channels.length || new Set(c.twitch.channels.map(channel => channel.channelName)).size !== c.twitch.channels.length) throw new Error('Twitch-Kanäle müssen eindeutig sein.');
+    }
   }
   return c;
 }
@@ -53,7 +64,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   const keyFile = join(directory, 'integration-key.txt');
   const integrationKey = !memory && existsSync(keyFile) ? readFileSync(keyFile, 'utf8').trim() : randomBytes(32).toString('hex');
   if (!memory && !existsSync(keyFile)) { mkdirSync(directory, { recursive: true }); writeFileSync(keyFile, integrationKey, { mode: 0o600 }); }
-  let engine; const listeners = new Set(); let updateTimer, pendingOAuth;
+  let engine; const listeners = new Set(); let updateTimer; const pendingOAuth = new Map();
   const changed = () => { if (!updateTimer) updateTimer = setTimeout(() => { updateTimer = null; for (const response of listeners) response.write('event: change\ndata: {}\n\n'); }, 50); };
   const log = (level, message) => { store.log(level, message); changed(); };
   const updater = new Updater({ root: updateRoot, directory, fetchImpl, getToken: () => vault.get('__application_updates__').githubToken || '', changed, allowInstall: updateRestart });
@@ -61,10 +72,25 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   engine = new Engine(store, ap); engine.onChange = changed;
   const ingest = event => engine.ingest(event);
   const charity = new CharitySource({ getConfig: () => store.state.config.charity, ingest, log, changed });
-  const saveTokens = tokens => { if (store.state.config.rememberConnections) vault.update(rooms.id, tokens); };
-  const twitch = new TwitchSource({ getConfig: () => store.state.config.twitch, ingest, log, changed, fetchImpl, onTokens: saveTokens, ...(twitchSocketUrl ? { socketUrl: twitchSocketUrl } : {}) });
-  function connectTwitch(token, values = vault.get(rooms.id)) {
-    return twitch.connect(token, { refreshToken: values.twitchRefresh || '', clientSecret: values.twitchSecret || '' });
+  const twitchSecrets = (id = 'default') => id === 'default' ? vault.get(rooms.id) : vault.get(rooms.id).twitchChannels?.[id] || {};
+  function writeTwitchSecrets(id, values) {
+    if (id === 'default') vault.update(rooms.id, values);
+    else vault.update(rooms.id, { twitchChannels: { ...(vault.get(rooms.id).twitchChannels || {}), [id]: { ...twitchSecrets(id), ...values } } });
+  }
+  const twitch = new TwitchChannels({ getConfig: () => store.state.config.twitch, getRoom: () => rooms.id, getLegacyAuto: () => store.state.config.autoConnect.twitch,
+    getSecrets: twitchSecrets, saveSecrets: (id, values) => { if (store.state.config.rememberConnections) writeTwitchSecrets(id, values); },
+    onIdentity: (id, values) => { Object.assign(twitch.config(id), values); store.save(); }, ingest, log, changed, fetchImpl, ...(twitchSocketUrl ? { socketUrl: twitchSocketUrl } : {}) });
+  function connectTwitch(token, values, id = 'default') {
+    values ||= twitchSecrets(id);
+    return twitch.connect(token, { refreshToken: values.twitchRefresh || '', clientSecret: values.twitchSecret || '' }, id);
+  }
+  function twitchAuto(id, value) { if (id === 'default') store.state.config.autoConnect.twitch = value; else twitch.config(id).autoConnect = value; }
+  function resolveTwitchSecret(id, field, value) { return value === undefined || value === '••••••••' ? twitchSecrets(id)[field] || '' : vault.resolve(rooms.id, field, value); }
+  function invalidateOAuth(id) { for (const [state, flow] of pendingOAuth) if (id === undefined || flow.channelId === id) pendingOAuth.delete(state); }
+  function oauthFlow(state) {
+    const flow = typeof state === 'string' && pendingOAuth.get(state);
+    if (!flow || flow.room !== rooms.id || flow.expires < Date.now() || twitch.config(flow.channelId).clientId !== flow.clientId) throw new Error('Twitch-Anmeldung ist abgelaufen oder gehört zu einem anderen Raum oder Kanal.');
+    return flow;
   }
   async function resumeConnections() {
     const config = store.state.config, saved = vault.get(rooms.id);
@@ -72,7 +98,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
       try { ap.connect(config.ap, saved.roomPassword || '', saved.adminPassword || ''); } catch (e) { log('error', 'AP-Wiederverbindung: ' + e.message); }
     }
     if (config.autoConnect.charity && config.charity.slug) { try { charity.connect(); } catch (e) { log('error', e.message); } }
-    if (config.autoConnect.twitch && saved.twitchToken) { try { await connectTwitch(saved.twitchToken, saved); } catch (e) { log('error', 'Twitch-Wiederverbindung: ' + e.message); } }
+    await twitch.resume();
   }
   let roomBusy = false;
   async function changeRoom(action) {
@@ -82,7 +108,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   async function switchRoom(id) {
     rooms.require(id, { activeOnly: true }); if (id === rooms.id) return;
     if (engine.busy) throw new Error('Ein Versand läuft noch. Nach dessen Abschluss den Raum wechseln.');
-    charity.disconnect(); twitch.disconnect(); ap.disconnect(); pendingOAuth = null;
+    charity.disconnect(); twitch.reset(); ap.disconnect(); pendingOAuth.clear();
     ap.players = []; ap.catalogs = {}; ap.seed = ''; ap.roomKey = ''; ap.slotInfo = null; ap.networkPlayers = null;
     rooms.activate(id); await resumeConnections(); changed();
   }
@@ -124,19 +150,18 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     if (!oauthLanding && req.headers.origin && !new Set([`http://127.0.0.1:${actualPort}`, `http://localhost:${actualPort}`]).has(req.headers.origin)) return json(res, { error: 'Fremder Origin abgelehnt.' }, 403);
     try {
       if (oauthLanding && url.searchParams.has('code')) {
-        const flow = pendingOAuth;
-        if (!flow || flow.expires < Date.now() || flow.room !== rooms.id || !secretEquals(url.searchParams.get('state'), flow.state)) throw new Error('Twitch-Anmeldung ist abgelaufen oder gehört zu einem anderen Raum.');
-        pendingOAuth = null;
-        const credentials = vault.get(rooms.id), room = rooms.id;
-        const tokenResponse = await fetchImpl('https://id.twitch.tv/oauth2/token', { method: 'POST', body: new URLSearchParams({ grant_type: 'authorization_code', client_id: store.state.config.twitch.clientId, client_secret: credentials.twitchSecret || '', code: url.searchParams.get('code'), redirect_uri: `http://localhost:${actualPort}/oauth/callback` }), signal: AbortSignal.timeout(12000) });
+        const state = url.searchParams.get('state'), flow = oauthFlow(state); pendingOAuth.delete(state);
+        const credentials = twitchSecrets(flow.channelId), room = rooms.id;
+        const tokenResponse = await fetchImpl('https://id.twitch.tv/oauth2/token', { method: 'POST', body: new URLSearchParams({ grant_type: 'authorization_code', client_id: flow.clientId, client_secret: credentials.twitchSecret || '', code: url.searchParams.get('code'), redirect_uri: `http://localhost:${actualPort}/oauth/callback` }), signal: AbortSignal.timeout(12000) });
         if (!tokenResponse.ok) throw new Error('Twitch-Code konnte nicht eingelöst werden. Client-ID, Client Secret und Redirect-URL prüfen.');
         const tokens = await tokenResponse.json();
         if (rooms.id !== room) throw new Error('Raum wurde während der Anmeldung gewechselt.');
-        await connectTwitch(tokens.access_token, { ...credentials, twitchRefresh: tokens.refresh_token || '' });
-        store.state.config.autoConnect.twitch = true; store.save();
+        await connectTwitch(tokens.access_token, { ...credentials, twitchRefresh: tokens.refresh_token || '' }, flow.channelId);
+        twitchAuto(flow.channelId, true); store.save();
         res.writeHead(303, { Location: '/oauth/callback?complete=1' }); res.end(); return;
       }
       if (req.method === 'GET' && path === '/api/state') return json(res, snapshot());
+      if (req.method === 'GET' && path === '/api/desktop') return json(res, { name: 'AP Chaos Bridge', version: VERSION, rootId: desktopRootId(root), pid: process.pid, desktopPid: desktopParent() || null, session });
       if (req.method === 'GET' && path === '/api/overlay') {
         const alerts = normalizeAlerts({}, store.state.config.alerts);
         if (alerts.media && !presentation.has(alerts.media)) alerts.media = '';
@@ -166,6 +191,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
       }
       if (req.method === 'GET' && path === '/api/game-library') return json(res, gameLibraryList());
       if (req.method === 'GET' && path === '/api/game-settings') return json(res, gameEntry(url.searchParams.get('game'), url.searchParams.get('sourceId') || undefined));
+      if (req.method === 'GET' && path === '/api/twitch/rewards') return json(res, { rewards: await twitch.rewards(url.searchParams.get('channelId') || 'default') });
       if (req.method === 'GET' && path === '/api/export') {
         res.setHeader('Content-Disposition', 'attachment; filename="AP-Chaos-Bridge-Konfiguration.json"');
         return json(res, { schema: 1, config: { ...store.state.config, mode: 'test', paused: true, deathLinkArmed: false }, rules: store.state.rules, approvals: store.state.approvals });
@@ -208,7 +234,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (path === '/api/config') {
           const next = cleanConfig(store.state.config, data);
           if (JSON.stringify(next.charity) !== JSON.stringify(store.state.config.charity)) charity.disconnect();
-          if (JSON.stringify(next.twitch) !== JSON.stringify(store.state.config.twitch)) twitch.disconnect();
+          if (JSON.stringify(next.twitch) !== JSON.stringify(store.state.config.twitch)) { if (data.twitch?.channels) { twitch.reset(); invalidateOAuth(); } else { twitch.disconnect('default'); invalidateOAuth('default'); } }
           store.state.config = next;
         } else if (path === '/api/rooms/create') {
           const room = rooms.create(data); changed(); return json(res, { room });
@@ -251,11 +277,30 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
           res.writeHead(200, { 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="Archipelago-Spieler-YAMLs.zip"' }); res.end(writeZip(files)); return;
         } else if (path === '/api/credentials/forget') {
           if (data.source === 'ap') { ap.disconnect(); store.state.config.autoConnect.ap = false; vault.update(rooms.id, { roomPassword: '', adminPassword: '' }); }
-          else if (data.source === 'twitch') { twitch.disconnect(); pendingOAuth = null; store.state.config.autoConnect.twitch = false; vault.update(rooms.id, { twitchToken: '', twitchRefresh: '', twitchSecret: '' }); }
+          else if (data.source === 'twitch') { const id = data.channelId || 'default'; twitch.config(id); twitch.disconnect(id); invalidateOAuth(id); twitchAuto(id, false); writeTwitchSecrets(id, { twitchToken: '', twitchRefresh: '', twitchSecret: '' }); }
           else throw new Error('Unbekannte Verbindung.');
         } else if (path === '/api/twitch/credentials') {
-          const twitchSecret = vault.resolve(rooms.id, 'twitchSecret', data.clientSecret);
-          vault.update(rooms.id, { twitchSecret });
+          const id = data.channelId || 'default'; twitch.config(id);
+          const twitchSecret = resolveTwitchSecret(id, 'twitchSecret', data.clientSecret);
+          writeTwitchSecrets(id, { twitchSecret });
+        } else if (path === '/api/twitch/channel') {
+          const id = data.id;
+          const existing = id ? { ...twitch.config(id), id, ...(id === 'default' ? { autoConnect: store.state.config.autoConnect.twitch } : {}) } : {};
+          const profile = normalizeTwitchChannel(data, existing);
+          if (twitch.configs().some(channel => channel.id !== profile.id && channel.channelName?.toLowerCase() === profile.channelName)) throw new Error('Dieser Kanal ist bereits eingetragen.');
+          if (id) {
+            const changedSettings = existing.clientId !== profile.clientId || existing.channelName !== profile.channelName || JSON.stringify(existing.events) !== JSON.stringify(profile.events);
+            if (changedSettings) { twitch.disconnect(id); invalidateOAuth(id); profile.autoConnect = false; if (existing.clientId !== profile.clientId || existing.channelName !== profile.channelName) { profile.broadcasterId = ''; writeTwitchSecrets(id, { twitchToken: '', twitchRefresh: '', twitchSecret: '' }); } }
+            if (id === 'default') { Object.assign(store.state.config.twitch, profile); store.state.config.autoConnect.twitch = profile.autoConnect; } else store.state.config.twitch.channels = store.state.config.twitch.channels.map(channel => channel.id === id ? profile : channel);
+          } else {
+            if (twitch.configs().length >= 20) throw new Error('Höchstens 20 Twitch-Kanäle pro Raum.');
+            store.state.config.twitch.channels.push(profile);
+          }
+          store.save(); changed(); return json(res, { channel: profile });
+        } else if (path === '/api/twitch/channel/delete') {
+          const id = data.channelId; if (typeof id !== 'string' || !id) throw new Error('Twitch-Kanal auswählen.'); twitch.config(id); twitch.remove(id); invalidateOAuth(id);
+          if (id === 'default') { store.state.config.twitch.clientId = ''; store.state.config.twitch.channelName = ''; store.state.config.twitch.broadcasterId = ''; store.state.config.autoConnect.twitch = false; writeTwitchSecrets(id, { twitchToken: '', twitchRefresh: '', twitchSecret: '' }); }
+          else { store.state.config.twitch.channels = store.state.config.twitch.channels.filter(channel => channel.id !== id); const secrets = { ...(vault.get(rooms.id).twitchChannels || {}) }; delete secrets[id]; vault.update(rooms.id, { twitchChannels: secrets }); }
         }
         else if (path === '/api/mode') {
           if (!['test', 'live'].includes(data.mode)) throw new Error('Unbekannter Modus.');
@@ -280,18 +325,20 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         } else if (path === '/api/ap/disconnect') { ap.disconnect(); store.state.config.autoConnect.ap = false; }
         else if (path === '/api/charity/connect') { charity.connect(); store.state.config.autoConnect.charity = true; }
         else if (path === '/api/charity/disconnect') { charity.disconnect(); store.state.config.autoConnect.charity = false; }
-        else if (path === '/api/twitch/connect') { const saved = vault.get(rooms.id); await connectTwitch(data.token || saved.twitchToken || '', data.token ? { ...saved, twitchRefresh: '' } : saved); store.state.config.autoConnect.twitch = true; }
-        else if (path === '/api/twitch/disconnect') { twitch.disconnect(); store.state.config.autoConnect.twitch = false; }
+        else if (path === '/api/twitch/connect') { const id = data.channelId || 'default', saved = twitchSecrets(id); await connectTwitch(data.token || saved.twitchToken || '', data.token ? { ...saved, twitchRefresh: '' } : saved, id); twitchAuto(id, true); }
+        else if (path === '/api/twitch/disconnect') { const id = data.channelId || 'default'; twitch.config(id); twitch.disconnect(id); invalidateOAuth(id); twitchAuto(id, false); }
         else if (path === '/api/twitch/auth') {
-          const config = store.state.config.twitch;
+          const channelId = data.channelId || 'default', config = twitch.config(channelId);
           if (!config.clientId || !config.events.length) throw new Error('Client-ID und mindestens ein Ereignis speichern.');
-          const state = randomBytes(24).toString('hex'); pendingOAuth = { state, expires: Date.now() + 600000, room: rooms.id };
+          for (const [state, flow] of pendingOAuth) if (flow.expires < Date.now()) pendingOAuth.delete(state);
+          if (pendingOAuth.size >= 20) throw new Error('Zu viele offene Twitch-Anmeldungen. Vorhandene Anmeldung abschließen.');
+          const state = randomBytes(24).toString('hex'); pendingOAuth.set(state, { state, expires: Date.now() + 600000, room: rooms.id, channelId, clientId: config.clientId });
           const auth = new URL('https://id.twitch.tv/oauth2/authorize');
-          auth.search = new URLSearchParams({ response_type: vault.get(rooms.id).twitchSecret ? 'code' : 'token', client_id: config.clientId, redirect_uri: `http://localhost:${actualPort}/oauth/callback`, scope: [...new Set(config.events.map(e => TWITCH_EVENTS[e].scope))].join(' '), state, force_verify: 'true' });
+          auth.search = new URLSearchParams({ response_type: twitchSecrets(channelId).twitchSecret ? 'code' : 'token', client_id: config.clientId, redirect_uri: `http://localhost:${actualPort}/oauth/callback`, scope: [...new Set(config.events.map(e => TWITCH_EVENTS[e].scope))].join(' '), state, force_verify: 'true' });
           return json(res, { url: auth.href });
         } else if (path === '/api/twitch/oauth') {
-          if (!pendingOAuth || pendingOAuth.room !== rooms.id || pendingOAuth.expires < Date.now() || !secretEquals(data.state, pendingOAuth.state)) throw new Error('Twitch-Anmeldung ist abgelaufen oder gehört zu einer anderen Sitzung.');
-          pendingOAuth = null; await connectTwitch(data.token || '', { ...vault.get(rooms.id), twitchRefresh: '' }); store.state.config.autoConnect.twitch = true;
+          const flow = oauthFlow(data.state); pendingOAuth.delete(data.state);
+          await connectTwitch(data.token || '', { ...twitchSecrets(flow.channelId), twitchRefresh: '' }, flow.channelId); twitchAuto(flow.channelId, true);
         }
         else if (path === '/api/rule') {
           const rule = normalizeRule(data); const idx = store.state.rules.findIndex(r => r.id === rule.id);
@@ -317,6 +364,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
           const rules = data.rules.map(normalizeRule), config = cleanConfig(store.state.config, data.config || {});
           if (new Set(rules.map(r => r.id)).size !== rules.length) throw new Error('Doppelte Regel-IDs.');
           config.mode = 'test'; config.paused = true; config.deathLinkArmed = false;
+          twitch.reset(); invalidateOAuth(); config.autoConnect.twitch = false; config.twitch.channels.forEach(channel => { channel.autoConnect = false; });
           store.state.rules = rules; store.state.config = config; store.state.approvals = {};
           // Slot approvals are intentionally re-established against the current room catalog.
           log('info', 'Konfiguration importiert. Slotfreigaben im aktuellen Raum prüfen.');
@@ -362,7 +410,13 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const port = Number(process.env.AP_BRIDGE_PORT || 17381);
   if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('AP_BRIDGE_PORT muss zwischen 1024 und 65535 liegen.');
-  createApp({ port, updateRestart: true }).then(app => {
+  if (process.platform === 'win32' && !desktopParent() && process.env.AP_BRIDGE_BROWSER !== '1' && existsSync(desktopExecutable(root))) {
+    // Old update helpers still launch server.mjs. Keep this proxy alive while
+    // the new desktop owns its hidden backend, so their health checks succeed.
+    const desktop = spawn(desktopExecutable(root), [], { cwd: root, windowsHide: true, stdio: 'ignore' });
+    desktop.once('exit', code => { process.exitCode = code ?? 1; });
+    desktop.once('error', error => { console.error(error.message); process.exitCode = 1; });
+  } else createApp({ port, updateRestart: true }).then(app => {
     console.log(`AP Chaos Bridge ${VERSION}\nOberfläche: ${app.url}\nStart: Testmodus, Warteschlange pausiert.\nBeenden: Strg+C oder Einstellungen > Tool beenden.`);
     process.on('SIGINT', () => app.close()); process.on('SIGTERM', () => app.close());
   }).catch(error => { console.error(error.code === 'EADDRINUSE' ? 'Port bereits belegt. Läuft die Bridge schon? http://127.0.0.1:' + port : error.message); process.exitCode = 1; });

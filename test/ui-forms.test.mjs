@@ -18,6 +18,7 @@ async function until(predicate, message, timeout = 1800) {
 async function ui(t, options = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'ap-chaos-ui-'));
   const app = await createApp({ directory, worldsDirectory: join(directory, 'worlds'), port: 0, ...options });
+  if (options.seedRules !== false) app.store.state.rules.push({ id: 'fixture-rule', name: 'Fixture Charity', enabled: false, source: 'charity', type: 'donation', action: 'random-trap', minimumCents: 1000, minimumUnits: 0, rewardId: '', effect: 'random_trap', target: 'random', game: '', item: '', quantity: 1, cooldownSec: 20 });
   app.library.importWorld(writeZip([{ name: 'ui/__init__.py', content: `class Health(Range):\n range_start = 1\n range_end = 9\n default = 3\nclass UIOptions(PerGameCommonOptions):\n health: Health\nclass UIWorld(World):\n game = 'UI Fixture'\n options_dataclass = UIOptions` }]), 'ui.apworld');
   const dom = new JSDOM(readFileSync(new URL('../public/index.html', import.meta.url), 'utf8'), { url: app.url + '/#regeln', runScripts: 'outside-only' });
   const { window } = dom;
@@ -31,7 +32,7 @@ async function ui(t, options = {}) {
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   window.scrollTo = () => {};
-  window.eval(['appearance.js', 'alerts.js', 'studio.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading;');
+  window.eval(['appearance.js', 'alerts.js', 'studio.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading; window.__bridgeIndexLoaded = () => Boolean(indexData) && !Studio.indexLoading;');
   await until(() => window.document.querySelector('[data-action="new-rule"]'), 'Regelseite wurde nicht geladen.');
   t.after(() => { dom.window.close(); app.close(); rmSync(directory, { recursive: true, force: true }); });
   return { app, window, document: window.document, requests, directory, intervals };
@@ -138,7 +139,8 @@ test('late catalog loading retains the active search and expanded results; clear
     originalSearch.focus(); originalSearch.setSelectionRange(2, 2);
   } finally {
     releaseIndex();
-    await until(() => document.querySelector('#studio-search') !== originalSearch, 'Verzögerte Katalog-Aktualisierung fehlt.');
+    await until(() => window.__bridgeIndexLoaded(), 'Verzögerte Katalog-Aktualisierung fehlt.');
+    assert.equal(document.querySelector('#studio-search'), originalSearch);
   }
   let search = document.querySelector('#studio-search');
   assert.equal(search.value, 'df'); assert.equal(document.activeElement, search); assert.equal(search.selectionStart, 2);

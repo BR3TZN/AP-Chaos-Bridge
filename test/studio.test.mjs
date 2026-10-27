@@ -122,13 +122,13 @@ test('rooms keep rules, player names, event logs and saved credentials separate 
   const directory = temp(t), worldsDirectory = join(directory, 'apworlds');
   let app = await createApp({ directory, worldsDirectory, port: 0 });
   t.after(() => app.close());
-  app.store.state.rules[0].name = 'Original room'; app.store.state.events.push({ id: 'old-room-event' }); app.store.save();
+  app.store.state.rules.push({ ...{ id: 'fixture-rule', name: 'Fixture Charity', enabled: false, source: 'charity', type: 'donation', action: 'random-trap', minimumCents: 1000, minimumUnits: 0, rewardId: '', effect: 'random_trap', target: 'random', game: '', item: '', quantity: 1, cooldownSec: 20 }, name: 'Original room' }); app.store.state.events.push({ id: 'old-room-event' }); app.store.save();
   app.vault.update('default', { adminPassword: 'old-room-secret' });
   const room = (await (await post(app, 'rooms/create', { name: 'Factorio Run', game: 'Factorio' })).json()).room;
   assert.equal((await post(app, 'rooms/activate', { id: room.id })).status, 200);
   assert.equal(app.store.state.events.length, 0); assert.equal(app.vault.status(room.id).adminPassword, false);
   await post(app, 'players', { players: [{ name: 'PlayerTwo', game: 'Factorio' }] });
-  app.store.state.rules[0].name = 'Factorio only'; app.store.save(); app.close();
+  app.store.state.rules.push({ ...{ id: 'fixture-rule', name: 'Fixture Charity', enabled: false, source: 'charity', type: 'donation', action: 'random-trap', minimumCents: 1000, minimumUnits: 0, rewardId: '', effect: 'random_trap', target: 'random', game: '', item: '', quantity: 1, cooldownSec: 20 }, name: 'Factorio only' }); app.store.save(); app.close();
   app = await createApp({ directory, worldsDirectory, port: 0 }); t.after(() => app.close());
   assert.equal(app.rooms.id, room.id); assert.equal(app.store.state.players[0].name, 'PlayerTwo'); assert.equal(app.store.state.rules[0].name, 'Factorio only');
   await post(app, 'rooms/activate', { id: 'default' });
@@ -215,7 +215,7 @@ test('mixed random actions can choose useful items and selected player lists iso
 test('active rooms archive and restore without losing history or credentials after restart', async t => {
   const directory = temp(t), worldsDirectory = join(directory, 'worlds');
   let app = await createApp({ directory, worldsDirectory, port: 0 }); t.after(() => app.close());
-  app.store.state.rules[0].name = 'Preserve'; app.store.state.events.push({ id: 'archived-event' }); app.store.save(); app.vault.update('default', { adminPassword: 'archive-secret' });
+  app.store.state.rules.push({ ...{ id: 'fixture-rule', name: 'Fixture Charity', enabled: false, source: 'charity', type: 'donation', action: 'random-trap', minimumCents: 1000, minimumUnits: 0, rewardId: '', effect: 'random_trap', target: 'random', game: '', item: '', quantity: 1, cooldownSec: 20 }, name: 'Preserve' }); app.store.state.events.push({ id: 'archived-event' }); app.store.save(); app.vault.update('default', { adminPassword: 'archive-secret' });
   assert.equal((await post(app, 'rooms/archive', { id: 'default', archived: true })).status, 200);
   assert.notEqual(app.rooms.id, 'default'); assert.equal(app.rooms.require('default').archived, true);
   assert.equal(app.store.state.config.paused, true); assert.equal(app.store.state.config.mode, 'test');

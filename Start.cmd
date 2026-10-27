@@ -1,6 +1,10 @@
 @echo off
 setlocal
 cd /d "%~dp0"
+if exist "assets\windows\AP-Chaos-Bridge.exe" (
+  start "" "assets\windows\AP-Chaos-Bridge.exe"
+  exit /b 0
+)
 where node >nul 2>nul
 if errorlevel 1 (
   echo Node.js fehlt. Node.js 22 oder neuer von https://nodejs.org installieren.

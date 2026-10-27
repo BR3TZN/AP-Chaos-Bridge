@@ -17,3 +17,14 @@ html[data-motion=off] *{transition:none!important;animation:none!important;scrol
 .option-list-options .tiny,.option-list-options .help{display:block;overflow-wrap:anywhere}
 .option-values{max-height:240px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
 .option-value-help{overflow-wrap:anywhere}
+
+/* Channel connections and contextual fields retain their nodes during live updates. */
+.twitch-channels { display: grid; gap: 14px; margin-top: 18px; }
+.twitch-channel { padding: 16px; border: 1px solid var(--line, #333); border-radius: 14px; background: var(--panel-2, transparent); }
+.twitch-channel h3 { margin: 0; font-size: 1rem; }
+.event-selection { display: grid; gap: 8px; margin: 16px 0; padding: 14px; border: 1px solid var(--line, #333); border-radius: 12px; }
+.event-selection legend { padding: 0 6px; font-size: .8rem; color: var(--muted); }
+.event-selection .check-label { margin: 0; }
+.twitch-channel .disclosure { margin-top: 14px; }
+.rule-trigger-fields > label, #rule-form [data-rule-field] { min-width: 0; }
+@media (prefers-reduced-motion: reduce) { .twitch-channel, .event-selection { transition: none; } }

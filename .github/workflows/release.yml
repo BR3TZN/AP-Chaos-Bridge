@@ -10,6 +10,8 @@ concurrency:
   group: release-main
   cancel-in-progress: false
 jobs:
+  windows-desktop:
+    uses: ./.github/workflows/windows-desktop.yml
   test:
     strategy:
       matrix:
@@ -67,7 +69,7 @@ jobs:
         run: npm run validate:user-worlds -- --archipelago .core-archipelago
   publish:
     if: github.ref == 'refs/heads/main'
-    needs: [test, core-options]
+    needs: [test, core-options, windows-desktop]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -76,6 +78,10 @@ jobs:
       GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-runtime
+          path: assets/windows
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
