@@ -265,7 +265,7 @@ document.addEventListener('submit', async event => {
   const formId = form.getAttribute('id');
   if (!formId) return;
   event.preventDefault();
-  const d = new FormData(form), submit = form.querySelector('[type=submit]');
+  const d = new FormData(form), submit = form.querySelector('[type=submit]'), submittedSignature = LiveUI.signature(form);
   const previousError = form.querySelector('[data-form-error]');
   if (previousError) previousError.textContent = '';
   if (submit) { submit.disabled = true; submit.dataset.busy = 'true'; }
@@ -306,7 +306,7 @@ document.addEventListener('submit', async event => {
     errorMessage.textContent = error.message;
     toast(error.message, true);
   }
-  finally { if (succeeded) { LiveUI.committed(form); if (document?.querySelector('#main')?.contains(form)) { LiveUI.accepted.add(form); await refresh(true); } } if (submit) { submit.disabled = false; delete submit.dataset.busy; } }
+  finally { if (succeeded && LiveUI.signature(form) === submittedSignature) { LiveUI.committed(form); if (document?.querySelector('#main')?.contains(form)) { LiveUI.accepted.add(form); await refresh(true); } } if (submit) { submit.disabled = false; delete submit.dataset.busy; } }
 });
 document.addEventListener('change', async event => {
   const t = event.target;

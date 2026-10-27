@@ -32,7 +32,7 @@ internal static class Program
         Smoke = Array.IndexOf(args, "--smoke-test") >= 0;
         try
         {
-            Root = FindRoot();
+            Root = LongPath(FindRoot());
             string canonical = Path.Combine(Root, "assets", "windows", "AP-Chaos-Bridge.exe");
             Directory.CreateDirectory(Path.Combine(Root, "data"));
             File.AppendAllText(Path.Combine(Root, "data", "desktop-start.log"), DateTime.UtcNow.ToString("o") + " PID " + Process.GetCurrentProcess().Id + " " + Assembly.GetExecutingAssembly().Location + Environment.NewLine);

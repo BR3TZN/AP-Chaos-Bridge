@@ -551,3 +551,17 @@ test('a blurred search in the YAML editor keeps its text and filtered fields dur
   const hidden = form.querySelectorAll('[data-option-search].hidden').length; assert(hidden > 0);
   await window.__bridgeRefresh(); assert.equal(document.querySelector('#studio-yaml-form'), form); assert.equal(search.value, 'no matching field'); assert.equal(form.querySelectorAll('[data-option-search].hidden').length, hidden);
 });
+
+test('edits made while a save request is pending remain as a newer draft after the response', async t => {
+  const { app, window, document } = await ui(t);
+  window.location.hash = 'spielslots'; await until(() => document.querySelector('#studio-player-list-form'), 'Players missing');
+  const form = document.querySelector('#studio-player-list-form'); form.querySelector('[data-action="studio-player-add"]').click();
+  const name = form.querySelector('[name="playerName"]'); name.value = 'Submitted';
+  const originalFetch = window.fetch; let release, sent = false; const gate = new Promise(resolve => { release = resolve; });
+  window.fetch = async (path, init) => { if (path === '/api/players' && init?.method === 'POST') { sent = true; await gate; } return originalFetch(path, init); };
+  const submit = form.querySelector('[type="submit"]'); submit.click(); await until(() => sent, 'Save request missing');
+  name.value = 'Newer draft'; name.blur(); release();
+  await until(() => app.store.state.players.length === 1 && !submit.disabled, 'Save response missing');
+  assert.equal(app.store.state.players[0].name, 'Submitted'); assert.equal(name.value, 'Newer draft');
+  await window.__bridgeRefresh(); assert.equal(document.querySelector('#studio-player-list-form'), form); assert.equal(name.value, 'Newer draft');
+});

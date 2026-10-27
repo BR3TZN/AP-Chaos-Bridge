@@ -228,7 +228,7 @@ const Studio = {
         else { const link = document.createElement('a'); link.href = auth.url; link.target = '_blank'; link.rel = 'noreferrer'; link.textContent = 'Twitch-Anmeldung öffnen'; form.append(link); toast('Popup wurde blockiert. Den Link im Formular öffnen.'); }
       }
       if (form.id === 'studio-twitch-add-form' && (native || popup || result.token)) $('#drawer').close();
-      LiveUI.committed(form); await refresh(true);
+      await refresh(true);
     } catch (error) { popup?.close(); throw error; }
   },
   extendRule(rule) {
@@ -383,7 +383,7 @@ const Studio = {
     if (id === 'studio-twitch-add-form') { await this.authorizeTwitch(form); }
     else if (form.hasAttribute('data-twitch-channel')) {
       const saved = await this.saveTwitchChannel(form); if (saved.token) await api('twitch/connect', { channelId: saved.id, token: saved.token });
-      LiveUI.committed(form); await refresh(true); toast('Twitch-Kanal gespeichert.');
+      await refresh(true); toast('Twitch-Kanal gespeichert.');
     } else if (id === 'studio-room-delete-form') {
       await api('rooms/delete', { id: data.get('roomId'), confirmName: data.get('confirmName') }); $('#drawer').close(); this.entry = null; this.loadingGame = ''; this.logGame = ''; await refresh(true);
     } else if (id === 'studio-room-form') {
