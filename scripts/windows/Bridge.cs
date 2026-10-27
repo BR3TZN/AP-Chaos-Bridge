@@ -333,8 +333,13 @@ internal sealed class BridgeForm : Form
                     if (cycle % 2 == 0) WindowState = FormWindowState.Minimized; else Close();
                     await Task.Delay(80);
                     if (Visible || IsWindowVisible(Handle) || !tray.Visible) throw new Exception("Tray-Ausblenden fehlgeschlagen.");
-                    RestoreWindow(); await Task.Delay(80);
-                    if (!WindowIsUsable() || Handle != originalHandle) throw new Exception("Tray-Fenster ist nach Wiederherstellung nicht sichtbar oder sein Handle wurde ersetzt.");
+                    RestoreWindow();
+                    for (int attempt = 0; attempt < 40 && !WindowIsUsable(); attempt++) await Task.Delay(50);
+                    if (!WindowIsUsable() || Handle != originalHandle)
+                    {
+                        Log("desktop-tray.log", Program.Json.Serialize(new { cycle, visible = Visible, nativeVisible = IsWindowVisible(Handle), iconic = IsIconic(Handle), state = WindowState.ToString(), restoredState = restoreState.ToString(), handle = Handle.ToInt64(), expectedHandle = originalHandle.ToInt64(), viewVisible = view.Visible, viewNativeVisible = IsWindowVisible(view.Handle), bounds = Bounds.ToString(), viewBounds = view.Bounds.ToString() }));
+                        throw new Exception("Tray-Fenster ist nach Wiederherstellung nicht sichtbar oder sein Handle wurde ersetzt.");
+                    }
                     if (await view.ExecuteScriptAsync("window.__trayDraftMarker") != "\"draft-retained\"") throw new Exception("Tray-Wiederherstellung hat den Oberflächenzustand verloren.");
                 }
                 Bounds = new Rectangle(-32000, -32000, 1100, 700); HideWindow(); RestoreWindow();

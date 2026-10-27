@@ -294,6 +294,7 @@ document.addEventListener('submit', async event => {
     else if (formId === 'config-form') { await api('import', JSON.parse(d.get('text'))); $('#drawer').close(); toast('Konfiguration importiert.'); }
     await refresh(true);
   } catch (error) {
+    if (!document?.documentElement) return;
     succeeded = false;
     let errorMessage = form.querySelector('[data-form-error]');
     if (!errorMessage) {

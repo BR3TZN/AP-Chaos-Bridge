@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches: [main]
-    paths: [package.json, .github/workflows/release.yml]
+    paths: [package.json, .github/workflows/release.yml, .github/workflows/windows-desktop.yml, scripts/windows/**]
   workflow_dispatch:
 permissions:
   contents: read
