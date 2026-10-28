@@ -13,7 +13,7 @@ import { validateManifest } from '../../lib/update-files.mjs';
 import { parse } from 'yaml';
 if (process.platform !== 'win32') throw new Error('Dieser Integrationstest benötigt Windows.');
 const source = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
-const folder = await mkdtemp(join(tmpdir(), 'ap-desktop-check-')), root = join(folder, 'app');
+const folder = await mkdtemp(join(tmpdir(), 'ap-desktop-check-')), root = join(folder, 'AP Chaos Bridge ä');
 const processes = [];
 const alive = pid => { try { process.kill(pid, 0); return true; } catch { return false; } };
 async function until(check, description, timeout = 60000) {
@@ -43,8 +43,8 @@ async function files(folder) {
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 try {
   await mkdir(root, { recursive: true });
-  for (const path of ['lib', 'public', 'scripts', 'node_modules', 'assets/windows']) await cp(join(source, path), join(root, path), { recursive: true });
-  for (const path of ['package.json', 'package-lock.json', 'server.mjs', 'assets/core-world-settings.json', 'assets/apworld-import-limits.json']) { await mkdir(dirname(join(root, path)), { recursive: true }); await cp(join(source, path), join(root, path)); }
+  for (const path of ['lib', 'public', 'scripts', 'node_modules', 'assets/windows', 'assets/translation-models']) await cp(join(source, path), join(root, path), { recursive: true });
+  for (const path of ['package.json', 'package-lock.json', 'server.mjs', 'assets/core-world-settings.json', 'assets/apworld-import-limits.json', 'assets/help-translation-model.json', 'assets/help-translations.de.json']) { await mkdir(dirname(join(root, path)), { recursive: true }); await cp(join(source, path), join(root, path)); }
   const canonical = join(root, 'assets/windows/AP-Chaos-Bridge.exe');
   const smoke = launch(canonical, ['--smoke-test']);
   await until(() => smoke.exitCode !== null, 'Der Fenster-/Tray-Test wurde nicht beendet.', 90000);
@@ -54,7 +54,7 @@ try {
   const result = JSON.parse(await readFile(smokePath, 'utf8'));
   assert.equal(result.ready, true); assert.equal(result.tray, true); assert.equal(result.noConsole, true); assert.equal(result.rules, '0'); assert.equal(result.download, true);
   assert.equal(result.trayCycles, 10); assert.equal(result.restoredVisible, true); assert.equal(result.handlePreserved, true);
-  assert.equal(result.refreshStable, true); assert.equal(result.downloadUiHidden, true); assert.equal(result.downloadPaths.length, 2); assert.notEqual(result.downloadPaths[0], result.downloadPaths[1]);
+  assert.equal(result.germanHelp, true); assert.equal(result.refreshStable, true); assert.equal(result.downloadUiHidden, true); assert.equal(result.downloadPaths.length, 2); assert.notEqual(result.downloadPaths[0], result.downloadPaths[1]);
   for (const path of result.downloadPaths) { assert.equal((await realpath(dirname(path))).toLowerCase(), (await realpath(join(root, 'data/smoke-downloads'))).toLowerCase()); const yaml = parse(await readFile(path, 'utf8')); assert.equal(yaml.game, 'Factorio'); assert.equal(yaml.name, 'SmokePlayer'); }
   assert((await readFile(join(root, 'AP-Chaos-Bridge.exe'))).length > 10000);
   console.log('Echtes WebView2-Fenster, Schließen in den Tray und versteckter Hintergrunddienst geprüft:', result.runtime);

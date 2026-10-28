@@ -150,6 +150,7 @@ function eventsPage() {
 function settingsPage() {
   return pageHead('DEIN WORKSPACE', 'Einstellungen', 'Programmupdates, Sicherung und erweiterte Einstellungen an einem Ort.')
     + `<div class="grid source-grid"><section class="panel"><a class="setup-link" href="#design"><span class="step-number">◐</span><div><b>Design anpassen</b><small>Darkmode, Lightmode und eigene Akzentfarben</small></div></a><a class="setup-link" href="#alerts"><span class="step-number">✦</span><div><b>Stream-Alerts einrichten</b><small>Optionale OBS-Anzeige mit deiner Animation</small></div></a></section><section class="panel panel-pad"><h2>Konfiguration sichern</h2><p class="help">Regeln und Einstellungen ohne Zugangsdaten exportieren. Nach einem Import beginnt die Bridge im Testmodus; Spielerfreigaben werden erneut geprüft.</p><div class="button-row section-gap"><a class="text-link" href="/api/export" download>Konfiguration exportieren ↓</a><button class="small ghost" data-action="config-import">Importieren</button></div></section></div>`
+    + HelpText.settings()
     + Updates.panel()
     + `<details class="panel advanced-section section-gap"><summary>Erweitert: Warteschlange & Zeitlimits</summary><div class="advanced-body"><form id="limits-form"><div class="form-grid narrow"><label>Abstand zwischen Aktionen (Sekunden)<input type="number" name="globalCooldownSec" min="0" max="3600" step="0.25" value="${S.config.globalCooldownSec}"></label><label>Maximal wartende Aktionen<input type="number" name="maxQueue" min="1" max="1000" value="${S.config.maxQueue}"></label><label>Auftrag gültig (Sekunden)<input type="number" name="queueTtlSec" min="30" max="86400" value="${S.config.queueTtlSec}"></label><label>Ereignis höchstens alt (Sekunden)<input type="number" name="eventMaxAgeSec" min="10" max="3600" value="${S.config.eventMaxAgeSec}"></label></div><button type="submit">Zeitlimits speichern</button></form><p class="help">Die Standards passen für die meisten Runs. Regelpausen und diese Zeitlimits verhindern zu viele gleichzeitig ausgeführte Aktionen.</p></div></details><section class="panel panel-pad section-gap"><h2>Bridge beenden</h2><p class="help">Schließt die Verbindungen und pausiert die Ausführung. Bereits im Spiel zugestellte Effekte bleiben bestehen.</p><button class="danger section-gap" data-action="shutdown">Tool beenden</button></section>`;
 }
@@ -173,7 +174,7 @@ function render(force = false) {
   if (searchSelection) {
     const next = $('#studio-search'); next.focus({ preventScroll: true }); next.setSelectionRange(...searchSelection);
   }
-  Updates.sync(); Rewards.sync();
+  Updates.sync(); Rewards.sync(); HelpText.sync();
 }
 function showDrawer(content) { $('#drawer-content').innerHTML = content; if (!$('#drawer').open) $('#drawer').showModal(); }
 const drawerHead = (title, description) => `<div class="drawer-head"><div><h2>${esc(title)}</h2><p>${esc(description)}</p></div><button type="button" class="icon-button" data-action="close-drawer" aria-label="Schließen">×</button></div>`;
@@ -233,6 +234,7 @@ document.addEventListener('click', async event => {
   const button = event.target.closest('[data-action]'); if (!button) return; event.preventDefault();
   const action = button.dataset.action, id = button.dataset.id;
   try {
+    if (action === 'help-retry') return HelpText.retry();
     if (action.startsWith('appearance-')) return await Appearance.click(action, id);
     if (action.startsWith('alerts-')) return await Alerts.click(action);
     if (action.startsWith('update-')) return await Updates.click(action, button);
@@ -280,6 +282,7 @@ document.addEventListener('submit', async event => {
   if (submit) { submit.disabled = true; submit.dataset.busy = 'true'; }
   let succeeded = true;
   try {
+    if (formId === 'language-form') { await HelpText.submit(form); return; }
     if (formId === 'appearance-form') { await Appearance.submit(); return; }
     if (formId === 'alerts-form' || formId === 'alerts-media-form') { await Alerts.submit(form); return; }
     if (formId === 'update-token-form') { await Updates.submit(form); return; }
@@ -353,9 +356,7 @@ document.addEventListener('input', async event => {
   if (event.target.closest('#rule-form')) Studio.ruleVisibility();
   if (event.target.id === 'studio-search') $('#studio-catalog-results').innerHTML = Studio.catalogCards(event.target.value);
   if (event.target.id === 'studio-option-search') {
-    const query = event.target.value.toLowerCase();
-    document.querySelectorAll('[data-option-search]').forEach(el => el.classList.toggle('hidden', !el.dataset.optionSearch.includes(query)));
-    const common = $('.studio-common'); if (common) common.open = Boolean(query && common.querySelector('[data-option-search]:not(.hidden)'));
+    HelpText.filter(true);
   }
   if (event.target.closest('#rules-import-form') && event.target.name === 'json') RuleTools.sourceChanged();
   if (event.target.id === 'item-search') renderItemList();

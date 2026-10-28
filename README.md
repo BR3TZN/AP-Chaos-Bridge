@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.5
+# AP Chaos Bridge 0.7.6
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -16,11 +16,13 @@ Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.c
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.7.5
+## Update auf 0.7.6
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.7.5:** Regeln direkt per Schalter auf ihren Karten aktivieren oder deaktivieren. Der Wechsel auf Live startet aktive Regeln unmittelbar. DeathLink ist in der Bridge standardmäßig freigegeben und bleibt pro Raum umschaltbar. YAMLs, ZIPs und JSON-Exporte landen im eigenen Windows-Fenster ohne Dialog oder Downloadverlauf im Downloads-Ordner; gleiche Dateinamen erhalten einen Zähler. Unveränderte Statusabfragen verursachen keine Änderungen am Seiteninhalt. Twitch steht vor Charity Royale.
+**Neu in 0.7.6:** Unter **Einstellungen → Sprache der Spieleinstellungen** zwischen **Deutsch** (Standard) und **English · Originaltexte** wählen. Überschriften und Beschreibungen im YAML-Editor werden lokal übersetzt, auch für neu importierte Dateien. **Originaltext anzeigen** klappt die Quelle auf. Die erzeugten YAMLs und Optionswerte bleiben unverändert. Das vollständige Paket enthält das Modell; Quellcodekopien benötigen einmal `node scripts/prepare_translation_model.mjs` nach `npm ci --ignore-scripts`.
+
+**Seit 0.7.5:** Regeln direkt per Schalter auf ihren Karten aktivieren oder deaktivieren. Der Wechsel auf Live startet aktive Regeln unmittelbar. DeathLink ist in der Bridge standardmäßig freigegeben und bleibt pro Raum umschaltbar. YAMLs, ZIPs und JSON-Exporte landen im eigenen Windows-Fenster ohne Dialog oder Downloadverlauf im Downloads-Ordner; gleiche Dateinamen erhalten einen Zähler. Unveränderte Statusabfragen verursachen keine Änderungen am Seiteninhalt. Twitch steht vor Charity Royale.
 
 Zusätzlich: Kanalpunkte-Belohnungen direkt unter **Verbindungen → Kanalpunkte-Belohnungen** oder aus einer offenen Regel anlegen. Twitch dafür einmal über **Belohnungen freigeben** mit den zusätzlichen Rechten anmelden. **Alle Abos** fasst neue Abos, geteilte Resubs und Geschenkpakete in einer Regel zusammen. Regeln lassen sich als JSON exportieren, als gemeinsame Vorlage speichern und aus anderen Räumen übernehmen. **Zufälliger Hinweis aus allen erlaubten Items** fordert pro getroffenem Spieler einen AP-Admin-Hinweis an. Der Tray-Fix aus 0.7.1 ist enthalten.
 

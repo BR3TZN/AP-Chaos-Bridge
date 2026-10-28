@@ -1,4 +1,4 @@
-# Prüfung der Version 0.7.5
+# Prüfung der Version 0.7.6
 
 Ausgeführt unter Linux mit Node.js 24.22.1 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
@@ -10,7 +10,7 @@ Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. E
 
 ## Automatisierte Prüfungen
 
-**189 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**200 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -157,3 +157,12 @@ Regeltests prüfen JSON-Export ohne Verbindungsdaten, gemeinsame Vorlagen nach N
 Sieben weitere Prüfungen decken direkte Regelschalter in Übersicht und Regelseite, unveränderte DOM-/Theme-/Kopfzeilen bei identischen Statusdaten, verspätete ältere Antworten, Twitch-Reihenfolge, DeathLink-Standards einschließlich einmaliger Migration und dauerhaftem Opt-out sowie unmittelbare Live-Ausführung ohne zusätzlichen Startschritt ab. Die echten HTTP-Routen prüfen Raumwechsel, Aktivierungswerte, offene Zuordnungsprüfungen und das Verwerfen noch nicht gesendeter Live-Aufträge beim Deaktivieren.
 
 Der native Windows-Test generiert dieselbe YAML zweimal über den normalen Downloadhandler in einem isolierten Testordner. Er prüft beide gültigen Dateien, erhaltenen ersten Inhalt, verschiedene Namen und den geschlossenen Downloadverlauf. Drei unveränderte Datenabfragen müssen auch in WebView2 ohne Mutation des sichtbaren Inhalts und ohne ersetztes Eingabefeld bleiben. Die bestehenden zehn Tray-Zyklen und das echte Update bleiben Teil der Freigabeprüfung.
+
+
+## Lokale Spielbeschreibungen 0.7.6
+
+Elf zusätzliche Prüfungen führen Sprachpersistenz, technische Platzhalter, mehr als 26 geschützte Zahlen, Absätze und Codeblöcke, Inhaltscache und Neustart, fehlende Modelle, ungültige Quellen und Sprachwerte, atomare SHA256-Modellvorbereitung sowie die echte lokale WASM-Engine aus. Ein eigener YAML-Import wird übersetzt und vor/nach der Sprachänderung byte-identisch exportiert. Oberflächentests halten eine Übersetzung zurück, bearbeiten währenddessen Werte und prüfen erhaltene Eingabeknoten, Fokus, aufgeklappte Originaltexte und deutsche Suche. Eine verspätete Antwort darf den Wechsel auf englische Originaltexte nicht rückgängig machen.
+
+Das Mozilla-Modell Englisch → Deutsch 2.1 und Bergamot 0.4.9 sind fest gepinnt. Drei Modelldateien werden vor dem Packen und unter beiden Testsystemen anhand von Größe und SHA256 geprüft. Die Engine läuft im lokalen Node-Worker und liest nur mitgelieferte Modelldateien. Die vollständigen 47 Factorio-Einstellungen wurden lokal übersetzt; dieser Durchlauf dauerte rund sechs Sekunden. Dies ist eine automatische Anzeigeübersetzung, keine fachliche Einzelprüfung sämtlicher Spieltexte.
+
+Der echte Windows-Fenstertest wartet auf vollständig geladene deutsche Factorio-Beschreibungen und prüft anschließend wieder drei unveränderte Statusabfragen ohne Inhaltsmutation. Der Installationspfad enthält Leerzeichen und einen Umlaut; Downloads, Tray und Programmupdate werden im selben Pfad geprüft.

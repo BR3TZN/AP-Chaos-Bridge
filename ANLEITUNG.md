@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.5 · Einrichtung
+# AP Chaos Bridge 0.7.6 · Einrichtung
 
 ## Start und Update
 
@@ -251,3 +251,14 @@ Unter **Regeln** stehen **JSON exportieren**, **Importieren / Raum kopieren** un
 Im eigenen Windows-Fenster landen erzeugte YAMLs, Mehrspieler-ZIPs und Regel-JSONs direkt im Windows-Downloads-Ordner. Eine kurze Meldung bestätigt den Dateinamen. Es öffnet sich kein Speichern-Dialog und kein Downloadverlauf. Vorhandene Dateien bleiben erhalten, weitere erhalten „(1)“, „(2)“ usw. Im externen Browser gelten dessen eigene Download-Einstellungen.
 
 **Testmodus → Live** genügt zum Starten aktivierter Regeln. **Pausieren**, **Fortsetzen** und **Notaus** bleiben verfügbar. Bereits erzeugte Simulationen bleiben Simulationen.
+
+
+## Deutsche Spielbeschreibungen
+
+Unter **Einstellungen → Sprache der Spieleinstellungen** ist **Deutsch** vorausgewählt. **English · Originaltexte** zeigt die ursprünglichen Bezeichnungen und Beschreibungen. Mit **Sprache speichern** gilt deine Wahl für alle Räume und nach dem nächsten Start weiter.
+
+Im **Spielekatalog → Einstellungen & YAML** werden die vorhandenen Überschriften und Hilfetexte aus APworlds, Core-Worlds und importierten YAML-Kommentaren automatisch lokal übersetzt. Während der ersten Übersetzung kannst du weiter Werte einstellen. Der Fortschritt steht über der Einstellungssuche. Beim nächsten Öffnen werden gespeicherte Übersetzungen wiederverwendet. **Originaltext anzeigen** öffnet bei einer Einstellung ihre ursprüngliche Beschreibung. Die Suche findet deutsche und englische Begriffe.
+
+Die automatische Übersetzung kann spieltypische Formulierungen ungenau wiedergeben; das Original bleibt deshalb zugänglich. Technische YAML-Schlüssel, gewählte Werte und erzeugte Dateien ändern sich durch die Sprachwahl nicht. Enthält die Quelle keine Beschreibung, wird keine Spielinformation erfunden.
+
+Das vollständige Release enthält die lokale Engine und das Deutsch-Modell. Für die Nutzung sind weder Python noch ein Übersetzungsdienst, API-Schlüssel oder Abonnement nötig. Deine Texte verlassen den PC nicht. Nur bei Quellcodeinstallationen wird das Modell einmal über `node scripts/prepare_translation_model.mjs` mit geprüften SHA256-Werten heruntergeladen.

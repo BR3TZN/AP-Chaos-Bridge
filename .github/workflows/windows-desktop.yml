@@ -19,11 +19,15 @@ jobs:
             !/assets/
             /assets/core-world-settings.json
             /assets/apworld-import-limits.json
+            /assets/help-translation-model.json
+            /assets/help-translations.de.json
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: npm
       - run: npm ci --omit=dev --ignore-scripts
+      - name: Lokales Deutsch-Modell mit SHA256 prüfen und vorbereiten
+        run: node scripts/prepare_translation_model.mjs
       - name: Native EXE und portable Laufzeit mit festen SHA256-Prüfsummen bauen
         shell: powershell
         run: ./scripts/windows/build.ps1

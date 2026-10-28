@@ -1,3 +1,12 @@
+# 0.7.6 – Deutsche Beschreibungen im YAML-Editor
+
+- Globale Sprachwahl unter Einstellungen: Deutsch ist der Standard; English zeigt die Originaltexte. Die Wahl bleibt nach Neustart und Raumwechsel erhalten.
+- Überschriften und Beschreibungen aus APworlds, Core-Worlds und eigenen YAML-Kommentaren lokal mit Bergamot und dem gepinnten Mozilla-Modell Englisch → Deutsch 2.1 übersetzen. Keine API-Schlüssel, Übersetzungsabos oder Übertragung der Texte an einen Dienst. Das Vollpaket enthält Engine und Modell.
+- Originaltexte je Einstellung aufklappen; automatisch übersetzte Texte sind gekennzeichnet. Deutsche und englische Begriffe können zum Suchen verwendet werden. Neue Imports werden ohne vorab angelegte Spieleliste unterstützt.
+- Übersetzungen kommen im Hintergrund an, erhalten Eingaben, fokussierte Dropdowns und offene Originaltexte und werden lokal zwischengespeichert. Veraltete Antworten nach Sprach-, Quell- oder Raumwechsel überschreiben die neue Ansicht nicht.
+- YAML-Schlüssel, Optionen, Werte, Dateiinhalte und bereits gespeicherte Presets bleiben unverändert. Technische Bezeichner, Zahlen, Links und Codebeispiele werden bei der Anzeige geschützt.
+- Modell-Downloads mit festen Größen und SHA256-Prüfsummen vorbereiten. Windows-Prüfung deckt deutsche Texte und die unveränderte Oberfläche auch in einem Installationspfad mit Leerzeichen und Umlaut ab.
+
 # 0.7.5 – Direkt bedienbare Regeln, ruhige Oberfläche und Downloads
 
 - Regeln direkt auf den Karten in Übersicht und Regelseite per Schalter aktivieren/deaktivieren. Noch wartende Live-Aufträge deaktivierter Regeln werden verworfen; offene Entwürfe bleiben erhalten.

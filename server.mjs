@@ -18,6 +18,7 @@ import { Updater } from './lib/updater.mjs';
 import { Presentation, normalizeAlerts } from './lib/presentation.mjs';
 import { desktopExecutable, desktopRootId, desktopParent } from './lib/desktop.mjs';
 import { spawn } from 'node:child_process';
+import { HelpLanguage, HelpTranslator, helpRevision } from './lib/help-language.mjs';
 import { RuleLibrary, RULE_IMPORT_LIMIT, captureTargets, targetKeys, channelIdentities, exportRules, parseRules, planRules } from './lib/rule-library.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -56,10 +57,11 @@ function cleanConfig(old, raw) {
   return c;
 }
 
-export async function createApp({ directory = join(root, 'data'), port = 17381, memory = false, core = !memory, fetchImpl = fetch, worldsDirectory, twitchSocketUrl, updateRestart = false, updateRoot = root } = {}) {
+export async function createApp({ directory = join(root, 'data'), port = 17381, memory = false, core = !memory, fetchImpl = fetch, worldsDirectory, twitchSocketUrl, updateRestart = false, updateRoot = root, translationRunner, translationModelFolder } = {}) {
   const store = new Store(Rooms.initialDirectory(directory, { memory }), { memory }); const session = randomBytes(32).toString('hex');
   const rooms = new Rooms(store, directory, { memory }), vault = new Vault(directory, { memory });
   const presentation = new Presentation(directory, { memory }); let alertPreview;
+  const helpLanguage = new HelpLanguage(directory, { memory }), helpTranslator = new HelpTranslator(directory, root, { memory, runBatch: translationRunner, ...(translationModelFolder ? { modelFolder: translationModelFolder } : {}) });
   const ruleLibrary = new RuleLibrary(directory, { memory });
   const library = new GameLibrary(directory, root, { memory, core, folder: worldsDirectory });
   if (worldsDirectory) library.data.folder = worldsDirectory;
@@ -152,7 +154,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   function snapshot() {
     const s = store.state;
     return { name: 'AP Chaos Bridge', version: VERSION, session, config: s.config, ap: ap.status(), charity: charity.status(), twitch: twitch.status(),
-      appearance: presentation.appearance, updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
+      appearance: presentation.appearance, language: helpLanguage.language, translation: helpTranslator.status(), updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
       rooms: rooms.list(), savedCredentials: vault.status(rooms.id), playerProfiles: s.players, yamlPresets: s.yamlPresets,
       gameLibrary: { importLimits: { ...APWORLD_LIMITS, maxYamlBytes: YAML_IMPORT_LIMIT }, folder: library.data.folder, coreVersion: library.coreVersion || '', games: catalogEntries().map(g => ({ game: g.game, kind: g.kind, source: g.source, sourceId: g.sourceId, sources: g.sources, coreVersion: g.coreVersion, aliases: g.aliases, optionCount: g.options.length, unresolved: g.unresolved })) },
       queue: s.queue, events: s.events, logs: s.logs, profiles: PROFILES, yamlProfiles: s.yamlProfiles, twitchEvents: TWITCH_EVENTS,
@@ -210,7 +212,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         return json(res, { ...gameIndex, games: catalogEntries().filter(game => ['apworld', 'core', 'yaml'].includes(game.kind)).map(game => ({ ...references.get(game.game), game: game.game, kind: game.kind, source: game.source, sourceId: game.sourceId, sources: game.sources, coreVersion: game.coreVersion, aliases: game.aliases })) });
       }
       if (req.method === 'GET' && path === '/api/game-library') return json(res, gameLibraryList());
-      if (req.method === 'GET' && path === '/api/game-settings') return json(res, gameEntry(url.searchParams.get('game'), url.searchParams.get('sourceId') || undefined));
+      if (req.method === 'GET' && path === '/api/game-settings') { const entry = gameEntry(url.searchParams.get('game'), url.searchParams.get('sourceId') || undefined); return json(res, { ...entry, helpRevision: helpRevision(entry) }); }
       if (req.method === 'GET' && path === '/api/twitch/rewards') return json(res, { rewards: await twitch.rewards(url.searchParams.get('channelId') || 'default') });
       if (req.method === 'GET' && path === '/api/rules/library') return json(res, { presets: ruleLibrary.list(), rooms: rooms.list().rooms.map(room => ({ ...room, count: ruleContext(room.id).rules.length })), maxImportBytes: RULE_IMPORT_LIMIT });
       if (req.method === 'GET' && path === '/api/rules/export') {
@@ -253,6 +255,12 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         }
         if (path === '/api/rules/presets/delete') { ruleLibrary.remove(data.id); changed(); return json(res, { ok: true }); }
         if (path === '/api/twitch/rewards/create') { const reward = await twitch.createReward(data.channelId || 'default', data); changed(); return json(res, { reward }); }
+        if (path === '/api/language') { const language = helpLanguage.update(data); changed(); return json(res, { language }); }
+        if (path === '/api/game-help') {
+          const entry = gameEntry(data.game, data.sourceId);
+          if (data.revision && data.revision !== helpRevision(entry)) throw new Error('Die Einstellungsquelle wurde geändert. Das Spiel erneut öffnen.');
+          return json(res, await helpTranslator.translate(entry, { language: data.language || helpLanguage.language, indices: data.indices }));
+        }
         if (path === '/api/appearance') { presentation.update(data); changed(); return json(res, presentation.appearance); }
         if (path === '/api/alerts/media') { const media = presentation.upload(data); changed(); return json(res, media); }
         if (path === '/api/alerts/preview') {
@@ -439,7 +447,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         store.save(); changed(); return json(res, { ok: true });
       }
       if (req.method === 'GET') {
-        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/studio.js': 'public/studio.js', '/rules.js': 'public/rules.js', '/rewards.js': 'public/rewards.js', '/appearance.js': 'public/appearance.js', '/alerts.js': 'public/alerts.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
+        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/language.js': 'public/language.js', '/studio.js': 'public/studio.js', '/rules.js': 'public/rules.js', '/rewards.js': 'public/rewards.js', '/appearance.js': 'public/appearance.js', '/alerts.js': 'public/alerts.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
         const file = staticFiles[path];
         if (file) { if (path === '/overlay') res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'"); const type = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' }[extname(file)]; res.writeHead(200, { 'Content-Type': type }); res.end(readFileSync(join(root, file))); return; }
       }
@@ -450,7 +458,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   const tick = setInterval(() => { engine.tick().catch(e => { store.state.config.paused = true; console.error('Warteschlange angehalten:', e.message); }); }, 250);
   tick.unref?.();
   const close = () => {
-    clearInterval(tick); clearTimeout(updateTimer); clearTimeout(updateCheck); clearInterval(updateChecks); updater.close(); charity.disconnect(); twitch.disconnect(); ap.disconnect();
+    clearInterval(tick); clearTimeout(updateTimer); clearTimeout(updateCheck); clearInterval(updateChecks); updater.close(); helpTranslator.close(); charity.disconnect(); twitch.disconnect(); ap.disconnect();
     for (const response of listeners) response.end(); listeners.clear(); server.close(); server.closeIdleConnections();
   };
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', resolve); });
@@ -463,7 +471,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     void resumeConnections();
     void library.scan().then(report => { for (const e of report.errors) log('warn', 'Spielekatalog · ' + e.file + ': ' + e.error); if (report.skipped?.length) log('info', `Spielekatalog: ${report.skipped.length} nicht auswertbare Pakete übersprungen. Details im Spielekatalog.`); changed(); }).catch(e => log('warn', 'Spielekatalog: ' + e.message));
   }
-  return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, ruleLibrary, updater, url: `http://127.0.0.1:${server.address().port}` };
+  return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, ruleLibrary, updater, helpLanguage, helpTranslator, url: `http://127.0.0.1:${server.address().port}` };
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

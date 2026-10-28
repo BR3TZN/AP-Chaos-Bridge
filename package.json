@@ -1,6 +1,6 @@
 {
   "name": "ap-chaos-bridge",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "private": true,
   "type": "module",
   "description": "Lokale Charity-Royale- und Twitch-Bridge für Archipelago",
@@ -16,6 +16,7 @@
     "validate:user-worlds": "node scripts/validate_user_worlds.mjs"
   },
   "dependencies": {
+    "@browsermt/bergamot-translator": "0.4.9",
     "ws": "8.22.0",
     "yaml": "2.9.1",
     "yauzl": "3.4.0"

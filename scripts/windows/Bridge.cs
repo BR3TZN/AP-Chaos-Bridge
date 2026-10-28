@@ -414,6 +414,13 @@ internal sealed class BridgeForm : Form
                 downloaded = false; await SmokeDownload();
                 if (downloadedPaths.Count != 2 || downloadedPaths[0] == downloadedPaths[1] || File.ReadAllText(firstDownload) != firstContents) throw new Exception("Gleichnamige Downloads wurden überschrieben.");
                 if (view.CoreWebView2.IsDefaultDownloadDialogOpen) throw new Exception("Der Downloadverlauf wurde eingeblendet.");
+                bool germanHelp = false;
+                for (int check = 0; check < 300; check++)
+                {
+                    string translated = await view.ExecuteScriptAsync("Boolean(S.language === 'de' && HelpText.idle && document.querySelector('#help-language-status') && document.querySelector('#help-language-status').textContent.includes('Originaltexte aufklappbar') && [...document.querySelectorAll('[data-help-label]')].some(label => label.textContent === 'Ausgleich des Spielfortschritts'))");
+                    if (translated == "true") { germanHelp = true; break; } await Task.Delay(100);
+                }
+                if (!germanHelp) throw new Exception("Deutsche Beschreibungen wurden im eigenen Fenster nicht geladen.");
                 await view.ExecuteScriptAsync("window.__stableRefresh = null; (async () => { try { const main = document.querySelector('#main'), field = main.querySelector('[name=playerNames]'); let changes = 0; const observer = new MutationObserver(records => changes += records.length); observer.observe(main, { subtree: true, childList: true, attributes: true, characterData: true }); for (let i = 0; i < 3; i++) await refresh(); await Promise.resolve(); observer.disconnect(); window.__stableRefresh = main === document.querySelector('#main') && field === main.querySelector('[name=playerNames]') && changes === 0; } catch { window.__stableRefresh = false; } })()");
                 bool refreshStable = false;
                 for (int check = 0; check < 100; check++) { string stable = await view.ExecuteScriptAsync("window.__stableRefresh"); if (stable == "true") { refreshStable = true; break; } if (stable == "false") break; await Task.Delay(100); }
@@ -439,7 +446,7 @@ internal sealed class BridgeForm : Form
                 WindowState = FormWindowState.Maximized; await Task.Delay(80); WindowState = FormWindowState.Minimized; RestoreWindow();
                 if (!WindowIsUsable() || WindowState != FormWindowState.Maximized) throw new Exception("Maximiertes Fenster wurde aus dem Tray nicht wiederhergestellt.");
                 string bridgeRules = await view.ExecuteScriptAsync("S.rules.length");
-                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
+                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, germanHelp = germanHelp, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
                 await Quit(); return;
             }
             await Task.Delay(250);

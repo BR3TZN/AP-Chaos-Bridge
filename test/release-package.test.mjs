@@ -20,6 +20,7 @@ test('the real packager creates an updater-compatible manifest and rejects unkno
   for (const name of ['ws', 'yaml', 'yauzl']) save('node_modules/' + name + '/package.json', '{}');
   for (const name of ['scripts/package_release.py', 'scripts/validate_release_manifest.mjs', 'scripts/apply-update.mjs', 'lib/update-files.mjs']) save(name, readFileSync(join(root, name)));
   save('scripts/prepare_large_apworlds.py', '# No upstream downloads needed by this fixture.\n');
+  save('scripts/prepare_translation_model.mjs', '// Model bytes are validated by the translation integration tests.\n');
   save('server.mjs', 'export {};'); save('README.md', 'Setup'); save('FEHLENDE-SPIELE.md', '50 missing games · [Metadata](assets/core-world-settings.json)');
   save('assets/core-world-settings.json', '{"schema":1,"worlds":[]}');
   const python = new GameLibrary(directory, root, { memory: true }).pythonCommand();

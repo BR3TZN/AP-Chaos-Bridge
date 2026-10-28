@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "mozilla-en-de-2.1-bergamot-0.4.9",
+  "engine": {
+    "package": "@browsermt/bergamot-translator",
+    "version": "0.4.9",
+    "source": "https://github.com/browsermt/bergamot-translator",
+    "license": "MPL-2.0"
+  },
+  "model": {
+    "from": "en",
+    "to": "de",
+    "version": "2.1",
+    "source": "https://github.com/mozilla/firefox-translations-models",
+    "registry": "https://firefox.settings.services.mozilla.com/v1/buckets/main/collections/translations-models/records",
+    "license": "MPL-2.0"
+  },
+  "files": [
+    {
+      "part": "lex",
+      "name": "lex.50.50.ende.s2t.bin",
+      "size": 4347672,
+      "sha256": "7ed39f1cffbd68a27ddf05bbfe068de2060f1d7e69f1a20e27ae923551dd7393",
+      "url": "https://firefox-settings-attachments.cdn.mozilla.net/main-workspace/translations-models/bc072b1a-7749-43f7-9fe0-34a6dff10c4a.bin"
+    },
+    {
+      "part": "model",
+      "name": "model.ende.intgemm.alphas.bin",
+      "size": 31561787,
+      "sha256": "8df29d9494d19f47fd5d97c6a73474c6f657e9f81c1a607c431d02befdf3810f",
+      "url": "https://firefox-settings-attachments.cdn.mozilla.net/main-workspace/translations-models/23db71e7-b6d9-45eb-a47d-0290d7d8ef63.bin"
+    },
+    {
+      "part": "vocab",
+      "name": "vocab.ende.spm",
+      "size": 810073,
+      "sha256": "69f730becafa48e3bb2c244eab66456877c08959a02f2bd5519b5a3088b62f9c",
+      "url": "https://firefox-settings-attachments.cdn.mozilla.net/main-workspace/translations-models/261225ea-5a52-455b-981c-7d09c6e6da3c.spm"
+    }
+  ]
+}

@@ -18,12 +18,13 @@ lock = json.loads((ROOT / 'package-lock.json').read_text(encoding='utf-8'))
 runtime = {name for name, info in lock['packages'].items() if name.startswith('node_modules/') and not info.get('dev')}
 if not args.source:
     subprocess.run([sys.executable, str(ROOT / 'scripts/prepare_large_apworlds.py')], check=True)
+    subprocess.run(['node', str(ROOT / 'scripts/prepare_translation_model.mjs')], check=True)
     for name in runtime:
         if not (ROOT / name / 'package.json').is_file(): raise SystemExit('Laufzeitpaket fehlt: ' + name)
 manifest = {'schema': 1, 'name': package['name'], 'version': package['version'], 'files': []}
 with zipfile.ZipFile(args.output, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
     if args.source:
-        archive.writestr('AP-Chaos-Bridge/SOURCE-SETUP.md', '# Quellcode-Paket\n\nDieses Paket enthält den Bridge-Quellcode. Für Laufzeitpakete `npm ci --ignore-scripts` ausführen. APworlds werden separat über `python3 scripts/sync_apworld_catalog.py`, `python3 scripts/build_apworld_cache.py` und `python3 scripts/build_catalog_report.py` vorbereitet. Anschließend `npm run validate:worlds` und `npm start` ausführen. Das vollständige Release-ZIP enthält die APworlds und Laufzeitpakete bereits.\n')
+        archive.writestr('AP-Chaos-Bridge/SOURCE-SETUP.md', '# Quellcode-Paket\n\nDieses Paket enthält den Bridge-Quellcode. Für Laufzeitpakete `npm ci --ignore-scripts` und `node scripts/prepare_translation_model.mjs` ausführen. Das gepinnte Deutsch-Modell ist im Vollpaket enthalten und wird in Quellcodekopien einmal heruntergeladen. APworlds werden separat über `python3 scripts/sync_apworld_catalog.py`, `python3 scripts/build_apworld_cache.py` und `python3 scripts/build_catalog_report.py` vorbereitet. Anschließend `npm run validate:worlds` und `npm start` ausführen. Das vollständige Release-ZIP enthält die APworlds und Laufzeitpakete bereits.\n')
     for path in sorted(ROOT.rglob('*')):
         rel = path.relative_to(ROOT)
         allowed_dotfile = rel.as_posix() == '.gitignore' or (args.source and rel.parts[0] == '.github')
@@ -34,7 +35,7 @@ with zipfile.ZipFile(args.output, 'w', compression=zipfile.ZIP_DEFLATED, compres
         if args.source and rel.as_posix() in ('assets/apworld-settings.json', 'assets/apworld-downloads.json', 'assets/apworld-validation.json'):
             continue
         if rel.name == 'AP-Chaos-Bridge.exe' and len(rel.parts) == 1: continue
-        if args.source and rel.parts[:2] == ('assets', 'windows'): continue
+        if args.source and rel.parts[:2] in (('assets', 'windows'), ('assets', 'translation-models')): continue
         if rel.parts[0] == 'node_modules' and not any(rel.as_posix().startswith(name + '/') for name in runtime): continue
         if rel.as_posix() == 'release-manifest.json': continue
         # Existing updaters allow assets but reject new files at the package root.

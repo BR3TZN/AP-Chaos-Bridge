@@ -20,10 +20,13 @@ async function until(predicate, message, timeout = 1800) {
 async function ui(t, options = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'ap-chaos-ui-'));
   const app = await createApp({ directory, worldsDirectory: join(directory, 'worlds'), port: 0, ...options });
+  app.helpLanguage.update({ language: options.language || 'en' });
   if (options.seedRules !== false) app.store.state.rules.push({ id: 'fixture-rule', name: 'Fixture Charity', enabled: false, source: 'charity', type: 'donation', action: 'random-trap', minimumCents: 1000, minimumUnits: 0, rewardId: '', effect: 'random_trap', target: 'random', game: '', item: '', quantity: 1, cooldownSec: 20 });
   app.library.importWorld(writeZip([{ name: 'ui/__init__.py', content: `class Health(Range):\n range_start = 1\n range_end = 9\n default = 3\nclass UIOptions(PerGameCommonOptions):\n health: Health\nclass UIWorld(World):\n game = 'UI Fixture'\n options_dataclass = UIOptions` }]), 'ui.apworld');
   const dom = new JSDOM(readFileSync(new URL('../public/index.html', import.meta.url), 'utf8'), { url: app.url + '/#regeln', runScripts: 'outside-only' });
   const { window } = dom;
+  // fetch runs in Node; use its AbortSignal implementation across the JSDOM boundary.
+  window.AbortController = globalThis.AbortController; window.AbortSignal = globalThis.AbortSignal;
   const requests = [], intervals = [];
   window.fetch = (path, init) => {
     requests.push({ path, method: init?.method || 'GET', body: init?.body });
@@ -34,7 +37,7 @@ async function ui(t, options = {}) {
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   window.scrollTo = () => {};
-  window.eval(['appearance.js', 'alerts.js', 'studio.js', 'rules.js', 'rewards.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__captureDownload = callback => { Studio.download = callback; }; window.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading; window.__bridgeIndexLoaded = () => Boolean(indexData) && !Studio.indexLoading;');
+  window.eval(['appearance.js', 'alerts.js', 'language.js', 'studio.js', 'rules.js', 'rewards.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__captureDownload = callback => { Studio.download = callback; }; window.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading; window.__bridgeIndexLoaded = () => Boolean(indexData) && !Studio.indexLoading;');
   await until(() => window.document.querySelector('[data-action="new-rule"]'), 'Regelseite wurde nicht geladen.');
   t.after(() => { dom.window.close(); app.close(); rmSync(directory, { recursive: true, force: true }); });
   return { app, window, document: window.document, requests, directory, intervals };
@@ -699,4 +702,45 @@ test('connections put Twitch before Charity and room DeathLink starts enabled an
   const checkbox = document.querySelector('#deathlink-armed'); assert.equal(checkbox.checked, true);
   checkbox.checked = false; checkbox.dispatchEvent(new window.Event('change', { bubbles: true })); await until(() => app.store.state.config.deathLinkArmed === false, 'Opt-out missing');
   await window.__bridgeRefresh(); assert.equal(checkbox.checked, false);
+});
+
+test('game help language can be saved globally as German or original English in settings', async t => {
+  const { app, window, document } = await ui(t, { language: 'de' });
+  window.location.hash = 'einrichtung'; await until(() => document.querySelector('#language-form'), 'Language settings missing');
+  let form = document.querySelector('#language-form'); assert.equal(form.elements.namedItem('language').value, 'de');
+  form.elements.namedItem('language').value = 'en'; const save = form.querySelector('[type=submit]'); save.click();
+  await until(() => app.helpLanguage.language === 'en' && !save.disabled, 'English preference not saved');
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#studio-yaml-form'), 'Editor missing');
+  assert.equal(document.querySelector('[data-option-search="health health"] [data-help-label]').textContent, 'Health');
+  assert([...document.querySelectorAll('[data-help-original]')].every(node => node.hidden));
+  window.location.hash = 'einrichtung'; await until(() => document.querySelector('#language-form'), 'Settings missing');
+  form = document.querySelector('#language-form'); form.elements.namedItem('language').value = 'de'; const saveGerman = form.querySelector('[type=submit]'); saveGerman.click();
+  await until(() => app.helpLanguage.language === 'de' && !saveGerman.disabled, 'German preference not saved');
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#help-language-status')?.textContent.includes('Originaltexte aufklappbar'), 'German help missing', 5000);
+  assert([...document.querySelectorAll('[data-help-label]')].some(node => node.textContent === 'Gesundheit'));
+  const room = app.rooms.create({ name: 'Language room' }); app.rooms.activate(room.id); assert.equal(app.snapshot().language, 'de');
+});
+
+test('late local help translations preserve edited YAML controls, focus, expanded originals and German search', async t => {
+  let release, started = false; const gate = new Promise(resolve => { release = resolve; });
+  const { app, window, document } = await ui(t, { language: 'de', translationRunner: async texts => { started = true; await gate; return texts.map(() => 'Die Geschwindigkeit der Gegner wird geändert.'); } });
+  app.library.data.games['UI Fixture'].options.find(option => option.key === 'health').description = 'The timer changes how quickly enemies move.';
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#studio-yaml-form') && started, 'Translation was not started').catch(error => { throw new Error(error.message + ': ' + document.querySelector('#help-language-status')?.textContent); });
+  const form = document.querySelector('#studio-yaml-form'), field = document.querySelector('[data-option-search="health health"]'), select = field.querySelector('select'), original = field.querySelector('[data-help-original]');
+  select.value = '7'; select.focus(); form.elements.namedItem('playerNames').value = 'Unsubmitted'; original.open = true;
+  release(); await until(() => field.querySelector('[data-help-description]').textContent.includes('Geschwindigkeit'), 'German help not applied', 5000);
+  assert.equal(field.querySelector('select'), select); assert.equal(select.value, '7'); assert.equal(document.activeElement, select); assert.equal(original.open, true); assert.equal(form.elements.namedItem('playerNames').value, 'Unsubmitted');
+  await window.__bridgeRefresh(); assert.equal(document.querySelector('#studio-yaml-form'), form); assert.equal(select.value, '7');
+  const search = document.querySelector('#studio-option-search'); search.value = 'geschwindigkeit'; search.dispatchEvent(new window.Event('input', { bubbles: true })); assert(!field.classList.contains('hidden'));
+  assert(field.querySelector('[data-help-original]').textContent.includes('The timer changes'));
+});
+
+test('a translation response from the previous language cannot overwrite English originals', async t => {
+  let release, started = false, finished = false; const gate = new Promise(resolve => { release = resolve; });
+  const { app, window, document } = await ui(t, { language: 'de', translationRunner: async texts => { started = true; await gate; finished = true; return texts.map(() => 'Eine verspätete deutsche Erklärung.'); } });
+  const description = 'An original description which must remain visible.'; app.library.data.games['UI Fixture'].options.find(option => option.key === 'health').description = description;
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => started && document.querySelector('#studio-yaml-form'), 'Translation request missing');
+  app.helpLanguage.update({ language: 'en' }); await window.__bridgeRefresh(); release(); await until(() => finished, 'Held translation did not finish'); await window.__bridgeRefresh();
+  const field = document.querySelector('[data-option-search="health health"]'); assert.equal(field.querySelector('[data-help-label]').textContent, 'Health'); assert.equal(field.querySelector('[data-help-description]').textContent, description); assert.equal(field.querySelector('[data-help-original]').hidden, true);
+  assert(document.querySelector('#help-language-status').textContent.includes('English'));
 });
