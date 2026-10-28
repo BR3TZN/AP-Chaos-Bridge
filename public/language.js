@@ -36,7 +36,10 @@ const HelpText = {
         const result = await response.json(); if (!response.ok) throw new Error(result.error || 'Die Übersetzung konnte nicht geladen werden.');
         if (!this.valid(context) || result.revision !== context.entry.helpRevision || result.language !== 'de') return;
         for (const option of result.options) if (context.entry.options[option.index]?.key === option.key) record.options.set(option.index, option);
-        record.revision++; this.sync();
+        // Reconcile the new display text now, while the translation changes.
+        // This also advances LiveUI's desired-HTML cache, so the next unchanged
+        // server snapshot cannot strip and reapply the translated help nodes.
+        record.revision++; render();
       }
     } catch (error) { if (this.valid(context) && error.name !== 'AbortError') record.error = error.message; }
     finally { if (this.current === context) { record.loading = false; record.revision++; this.sync(); } }

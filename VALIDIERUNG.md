@@ -10,7 +10,7 @@ Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. E
 
 ## Automatisierte Prüfungen
 
-**200 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**201 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -161,7 +161,7 @@ Der native Windows-Test generiert dieselbe YAML zweimal über den normalen Downl
 
 ## Lokale Spielbeschreibungen 0.7.6
 
-Elf zusätzliche Prüfungen führen Sprachpersistenz, technische Platzhalter, mehr als 26 geschützte Zahlen, Absätze und Codeblöcke, Inhaltscache und Neustart, fehlende Modelle, ungültige Quellen und Sprachwerte, atomare SHA256-Modellvorbereitung sowie die echte lokale WASM-Engine aus. Ein eigener YAML-Import wird übersetzt und vor/nach der Sprachänderung byte-identisch exportiert. Oberflächentests halten eine Übersetzung zurück, bearbeiten währenddessen Werte und prüfen erhaltene Eingabeknoten, Fokus, aufgeklappte Originaltexte und deutsche Suche. Eine verspätete Antwort darf den Wechsel auf englische Originaltexte nicht rückgängig machen.
+Zwölf zusätzliche Prüfungen führen Sprachpersistenz, technische Platzhalter, mehr als 26 geschützte Zahlen, Absätze und Codeblöcke, Inhaltscache und Neustart, fehlende Modelle, ungültige Quellen und Sprachwerte, atomare SHA256-Modellvorbereitung sowie die echte lokale WASM-Engine aus. Ein eigener YAML-Import wird übersetzt und vor/nach der Sprachänderung byte-identisch exportiert. Oberflächentests halten eine Übersetzung zurück, bearbeiten währenddessen Werte und prüfen erhaltene Eingabeknoten, Fokus, aufgeklappte Originaltexte und deutsche Suche. Ein gerade fertig übersetzter, unveränderter Editor darf beim ersten folgenden Polling keine DOM-Mutation erzeugen. Eine verspätete Antwort darf den Wechsel auf englische Originaltexte nicht rückgängig machen.
 
 Das Mozilla-Modell Englisch → Deutsch 2.1 und Bergamot 0.4.9 sind fest gepinnt. Drei Modelldateien werden vor dem Packen und unter beiden Testsystemen anhand von Größe und SHA256 geprüft. Die Engine läuft im lokalen Node-Worker und liest nur mitgelieferte Modelldateien. Die vollständigen 47 Factorio-Einstellungen wurden lokal übersetzt; dieser Durchlauf dauerte rund sechs Sekunden. Dies ist eine automatische Anzeigeübersetzung, keine fachliche Einzelprüfung sämtlicher Spieltexte.
 

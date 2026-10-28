@@ -744,3 +744,16 @@ test('a translation response from the previous language cannot overwrite English
   const field = document.querySelector('[data-option-search="health health"]'); assert.equal(field.querySelector('[data-help-label]').textContent, 'Health'); assert.equal(field.querySelector('[data-help-description]').textContent, description); assert.equal(field.querySelector('[data-help-original]').hidden, true);
   assert(document.querySelector('#help-language-status').textContent.includes('English'));
 });
+
+
+test('completed German help leaves a clean editor untouched on the very next periodic refresh', async t => {
+  const { window, document } = await ui(t, { language: 'de' });
+  window.location.hash = 'spiel/UI%20Fixture';
+  await until(() => document.querySelector('#help-language-status')?.textContent.includes('Originaltexte aufklappbar'), 'German help did not complete', 5000);
+  assert([...document.querySelectorAll('[data-help-label]')].some(node => node.textContent === 'Gesundheit'));
+  const mutations = [], observer = new window.MutationObserver(records => mutations.push(...records));
+  observer.observe(document.querySelector('#main'), { subtree: true, childList: true, attributes: true, characterData: true });
+  for (let index = 0; index < 3; index++) await window.__bridgeRefresh();
+  await Promise.resolve(); observer.disconnect();
+  assert.equal(mutations.length, 0, mutations.map(record => record.target.outerHTML?.slice(0, 100) || record.target.nodeName).join('\n'));
+});
