@@ -314,12 +314,14 @@ internal sealed class BridgeForm : Form
                 // Handled suppresses WebView2's history flyout as well as its
                 // default download UI. Use the real (possibly redirected) folder.
                 args.Handled = true;
+                if (Program.Smoke) Log("desktop-download.log", "DownloadStarting " + args.ResultFilePath);
                 string target;
                 try { target = ReserveDownload(args.ResultFilePath); args.ResultFilePath = target; }
                 catch (Exception error) { args.Cancel = true; Log("error.log", "Download: " + error.Message); BeginInvoke(new Action(async () => await NotifyDownload("Download konnte nicht gespeichert werden: " + error.Message, true))); return; }
                 CoreWebView2DownloadOperation download = args.DownloadOperation;
                 download.StateChanged += async (downloadSender, downloadArgs) =>
                 {
+                    if (Program.Smoke) Log("desktop-download.log", "State " + download.State + " / " + download.InterruptReason + " / " + target);
                     if (download.State == CoreWebView2DownloadState.Completed)
                     {
                         downloaded = true; downloadedPaths.Add(target);
@@ -447,15 +449,22 @@ internal sealed class BridgeForm : Form
 
     private async Task SmokeDownload()
     {
+        Log("desktop-download.log", "Generate download " + (downloadedPaths.Count + 1));
         await view.ExecuteScriptAsync("location.hash = 'spiel/Factorio'");
         bool formReady = false;
         for (int i = 0; i < 100; i++)
         {
-            if (await view.ExecuteScriptAsync("Boolean(document.querySelector('#studio-yaml-form'))") == "true") { formReady = true; break; }
+            if (await view.ExecuteScriptAsync("Boolean(document.querySelector('#studio-yaml-form [type=submit]') && !document.querySelector('#studio-yaml-form [type=submit]').disabled)") == "true") { formReady = true; break; }
             await Task.Delay(200);
         }
         if (!formReady) throw new Exception("YAML-Editor im eigenen Fenster fehlt.");
-        await view.ExecuteScriptAsync("document.querySelector('#studio-yaml-form [name=playerNames]').value = 'SmokePlayer'; document.querySelector('#studio-yaml-form [type=submit]').click()");
+        await view.ExecuteScriptAsync("document.querySelector('#studio-yaml-form [name=playerNames]').value = 'SmokePlayer'; document.querySelector('#studio-yaml-form [type=submit]').scrollIntoView({ block: 'center' })");
+        string pointJson = await view.ExecuteScriptAsync("(() => { const rect = document.querySelector('#studio-yaml-form [type=submit]').getBoundingClientRect(); return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; })()");
+        var point = Program.Json.Deserialize<Dictionary<string, object>>(pointJson);
+        // Use a real browser input gesture. HTMLElement.click() has no user
+        // activation and Chromium can block a second automatic download.
+        await view.CoreWebView2.CallDevToolsProtocolAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mousePressed", x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
+        await view.CoreWebView2.CallDevToolsProtocolAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mouseReleased", x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
         for (int i = 0; i < 100 && !downloaded; i++) await Task.Delay(200);
         if (!downloaded) throw new Exception("YAML-Download im eigenen Fenster fehlgeschlagen.");
     }

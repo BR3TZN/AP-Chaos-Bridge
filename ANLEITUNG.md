@@ -135,9 +135,9 @@ Ein Geschenkpaket löst einmal aus; seine enthaltenen Abos werden nicht zusätzl
 
 ## Regeln exportieren, speichern und übernehmen
 
-- **Regeln → Exportieren:** gewünschte Regeln auswählen und eine JSON-Datei herunterladen. Diese Datei kann auch auf einem anderen PC eingelesen werden.
+- **Regeln → JSON exportieren:** gewünschte Regeln auswählen und eine JSON-Datei herunterladen. Diese Datei kann auch auf einem anderen PC eingelesen werden.
 - **Regeln → Als Vorlage speichern:** einen Namen vergeben. Die Vorlage bleibt nach Neustarts erhalten und steht in allen lokalen Bridge-Räumen zur Verfügung, auch wenn der Ursprungsraum später gelöscht wird.
-- **Regeln → Regeln übernehmen:** einen anderen Raum (auch archivierte Räume), eine gespeicherte Vorlage oder eine JSON-Datei wählen. Bestehende vollständige Bridge-Konfigurationsexporte sind hier ebenfalls als Regelquelle verwendbar.
+- **Regeln → Importieren / Raum kopieren:** einen anderen Raum (auch archivierte Räume), eine gespeicherte Vorlage oder eine JSON-Datei wählen. Bestehende vollständige Bridge-Konfigurationsexporte sind hier ebenfalls als Regelquelle verwendbar.
 - **Regeln anzeigen** lädt die Vorschau. Die gewünschten Regeln markieren und zu den vorhandenen Regeln hinzufügen oder diese ausdrücklich ersetzen. Beim Ersetzen wird die Ausführung pausiert.
 
 Alle übernommenen Regeln starten **inaktiv** mit neuen IDs. Spieler werden anhand von Slotname und Spiel, Twitch-Kanäle bevorzugt anhand ihrer Broadcaster-ID zugeordnet. Fehlende Zuordnungen stehen als **Zuordnung prüfen** an der Regel. Diese Regeln vor der Aktivierung öffnen, Ziele/Kanal/Belohnung für den Zielraum wählen und die Prüfung bestätigen. Verbindungen, Zugangsdaten und Slot-Freigaben werden nicht aus der Vorlage übernommen.

@@ -222,7 +222,7 @@ Unter **Räume** einen Arbeitsbereich pro Run oder Spiel anlegen. Jeder Raum spe
 
 **Archivieren** bewahrt Regeln, Protokolle, Presets und Zugangsdaten. Die Filter **Aktive Räume / Archiviert / Alle** helfen beim Aufräumen. **Wiederherstellen** macht einen archivierten Raum wieder auswählbar. **Löschen** verlangt den exakten Raumnamen und entfernt die lokalen Raumdaten und Zugangsdaten endgültig. Der gemeinsame Spielekatalog bleibt erhalten. Wird der geöffnete Raum archiviert oder gelöscht, öffnet die Bridge einen anderen Raum.
 
-AP-Verbindung, Admin-Anmeldung, Charity und Twitch werden nach erfolgreicher Einrichtung für diesen Raum gemerkt. Nach Neustart oder Raumwechsel werden die zuletzt aktiv verbundenen Quellen wieder verbunden. **Trennen** beendet auch deren automatische Wiederverbindung. Die Ausführung beginnt dabei pausiert im Testmodus.
+AP-Verbindung, Admin-Anmeldung, Charity und Twitch werden nach erfolgreicher Einrichtung für diesen Raum gemerkt. Nach Neustart oder Raumwechsel werden die zuletzt aktiv verbundenen Quellen wieder verbunden. **Trennen** beendet auch deren automatische Wiederverbindung. Die Bridge beginnt dabei im Testmodus; eine bewusst gesetzte Pause bleibt erhalten. Der Wechsel auf Live startet aktive Regeln unmittelbar.
 
 AP-Passwörter bleiben maskiert in den Formularen stehen. Die Maske steht für die gespeicherten Zugangsdaten; neben dem Formular wird der wirkliche Admin-Status angezeigt. „Gespeicherte Passwörter vergessen“ beziehungsweise die entsprechende Twitch-Funktion entfernt die lokalen Zugangsdaten. Zugangsdaten werden verschlüsselt lokal gespeichert und nicht im Konfigurationsexport ausgegeben.
 
