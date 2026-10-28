@@ -463,8 +463,8 @@ internal sealed class BridgeForm : Form
         var point = Program.Json.Deserialize<Dictionary<string, object>>(pointJson);
         // Use a real browser input gesture. HTMLElement.click() has no user
         // activation and Chromium can block a second automatic download.
-        await view.CoreWebView2.CallDevToolsProtocolAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mousePressed", x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
-        await view.CoreWebView2.CallDevToolsProtocolAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mouseReleased", x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
+        await view.CoreWebView2.CallDevToolsProtocolMethodAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mousePressed", buttons = 1, x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
+        await view.CoreWebView2.CallDevToolsProtocolMethodAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mouseReleased", buttons = 0, x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
         for (int i = 0; i < 100 && !downloaded; i++) await Task.Delay(200);
         if (!downloaded) throw new Exception("YAML-Download im eigenen Fenster fehlgeschlagen.");
     }
