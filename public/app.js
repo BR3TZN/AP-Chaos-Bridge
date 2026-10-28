@@ -1,6 +1,9 @@
 'use strict';
 let S, currentPage = location.hash.slice(1) || 'regie', eventTab = 'queue', indexData, integration, approvalEditor;
-const $ = selector => document.querySelector(selector);
+const $ = selector => document?.querySelector(selector);
+const setText = (element, value) => { if (element && element.textContent !== String(value)) element.textContent = value; };
+const setClass = (element, value) => { if (element && element.className !== value) element.className = value; };
+let refreshSequence = 0;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const names = { regie: 'Übersicht', quellen: 'Verbindungen', spielslots: 'Spieler & Effekte', regeln: 'Regeln', ereignisse: 'Protokoll', einrichtung: 'Einstellungen', katalog: 'Spielekatalog', raeume: 'Räume', spiel: 'Spieleinstellungen', design: 'Design', alerts: 'Stream-Alerts' };
 const sourceNames = { charity: 'Charity Royale', twitch: 'Twitch', external: 'Externer Trigger', manual: 'Manuell', any: 'Alle Quellen' };
@@ -14,7 +17,7 @@ const options = (object, selected) => Object.entries(object).map(([value, label]
 // Reconcile live text and status without replacing controls, open disclosures or
 // forms that the user is editing. Native dropdowns keep the same DOM node.
 const LiveUI = {
-  baselines: new WeakMap(), accepted: new WeakSet(), page: '', room: '',
+  baselines: new WeakMap(), accepted: new WeakSet(), page: '', room: '', html: '', revision: 0,
   signature(form) { return JSON.stringify([...form.elements].filter(el => ['INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName) && !['submit', 'button'].includes(el.type)).map(el => [el.name || el.id, el.type, el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.tagName === 'SELECT' && el.multiple ? [...el.selectedOptions].map(option => option.value) : el.value])); },
   committed(form) { if (form?.isConnected) this.baselines.set(form, this.signature(form)); },
   key(node) {
@@ -55,6 +58,8 @@ const LiveUI = {
   },
   render(html) {
     const root = $('#main'), changed = this.page !== currentPage || this.room !== S.rooms?.active;
+    if (!changed && html === this.html && root.children.length && ![...root.querySelectorAll('form')].some(form => this.accepted.has(form))) return;
+    this.html = html; this.revision++;
     if (changed || !root.children.length) { root.innerHTML = html; if (this.room && changed) { $('#drawer').close(); Rewards.close(); RuleTools.reset(); approvalEditor = null; } }
     else { const next = document.createElement('div'); next.innerHTML = html; this.children(root, next); }
     this.page = currentPage; this.room = S.rooms?.active;
@@ -65,7 +70,7 @@ const badge = (label, cls = 'neutral') => `<span class="badge ${cls}">${esc(labe
 const pill = state => `<span class="pill ${state === 'connected' ? 'good' : ['reconnecting', 'error'].includes(state) ? 'warn' : ''}">${esc(connectionNames[state] || state)}</span>`;
 const empty = (heading, description, symbol = '↳') => `<div class="empty"><div class="empty-icon">${symbol}</div><strong>${esc(heading)}</strong>${esc(description)}</div>`;
 function toast(message, error = false) {
-  const el = $('#toast'); el.textContent = message; el.className = 'visible' + (error ? ' error' : '');
+  const el = $('#toast'); if (!el) return; el.textContent = message; el.className = 'visible' + (error ? ' error' : '');
   clearTimeout(toast.timer); toast.timer = setTimeout(() => el.className = '', error ? 9000 : 4500);
 }
 async function api(path, data) {
@@ -73,13 +78,14 @@ async function api(path, data) {
   const result = await response.json(); if (!response.ok) throw new Error(result.error || 'Anfrage fehlgeschlagen.'); return result;
 }
 async function refresh(force = false) {
-  try { S = await api('state'); render(force); }
-  catch { if (!document?.documentElement) return; $('#footer-status').textContent = 'Lokale Bridge nicht erreichbar'; $('#connection-pill').textContent = 'Tool offline'; $('#connection-pill').className = 'pill warn'; }
+  const sequence = ++refreshSequence;
+  try { const state = await api('state'); if (sequence !== refreshSequence || !document?.documentElement) return; S = state; render(force); }
+  catch { if (sequence !== refreshSequence || !document?.documentElement) return; $('#footer-status').textContent = 'Lokale Bridge nicht erreichbar'; $('#connection-pill').textContent = 'Tool offline'; $('#connection-pill').className = 'pill warn'; }
 }
 function pageHead(kicker, title, description, actions = '') {
   return `<div class="page-head"><div><span class="eyebrow">${esc(kicker)}</span><h1>${esc(title)}</h1><p>${esc(description)}</p></div><div class="button-row page-actions">${actions}</div></div>`;
 }
-function runButton() { return `<button data-action="pause" class="${S.config.paused ? 'primary' : 'ghost'}">${S.config.paused ? 'Ausführung starten' : 'Pausieren'}</button>`; }
+function runButton() { return `<button data-action="pause" class="${S.config.paused ? 'primary' : 'ghost'}">${S.config.paused ? 'Fortsetzen' : 'Pausieren'}</button>`; }
 function modeNotice() {
   const demo = S.ap.demo, live = S.config.mode === 'live';
   return `<div class="notice ${live ? 'live' : ''}"><span class="notice-icon">${live ? '↗' : '◇'}</span><div><b>${demo ? 'Demo · ausschließlich Simulationen' : live ? 'LIVE · Aktionen können das Spiel verändern' : 'Testmodus · alle neuen Ereignisse werden simuliert'}</b><p>${S.config.paused ? 'Warteschlange ist pausiert.' : 'Warteschlange wird verarbeitet.'} ${live ? 'Notaus verwirft wartende Aktionen. Bereits gesendete Effekte können weiterwirken.' : 'Ein Moduswechsel wandelt bestehende Simulationen nicht in Live-Aktionen um.'}</p></div><div class="button-row">${runButton()}</div></div>`;
@@ -88,7 +94,7 @@ function sourceLine(abbr, name, description, state, cls = '') { return `<div cla
 function renderRule(r) {
   const target = r.effect === 'deathlink' ? 'DeathLink-Gruppe' : r.effect === 'message' ? 'AP-Raumchat' : r.effect === 'alert' ? 'Nur Anzeige im Stream' : r.target === 'random' ? 'Zufälliger freigegebener Spieler' : r.target === 'all' ? 'Alle passenden Spieler' : r.target === 'random_selected' ? `Zufällig aus ${r.targetKeys?.length || 0} ausgewählten Spielern` : r.target === 'selected' ? `${r.targetKeys?.length || 0} ausgewählte Spieler` : S.players.find(p => `${p.team}:${p.slot}` === r.target)?.name || 'Slot ' + r.target;
   const min = [r.minimumCents ? `ab ${eur(r.minimumCents)}` : '', r.minimumUnits ? `ab ${r.minimumUnits} Einheiten` : '', r.action ? `Aktion: ${r.action}` : ''].filter(Boolean).join(' · ');
-  return `<article class="panel rule-card"><div class="rule-top"><h3>${esc(r.name)}</h3>${badge(r.reviewNotes?.length ? 'Zuordnung prüfen' : r.enabled ? 'Aktiv' : 'Inaktiv', r.reviewNotes?.length ? 'warn' : r.enabled ? 'good' : 'neutral')}</div><div class="flow"><div class="flow-cell"><span class="eyebrow">WENN</span><b>${esc(sourceNames[r.source])}${r.twitchChannelId ? ' @' + esc(S.twitch.channels?.find(c => c.id === r.twitchChannelId)?.channelName || 'entfernter Kanal') : ''} · ${esc(typeNames[r.type])}</b><span class="tiny">${esc(min || 'Jedes passende Ereignis')}</span></div><div class="flow-arrow">→</div><div class="flow-cell"><span class="eyebrow">DANN</span><b>${esc(r.effect === 'item' ? r.item : effectNames[r.effect])}</b><span class="tiny">${esc(target)}${r.quantity > 1 ? ' · ' + r.quantity + '×' : ''}</span></div></div><div class="rule-foot"><span class="tiny mono">${r.cooldownSec}s COOLDOWN${r.game ? ' · ' + esc(r.game) : ''}</span><div class="button-row"><button class="small ghost" data-action="test-rule" data-id="${r.id}">Simulieren</button>${S.config.mode === 'live' && !S.ap.demo && r.enabled ? `<button class="small danger" data-action="live-rule" data-id="${r.id}">Live-Test</button>` : ''}<button class="small" data-action="edit-rule" data-id="${r.id}">Bearbeiten</button></div></div></article>`;
+  return `<article class="panel rule-card"><div class="rule-top"><h3>${esc(r.name)}</h3><div class="rule-status">${r.reviewNotes?.length ? badge('Zuordnung prüfen', 'warn') : ''}<button type="button" role="switch" class="rule-toggle" data-action="toggle-rule" data-id="${r.id}" data-enabled="${!r.enabled}" aria-checked="${r.enabled}" aria-label="Regel ${esc(r.name)} ${r.enabled ? 'ausschalten' : 'einschalten'}" ${r.reviewNotes?.length ? 'disabled title="Zuordnung zuerst über Bearbeiten prüfen"' : ''}><span class="switch-track" aria-hidden="true"><span></span></span>${r.enabled ? 'Aktiv' : 'Inaktiv'}</button></div></div><div class="flow"><div class="flow-cell"><span class="eyebrow">WENN</span><b>${esc(sourceNames[r.source])}${r.twitchChannelId ? ' @' + esc(S.twitch.channels?.find(c => c.id === r.twitchChannelId)?.channelName || 'entfernter Kanal') : ''} · ${esc(typeNames[r.type])}</b><span class="tiny">${esc(min || 'Jedes passende Ereignis')}</span></div><div class="flow-arrow">→</div><div class="flow-cell"><span class="eyebrow">DANN</span><b>${esc(r.effect === 'item' ? r.item : effectNames[r.effect])}</b><span class="tiny">${esc(target)}${r.quantity > 1 ? ' · ' + r.quantity + '×' : ''}</span></div></div><div class="rule-foot"><span class="tiny mono">${r.cooldownSec}s COOLDOWN${r.game ? ' · ' + esc(r.game) : ''}</span><div class="button-row"><button class="small ghost" data-action="test-rule" data-id="${r.id}">Simulieren</button>${S.config.mode === 'live' && !S.ap.demo && r.enabled ? `<button class="small danger" data-action="live-rule" data-id="${r.id}">Live-Test</button>` : ''}<button class="small" data-action="edit-rule" data-id="${r.id}">Bearbeiten</button></div></div></article>`;
 }
 function queueTable(limit = 200) {
   const jobs = [...S.queue].reverse().slice(0, limit);
@@ -99,7 +105,7 @@ function dashboard() {
   return pageHead('DEIN RUN IM BLICK', 'Übersicht', 'Verbindungen prüfen, Empfänger freigeben und Zuschaueraktionen steuern.', `<button class="ghost" data-action="demo">Demo öffnen</button><button class="primary" data-action="new-rule">+ Neue Regel</button>`)
     + modeNotice()
     + `<div class="grid metrics"><div class="metric accent"><span class="eyebrow">WARTESCHLANGE</span><div class="number">${S.stats.queued}</div><span class="tiny">${S.config.paused ? 'Ausführung pausiert' : 'Bereit zur Verarbeitung'}</span></div><div class="metric"><span class="eyebrow">AP BESTÄTIGT</span><div class="number">${S.stats.confirmed}</div><span class="tiny">Zusätzliche Items am Server</span></div><div class="metric"><span class="eyebrow">SIMULIERT</span><div class="number">${S.stats.simulated}</div><span class="tiny">Ohne Eingriff in den Run</span></div><div class="metric"><span class="eyebrow">SPIELSLOTS</span><div class="number">${S.players.filter(p => p.team === S.ap.team && p.type === 1 && p.approval.enabled).length}<span class="muted"> / ${S.players.filter(p => p.team === S.ap.team && p.type === 1).length}</span></div><span class="tiny">Für Zuschaueraktionen freigegeben</span></div></div>`
-    + `<div class="grid columns"><section class="panel"><div class="panel-head"><div><h2>Verbindungen</h2><p>Trigger empfangen. Regeln auswerten. Effekte zustellen.</p></div><a class="tiny text-link" href="#quellen">Einrichten ↗</a></div>${sourceLine('CR', 'Charity Royale', S.config.charity.slug || 'Streamer-Slug noch nicht eingetragen', S.charity.state)}${sourceLine('TW', 'Twitch EventSub', 'Subs · Gift Subs · Bits · Kanalpunkte', S.twitch.state, 'purple')}${sourceLine('AP', 'Archipelago', S.ap.seed || 'Noch kein Raum verbunden', S.ap.state, 'blue')}</section><section class="panel"><div class="panel-head"><h2>Bis zur ersten Aktion</h2>${badge(S.ap.demo ? 'Demo aktiv' : 'SETUP')}</div><div class="step-list"><div class="step"><span class="step-number">1</span><div><b>Raum & Quellen verbinden</b><p>Bestehenden AP-Slot verwenden. Für zusätzliche Items ist das Server-Adminpasswort nötig.</p></div></div><div class="step"><span class="step-number">2</span><div><b>Slots & Effekte freigeben</b><p>Raumkatalog abgleichen, im Spiel testen, Items und Zufallspool auswählen.</p></div></div><div class="step"><span class="step-number">3</span><div><b>Regeln testen, dann live schalten</b><p>Simulieren prüft den Ablauf. Ein Live-Test prüft den tatsächlichen Spieleingriff.</p></div></div></div></section></div>`
+    + `<div class="grid columns"><section class="panel"><div class="panel-head"><div><h2>Verbindungen</h2><p>Trigger empfangen. Regeln auswerten. Effekte zustellen.</p></div><a class="tiny text-link" href="#quellen">Einrichten ↗</a></div>${sourceLine('TW', 'Twitch EventSub', 'Subs · Gift Subs · Bits · Kanalpunkte', S.twitch.state, 'purple')}${sourceLine('CR', 'Charity Royale', S.config.charity.slug || 'Streamer-Slug noch nicht eingetragen', S.charity.state)}${sourceLine('AP', 'Archipelago', S.ap.seed || 'Noch kein Raum verbunden', S.ap.state, 'blue')}</section><section class="panel"><div class="panel-head"><h2>Bis zur ersten Aktion</h2>${badge(S.ap.demo ? 'Demo aktiv' : 'SETUP')}</div><div class="step-list"><div class="step"><span class="step-number">1</span><div><b>Raum & Quellen verbinden</b><p>Bestehenden AP-Slot verwenden. Für zusätzliche Items ist das Server-Adminpasswort nötig.</p></div></div><div class="step"><span class="step-number">2</span><div><b>Slots & Effekte freigeben</b><p>Raumkatalog abgleichen, im Spiel testen, Items und Zufallspool auswählen.</p></div></div><div class="step"><span class="step-number">3</span><div><b>Regeln testen, dann live schalten</b><p>Simulieren prüft den Ablauf. Ein Live-Test prüft den tatsächlichen Spieleingriff.</p></div></div></div></section></div>`
     + `<section class="section-gap"><div class="section-title"><h2>Deine Regeln <span class="muted">${S.rules.length.toString().padStart(2, '0')}</span></h2><a href="#regeln">Alle Regeln →</a></div><div class="grid rules-grid">${S.rules.slice(0, 4).map(renderRule).join('') || empty('Keine Regeln', 'Lege einen Auslöser und eine Aktion an.')}</div></section>`
     + `<section class="panel section-gap"><div class="panel-head"><h2>Letzte Aktionen</h2><a class="tiny text-link" href="#ereignisse">Protokoll ↗</a></div>${queueTable(8)}</section>`;
 }
@@ -129,7 +135,7 @@ function slotsPage() {
     + `<div class="info-panel"><b>Spieler aus dem AP-Raum erscheinen automatisch.</b><p>Öffne „Items & Fallen auswählen“, erlaube die gewünschten Items und aktiviere den Spieler. Danach können Regeln ihn gezielt, gemeinsam mit anderen oder zufällig treffen. Eine zusätzliche Bridge-Anmeldung pro Spieler ist nicht nötig.</p></div>`
     + (S.ap.demo ? `<div class="notice"><div><b>Demo · keine Verbindung zu laufenden Spielen</b><p>Mit diesen Beispielspielern kannst du die Bedienung und Regeln testen.</p></div></div>` : '')
     + `<div class="grid rules-grid">${players.map(p => `<article class="panel panel-pad game-card"><div class="game-card-title"><div class="game-mark">${esc(p.game.split(' ').map(x => x[0]).join('').slice(0, 3))}</div><div><h3>${esc(p.name)}</h3><span class="tiny">${esc(p.game)} · AP-Slot ${p.slot}</span></div>${badge(p.approval.enabled ? 'Aktiv' : 'Noch gesperrt', p.approval.enabled ? 'good' : 'neutral')}</div><div class="summary-pills">${badge(`${p.approval.items?.length || 0} erlaubte Items`)}${badge(`${p.approval.traps?.length || 0} als Falle markiert`)}</div><p>${p.approval.enabled ? 'Dieser Spieler kann von passenden Regeln getroffen werden.' : 'Für diesen Spieler sind noch keine Zuschaueraktionen aktiviert.'}</p><button data-action="slot-edit" data-id="${p.team}:${p.slot}">Items & Fallen auswählen</button><p class="help">${p.itemCount} Items im Raumkatalog. Der tatsächliche Effekt wird vom jeweiligen Spielclient ausgeführt.</p></article>`).join('') || `<div class="panel">${empty('Spieler fehlen noch', 'Verbinde unter Verbindungen deinen AP-Raum. Die Bridge liest die Spieler automatisch ein.')}</div>`}</div>`
-    + `<details class="panel advanced-section section-gap"><summary>DeathLink · gemeinsame Todesaktion</summary><div class="advanced-body"><p class="help">DeathLink erreicht die dafür aktivierten Clients im eigenen AP-Team. Es ist eine Gruppenaktion, auch wenn eine Regel sonst einzelne Spieler auswählt. DeathLink muss zusätzlich im jeweiligen Spielclient eingeschaltet sein.</p><label class="check-label"><input id="deathlink-armed" type="checkbox" ${S.config.deathLinkArmed ? 'checked' : ''}><span>DeathLink aus der Bridge für diese Sitzung erlauben</span></label></div></details>`
+    + `<details class="panel advanced-section section-gap"><summary>DeathLink · gemeinsame Todesaktion</summary><div class="advanced-body"><p class="help">DeathLink erreicht die dafür aktivierten Clients im eigenen AP-Team. Es ist eine Gruppenaktion, auch wenn eine Regel sonst einzelne Spieler auswählt. DeathLink muss zusätzlich im jeweiligen Spielclient eingeschaltet sein.</p><label class="check-label"><input id="deathlink-armed" type="checkbox" ${S.config.deathLinkArmed ? 'checked' : ''}><span>DeathLink aus der Bridge erlauben</span></label></div></details>`
     + `<details class="panel advanced-section section-gap"><summary>Erweitert: Fallen-Vorschläge aus alten YAMLs · optional</summary><div class="advanced-body"><p class="help">Wird für die Spielerzuordnung nicht benötigt. Vorhandene YAMLs können zusätzliche Fallennamen vorschlagen; Spieleinstellungen bearbeitest du im Spielekatalog.</p><button class="small" data-action="yaml-import">Fallenliste aus YAML hinzufügen</button><div class="grid rules-grid section-gap">${S.yamlProfiles.map(p => `<article class="panel panel-pad"><div class="section-title"><h3>${esc(p.game)}</h3><button class="icon-button" data-action="yaml-delete" data-id="${p.id}" aria-label="YAML-Profil entfernen">×</button></div><span class="tiny">${esc(p.name)}</span><p class="help">${p.traps.length} Fallen-Vorschläge · werden mit dem Raumkatalog abgeglichen.</p></article>`).join('')}</div></div></details>`;
 }
 function rulesPage() { return pageHead('ZUORDNUNGEN', 'Du bestimmst die Wirkung.', 'Quelle, Schwelle, Aktion und Ziel sind je Regel konfigurierbar. Alle passenden Regeln werden ausgewertet.', '<button class="primary" data-action="new-rule">+ Neue Regel</button>' + RuleTools.toolbar()) + modeNotice() + `<div class="grid rules-grid">${S.rules.map(renderRule).join('') || `<div class="panel">${empty('Keine Regeln', 'Lege eine Zuordnung für deine erste Zuschaueraktion an.')}</div>`}</div>`; }
@@ -151,16 +157,15 @@ function render(force = false) {
   if (!S || !document?.documentElement) return;
   const page = currentPage.split('/')[0];
   if (!names[page]) currentPage = 'regie';
-  $('#breadcrumb').textContent = names[page] || names.regie;
+  setText($('#breadcrumb'), names[page] || names.regie);
   Studio.shell();
   Appearance.sync(S.appearance);
-  document.querySelectorAll('[data-page]').forEach(a => a.classList.toggle('active', a.dataset.page === currentPage));
-  const cp = $('#connection-pill'); cp.textContent = S.ap.demo ? 'AP · Demo' : S.ap.connected ? 'AP verbunden' : 'AP getrennt'; cp.className = 'pill ' + (S.ap.connected ? 'good' : '');
+  document.querySelectorAll('[data-page]').forEach(a => { const active = a.dataset.page === currentPage; if (a.classList.contains('active') !== active) a.classList.toggle('active', active); });
+  const cp = $('#connection-pill'); setText(cp, S.ap.demo ? 'AP · Demo' : S.ap.connected ? 'AP verbunden' : 'AP getrennt'); setClass(cp, 'pill ' + (S.ap.connected ? 'good' : ''));
   if ($('#mode') !== document.activeElement && $('#mode').value !== S.config.mode) $('#mode').value = S.config.mode;
-  $('#source-count').textContent = [S.charity, ...(S.twitch.channels || [])].filter(x => x.state === 'connected').length;
-  $('#footer-status').textContent = S.ap.demo ? 'Demo · keine Spielverbindung' : S.ap.connected ? S.ap.seed + (S.ap.admin ? ' · Admin aktiv' : ' · Admin fehlt') : 'Lokal · kein AP-Raum verbunden';
-  document.querySelectorAll('.version, footer b').forEach(el => el.textContent = el.classList.contains('version') ? S.version : 'V' + S.version);
-  Updates.sync();
+  setText($('#source-count'), [S.charity, ...(S.twitch.channels || [])].filter(x => x.state === 'connected').length);
+  setText($('#footer-status'), S.ap.demo ? 'Demo · keine Spielverbindung' : S.ap.connected ? S.ap.seed + (S.ap.admin ? ' · Admin aktiv' : ' · Admin fehlt') : 'Lokal · kein AP-Raum verbunden');
+  document.querySelectorAll('.version, footer b').forEach(el => setText(el, el.classList.contains('version') ? S.version : 'V' + S.version));
   const search = page === 'katalog' ? $('#studio-search') : null;
   const searchSelection = search && search === document.activeElement ? [search.selectionStart, search.selectionEnd, search.selectionDirection] : null;
   const pages = { regie: dashboard, quellen: () => Studio.sourcesPage(sourcesPage()), spielslots: () => slotsPage() + Studio.playersPanel(), design: () => Appearance.page(), alerts: () => Alerts.page(), regeln: rulesPage, ereignisse: () => Studio.eventsPage(eventsPage), einrichtung: settingsPage, katalog: () => Studio.catalogPage(), raeume: () => Studio.roomsPage(), spiel: () => Studio.gamePage() };
@@ -246,6 +251,7 @@ document.addEventListener('click', async event => {
     if (action === 'empty-pool') { approvalEditor.items.clear(); approvalEditor.traps.clear(); return renderItemList(); }
     button.disabled = true; button.dataset.busy = 'true';
     if (action === 'demo') { await api('demo', {}); toast('Demo geöffnet. Simuliere eine Regel.'); }
+    else if (action === 'toggle-rule') { await api('rule/toggle', { roomId: S.rooms.active, id, enabled: button.dataset.enabled === 'true' }); }
     else if (action === 'pause') await api('pause', { paused: !S.config.paused });
     else if (action === 'disconnect-ap') await api('ap/disconnect', {});
     else if (action === 'disconnect-charity') await api('charity/disconnect', {});
@@ -365,8 +371,9 @@ $('#emergency').addEventListener('click', async () => { try { await api('emergen
 window.addEventListener('hashchange', () => { currentPage = location.hash.slice(1) || 'regie'; render(true); window.scrollTo(0, 0); });
 $('#drawer').addEventListener('click', event => { if (event.target === $('#drawer')) { const rect = $('#drawer').getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) $('#drawer').close(); } });
 refresh(true).then(() => {
+  if (!document?.documentElement) return;
   const events = new EventSource('/api/events'); let timer;
   events.addEventListener('change', () => { clearTimeout(timer); timer = setTimeout(() => refresh(), 100); });
-  events.onerror = () => { $('#footer-status').textContent = 'Verbindung zur lokalen Bridge unterbrochen'; };
+  events.onerror = () => setText($('#footer-status'), 'Verbindung zur lokalen Bridge unterbrochen');
   setInterval(() => refresh(), 15000);
 });

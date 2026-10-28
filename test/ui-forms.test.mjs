@@ -580,7 +580,7 @@ test('all subscriptions and random hints are selectable and persist through the 
   form.elements.namedItem('target').value = 'all'; form.querySelector('[type="submit"]').click();
   await until(() => app.store.state.rules.length === 1 && document.querySelector('[data-action="test-rule"]'), 'Random hint rule missing');
   assert.equal(app.store.state.rules[0].type, 'subscription'); assert.equal(app.store.state.rules[0].effect, 'random_hint');
-  document.querySelector('[data-action="test-rule"]').click(); await until(() => app.store.state.queue.length > 0, 'Random hint simulation missing'); assert(app.store.state.queue.every(job => job.effect === 'hint'));
+  const testButton = document.querySelector('[data-action="test-rule"]'); testButton.click(); await until(() => app.store.state.queue.length > 0 && !testButton.disabled, 'Random hint simulation missing'); assert(app.store.state.queue.every(job => job.effect === 'hint'));
 });
 
 test('rule presets can be saved in the UI and imported into another room as inactive rules', async t => {
@@ -658,4 +658,45 @@ test('a Twitch reward list can open a prefilled rule for the selected reward and
   const { window, document, channel } = await rewardsUi(t);
   window.location.hash = 'quellen'; await until(() => document.querySelector('[data-action="rewards-manage"]'), 'Channels missing'); document.querySelector('[data-action="rewards-manage"]').click(); await until(() => document.querySelector('[data-action="rewards-rule"]'), 'Rewards list missing');
   document.querySelector('[data-action="rewards-rule"]').click(); const form = document.querySelector('#rule-form'); assert(form); assert.equal(form.elements.namedItem('type').value, 'channel_points'); assert.equal(form.elements.namedItem('rewardId').value, 'existing-reward'); assert.equal(form.elements.namedItem('twitchChannelId').value, channel.id);
+});
+
+
+test('rules toggle directly on both the rule page and dashboard without opening the editor', async t => {
+  const { app, window, document, requests } = await ui(t);
+  let toggle = document.querySelector('[data-action="toggle-rule"]'); assert.equal(toggle.getAttribute('role'), 'switch'); assert.equal(toggle.getAttribute('aria-checked'), 'false');
+  toggle.click(); await until(() => app.store.state.rules[0].enabled && !toggle.disabled, 'Rule was not enabled');
+  assert.equal(toggle.getAttribute('aria-checked'), 'true'); assert(!document.querySelector('#drawer').open);
+  window.location.hash = 'regie'; await until(() => document.querySelector('#breadcrumb').textContent === 'Übersicht', 'Dashboard missing');
+  toggle = document.querySelector('[data-action="toggle-rule"]'); toggle.click(); await until(() => !app.store.state.rules[0].enabled && !toggle.disabled, 'Rule was not disabled');
+  assert.equal(toggle.getAttribute('aria-checked'), 'false'); assert.equal(requests.filter(request => request.path === '/api/rule/toggle').length, 2);
+  assert(document.querySelector('[data-action="edit-rule"]')); assert(!document.querySelector('#drawer').open);
+});
+
+test('unchanged polling leaves the page, header and theme untouched while actual status updates remain visible', async t => {
+  const { app, window, document } = await ui(t);
+  await window.__bridgeRefresh(); const mutations = []; const observer = new window.MutationObserver(records => mutations.push(...records));
+  observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true });
+  for (let i = 0; i < 3; i++) await window.__bridgeRefresh();
+  await Promise.resolve(); observer.disconnect(); assert.equal(mutations.length, 0, mutations.map(record => record.target.outerHTML?.slice(0, 90) || record.target.nodeName).join('\n'));
+  app.store.state.rules[0].enabled = true; await window.__bridgeRefresh(); assert.equal(document.querySelector('[data-action="toggle-rule"]').getAttribute('aria-checked'), 'true');
+});
+
+test('a delayed old snapshot cannot overwrite a newer state or flash a rule back to inactive', async t => {
+  const { app, window, document } = await ui(t); const fetchOriginal = window.fetch;
+  let held = false, release; const gate = new Promise(resolve => { release = resolve; }); let first = true;
+  window.fetch = async (path, init) => { const response = await fetchOriginal(path, init); if (path === '/api/state' && first) { first = false; held = true; await gate; } return response; };
+  const old = window.__bridgeRefresh(); await until(() => held, 'Old response was not held');
+  app.store.state.rules[0].enabled = true; await window.__bridgeRefresh(); release(); await old;
+  assert.equal(document.querySelector('[data-action="toggle-rule"]').getAttribute('aria-checked'), 'true');
+});
+
+test('connections put Twitch before Charity and room DeathLink starts enabled and retains explicit opt-out', async t => {
+  const { app, window, document } = await ui(t);
+  window.location.hash = 'quellen'; await until(() => document.querySelector('#ap-address-mode'), 'Connections missing');
+  const headings = [...document.querySelectorAll('#main .source-grid > section h2')].map(node => node.textContent);
+  assert(headings.findIndex(text => text.includes('Twitch')) < headings.findIndex(text => text.includes('Charity')));
+  window.location.hash = 'spielslots'; await until(() => document.querySelector('#deathlink-armed'), 'DeathLink missing');
+  const checkbox = document.querySelector('#deathlink-armed'); assert.equal(checkbox.checked, true);
+  checkbox.checked = false; checkbox.dispatchEvent(new window.Event('change', { bubbles: true })); await until(() => app.store.state.config.deathLinkArmed === false, 'Opt-out missing');
+  await window.__bridgeRefresh(); assert.equal(checkbox.checked, false);
 });

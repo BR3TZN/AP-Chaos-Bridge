@@ -1,5 +1,11 @@
-# 0.8.0 – Kanalpunkte, gemeinsame Abo-Regeln, Regelvorlagen und Zufallshinweise
+# 0.7.5 – Direkt bedienbare Regeln, ruhige Oberfläche und Downloads
 
+- Regeln direkt auf den Karten in Übersicht und Regelseite per Schalter aktivieren/deaktivieren. Noch wartende Live-Aufträge deaktivierter Regeln werden verworfen; offene Entwürfe bleiben erhalten.
+- YAMLs, Mehrspieler-ZIPs und JSON-Exporte im eigenen Windows-Fenster ohne Speichern-Dialog oder Downloadverlauf im tatsächlichen Downloads-Ordner speichern. Gleichnamige Dateien erhalten einen Zähler und werden nicht überschrieben.
+- Unveränderte Statusabfragen verändern weder Seiteninhalt noch Design oder Kopfzeile. Verspätete ältere Antworten überschreiben keine neueren Daten. Native Hintergrundfarbe folgt dem gewählten Design und vermeidet weiße Zwischenbilder.
+- Twitch steht in den Verbindungen vor Charity Royale. Direkte Buttons für JSON-Export, Import und Kopieren aus anderen Räumen auf der Regelseite.
+- Moduswechsel startet die Verarbeitung unmittelbar; kein zusätzlicher Klick auf „Ausführung starten“. Start und Raumwechsel bleiben im Testmodus. Explizite Pausen, Notaus und unklare Zustellungen bleiben beachtet.
+- DeathLink-Freigabe der Bridge ist standardmäßig eingeschaltet und wird pro Raum gespeichert. Die Option im Spielclient bleibt erforderlich. Beim ersten Update werden die alten, bei jedem Start zurückgesetzten Flags einmal auf die neuen Standards umgestellt.
 - Kanalpunkte-Belohnungen mit Titel, Preis, Beschreibung, Farbe, Abklingzeit und optionaler Zuschauernachricht direkt aus der Bridge in Twitch anlegen. Ein zusätzlicher Dialog erhält offene Regelentwürfe und übernimmt die neue Belohnung automatisch. Getrennte Kanalwahl und OAuth-Freigabe mit channel:manage:redemptions.
 - „Alle Abos“ bündelt neue Abos, geteilte Resubs und Geschenk-Abos. Fehlende Abo-EventSub-Typen werden beim Speichern auf der bestehenden Verbindung ergänzt. Geschenkempfänger werden nicht zusätzlich zum Paket gezählt. Stille Verlängerungen ohne Twitch-Ereignis werden ausdrücklich erklärt.
 - Regeln einzeln auswählen und als JSON exportieren, als gemeinsame Vorlage speichern sowie aus anderen Räumen, archivierten Räumen, Vorlagen und Dateien übernehmen. Vorlagen überstehen Neustarts und das Löschen ihres Ursprungsraums.

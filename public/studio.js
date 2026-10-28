@@ -3,7 +3,7 @@ const Studio = {
   roomFilter: 'active', catalogLimit: 24, catalogQuery: '', entry: null, loadingGame: '', gameError: '', logGame: '', scanReport: null, indexLoading: false,
   commonKeys: new Set(['progression_balancing', 'accessibility', 'local_items', 'non_local_items', 'start_inventory', 'start_hints', 'start_location_hints', 'exclude_locations', 'priority_locations', 'item_links', 'plando_items']),
   shell() {
-    const workspaceName = document.querySelector('#workspace-name'); if (workspaceName) workspaceName.textContent = S.rooms?.rooms.find(r => r.id === S.rooms.active)?.name || 'Dein Run';
+    const workspaceName = document.querySelector('#workspace-name'); if (workspaceName) setText(workspaceName, S.rooms?.rooms.find(r => r.id === S.rooms.active)?.name || 'Dein Run');
     const select = document.querySelector('#room-select');
     if (select && S.rooms) {
       const rooms = S.rooms.rooms.filter(r => !r.archived);
@@ -192,6 +192,7 @@ const Studio = {
   },
   sourcesPage(original) {
     const node = document.createElement('div'); node.innerHTML = original;
+    node.querySelector('#charity-form').closest('section').before(node.querySelector('#twitch-form').closest('section'));
     const config = S.config.ap, saved = S.savedCredentials || {};
     let parsed; try { parsed = new URL(config.url.includes('://') ? config.url : 'ws://' + config.url); } catch { parsed = new URL('ws://archipelago.gg:38281'); }
     const mode = config.addressMode || (['127.0.0.1', 'localhost'].includes(parsed.hostname) ? 'local' : parsed.hostname === 'archipelago.gg' ? 'hosted' : 'custom');

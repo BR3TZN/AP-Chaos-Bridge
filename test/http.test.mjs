@@ -18,7 +18,7 @@ test('HTTP serves the real app, examples and game catalog without external asset
     const response = await fetch(app.url + path); assert.equal(response.status, 200, path); assert(response.headers.get('content-security-policy'));
   }
   const index = await fetch(app.url + '/api/game-index').then(r => r.json()); assert.equal(index.games.length, 0);
-  assert.equal(app.store.state.yamlProfiles.length, 3); assert.equal(app.snapshot().config.mode, 'test'); assert.equal(app.snapshot().config.paused, true);
+  assert.equal(app.store.state.yamlProfiles.length, 3); assert.equal(app.snapshot().config.mode, 'test'); assert.equal(app.snapshot().config.paused, false);
 });
 test('cross-site requests and writes without session are rejected', async t => {
   const { app, post } = await setup(t);
@@ -71,14 +71,43 @@ test('real HTTP → event → durable queue → AP websocket → server confirma
   const { app, post } = await setup(t);
   assert.equal((await post('ap/connect', { url: `ws://127.0.0.1:${wss.address().port}`, slotName: 'Daniel', expectedSeed: 'E2E', roomPassword: 'room-private', adminPassword: 'admin-private' })).status, 200);
   await until(() => app.ap.admin && app.ap.items('Stardew Valley')['Darkness Trap']);
-  assert.equal(app.store.state.config.paused, true);
+  assert.equal(app.store.state.config.paused, false);
   const rule = { ...app.store.state.rules[0], enabled: true, source: 'external', action: 'trap', effect: 'random_trap' }; await post('rule', rule);
   assert.equal((await post('approval', { targetKey: '0:1', enabled: true, items: ['Darkness Trap'], traps: ['Darkness Trap'] })).status, 200);
-  await post('mode', { mode: 'live' }); await post('pause', { paused: false });
+  await post('mode', { mode: 'live' }); assert.equal(app.store.state.config.paused, false);
   const incoming = { id: 'paid-event', type: 'donation', user: 'Viewer', amountCents: 1000, units: 0, action: 'trap', timestamp: Date.now() };
   const response = await post('ingest', incoming, { Authorization: 'Bearer ' + app.integrationKey }); assert.equal(response.status, 200);
   await until(() => app.store.state.queue[0]?.status === 'confirmed'); assert.equal(sentItems, 1);
   await post('ingest', incoming, { Authorization: 'Bearer ' + app.integrationKey }); assert.equal(sentItems, 1);
   const exported = await fetch(app.url + '/api/export').then(r => r.text()); assert(!exported.includes('room-private')); assert(!exported.includes('admin-private'));
   await post('emergency', {}); assert.equal(app.store.state.config.mode, 'test'); assert.equal(app.store.state.config.paused, true);
+});
+
+
+test('quick rule switches validate room and review, preserve settings and discard unsent live jobs', async t => {
+  const { app, post } = await setup(t); const rule = app.store.state.rules[0], original = structuredClone(rule), roomId = app.rooms.id;
+  assert.equal((await post('rule/toggle', { roomId: 'other-room', id: rule.id, enabled: true })).status, 400);
+  assert.equal((await post('rule/toggle', { roomId, id: rule.id, enabled: 'true' })).status, 400);
+  assert.equal((await post('rule/toggle', { roomId, id: 'missing', enabled: true })).status, 400);
+  assert.equal(rule.enabled, false);
+  assert.equal((await post('rule/toggle', { roomId, id: rule.id, enabled: true })).status, 200);
+  assert.deepEqual(rule, { ...original, enabled: true });
+  app.store.state.queue.push({ id: 'unsent', ruleId: rule.id, status: 'queued', dryRun: false }, { id: 'sent', ruleId: rule.id, status: 'dispatching', dryRun: false }, { id: 'test', ruleId: rule.id, status: 'queued', dryRun: true });
+  assert.equal((await post('rule/toggle', { roomId, id: rule.id, enabled: false })).status, 200);
+  assert.deepEqual(app.store.state.queue.map(job => job.status), ['cancelled', 'dispatching', 'queued']);
+  await post('rule/toggle', { roomId, id: rule.id, enabled: true }); assert.equal(app.store.state.queue[0].status, 'cancelled');
+  rule.reviewNotes = ['Unknown recipient']; rule.enabled = false;
+  assert.equal((await post('rule/toggle', { roomId, id: rule.id, enabled: true })).status, 400); assert.equal(rule.enabled, false);
+});
+
+test('choosing live immediately executes an enabled alert rule and never promotes simulations', async t => {
+  const { app, post } = await setup(t); app.store.state.config.globalCooldownSec = 0;
+  const response = await post('rule', { name: 'Direct live', enabled: true, source: 'manual', type: 'manual', effect: 'alert', cooldownSec: 0 }); assert.equal(response.status, 200);
+  const rule = app.store.state.rules.at(-1);
+  await post('test-rule', { id: rule.id }); const simulation = app.store.state.queue.at(-1);
+  await post('pause', { paused: true }); assert.equal(app.store.state.config.paused, true);
+  assert.equal((await post('mode', { mode: 'live' })).status, 200); assert.equal(app.store.state.config.paused, false);
+  await post('test-rule', { id: rule.id, live: true });
+  await until(() => app.store.state.queue.some(job => !job.dryRun && job.status === 'alerted'));
+  assert.equal(simulation.dryRun, true); assert.equal(simulation.status, 'simulated');
 });

@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.8.0
+# AP Chaos Bridge 0.7.5
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -16,11 +16,13 @@ Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.c
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.8.0
+## Update auf 0.7.5
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.8.0:** Kanalpunkte-Belohnungen direkt unter **Verbindungen → Kanalpunkte-Belohnungen** oder aus einer offenen Regel anlegen. Twitch dafür einmal über **Belohnungen freigeben** mit den zusätzlichen Rechten anmelden. **Alle Abos** fasst neue Abos, geteilte Resubs und Geschenkpakete in einer Regel zusammen. Regeln lassen sich als JSON exportieren, als gemeinsame Vorlage speichern und aus anderen Räumen übernehmen. **Zufälliger Hinweis aus allen erlaubten Items** fordert pro getroffenem Spieler einen AP-Admin-Hinweis an. Der Tray-Fix aus 0.7.1 ist enthalten.
+**Neu in 0.7.5:** Regeln direkt per Schalter auf ihren Karten aktivieren oder deaktivieren. Der Wechsel auf Live startet aktive Regeln unmittelbar. DeathLink ist in der Bridge standardmäßig freigegeben und bleibt pro Raum umschaltbar. YAMLs, ZIPs und JSON-Exporte landen im eigenen Windows-Fenster ohne Dialog oder Downloadverlauf im Downloads-Ordner; gleiche Dateinamen erhalten einen Zähler. Unveränderte Statusabfragen verursachen keine Änderungen am Seiteninhalt. Twitch steht vor Charity Royale.
+
+Zusätzlich: Kanalpunkte-Belohnungen direkt unter **Verbindungen → Kanalpunkte-Belohnungen** oder aus einer offenen Regel anlegen. Twitch dafür einmal über **Belohnungen freigeben** mit den zusätzlichen Rechten anmelden. **Alle Abos** fasst neue Abos, geteilte Resubs und Geschenkpakete in einer Regel zusammen. Regeln lassen sich als JSON exportieren, als gemeinsame Vorlage speichern und aus anderen Räumen übernehmen. **Zufälliger Hinweis aus allen erlaubten Items** fordert pro getroffenem Spieler einen AP-Admin-Hinweis an. Der Tray-Fix aus 0.7.1 ist enthalten.
 
 **Seit 0.7.1:** Wiederöffnen aus dem Tray korrigiert. Das Fenster bleibt mit seiner Oberfläche verbunden und wird auf einem sichtbaren Bildschirm geöffnet.
 
@@ -78,7 +80,7 @@ Der Testmodus ist ein Ablauf-Test. Er bestätigt weder einen laufenden Spielclie
 3. Raumpasswort nur eintragen, wenn gesetzt. **Server-Adminpasswort ist eine andere Einstellung**: Der Host benötigt ein gesetztes `server_password`, damit die Bridge `!admin login …` und anschließend `!admin /send …` verwenden kann. Falls nötig, legt der Host dieses in seiner Serverkonfiguration oder über seine Serverkonsole mit `/option server_password <eigenes Passwort>` fest. Ohne Host-Zugriff ist zusätzlicher Itemversand über diese Bridge nicht möglich.
 4. Bei normalen AP-Adressen `ws://host:port` verwenden. Ein eingefügter Host ohne Schema wird wie im AP-Client als `ws://` behandelt, ohne Port mit Standardport 38281. Für einen Server mit TLS explizit `wss://host:port` angeben; es gibt keinen automatischen Wechsel auf unverschlüsselte Übertragung. `archipelago://` wird ebenfalls erkannt. Zugangsdaten separat eintragen, nicht in die URL.
 5. Unter **Spieler & Effekte → Items & Fallen auswählen** passende Items aus dem geladenen Raumkatalog auswählen. **Erlaubt** gestattet gezielten Versand und gemischte Zufallsitems; **Falle** nimmt das Item zusätzlich in den Pool für „Zufällige Falle“ auf. Der Slot muss ebenfalls freigegeben sein. „Alle Katalogitems für Zufallsaktionen erlauben“ nimmt auch hilfreiche Items auf. Ein Vorschlag ist noch kein bestätigter Spieleffekt.
-6. Regeln zuerst simulieren. Dann den **Live-Modus** wählen. Der Wechsel pausiert die Warteschlange. Eine aktive Regel über **Live-Test** einmal auslösen, die Ausführung starten und den Effekt beim betroffenen Spieler prüfen. Die Aktion kann den Spielstand tatsächlich beeinflussen.
+6. Regeln zuerst simulieren. Dann den **Live-Modus** wählen. Der Wechsel startet die Verarbeitung aktiver Regeln unmittelbar. Eine aktive Regel über **Live-Test** einmal auslösen, den Effekt beim betroffenen Spieler prüfen. Die Aktion kann den Spielstand tatsächlich beeinflussen.
 7. Erst für die erfolgreich geprüften Effekte eine echte Ereignisquelle verbinden und passende Regeln aktivieren.
 
 Itemaktionen richten sich an freigegebene Spieler im **eigenen AP-Team**. Item-Link-Gruppen werden nicht als direkte Ziele angeboten. Mehrere Spieler innerhalb eines einzelnen Spielslots können trotzdem gemeinsam betroffen sein. Die Bridge weiß nicht zuverlässig, ob der Spielclient eines Slots online ist: AP kann zusätzliche Items für später aufbewahren.
@@ -205,7 +207,7 @@ Die aufklappbare Namensliste unter **Optional: Namen für YAMLs und Spielerauswa
 | Hinweis zu einem Item | Kostenloser Admin-Hinweis für das Item des Zielspielers; Ausgabe an dessen AP-Team, kein zusätzliches Item |
 | Nachricht im AP-Chat | Eine Nachricht im Raumchat; benötigt eine AP-Verbindung, keine Admin-Anmeldung |
 | Nur Stream-Alert | Eine visuelle Meldung; keine AP-Verbindung erforderlich |
-| DeathLink an die Gruppe | Ein DeathLink an die teilnehmenden Clients des eigenen AP-Teams; separate Gruppenfreigabe nötig |
+| DeathLink an die Gruppe | Ein DeathLink an die teilnehmenden Clients des eigenen AP-Teams; standardmäßig erlaubte Gruppenaktion, pro Raum abschaltbar |
 | Zufall aus gewählten Aktionen | Zuerst gleichverteilte Auswahl einer aktuell möglichen gewählten Aktionsart, dann deren Ausführung |
 
 Beim Zufallsmix werden leere Item-Pools oder gesperrte Aktionen ausgelassen. Eine gewählte Aktionsart bekommt nicht durch einen größeren Item-Pool mehr Gewicht. Für Chat und Alerts sind `{user}` und `{rule}` als Platzhalter möglich. Chatnachrichten erhalten immer den Präfix `[AP Chaos]`, damit ihr Text nicht als AP-Befehl interpretiert wird.
@@ -230,11 +232,11 @@ Die YAML-Option **`triggers`** in den Advanced Settings verändert Optionen **w�
 
 DeathLink ist eine eigene **Gruppenaktion**. Die Bridge sendet nur den Tag `DeathLink` an das eigene AP-Team und gibt **keine Einzelziel-Auswahl** vor. Eine Kombination aus Tags und Slotfiltern kann je Protokollversion größere Empfängergruppen erreichen; deshalb wird dieser Weg für einzelne Spieler nicht angeboten.
 
-Für echte DeathLink-Aktionen muss unter **Spieler & Effekte** die Gruppenfreigabe für die aktuelle Sitzung aktiviert werden. Betroffen sein können alle verbundenen Clients mit aktiviertem DeathLink im eigenen Team – auch Slots, die in dieser Bridge keine Itemfreigabe haben. Unterstützt ein Spielclient DeathLink nicht oder ist es dort ausgeschaltet, entsteht dort kein entsprechender Effekt. Die Bridge ändert diese Einstellung nicht.
+Die Gruppenfreigabe unter **Spieler & Effekte → DeathLink** ist standardmäßig aktiv; eine bewusste Deaktivierung bleibt für diesen Raum gespeichert. Betroffen sein können alle verbundenen Clients mit aktiviertem DeathLink im eigenen Team – auch Slots, die in dieser Bridge keine Itemfreigabe haben. Unterstützt ein Spielclient DeathLink nicht oder ist es dort ausgeschaltet, entsteht dort kein entsprechender Effekt. Die Bridge ändert diese Einstellung nicht.
 
 ## Verarbeitung, Wiederanlauf und Status
 
-- Start immer im **Testmodus**, pausiert und ohne DeathLink-Gruppenfreigabe. Zuletzt aktiv verbundene Quellen werden mit den lokal gespeicherten Zugangsdaten wiederhergestellt.
+- Start immer im **Testmodus**. Neue Räume verarbeiten Simulationen sofort und erlauben DeathLink standardmäßig; explizite Pausen und eine deaktivierte DeathLink-Freigabe bleiben gespeichert. Zuletzt aktiv verbundene Quellen werden mit den lokal gespeicherten Zugangsdaten wiederhergestellt.
 - Ein bezahltes Live-Ereignis, das im Testmodus eintrifft, wird zur Simulation und später nicht automatisch zu einer Live-Aktion. Test- und Livebetrieb daher bewusst trennen.
 - Pro Ereignis werden alle passenden aktiven Regeln ausgewertet. Separate Regeln dürfen bewusst mehrere Aktionen erzeugen.
 - Die Pause hält die Ausführung an. Eingänge können weiter Aufträge erzeugen. Regel- und globale Cooldowns verzögern Aufträge; deren Ablaufzeit läuft weiter.

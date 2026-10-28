@@ -205,6 +205,7 @@ test('mixed random actions can choose useful items and selected player lists iso
   const rule = normalizeRule({ enabled: true, source: 'any', type: 'any', effect: 'random_item', target: 'selected', targetKeys: ['0:1', '0:3'] });
   const jobs = engine.plan(rule, event); assert.deepEqual(jobs.map(j => j.targetName), ['A', 'C']); assert(jobs.every(j => j.item === 'Potion'));
   assert(engine.plan({ ...rule, effect: 'random_trap' }, event).every(j => j.item === 'Bomb Trap'));
+  store.state.config.deathLinkArmed = false;
   const random = { ...rule, effect: 'random_action', includeDeathLink: true };
   assert(engine.plan(random, event).every(j => j.effect === 'random_item'));
   store.state.config.deathLinkArmed = true;
@@ -218,7 +219,7 @@ test('active rooms archive and restore without losing history or credentials aft
   app.store.state.rules.push({ ...{ id: 'fixture-rule', name: 'Fixture Charity', enabled: false, source: 'charity', type: 'donation', action: 'random-trap', minimumCents: 1000, minimumUnits: 0, rewardId: '', effect: 'random_trap', target: 'random', game: '', item: '', quantity: 1, cooldownSec: 20 }, name: 'Preserve' }); app.store.state.events.push({ id: 'archived-event' }); app.store.save(); app.vault.update('default', { adminPassword: 'archive-secret' });
   assert.equal((await post(app, 'rooms/archive', { id: 'default', archived: true })).status, 200);
   assert.notEqual(app.rooms.id, 'default'); assert.equal(app.rooms.require('default').archived, true);
-  assert.equal(app.store.state.config.paused, true); assert.equal(app.store.state.config.mode, 'test');
+  assert.equal(app.store.state.config.paused, false); assert.equal(app.store.state.config.mode, 'test');
   assert.equal((await post(app, 'rooms/activate', { id: 'default' })).status, 400);
   app.close(); app = await createApp({ directory, worldsDirectory, port: 0 });
   assert.equal(app.rooms.require('default').archived, true);

@@ -34,3 +34,5 @@ html[data-motion=off] *{transition:none!important;animation:none!important;scrol
 #rules-import-preview .check-label { align-items: flex-start; }
 #rules-import-preview .check-label > span { min-width: 0; }
 #rules-import-preview .connection-error { display: block; }
+
+.rule-status{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}.rule-toggle{display:inline-flex;align-items:center;gap:9px;white-space:nowrap;background:transparent;border-color:transparent;font-size:12px;padding:6px 3px}.rule-toggle[aria-checked=true]{color:var(--success)}.switch-track{width:34px;height:20px;padding:3px;border-radius:20px;background:var(--line);display:inline-flex;align-items:center;transition:background .18s}.switch-track>span{width:14px;height:14px;border-radius:50%;background:var(--muted);transition:transform .18s,background .18s}.rule-toggle[aria-checked=true] .switch-track{background:var(--success-bg)}.rule-toggle[aria-checked=true] .switch-track>span{transform:translateX(14px);background:var(--success)}

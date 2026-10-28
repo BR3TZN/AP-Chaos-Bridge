@@ -345,19 +345,19 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
           if (!['test', 'live'].includes(data.mode)) throw new Error('Unbekannter Modus.');
           const activeRules = store.state.rules.filter(r => r.enabled), visualOnly = activeRules.length && activeRules.every(r => r.effect === 'alert');
           if (data.mode === 'live' && (!ap.connected || ap.demo) && !visualOnly) throw new Error('Spielaktionen im Live-Modus benötigen einen echten verbundenen AP-Raum.');
-          store.state.config.mode = data.mode; store.state.config.paused = true;
+          store.state.config.mode = data.mode; store.state.config.paused = false;
         } else if (path === '/api/pause') {
           if (data.paused === false && !ap.connected && !store.state.rules.some(r => r.enabled && r.effect === 'alert')) throw new Error('Zuerst Demo oder AP-Raum verbinden.');
           store.state.config.paused = data.paused !== false;
         } else if (path === '/api/emergency') engine.emergency();
         else if (path === '/api/demo') {
           charity.disconnect(); twitch.disconnect(); ap.loadDemo();
-          store.state.config.mode = 'test'; store.state.config.paused = false; store.state.config.deathLinkArmed = false;
+          store.state.config.mode = 'test'; store.state.config.paused = false;
           store.state.approvals[ap.roomKey] = Object.fromEntries(ap.players.map(p => [`${p.team}:${p.slot}`, { enabled: p.game !== 'Kingdom Hearts 2', items: PROFILES[p.game].traps.slice(0, 4), traps: PROFILES[p.game].traps.slice(0, 4) }]));
           log('info', 'Demo geladen. Alle Aktionen bleiben Simulationen.');
         } else if (path === '/api/ap/connect') {
           const config = cleanConfig(store.state.config, { ap: data });
-          config.paused = true; config.mode = 'test'; config.deathLinkArmed = false;
+          config.paused = false; config.mode = 'test';
           const roomPassword = vault.resolve(rooms.id, 'roomPassword', data.roomPassword), adminPassword = vault.resolve(rooms.id, 'adminPassword', data.adminPassword);
           ap.connect(config.ap, roomPassword, adminPassword); config.autoConnect.ap = true; store.state.config = config;
           if (config.rememberConnections) vault.update(rooms.id, { roomPassword, adminPassword });
@@ -392,6 +392,15 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
           rule.targetPlayers = captureTargets({ ...rule, targetPlayers: existing?.targetPlayers || rule.targetPlayers }, ruleContext().players);
           if (idx >= 0) store.state.rules[idx] = rule; else { if (store.state.rules.length >= 100) throw new Error('Höchstens 100 Regeln.'); store.state.rules.push(rule); }
           if (rule.source === 'twitch' && rule.type === 'subscription') twitch.enableSubscriptions(rule.twitchChannelId);
+        } else if (path === '/api/rule/toggle') {
+          if (data.roomId !== rooms.id) throw new Error('Der Raum wurde gewechselt. Regel im aktuellen Raum erneut auswählen.');
+          if (typeof data.enabled !== 'boolean') throw new Error('Aktivierungsstatus fehlt.');
+          const rule = store.state.rules.find(rule => rule.id === data.id);
+          if (!rule) throw new Error('Regel fehlt.');
+          if (data.enabled && rule.reviewNotes?.length) throw new Error('Die Zuordnung dieser importierten Regel zuerst über „Bearbeiten“ prüfen.');
+          if (data.enabled && rule.source === 'twitch' && rule.type === 'subscription') twitch.enableSubscriptions(rule.twitchChannelId);
+          rule.enabled = data.enabled;
+          if (!rule.enabled) for (const job of store.state.queue) if (job.ruleId === rule.id && job.status === 'queued' && !job.dryRun) { job.status = 'cancelled'; job.detail = 'Regel deaktiviert. Noch nicht gesendete Aktion verworfen.'; }
         } else if (path === '/api/rule/delete') store.state.rules = store.state.rules.filter(r => r.id !== data.id);
         else if (path === '/api/test-rule') return json(res, { ok: true, event: engine.runRule(data.id, data.live === true) });
         else if (path === '/api/test-event') return json(res, engine.ingest({ ...data, id: randomBytes(16).toString('hex'), timestamp: Date.now(), test: true }));

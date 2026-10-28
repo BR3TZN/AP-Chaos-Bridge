@@ -94,7 +94,7 @@ test('nontrap and custom item draws respect each slot approval and its actual ga
 });
 
 test('random action draws configured action types rather than weighting them by item count', () => {
-  const { engine, ap, rule, event } = setup(); let seed = 4729;
+  const { store, engine, ap, rule, event } = setup(); let seed = 4729;
   engine.choose = xs => { seed = (Math.imul(1664525, seed) + 1013904223) >>> 0; return xs[Math.floor(seed / 2 ** 32 * xs.length)]; };
   let traps = 0, others = 0;
   for (let i = 0; i < 1000; i++) { const jobs = engine.plan({ ...rule, target: '0:1', effect: 'random_action', randomEffects: ['random_trap', 'random_nontrap'] }, event); jobs[0].effect === 'random_trap' ? traps++ : others++; }
@@ -103,6 +103,8 @@ test('random action draws configured action types rather than weighting them by 
   assert.equal(pure[0].effect, 'alert'); assert.equal(pure[0].message, 'Viewer wins');
   engine.choose = xs => xs[0];
   const mixed = { ...rule, effect: 'random_action', randomEffects: ['random_trap', 'deathlink', 'alert'] };
+  assert.equal(engine.plan(mixed, { ...event, dryRun: false })[0].effect, 'deathlink');
+  store.state.config.deathLinkArmed = false;
   assert.equal(engine.plan(mixed, { ...event, dryRun: false })[0].effect, 'alert');
   ap.admin = true;
   assert.equal(engine.plan(mixed, { ...event, dryRun: false })[0].effect, 'random_trap');

@@ -1,7 +1,7 @@
 'use strict';
 const RuleTools = {
   preview: null, generation: 0,
-  toolbar() { return `<button class="ghost" data-action="rules-import">Regeln übernehmen</button><button class="ghost" data-action="rules-export" ${S.rules.length ? '' : 'disabled'}>Exportieren</button><button class="ghost" data-action="rules-preset" ${S.rules.length ? '' : 'disabled'}>Als Vorlage speichern</button>`; },
+  toolbar() { return `<button class="ghost" data-action="rules-import">Importieren / Raum kopieren</button><button class="ghost" data-action="rules-export" ${S.rules.length ? '' : 'disabled'}>JSON exportieren</button><button class="ghost" data-action="rules-preset" ${S.rules.length ? '' : 'disabled'}>Als Vorlage speichern</button>`; },
   reset() { this.generation++; this.preview = null; },
   choices() { return S.rules.map(rule => `<label class="check-label"><input type="checkbox" name="ids" value="${esc(rule.id)}" checked><span>${esc(rule.name)}<span class="help">${esc(sourceNames[rule.source])} · ${esc(typeNames[rule.type])} → ${esc(effectNames[rule.effect])}</span></span></label>`).join(''); },
   exportDrawer(preset) {

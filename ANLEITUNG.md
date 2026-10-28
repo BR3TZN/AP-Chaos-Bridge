@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.8.0 · Einrichtung
+# AP Chaos Bridge 0.7.5 · Einrichtung
 
 ## Start und Update
 
@@ -169,8 +169,8 @@ Pro getroffenem Spieler wird genau ein Hinweis angefordert. Das Server-Adminpass
 
 4. **Nur Spieler dieses Spiels** kommt aus den verbundenen AP-Slots und filtert deren Spielzuordnung. Es liest keine YAMLs. Bei Item- und Hinweisaktionen die gewünschten Empfänger wählen; die Vorschau zeigt passende freigegebene Spieler. **Zufällig aus ausgewählten Spielern** trifft genau eine geeignete Person aus eurer Auswahl.
 5. Beim Zufallsmix die erlaubten Aktionsarten ankreuzen. Jede aktuell mögliche ausgewählte Art hat dieselbe Chance; leere Pools und gesperrte Aktionen werden ausgelassen. Chat, Alert und DeathLink werden je einmal ausgeführt und durch die Item-Zielliste nicht auf einzelne Spieler begrenzt.
-6. Für DeathLink sowohl die Option im Spielclient als auch **DeathLink-Gruppenaktionen für diese Sitzung erlauben** unter **Spieler & Effekte → Optional: DeathLink für die Gruppe** aktivieren.
-7. **Regel speichern** und zunächst **Simulieren** wählen. Für echte Spielaktionen den AP-Raum verbinden, Live-Modus wählen, Ausführung starten und die aktive Regel mit **Live-Test** prüfen.
+6. Für DeathLink die Option im Spielclient einschalten. **Spieler & Effekte → DeathLink → DeathLink aus der Bridge erlauben** ist standardmäßig aktiv; deine Wahl bleibt für diesen Raum gespeichert.
+7. **Regel speichern** und zunächst **Simulieren** wählen. Für echte Spielaktionen den AP-Raum verbinden, Live-Modus wählen und die aktive Regel mit **Live-Test** prüfen.
 
 Unter **Protokoll** stehen Eingänge, Aufträge und Systemprotokoll. „AP bestätigt“ bestätigt den Itemversand am Server; die tatsächliche Wirkung im Spiel wird hier nicht quittiert. Der Alert-Test löst keine Spielaktion aus. Nachrichten können `{user}` und `{rule}` verwenden.
 
@@ -191,7 +191,7 @@ Unter **Design** neutralen Darkmode, Lightmode oder **Klassisch** wählen. Eine 
 
 ## Gespeicherte Verbindungen
 
-Zuletzt aktiv verbundene Quellen werden beim Neustart oder Öffnen des Raums wieder verbunden. Ausführung und Live-Modus starten dabei pausiert im Testmodus. **Trennen** beendet die automatische Wiederverbindung für diese Quelle. **Gespeicherte … vergessen** entfernt deren lokale Zugangsdaten.
+Zuletzt aktiv verbundene Quellen werden beim Neustart oder Öffnen des Raums wieder verbunden. Die Bridge startet dabei im Testmodus; neue Räume verarbeiten Simulationen sofort. Eine ausdrücklich gesetzte Pause bleibt erhalten. Der Wechsel auf Live startet aktive Regeln direkt. **Trennen** beendet die automatische Wiederverbindung für diese Quelle. **Gespeicherte … vergessen** entfernt deren lokale Zugangsdaten.
 
 Zur Sicherung die geschlossene Bridge und ihren gesamten **`data`-Ordner** kopieren. Der Ordner enthält auch die verschlüsselten Zugangsdaten und den zugehörigen lokalen Schlüssel. Der Konfigurationsexport enthält keine Passwörter oder Twitch-Tokens.
 
@@ -222,7 +222,7 @@ Die Spielerliste erzeugt keine zusätzlichen Serververbindungen: Eine Bridge-Ver
 1. **Einstellungen → Programmupdates → Nach Updates suchen** öffnen.
 2. Das Repository ist öffentlich; **kein GitHub-Token nötig**. Ein früher gespeicherter ungültiger Token kann unter **Zugang entfernen** gelöscht werden.
 3. **Update herunterladen** wählen und die Prüfung abwarten.
-4. **Installieren & neu starten** wählen. Räume, Regeln und Zugangsdaten bleiben erhalten; die Bridge startet im Testmodus und pausiert.
+4. **Installieren & neu starten** wählen. Räume, Regeln und Zugangsdaten bleiben erhalten; die Bridge startet im Testmodus. Bereits gesetzte Pausen bleiben erhalten.
 5. Bei einem Fehler wird die vorherige Version wiederhergestellt. Protokolle: `data/updates/install.log` und `restart.log`; Sicherungen: `data/updates/backups/`. Falls die Oberfläche nicht zurückkommt, `Start.cmd` öffnen.
 
 Die erste Installation der Updatefunktion erfolgt manuell mit dem vollständigen Release-ZIP. `data` dabei beibehalten.
@@ -240,3 +240,14 @@ Die Statusdaten aktualisieren sich weiter, während offene Dropdowns, Dialoge, S
 - [Kanalpunkte-Belohnungen anlegen und Berechtigungen](https://dev.twitch.tv/docs/api/reference/#create-custom-rewards)
 - [EventSub-Abos und Resub-Mitteilungen](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/)
 - [Grenze bei stillen automatischen Verlängerungen](https://dev.twitch.tv/docs/pubsub/)
+
+
+## Regeln direkt schalten und Dateien herunterladen
+
+Die Schalter **Aktiv / Inaktiv** stehen direkt auf jeder Regelkarte in der **Übersicht** und unter **Regeln**. Ausschalten verwirft die noch nicht gesendeten Live-Aufträge dieser Regel. „Zuordnung prüfen“ bei einer importierten Regel zuerst über **Bearbeiten** auflösen.
+
+Unter **Regeln** stehen **JSON exportieren**, **Importieren / Raum kopieren** und **Als Vorlage speichern** direkt neben **+ Neue Regel**. Importierte Regeln beginnen inaktiv; nach Prüfung kannst du sie direkt einschalten.
+
+Im eigenen Windows-Fenster landen erzeugte YAMLs, Mehrspieler-ZIPs und Regel-JSONs direkt im Windows-Downloads-Ordner. Eine kurze Meldung bestätigt den Dateinamen. Es öffnet sich kein Speichern-Dialog und kein Downloadverlauf. Vorhandene Dateien bleiben erhalten, weitere erhalten „(1)“, „(2)“ usw. Im externen Browser gelten dessen eigene Download-Einstellungen.
+
+**Testmodus → Live** genügt zum Starten aktivierter Regeln. **Pausieren**, **Fortsetzen** und **Notaus** bleiben verfügbar. Bereits erzeugte Simulationen bleiben Simulationen.

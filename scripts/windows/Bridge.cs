@@ -117,6 +117,7 @@ internal sealed class BridgeForm : Form
     [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr window);
     [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr window);
     [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr window, out NativeRect rectangle);
+    [DllImport("shell32.dll")] private static extern int SHGetKnownFolderPath([MarshalAs(UnmanagedType.LPStruct)] Guid folder, uint flags, IntPtr token, out IntPtr path);
     [StructLayout(LayoutKind.Sequential)] private struct NativeRect { public int Left, Top, Right, Bottom; }
     private readonly Label loading;
     private readonly NotifyIcon tray;
@@ -126,6 +127,7 @@ internal sealed class BridgeForm : Form
     private int backendPid;
     private string session;
     private bool exiting, stopping, ready, downloaded;
+    private readonly List<string> downloadedPaths = new List<string>();
     private bool restoring;
     private FormWindowState restoreState = FormWindowState.Normal;
     private Rectangle normalBounds;
@@ -139,6 +141,9 @@ internal sealed class BridgeForm : Form
         normalBounds = new Rectangle(area.Left + (area.Width - Width) / 2, area.Top + (area.Height - Height) / 2, Width, Height);
         Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
         loading = new Label { Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter, Text = "AP Chaos Bridge wird gestartet …", Font = new Font("Segoe UI", 13) };
+        BackColor = Color.FromArgb(16, 18, 22); ForeColor = Color.FromArgb(240, 242, 247);
+        try { string appearance = Path.Combine(Program.Root, "data", "appearance.json"); if (File.Exists(appearance) && (string)Program.Json.Deserialize<Dictionary<string, object>>(File.ReadAllText(appearance))["mode"] == "light") { BackColor = Color.FromArgb(243, 244, 247); ForeColor = Color.FromArgb(32, 37, 50); } } catch { }
+        loading.BackColor = BackColor; loading.ForeColor = ForeColor;
         Controls.Add(loading);
         ContextMenuStrip menu = new ContextMenuStrip();
         menu.Items.Add("Öffnen", null, (sender, args) => RestoreWindow());
@@ -280,7 +285,7 @@ internal sealed class BridgeForm : Form
                 if (!found) throw new Exception("Der Hintergrunddienst antwortet nicht. Details: data\\error.log.");
             }
             monitor.Start();
-            view = new WebView2 { Dock = DockStyle.Fill };
+            view = new WebView2 { Dock = DockStyle.Fill, DefaultBackgroundColor = BackColor };
             Controls.Add(view); view.BringToFront();
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Program.Root, "data", "desktop-profile"));
             if (exiting || stopping) return;
@@ -296,24 +301,36 @@ internal sealed class BridgeForm : Form
             view.CoreWebView2.WebMessageReceived += (sender, args) =>
             {
                 if (!Program.IsLocal(args.Source)) return;
-                try { var data = Program.Json.Deserialize<Dictionary<string, object>>(args.WebMessageAsJson); if ((string)data["type"] == "openExternal") Program.External((string)data["url"]); } catch { }
+                try
+                {
+                    var data = Program.Json.Deserialize<Dictionary<string, object>>(args.WebMessageAsJson);
+                    if ((string)data["type"] == "openExternal") Program.External((string)data["url"]);
+                    if ((string)data["type"] == "appearance" && System.Text.RegularExpressions.Regex.IsMatch((string)data["background"], "^#[a-fA-F0-9]{6}$"))
+                    { Color background = ColorTranslator.FromHtml((string)data["background"]); if (BackColor != background) { BackColor = background; view.DefaultBackgroundColor = background; } }
+                } catch { }
             };
             view.CoreWebView2.DownloadStarting += (sender, args) =>
             {
-                if (Program.Smoke)
+                // Handled suppresses WebView2's history flyout as well as its
+                // default download UI. Use the real (possibly redirected) folder.
+                args.Handled = true;
+                string target;
+                try { target = ReserveDownload(args.ResultFilePath); args.ResultFilePath = target; }
+                catch (Exception error) { args.Cancel = true; Log("error.log", "Download: " + error.Message); BeginInvoke(new Action(async () => await NotifyDownload("Download konnte nicht gespeichert werden: " + error.Message, true))); return; }
+                CoreWebView2DownloadOperation download = args.DownloadOperation;
+                download.StateChanged += async (downloadSender, downloadArgs) =>
                 {
-                    args.ResultFilePath = Path.Combine(Program.Root, "data", "desktop-download.yaml"); args.Handled = true;
-                    args.DownloadOperation.StateChanged += (downloadSender, downloadArgs) => { if (args.DownloadOperation.State == CoreWebView2DownloadState.Completed) downloaded = true; };
-                    return;
-                }
-                CoreWebView2Deferral deferral = args.GetDeferral();
-                // A modal dialog must run after the WebView2 event has returned.
-                BeginInvoke(new Action(() =>
-                {
-                    try { using (SaveFileDialog dialog = new SaveFileDialog { FileName = Path.GetFileName(args.ResultFilePath), RestoreDirectory = true })
-                    { if (dialog.ShowDialog(this) == DialogResult.OK) { args.ResultFilePath = dialog.FileName; args.Handled = false; } else args.Cancel = true; } }
-                    finally { deferral.Complete(); }
-                }));
+                    if (download.State == CoreWebView2DownloadState.Completed)
+                    {
+                        downloaded = true; downloadedPaths.Add(target);
+                        await NotifyDownload(Path.GetFileName(target) + " im Downloads-Ordner gespeichert.", false);
+                    }
+                    else if (download.State == CoreWebView2DownloadState.Interrupted)
+                    {
+                        try { File.Delete(target); } catch { }
+                        await NotifyDownload("Download fehlgeschlagen: " + download.InterruptReason, true);
+                    }
+                };
             };
             view.Source = new Uri(Program.Origin);
             loading.Visible = false; ready = true;
@@ -322,6 +339,38 @@ internal sealed class BridgeForm : Form
         }
         catch (Exception error) { failure = error; }
         if (failure != null && !exiting) { Program.Fail(failure); await Quit(); }
+    }
+
+    private string ReserveDownload(string suggested)
+    {
+        string directory;
+        if (Program.Smoke) directory = Path.Combine(Program.Root, "data", "smoke-downloads");
+        else
+        {
+            IntPtr path = IntPtr.Zero;
+            try { Marshal.ThrowExceptionForHR(SHGetKnownFolderPath(new Guid("374DE290-123F-4565-9164-39C4925E467B"), 0, IntPtr.Zero, out path)); directory = Marshal.PtrToStringUni(path); }
+            finally { if (path != IntPtr.Zero) Marshal.FreeCoTaskMem(path); }
+        }
+        Directory.CreateDirectory(directory);
+        string name = Path.GetFileName(suggested);
+        foreach (char invalid in Path.GetInvalidFileNameChars()) name = name.Replace(invalid, '_');
+        name = name.Trim().TrimEnd('.'); if (String.IsNullOrEmpty(name)) name = "Archipelago-Download";
+        string extension = Path.GetExtension(name), stem = Path.GetFileNameWithoutExtension(name);
+        if (extension.Length > 16) extension = extension.Substring(0, 16);
+        if (stem.Length > 100) stem = stem.Substring(0, 100);
+        if (System.Text.RegularExpressions.Regex.IsMatch(stem, "^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$", System.Text.RegularExpressions.RegexOptions.IgnoreCase)) stem = "_" + stem;
+        for (int number = 0; number < 10000; number++)
+        {
+            string target = Path.Combine(directory, stem + (number == 0 ? "" : " (" + number + ")") + extension);
+            try { using (FileStream reserved = new FileStream(target, FileMode.CreateNew, FileAccess.Write, FileShare.None)) { } return target; }
+            catch (IOException) { if (!File.Exists(target)) throw; }
+        }
+        throw new IOException("Zu viele Downloads mit demselben Dateinamen.");
+    }
+    private async Task NotifyDownload(string message, bool error)
+    {
+        if (exiting || view == null || view.IsDisposed) return;
+        try { await view.ExecuteScriptAsync("if (typeof toast === 'function') toast(" + Program.Json.Serialize(message) + ", " + (error ? "true" : "false") + ")"); } catch { }
     }
 
     private async Task UpdateRootLauncher()
@@ -359,6 +408,14 @@ internal sealed class BridgeForm : Form
             if (result == "true")
             {
                 await SmokeDownload();
+                string firstDownload = downloadedPaths[0], firstContents = File.ReadAllText(firstDownload);
+                downloaded = false; await SmokeDownload();
+                if (downloadedPaths.Count != 2 || downloadedPaths[0] == downloadedPaths[1] || File.ReadAllText(firstDownload) != firstContents) throw new Exception("Gleichnamige Downloads wurden überschrieben.");
+                if (view.CoreWebView2.IsDefaultDownloadDialogOpen) throw new Exception("Der Downloadverlauf wurde eingeblendet.");
+                await view.ExecuteScriptAsync("window.__stableRefresh = null; (async () => { try { const main = document.querySelector('#main'), field = main.querySelector('[name=playerNames]'); let changes = 0; const observer = new MutationObserver(records => changes += records.length); observer.observe(main, { subtree: true, childList: true, attributes: true, characterData: true }); for (let i = 0; i < 3; i++) await refresh(); await Promise.resolve(); observer.disconnect(); window.__stableRefresh = main === document.querySelector('#main') && field === main.querySelector('[name=playerNames]') && changes === 0; } catch { window.__stableRefresh = false; } })()");
+                bool refreshStable = false;
+                for (int check = 0; check < 100; check++) { string stable = await view.ExecuteScriptAsync("window.__stableRefresh"); if (stable == "true") { refreshStable = true; break; } if (stable == "false") break; await Task.Delay(100); }
+                if (!refreshStable) throw new Exception("Unveränderte Datenabfragen haben die sichtbare Oberfläche verändert.");
                 IntPtr originalHandle = Handle;
                 await view.ExecuteScriptAsync("window.__trayDraftMarker = 'draft-retained'");
                 for (int cycle = 0; cycle < 10; cycle++)
@@ -380,7 +437,7 @@ internal sealed class BridgeForm : Form
                 WindowState = FormWindowState.Maximized; await Task.Delay(80); WindowState = FormWindowState.Minimized; RestoreWindow();
                 if (!WindowIsUsable() || WindowState != FormWindowState.Maximized) throw new Exception("Maximiertes Fenster wurde aus dem Tray nicht wiederhergestellt.");
                 string bridgeRules = await view.ExecuteScriptAsync("S.rules.length");
-                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
+                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
                 await Quit(); return;
             }
             await Task.Delay(250);

@@ -1,6 +1,6 @@
 {
   "name": "ap-chaos-bridge",
-  "version": "0.8.0",
+  "version": "0.7.5",
   "private": true,
   "type": "module",
   "description": "Lokale Charity-Royale- und Twitch-Bridge für Archipelago",

@@ -1,6 +1,6 @@
-# Prüfung der Version 0.8.0
+# Prüfung der Version 0.7.5
 
-Ausgeführt unter Linux mit Node.js 24.19.0 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
+Ausgeführt unter Linux mit Node.js 24.22.1 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
 ## Windows-Fenster und Updates
 
@@ -10,7 +10,7 @@ Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. E
 
 ## Automatisierte Prüfungen
 
-**182 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**189 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -145,8 +145,15 @@ Neue Räume haben keine Beispielregel. Die Migration entfernt ausschließlich da
 
 Der Windows-Integrationstest prüft zehn aufeinanderfolgende Zyklen über Minimieren und Schließen, IsWindowVisible und IsIconic am nativen Fenster, einen unveränderten HWND und erhaltenen JavaScript-Zustand. Ein außerhalb der Bildschirme liegendes Fenster wird zurückgeholt; ein maximiertes Fenster wird wieder maximiert geöffnet.
 
-## Kanalpunkte und Regelvorlagen 0.8.0
+## Kanalpunkte und Regelvorlagen 0.7.5
 
 Zusätzliche Tests führen die echten HTTP-Routen, Formularhandler und lokale Twitch-WebSocket-Gegenstellen aus: Belohnung erstellen → einlösen → Regelauftrag; korrekte Kanal-/Tokenwahl; fehlende Rechte; Eingabegrenzen; Raumwechsel während der Anfrage; erweiterte OAuth-Rechte bei erhaltenem Dialog. Der gemeinsame Abo-Auslöser ergänzt alle drei Subscription-Typen auf derselben Verbindung und zählt Geschenkempfänger nicht doppelt. Veraltete Token-Antworten überschreiben keine neu erteilten Rechte.
 
 Regeltests prüfen JSON-Export ohne Verbindungsdaten, gemeinsame Vorlagen nach Neustart und Quellraum-Löschung, Empfänger- und Kanalzuordnung, recycelte Kanalnamen, aktive/inaktive Regeln, Auswahlimport, atomare Fehlerbehandlung, alte Konfigurationsexporte und die Bestätigung ungeklärter Zuordnungen. Oberflächentests prüfen Exportdateien, Quellenwahl und Vorlagen-/JSON-Import über die echten Endpunkte. Zufallshinweise werden aus jedem erlaubten Spielerpool gezogen und als /hint statt /send versendet.
+
+
+## Direkte Bedienung und Datenaktualisierung 0.7.5
+
+Sieben weitere Prüfungen decken direkte Regelschalter in Übersicht und Regelseite, unveränderte DOM-/Theme-/Kopfzeilen bei identischen Statusdaten, verspätete ältere Antworten, Twitch-Reihenfolge, DeathLink-Standards einschließlich einmaliger Migration und dauerhaftem Opt-out sowie unmittelbare Live-Ausführung ohne zusätzlichen Startschritt ab. Die echten HTTP-Routen prüfen Raumwechsel, Aktivierungswerte, offene Zuordnungsprüfungen und das Verwerfen noch nicht gesendeter Live-Aufträge beim Deaktivieren.
+
+Der native Windows-Test generiert dieselbe YAML zweimal über den normalen Downloadhandler in einem isolierten Testordner. Er prüft beide gültigen Dateien, erhaltenen ersten Inhalt, verschiedene Namen und den geschlossenen Downloadverlauf. Drei unveränderte Datenabfragen müssen auch in WebView2 ohne Mutation des sichtbaren Inhalts und ohne ersetztes Eingabefeld bleiben. Die bestehenden zehn Tray-Zyklen und das echte Update bleiben Teil der Freigabeprüfung.

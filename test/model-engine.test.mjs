@@ -97,8 +97,8 @@ test('expired actions and actions for another room are not dispatched', async ()
   const { engine, event, store, ap, advance, executions } = fixture(); engine.ingest(event); ap.roomKey = 'another-room'; await engine.tick();
   assert.equal(store.state.queue[0].status, 'queued'); advance(1000000); await engine.tick(); assert.equal(store.state.queue[0].status, 'expired'); assert.equal(executions.length, 0);
 });
-test('DeathLink is group-only and requires separate live arming', () => {
-  const { engine, store, event, rule } = fixture(); rule.effect = 'deathlink'; store.state.config.mode = 'live';
+test('DeathLink is group-only and respects an explicitly disabled room setting', () => {
+  const { engine, store, event, rule } = fixture(); rule.effect = 'deathlink'; store.state.config.mode = 'live'; store.state.config.deathLinkArmed = false;
   assert.match(engine.ingest(event).receipt.errors[0], /gesperrt/);
   store.state.config.deathLinkArmed = true; engine.ingest({ ...event, id: '2' }); assert.equal(store.state.queue[0].targetKey, 'group');
 });
@@ -112,7 +112,21 @@ test('persistent restart retains dedup IDs and marks interrupted dispatch uncert
   try {
     const first = new Store(directory); first.state.config.mode = 'live'; first.state.config.paused = false; first.state.config.deathLinkArmed = true;
     first.state.seen['charity:12'] = Date.now(); first.state.queue.push({ id: 'job', status: 'dispatching' }); first.save();
-    const second = new Store(directory); assert.equal(second.state.config.mode, 'test'); assert.equal(second.state.config.paused, true); assert.equal(second.state.config.deathLinkArmed, false);
+    const second = new Store(directory); assert.equal(second.state.config.mode, 'test'); assert.equal(second.state.config.paused, true); assert.equal(second.state.config.deathLinkArmed, true);
     assert(second.state.seen['charity:12']); assert.equal(second.state.queue[0].status, 'uncertain');
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+});
+
+
+test('room defaults enable DeathLink and processing once, while explicit choices survive restart', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'ap-chaos-defaults-'));
+  try {
+    const first = new Store(directory);
+    assert.equal(first.state.config.mode, 'test'); assert.equal(first.state.config.paused, false); assert.equal(first.state.config.deathLinkArmed, true);
+    first.state.config.deathLinkArmed = false; first.state.config.paused = true; first.save();
+    const second = new Store(directory); assert.equal(second.state.config.deathLinkArmed, false); assert.equal(second.state.config.paused, true);
+    delete second.state.config.executionDefaults; second.save();
+    const migrated = new Store(directory); assert.equal(migrated.state.config.deathLinkArmed, true); assert.equal(migrated.state.config.paused, false);
+    migrated.state.config.deathLinkArmed = false; migrated.save(); assert.equal(new Store(directory).state.config.deathLinkArmed, false);
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });

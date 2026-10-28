@@ -7,7 +7,9 @@ const Updates = {
   },
   sync() {
     const u = S?.updates, panel = $('#update-panel'); if (!u) return;
-    const link = document.querySelector('[data-update-link]'); if (link) link.textContent = u.available ? 'Update ' + u.latestVersion + ' verfügbar' : 'Programmupdates';
+    const signature = JSON.stringify(u) + ':' + Boolean(this.restarting) + ':' + LiveUI.revision;
+    if (this.synced === signature && this.syncedPanel === panel) return; this.synced = signature; this.syncedPanel = panel;
+    const link = document.querySelector('[data-update-link]'); setText(link, u.available ? 'Update ' + u.latestVersion + ' verfügbar' : 'Programmupdates');
     if (!panel) return;
     const busy = ['checking', 'downloading', 'extracting', 'verifying', 'installing'].includes(u.phase) || this.restarting;
     $('#update-status').textContent = u.message; $('#update-status').className = u.phase === 'error' ? 'connection-error' : 'help';

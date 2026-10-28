@@ -28,11 +28,14 @@ const Appearance = {
   apply(raw, persist = true) {
     const value = { ...this.defaults, ...raw };
     if (!['dark', 'light', 'classic'].includes(value.mode) || !/^#[a-f0-9]{6}$/i.test(value.accent)) return;
+    const signature = JSON.stringify(value);
+    if (persist && signature !== this.persisted) try { localStorage.setItem('ap-bridge-appearance', signature); this.persisted = signature; } catch {}
+    if (signature === this.applied) return; this.applied = signature;
     const element = document.documentElement; element.dataset.theme = value.mode; element.dataset.motion = value.motion ? 'on' : 'off';
     element.style.colorScheme = value.mode === 'light' ? 'light' : 'dark';
     for (const [key, color] of Object.entries(this.palette(value))) element.style.setProperty('--' + key, color);
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', this.palette(value).bg);
-    if (persist) try { localStorage.setItem('ap-bridge-appearance', JSON.stringify(value)); } catch {}
+    window.chrome?.webview?.postMessage({ type: 'appearance', background: this.palette(value).bg });
   },
   sync(value) { this.apply(this.draft && currentPage === 'design' ? this.draft : value); },
   page() {
