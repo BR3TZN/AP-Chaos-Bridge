@@ -1,7 +1,7 @@
 // Real Windows integration: WebView2 + tray, portable Node replacement, restart,
 // data preservation, and the server.mjs entry point used by older updaters.
 import assert from 'node:assert/strict';
-import { cp, mkdir, readFile, writeFile, appendFile, readdir, rm, mkdtemp } from 'node:fs/promises';
+import { cp, mkdir, readFile, writeFile, appendFile, readdir, rm, mkdtemp, realpath } from 'node:fs/promises';
 import { join, dirname, relative } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -55,7 +55,7 @@ try {
   assert.equal(result.ready, true); assert.equal(result.tray, true); assert.equal(result.noConsole, true); assert.equal(result.rules, '0'); assert.equal(result.download, true);
   assert.equal(result.trayCycles, 10); assert.equal(result.restoredVisible, true); assert.equal(result.handlePreserved, true);
   assert.equal(result.refreshStable, true); assert.equal(result.downloadUiHidden, true); assert.equal(result.downloadPaths.length, 2); assert.notEqual(result.downloadPaths[0], result.downloadPaths[1]);
-  for (const path of result.downloadPaths) { assert.equal(dirname(path), join(root, 'data/smoke-downloads')); const yaml = parse(await readFile(path, 'utf8')); assert.equal(yaml.game, 'Factorio'); assert.equal(yaml.name, 'SmokePlayer'); }
+  for (const path of result.downloadPaths) { assert.equal((await realpath(dirname(path))).toLowerCase(), (await realpath(join(root, 'data/smoke-downloads'))).toLowerCase()); const yaml = parse(await readFile(path, 'utf8')); assert.equal(yaml.game, 'Factorio'); assert.equal(yaml.name, 'SmokePlayer'); }
   assert((await readFile(join(root, 'AP-Chaos-Bridge.exe'))).length > 10000);
   console.log('Echtes WebView2-Fenster, Schließen in den Tray und versteckter Hintergrunddienst geprüft:', result.runtime);
 

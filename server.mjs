@@ -476,7 +476,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     desktop.once('exit', code => { process.exitCode = code ?? 1; });
     desktop.once('error', error => { console.error(error.message); process.exitCode = 1; });
   } else createApp({ port, updateRestart: true }).then(app => {
-    console.log(`AP Chaos Bridge ${VERSION}\nOberfläche: ${app.url}\nStart: Testmodus, Warteschlange pausiert.\nBeenden: Strg+C oder Einstellungen > Tool beenden.`);
+    console.log(`AP Chaos Bridge ${VERSION}\nOberfläche: ${app.url}\nStart: Testmodus, Warteschlange ${app.store.state.config.paused ? 'pausiert' : 'bereit'}.\nBeenden: Strg+C oder Einstellungen > Tool beenden.`);
     process.on('SIGINT', () => app.close()); process.on('SIGTERM', () => app.close());
   }).catch(error => { console.error(error.code === 'EADDRINUSE' ? 'Port bereits belegt. Läuft die Bridge schon? http://127.0.0.1:' + port : error.message); process.exitCode = 1; });
 }
