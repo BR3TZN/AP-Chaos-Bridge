@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches: [main]
-    paths: [package.json, .github/workflows/release.yml, .github/workflows/windows-desktop.yml, scripts/windows/**, public/language.js, lib/help-language.mjs, lib/help-translation-worker.cjs, scripts/prepare_translation_model.mjs, assets/help-*.json]
+    paths: [package.json, .github/workflows/release.yml, .github/workflows/windows-desktop.yml, scripts/windows/**, test/**, public/language.js, lib/help-language.mjs, lib/help-translation-worker.cjs, scripts/prepare_translation_model.mjs, assets/help-*.json]
   workflow_dispatch:
 permissions:
   contents: read

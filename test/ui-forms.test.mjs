@@ -4,6 +4,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { JSDOM } from 'jsdom';
+import { parse } from 'yaml';
 import { readZip, writeZip } from '../lib/zip.mjs';
 import { createApp } from '../server.mjs';
 import { WebSocketServer } from 'ws';
@@ -784,7 +785,8 @@ test('the standalone ADMIN button preserves an unfinished YAML form and player e
   const health = form.elements.namedItem('option-0'); health.value = '7'; health.dispatchEvent(new window.Event('change', { bubbles: true }));
   admin.click(); await until(() => downloads.length === 1 && !admin.disabled, 'Separate ADMIN download missing');
   assert.equal(downloads[0].name, 'ADMIN.yaml');
-  const content = await downloads[0].blob.text(); assert.match(content, /\nname: ADMIN\n/); assert.match(content, /\ngame: Archipelago\n/);
+  const content = await downloads[0].blob.text();
+  for (const yaml of [content, content.replace(/\r?\n/g, '\r\n')]) { const admin = parse(yaml); assert.equal(admin.name, 'ADMIN'); assert.equal(admin.game, 'Archipelago'); assert.deepEqual(admin.Archipelago, {}); }
   assert.equal(document.querySelector('#studio-yaml-form'), form); assert.equal(names.value, ''); assert.equal(health.value, '7');
   assert.deepEqual(app.store.state.yamlPresets['UI Fixture'].players, ['Player1']);
   assert(!requests.some(request => request.method === 'POST' && /^\/api\/yaml\/(?:generate|bundle|preset)$/.test(request.path)));
