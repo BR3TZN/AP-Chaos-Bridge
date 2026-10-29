@@ -1,10 +1,10 @@
-# AP Chaos Bridge 0.7.7 · Einrichtung
+# AP Chaos Bridge 0.7.8 · Einrichtung
 
 ## Start und Update
 
 1. ZIP vollständig entpacken. Für ein Update die neue Version über den bisherigen Programmordner kopieren und **`data` beibehalten**. Die laufende Bridge vorher unter Einstellungen beenden.
 2. Das **vollständige Windows-Release** enthält Node und die npm-Pakete bereits. Eine zusätzliche Node-Installation ist dafür nicht nötig. Quellcodekopien und macOS/Linux benötigen Node ab 22 sowie `npm ci --ignore-scripts`.
-3. Beim ersten Start **`Start.cmd`** öffnen. Es öffnet das eigene Fenster und legt **`AP-Chaos-Bridge.exe`** im Hauptordner an. Danach diese EXE verwenden. Schließen oder Minimieren legt die Bridge in den Tray; Doppelklick auf das Symbol öffnet sie, **Rechtsklick → Beenden** beendet alles. Die Oberfläche bleibt für OBS und Integrationen lokal unter **http://127.0.0.1:17381** erreichbar. Fehlt WebView2, die vom Programm angebotene offizielle Runtime installieren und die Bridge erneut starten.
+3. Beim ersten Start **`Start.cmd`** öffnen. Es öffnet das eigene Fenster und legt **`AP-Chaos-Bridge.exe`** im Hauptordner an. Danach diese EXE verwenden. Minimieren legt das Fenster normal in die Taskleiste. Schließen legt die laufende Bridge in den Tray; Doppelklick auf das Symbol öffnet sie, **Rechtsklick → Beenden** beendet alles. Die Oberfläche bleibt für OBS und Integrationen lokal unter **http://127.0.0.1:17381** erreichbar. Fehlt WebView2, die vom Programm angebotene offizielle Runtime installieren und die Bridge erneut starten.
 4. Vorbereitete APworld-Versionen einschließlich der sieben Nutzerdateien funktionieren ohne Python, auch in einem eigenen Ordner. Für bisher unbekannte Versionen zusätzlich [Python 3.10 oder neuer](https://www.python.org/downloads/windows/) installieren und bei der Installation zu PATH hinzufügen. Bereits vorhandenes Python wird über `py -3`, `python` oder `python3` erkannt. Anschließend die Bridge neu starten.
 
 ## Räume und mehrere Spieler
@@ -24,7 +24,7 @@ Viele direkt verfügbare APworlds sind bereits enthalten und vorbereitet. Die **
 2. Unter **Spielekatalog → Ordner neu einlesen** aktualisieren. Ein anderer Ordner kann dort eingetragen werden.
 3. Spiel suchen und **Einstellungen & YAML** öffnen.
 4. Einstellungen setzen und Slotnamen eintragen, ein Name pro Zeile. **Gespeicherte Spielernamen übernehmen** füllt die zum Spiel passenden Profile ein.
-5. **Einstellungen speichern** behält die Vorlage in diesem Raum. **YAML-Vorschau** zeigt den Export. **YAMLs herunterladen** erzeugt eine einzelne YAML oder ein ZIP mit einer Datei pro Spieler.
+5. **Einstellungen speichern** behält die Vorlage in diesem Raum. **YAML-Vorschau** zeigt den Export. **YAMLs herunterladen** erzeugt eine einzelne YAML oder ein ZIP mit einer Datei pro Spieler. Der eigene Button **ADMIN.yaml herunterladen** lädt ausschließlich den Dummy herunter, ohne die Spieler-Einstellungen zu speichern oder zu ändern.
 6. Die Dateien anschließend mit der passenden APworld-Version in Archipelago zum Seed generieren. Die Bridge verändert durch den YAML-Export keinen bereits laufenden Seed.
 
 Ein Bridge-Raum ist der gespeicherte Arbeitsbereich für euren Run: Dort bleiben Spieler, Spieleinstellungen und Regeln zusammen. Für die YAML-Vorbereitung ist noch keine Serververbindung nötig. Nach dem Export erzeugt ihr den Seed mit Archipelago, startet beziehungsweise hostet dort den Serverraum und verbindet anschließend die Bridge.
@@ -90,7 +90,7 @@ Unter **Verbindungen → Archipelago-Raum**:
 
 Für neue Seeds unter **Bridge-Anmeldung → ADMIN · separater Zuschauer-Dummy** den eigenen Bridge-Slot verwenden:
 
-1. **ADMIN.yaml herunterladen** öffnen. Alternativ im YAML-Editor **ADMIN-Dummy in das YAML-ZIP aufnehmen** aktivieren.
+1. Im YAML-Editor auf den eigenen Button **ADMIN.yaml herunterladen** klicken. Der Download ist unabhängig vom Export der Spieler-YAMLs und funktioniert auch bei einem unfertigen Formular. Derselbe Download steht unter **Verbindungen** bereit.
 2. Die Datei **einmal pro Multiworld zusammen mit den Spieler-YAMLs** in Archipelagos `Players`-Ordner legen und den Seed generieren. Mehrere Export-ZIPs nicht mit mehreren ADMIN-Dokumenten zum gleichen Seed hinzufügen.
 3. Den erzeugten Raum starten. In der Bridge **ADMIN · separater Zuschauer-Dummy** wählen. Der Slotname bleibt fest **ADMIN**.
 

@@ -54,10 +54,11 @@ try {
   const result = JSON.parse(await readFile(smokePath, 'utf8'));
   assert.equal(result.ready, true); assert.equal(result.tray, true); assert.equal(result.noConsole, true); assert.equal(result.rules, '0'); assert.equal(result.download, true);
   assert.equal(result.trayCycles, 10); assert.equal(result.restoredVisible, true); assert.equal(result.handlePreserved, true);
-  assert.equal(result.germanHelp, true); assert.equal(result.refreshStable, true); assert.equal(result.downloadUiHidden, true); assert.equal(result.downloadPaths.length, 2); assert.notEqual(result.downloadPaths[0], result.downloadPaths[1]);
-  for (const path of result.downloadPaths) { assert.equal((await realpath(dirname(path))).toLowerCase(), (await realpath(join(root, 'data/smoke-downloads'))).toLowerCase()); const yaml = parse(await readFile(path, 'utf8')); assert.equal(yaml.game, 'Factorio'); assert.equal(yaml.name, 'SmokePlayer'); }
+  assert.equal(result.minimizeCycles, 10); assert.equal(result.minimizeToTaskbar, true); assert.equal(result.adminDownload, true);
+  assert.equal(result.germanHelp, true); assert.equal(result.refreshStable, true); assert.equal(result.downloadUiHidden, true); assert.equal(result.downloadPaths.length, 3); assert.notEqual(result.downloadPaths[0], result.downloadPaths[1]);
+  for (const [index, path] of result.downloadPaths.entries()) { assert.equal((await realpath(dirname(path))).toLowerCase(), (await realpath(join(root, 'data/smoke-downloads'))).toLowerCase()); const yaml = parse(await readFile(path, 'utf8')); assert.equal(yaml.game, index === 2 ? 'Archipelago' : 'Factorio'); assert.equal(yaml.name, index === 2 ? 'ADMIN' : 'SmokePlayer'); }
   assert((await readFile(join(root, 'AP-Chaos-Bridge.exe'))).length > 10000);
-  console.log('Echtes WebView2-Fenster, Schließen in den Tray und versteckter Hintergrunddienst geprüft:', result.runtime);
+  console.log('Echtes WebView2-Fenster, Minimieren in die Taskleiste, Schließen in den Tray und separater ADMIN-Download geprüft:', result.runtime);
 
   const packageInfo = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
   const next = packageInfo.version.split('.').map(Number); next[2]++; const version = next.join('.');

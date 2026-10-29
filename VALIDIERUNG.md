@@ -1,4 +1,4 @@
-# Prüfung der Version 0.7.7
+# Prüfung der Version 0.7.8
 
 Ausgeführt unter Linux mit Node.js 24.22.1 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
@@ -6,7 +6,7 @@ Ausgeführt unter Linux mit Node.js 24.22.1 und Python 3.12.14. Node.js ab 22 is
 
 Der Workflow `windows-desktop.yml` baut die x64-WinForms-EXE mit dem Windows-.NET-Framework-Compiler. WebView2 SDK **1.0.4314.35** und die portable Node-Laufzeit **24.19.0** werden anhand fester SHA256-Werte vorbereitet. Das vollständige Release enthält die gebauten Dateien unter `assets/windows`; Quellcodepakete enthalten deren Bauanleitung und Quellen.
 
-Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. Er generiert eine Factorio-YAML über die Oberfläche, prüft den Dateidownload, schließt das Fenster in den Tray und öffnet es wieder. Ein zweiter Start verwendet die vorhandene Instanz. Anschließend ersetzt ein Update sowohl die EXE als auch die portable Node-Laufzeit, startet das Fenster neu und prüft erhaltene Regeln und Raumdaten. Ein weiterer Start über `server.mjs` deckt den Einstieg älterer Updater ab. Die Release-Veröffentlichung hängt von diesem erfolgreichen Windows-Test ab.
+Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. Er generiert zweimal eine Factorio-YAML über die Oberfläche, prüft die Dateidownloads und lädt die ADMIN.yaml über ihren eigenen Button herunter, ohne einen offenen Spielerentwurf zu ändern. Er minimiert das Fenster in die Taskleiste und stellt es nativ wieder her; Schließen blendet es getrennt davon in den Tray aus. Ein zweiter Start verwendet die vorhandene Instanz. Anschließend ersetzt ein Update sowohl die EXE als auch die portable Node-Laufzeit, startet das Fenster neu und prüft erhaltene Regeln und Raumdaten. Ein weiterer Start über `server.mjs` deckt den Einstieg älterer Updater ab. Die Release-Veröffentlichung hängt von diesem erfolgreichen Windows-Test ab.
 
 ## Automatisierte Prüfungen
 
@@ -143,7 +143,7 @@ Neue Räume haben keine Beispielregel. Die Migration entfernt ausschließlich da
 
 ## Tray-Korrektur 0.7.1
 
-Der Windows-Integrationstest prüft zehn aufeinanderfolgende Zyklen über Minimieren und Schließen, IsWindowVisible und IsIconic am nativen Fenster, einen unveränderten HWND und erhaltenen JavaScript-Zustand. Ein außerhalb der Bildschirme liegendes Fenster wird zurückgeholt; ein maximiertes Fenster wird wieder maximiert geöffnet.
+Der Windows-Integrationstest prüft zehn aufeinanderfolgende Taskleisten-Zyklen über Minimieren und natives Wiederherstellen sowie zehn getrennte Tray-Zyklen über Schließen und Öffnen. IsWindowVisible, IsIconic und ShowInTaskbar prüfen das native Fenster, dazu kommen ein unveränderter HWND und erhaltener JavaScript-Zustand. Ein außerhalb der Bildschirme liegendes Fenster wird zurückgeholt; ein maximiertes Fenster wird wieder maximiert geöffnet.
 
 ## Kanalpunkte und Regelvorlagen 0.7.5
 
@@ -169,8 +169,14 @@ Der echte Windows-Fenstertest wartet auf vollständig geladene deutsche Factorio
 
 ## ADMIN-Dummy und Spielbegriffe 0.7.7
 
-Acht zusätzliche Tests decken neue und migrierte Anmeldungen, die feste ADMIN-Identität, den einzelnen YAML-Download und das optionale Mehrspieler-ZIP, unveränderte Spielerdateien, doppelte Namen, belegte Spielslots sowie fehlende oder falsch erzeugte Dummys ab. UI-Tests halten den gewählten Anmeldemodus und einen ungespeicherten Slotnamen über Statusabfragen, wechseln zwischen ADMIN und Spielslot und prüfen das tatsächlich heruntergeladene ZIP. ADMIN wird nicht als Spielername vorgeschlagen.
+Acht zusätzliche Tests decken neue und migrierte Anmeldungen, die feste ADMIN-Identität, den einzelnen YAML-Download und getrennte Spieler-ZIPs trotz alter Zusatzoptionen, unveränderte Spielerdateien, belegte Spielslots sowie fehlende oder falsch erzeugte Dummys ab. UI-Tests halten den gewählten Anmeldemodus und einen ungespeicherten Slotnamen über Statusabfragen, wechseln zwischen ADMIN und Spielslot und prüfen die tatsächlich heruntergeladenen ADMIN-, Spieler- und ZIP-Dateien. Der separate ADMIN-Button funktioniert mit einem ungültigen Spielerformular und löst keinen Spielerexport oder Preset-Speichervorgang aus. ADMIN wird nicht als Spielername vorgeschlagen.
 
 Das Glossar schützt Checkpoint/Checkpoints sowie Item, Seed und weitere technische Begriffe vor der lokalen Übersetzungs-Engine. Kuratierte, zuvor unbekannte und schon deutsche Beschreibungen sowie alte persistierte Übersetzungen werden geprüft. Die echte WASM-Engine übersetzt die Erklärungen und behält Fachbegriffe; englische Originale, wörtliche YAML-Werte, Links und Code bleiben erhalten.
 
 `python scripts/validate_admin_slot.py --archipelago <Core-Ordner>` führt zusätzlich einen vollständigen kleinen Seed mit der echten, unveränderten Archipelago-Version **0.6.8** aus Commit `54803be064fc7e80c4628777ed0b46a9390f255f` aus. Zwei ChecksFinder-Spieler und die mitgelieferte ADMIN.yaml werden generiert. Der erzeugte Server bestätigt den Dummy als Zuschauer mit null Fundorten und null zugeteilten Items. Zwei echte Spiel-WebSocket-Clients und die echte Bridge verbinden sich gleichzeitig mit dem originalen MultiServer; beide Spieler erhalten per Admin ein Map-Width-Item und eine DeathLink-Nachricht. Der Dummy erhält kein ReceivedItems-Paket. Dieser Test ist zusätzlich Voraussetzung für die Release-Veröffentlichung. Er prüft Protokoll und Generation, nicht die sichtbare Reaktion eines laufenden Spiels.
+
+## Fensterverhalten und separater Download 0.7.8
+
+Der Windows-Test verlangt für minimierte Fenster weiterhin einen sichtbaren nativen Fenster-Handle, IsIconic, ShowInTaskbar und einen laufenden Hintergrunddienst. Er verwendet SW_RESTORE für die Wiederherstellung aus der Taskleiste und prüft danach Schließen und Wiederöffnen aus dem Tray. Maximierte Fenster werden über beide Wege wieder maximiert dargestellt.
+
+Zwei gleichnamige Spieler-YAMLs und eine separate ADMIN.yaml müssen als drei Dateien ohne Downloadverlauf erscheinen. Die ADMIN-Datei wird als YAML mit `name: ADMIN` und `game: Archipelago` gelesen. Die UI-Prüfung lädt den Dummy bei leerem Pflichtfeld für Spielernamen herunter und hält Feldwerte und Formularinstanz fest. Anschließende normale Exporte bleiben eine einzelne Spieler-YAML beziehungsweise ein ZIP mit genau zwei Spielern; veraltete includeAdmin-Flags werden nicht weiter gespeichert oder ausgewertet.

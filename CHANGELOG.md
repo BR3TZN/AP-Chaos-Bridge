@@ -1,3 +1,10 @@
+# 0.7.8 – Normales Minimieren und eigener ADMIN-Download
+
+- Minimieren bleibt in der Windows-Taskleiste und lässt sich von dort normal wiederherstellen. Schließen blendet das Programm weiterhin in den Tray aus; der Hintergrunddienst läuft weiter.
+- Der YAML-Editor hat einen eigenen Button **ADMIN.yaml herunterladen**. Er lädt nur den Dummy herunter und verändert oder speichert keine offenen Spielereinstellungen. Auch ein unfertiges Formular kann den Dummy herunterladen.
+- Die Checkbox zum Hinzufügen von ADMIN zum Spielerexport ist entfernt. Einzelne Spieler-YAMLs und Spieler-ZIPs enthalten ausschließlich Spieler, auch wenn eine alte Vorlage noch die frühere Zusatzoption gespeichert hat.
+- Der echte Windows-Test prüft zehn Taskleisten- und zehn Tray-Zyklen, erhaltene Fenster-Handles und Entwürfe, die Wiederherstellung maximierter Fenster sowie den separaten ADMIN-Download ohne Downloadverlauf. Modul- und Oberflächentests prüfen die getrennten Exporte mit alten Vorlagen.
+
 # 0.7.7 – Separater ADMIN-Dummy und Checkpoints
 
 - Eigener Zuschauer-Dummy mit festem Slotnamen **ADMIN**. Die integrierte Archipelago-World erzeugt keine Spielwelt, Checkpoints oder Items für den Dummy; die Bridge belegt damit keinen normalen Spielslot. Adminrechte kommen weiterhin vom Server-Adminpasswort.

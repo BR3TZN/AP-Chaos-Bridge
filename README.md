@@ -1,10 +1,10 @@
-# AP Chaos Bridge 0.7.7
+# AP Chaos Bridge 0.7.8
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
 **Windows starten:** Das vollständige Release-ZIP in einen beschreibbaren Ordner entpacken und einmal **`Start.cmd`** öffnen. Die Bridge startet als **eigenes Programmfenster** und legt **`AP-Chaos-Bridge.exe`** im Hauptordner an. Danach direkt diese EXE starten. Die portable Node-Laufzeit liegt bei; eine Node-Installation ist im Windows-Vollpaket nicht nötig.
 
-**Schließen und Minimieren** legen die Bridge in den **Infobereich (Tray)**. Doppelklick auf das Tray-Symbol öffnet sie wieder; **Rechtsklick → Beenden** schließt Fenster und Hintergrunddienst. Es bleibt kein Node-Konsolenfenster offen. Falls die Microsoft WebView2 Runtime fehlt, bietet die Bridge die offizielle Downloadseite an. Die Twitch-Freigabe öffnet sich im Standardbrowser und übernimmt die Verbindung danach ins Programmfenster.
+**Minimieren** legt das Fenster in die **Taskleiste**. **Schließen** blendet es in den **Infobereich (Tray)** aus. Doppelklick auf das Tray-Symbol öffnet sie wieder; **Rechtsklick → Beenden** schließt Fenster und Hintergrunddienst. Es bleibt kein Node-Konsolenfenster offen. Falls die Microsoft WebView2 Runtime fehlt, bietet die Bridge die offizielle Downloadseite an. Die Twitch-Freigabe öffnet sich im Standardbrowser und übernimmt die Verbindung danach ins Programmfenster.
 
 Für macOS/Linux oder zum direkten Start:
 
@@ -16,11 +16,13 @@ Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.c
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.7.7
+## Update auf 0.7.8
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.7.7:** Ein eigener **ADMIN-Zuschauer-Dummy** hält eure Spielslots frei. Unter **Verbindungen → ADMIN.yaml herunterladen** die fertige Datei holen und einmal gemeinsam mit den Spieler-YAMLs zum Seed generieren. Im YAML-Editor kann sie auch direkt in das ZIP aufgenommen werden. Danach **Bridge-Anmeldung → ADMIN · separater Zuschauer-Dummy** wählen und das Server-Adminpasswort eintragen. Der Dummy erhält keine Items; bereits erzeugte Seeds benötigen weiterhin einen vorhandenen Slot im Textmodus. Deutsche Beschreibungen verwenden jetzt **Checkpoints** und behalten Fachbegriffe wie Item, Seed und DeathLink. Ältere Übersetzungen werden einmal neu berechnet.
+**Neu in 0.7.8:** Minimieren bleibt ein normales Windows-Minimieren in die Taskleiste; Schließen legt die laufende Bridge in den Tray. Im YAML-Editor lädt **ADMIN.yaml herunterladen** nur den Dummy herunter und erhält offene Eingaben. Spieler-YAMLs und Spieler-ZIPs enthalten ausschließlich die gewählten Spieler. Die frühere Zusatzoption entfällt, auch bei alten gespeicherten Vorlagen.
+
+**Seit 0.7.7:** Ein eigener **ADMIN-Zuschauer-Dummy** hält eure Spielslots frei. Unter **Verbindungen → ADMIN.yaml herunterladen** die fertige Datei holen und einmal gemeinsam mit den Spieler-YAMLs zum Seed generieren. Im YAML-Editor hat sie einen eigenen Downloadbutton. Danach **Bridge-Anmeldung → ADMIN · separater Zuschauer-Dummy** wählen und das Server-Adminpasswort eintragen. Der Dummy erhält keine Items; bereits erzeugte Seeds benötigen weiterhin einen vorhandenen Slot im Textmodus. Deutsche Beschreibungen verwenden jetzt **Checkpoints** und behalten Fachbegriffe wie Item, Seed und DeathLink. Ältere Übersetzungen werden einmal neu berechnet.
 
 **Seit 0.7.6:** Unter **Einstellungen → Sprache der Spieleinstellungen** zwischen **Deutsch** (Standard) und **English · Originaltexte** wählen. Überschriften und Beschreibungen im YAML-Editor werden lokal übersetzt, auch für neu importierte Dateien. **Originaltext anzeigen** klappt die Quelle auf. Die erzeugten YAMLs und Optionswerte bleiben unverändert. Das vollständige Paket enthält das Modell; Quellcodekopien benötigen einmal `node scripts/prepare_translation_model.mjs` nach `npm ci --ignore-scripts`.
 

@@ -29,7 +29,7 @@ test('new rooms use ADMIN while saved player-slot logins and passwords remain us
   assert.throws(() => connectionConfig(legacy, { loginMode: 'invented' }));
 });
 
-test('ADMIN downloads and optional bundles contain exactly one official spectator YAML without changing player YAMLs', async t => {
+test('ADMIN is a separate spectator download and old includeAdmin flags cannot add it to player exports', async t => {
   const app = await createApp({ directory: temporary(t), memory: true, port: 0 }); t.after(() => app.close());
   const post = (path, data) => fetch(app.url + '/api/' + path, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Bridge-Session': app.snapshot().session }, body: JSON.stringify(data) });
   app.library.importYaml({ name: 'Fixture.yaml', content: 'name: Friend\ngame: Admin Fixture\nAdmin Fixture:\n  difficulty: easy\n' });
@@ -38,14 +38,11 @@ test('ADMIN downloads and optional bundles contain exactly one official spectato
   const doc = parse(admin); assert.equal(doc.name, 'ADMIN'); assert.equal(doc.game, 'Archipelago'); assert.deepEqual(doc.Archipelago, {}); assert(!Object.hasOwn(doc, 'quantity'));
   const value = { game: 'Admin Fixture', players: ['Friend'] };
   const original = await post('yaml/generate', value).then(response => response.json());
-  const combined = await post('yaml/generate', { ...value, includeAdmin: true }).then(response => response.json());
-  assert.equal(original.files.length, 1); assert.deepEqual(combined.files, [...original.files, adminSlotFile()]);
+  const legacy = await post('yaml/generate', { ...value, includeAdmin: true }).then(response => response.json());
+  assert.equal(original.files.length, 1); assert.deepEqual(legacy.files, original.files);
   const zip = await post('yaml/bundle', { ...value, players: ['Friend', 'Daniel'], includeAdmin: true }); assert.equal(zip.status, 200);
-  const entries = await readZip(Buffer.from(await zip.arrayBuffer())); assert.equal(entries.length, 3); assert.equal(entries.filter(file => file.name === 'ADMIN.yaml').length, 1);
-  for (const player of ['ADMIN', 'admin']) {
-    const refused = await post('yaml/bundle', { ...value, players: [player], includeAdmin: true }); assert.equal(refused.status, 400); assert.match((await refused.json()).error, /reserviert/);
-  }
-  await post('yaml/preset', { ...value, includeAdmin: true }); assert.equal(Object.values(app.store.state.yamlPresets)[0].includeAdmin, true);
+  const entries = await readZip(Buffer.from(await zip.arrayBuffer())); assert.equal(entries.length, 2); assert(!entries.some(file => file.name === 'ADMIN.yaml'));
+  await post('yaml/preset', { ...value, includeAdmin: true }); assert(!Object.hasOwn(Object.values(app.store.state.yamlPresets)[0], 'includeAdmin'));
   assert.equal(app.snapshot().config.ap.slotName, 'ADMIN'); assert(!admin.includes('password'));
 });
 

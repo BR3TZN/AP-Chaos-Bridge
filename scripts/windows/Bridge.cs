@@ -156,8 +156,9 @@ internal sealed class BridgeForm : Form
         Resize += (sender, args) =>
         {
             if (restoring || exiting) return;
-            if (WindowState == FormWindowState.Minimized) { if (ready) HideWindow(); }
-            else { restoreState = WindowState; RememberBounds(); }
+            // Let Windows keep minimized windows in the taskbar. Only the
+            // close button hides the window in the notification area.
+            if (WindowState != FormWindowState.Minimized) { restoreState = WindowState; RememberBounds(); }
         };
         Move += (sender, args) => RememberBounds();
         FormClosing += (sender, args) => { if (!exiting && args.CloseReason == CloseReason.UserClosing) { args.Cancel = true; HideWindow(); } };
@@ -413,6 +414,9 @@ internal sealed class BridgeForm : Form
                 string firstDownload = downloadedPaths[0], firstContents = File.ReadAllText(firstDownload);
                 downloaded = false; await SmokeDownload();
                 if (downloadedPaths.Count != 2 || downloadedPaths[0] == downloadedPaths[1] || File.ReadAllText(firstDownload) != firstContents) throw new Exception("Gleichnamige Downloads wurden überschrieben.");
+                downloaded = false; await SmokeDownload(true);
+                if (downloadedPaths.Count != 3 || Path.GetFileName(downloadedPaths[2]) != "ADMIN.yaml") throw new Exception("Separater ADMIN-Download fehlt.");
+                if (await view.ExecuteScriptAsync("document.querySelector('#studio-yaml-form [name=playerNames]').value") != "\"DraftOnly\"") throw new Exception("ADMIN-Download hat den Spielerentwurf verändert.");
                 if (view.CoreWebView2.IsDefaultDownloadDialogOpen) throw new Exception("Der Downloadverlauf wurde eingeblendet.");
                 bool germanHelp = false;
                 for (int check = 0; check < 300; check++)
@@ -429,7 +433,15 @@ internal sealed class BridgeForm : Form
                 await view.ExecuteScriptAsync("window.__trayDraftMarker = 'draft-retained'");
                 for (int cycle = 0; cycle < 10; cycle++)
                 {
-                    if (cycle % 2 == 0) WindowState = FormWindowState.Minimized; else Close();
+                    WindowState = FormWindowState.Minimized;
+                    await Task.Delay(80);
+                    if (!Visible || !IsWindowVisible(Handle) || !IsIconic(Handle) || !ShowInTaskbar || Handle != originalHandle || !Alive(backendPid)) throw new Exception("Minimieren hat das Fenster aus der Taskleiste entfernt oder den Hintergrunddienst beendet.");
+                    // SW_RESTORE exercises the ordinary native/taskbar restore,
+                    // independently of our tray's RestoreWindow implementation.
+                    ShowWindow(Handle, 9);
+                    for (int attempt = 0; attempt < 40 && !WindowIsUsable(); attempt++) await Task.Delay(50);
+                    if (!WindowIsUsable() || Handle != originalHandle) throw new Exception("Wiederherstellen aus der Taskleiste fehlgeschlagen.");
+                    Close();
                     await Task.Delay(80);
                     if (Visible || IsWindowVisible(Handle) || !tray.Visible) throw new Exception("Tray-Ausblenden fehlgeschlagen.");
                     RestoreWindow();
@@ -443,10 +455,13 @@ internal sealed class BridgeForm : Form
                 }
                 Bounds = new Rectangle(-32000, -32000, 1100, 700); HideWindow(); RestoreWindow();
                 if (!WindowIsUsable()) throw new Exception("Fenster außerhalb des Bildschirms wurde nicht zurückgeholt.");
-                WindowState = FormWindowState.Maximized; await Task.Delay(80); WindowState = FormWindowState.Minimized; RestoreWindow();
+                WindowState = FormWindowState.Maximized; await Task.Delay(80); WindowState = FormWindowState.Minimized; await Task.Delay(80); ShowWindow(Handle, 9);
+                for (int attempt = 0; attempt < 40 && (!WindowIsUsable() || WindowState != FormWindowState.Maximized); attempt++) await Task.Delay(50);
+                if (!WindowIsUsable() || WindowState != FormWindowState.Maximized) throw new Exception("Maximiertes Fenster wurde aus der Taskleiste nicht wiederhergestellt.");
+                Close(); RestoreWindow();
                 if (!WindowIsUsable() || WindowState != FormWindowState.Maximized) throw new Exception("Maximiertes Fenster wurde aus dem Tray nicht wiederhergestellt.");
                 string bridgeRules = await view.ExecuteScriptAsync("S.rules.length");
-                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, germanHelp = germanHelp, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
+                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, minimizeCycles = 10, minimizeToTaskbar = true, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, adminDownload = true, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, germanHelp = germanHelp, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
                 await Quit(); return;
             }
             await Task.Delay(250);
@@ -454,19 +469,20 @@ internal sealed class BridgeForm : Form
         throw new Exception("Die eingebettete Oberfläche wurde nicht rechtzeitig geladen.");
     }
 
-    private async Task SmokeDownload()
+    private async Task SmokeDownload(bool admin = false)
     {
         Log("desktop-download.log", "Generate download " + (downloadedPaths.Count + 1));
         await view.ExecuteScriptAsync("location.hash = 'spiel/Factorio'");
+        string selector = Program.Json.Serialize(admin ? "#studio-yaml-form [data-action=studio-admin-yaml]" : "#studio-yaml-form [type=submit]");
         bool formReady = false;
         for (int i = 0; i < 100; i++)
         {
-            if (await view.ExecuteScriptAsync("Boolean(document.querySelector('#studio-yaml-form [type=submit]') && !document.querySelector('#studio-yaml-form [type=submit]').disabled)") == "true") { formReady = true; break; }
+            if (await view.ExecuteScriptAsync("Boolean(document.querySelector(" + selector + ") && !document.querySelector(" + selector + ").disabled && !document.querySelector('#studio-yaml-form [type=submit]').disabled)") == "true") { formReady = true; break; }
             await Task.Delay(200);
         }
         if (!formReady) throw new Exception("YAML-Editor im eigenen Fenster fehlt.");
-        await view.ExecuteScriptAsync("document.querySelector('#studio-yaml-form [name=playerNames]').value = 'SmokePlayer'; document.querySelector('#studio-yaml-form [type=submit]').scrollIntoView({ block: 'center' })");
-        string pointJson = await view.ExecuteScriptAsync("(() => { const rect = document.querySelector('#studio-yaml-form [type=submit]').getBoundingClientRect(); return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; })()");
+        await view.ExecuteScriptAsync("document.querySelector('#studio-yaml-form [name=playerNames]').value = " + Program.Json.Serialize(admin ? "DraftOnly" : "SmokePlayer") + "; document.querySelector('#studio-yaml-form [name=playerNames]').dispatchEvent(new Event('input', { bubbles: true })); document.querySelector(" + selector + ").scrollIntoView({ block: 'center' })");
+        string pointJson = await view.ExecuteScriptAsync("(() => { const rect = document.querySelector(" + selector + ").getBoundingClientRect(); return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; })()");
         var point = Program.Json.Deserialize<Dictionary<string, object>>(pointJson);
         // Use a real browser input gesture. HTMLElement.click() has no user
         // activation and Chromium can block a second automatic download.

@@ -772,18 +772,32 @@ test('UI offers the fixed ADMIN spectator and retains an existing slot while swi
   assert.equal(app.store.state.config.ap.slotName, 'ADMIN');
 });
 
-test('UI never proposes ADMIN as a player and can download one player plus the spectator in a single ZIP', async t => {
-  const { app, window, document, requests } = await ui(t); let captured;
-  window.__captureDownload((blob, name) => { captured = { blob, name }; });
+test('the standalone ADMIN button preserves an unfinished YAML form and player exports stay separate despite legacy presets', async t => {
+  const { app, window, document, requests } = await ui(t), downloads = [];
+  app.store.state.yamlPresets['UI Fixture'] = { players: ['Player1'], values: {}, extra: '', includeAdmin: true }; app.store.save();
+  await window.__bridgeRefresh();
+  window.__captureDownload((blob, name) => { downloads.push({ blob, name }); });
   window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#studio-yaml-form'), 'Generator missing');
-  const form = document.querySelector('#studio-yaml-form'), names = form.elements.namedItem('playerNames'), admin = form.elements.namedItem('includeAdmin');
-  assert.equal(names.value, 'Player1'); assert.equal(admin.checked, false);
-  names.value = 'Daniel'; admin.checked = true; admin.dispatchEvent(new window.Event('change', { bubbles: true }));
-  await window.__bridgeRefresh(); assert.equal(admin.checked, true); assert.equal(names.value, 'Daniel');
-  form.querySelector('[type=submit]').click(); await until(() => captured, 'ADMIN bundle was not downloaded');
-  assert.equal(captured.name, 'Archipelago-Spieler-YAMLs.zip');
-  const files = readZip(Buffer.from(await captured.blob.arrayBuffer())); assert.equal(files.length, 2); assert.equal(files.filter(file => file.name === 'ADMIN.yaml').length, 1);
-  assert(files.find(file => file.name !== 'ADMIN.yaml').text.includes('name: Daniel'));
-  const sent = JSON.parse(requests.findLast(request => request.path === '/api/yaml/bundle').body); assert.equal(sent.includeAdmin, true); assert.deepEqual(sent.players, ['Daniel']);
-  assert.equal(app.store.state.yamlPresets['UI Fixture'].includeAdmin, true);
+  const form = document.querySelector('#studio-yaml-form'), names = form.elements.namedItem('playerNames'), admin = form.querySelector('[data-action="studio-admin-yaml"]');
+  assert.equal(names.value, 'Player1'); assert.equal(form.elements.namedItem('includeAdmin'), null); assert(admin); assert.equal(admin.type, 'button');
+  names.value = ''; names.dispatchEvent(new window.Event('input', { bubbles: true })); assert.equal(form.checkValidity(), false);
+  const health = form.elements.namedItem('option-0'); health.value = '7'; health.dispatchEvent(new window.Event('change', { bubbles: true }));
+  admin.click(); await until(() => downloads.length === 1 && !admin.disabled, 'Separate ADMIN download missing');
+  assert.equal(downloads[0].name, 'ADMIN.yaml');
+  const content = await downloads[0].blob.text(); assert.match(content, /\nname: ADMIN\n/); assert.match(content, /\ngame: Archipelago\n/);
+  assert.equal(document.querySelector('#studio-yaml-form'), form); assert.equal(names.value, ''); assert.equal(health.value, '7');
+  assert.deepEqual(app.store.state.yamlPresets['UI Fixture'].players, ['Player1']);
+  assert(!requests.some(request => request.method === 'POST' && /^\/api\/yaml\/(?:generate|bundle|preset)$/.test(request.path)));
+  await window.__bridgeRefresh(); assert.equal(names.value, ''); assert.equal(health.value, '7');
+  names.value = 'Daniel'; names.dispatchEvent(new window.Event('input', { bubbles: true }));
+  const submit = form.querySelector('[type=submit]'); submit.click(); await until(() => downloads.length === 2 && !submit.disabled, 'Player YAML missing');
+  assert.match(downloads[1].name, /Daniel\.yaml$/); assert.notEqual(downloads[1].name, 'ADMIN.yaml');
+  const playerYaml = await new Promise(resolve => { const reader = new window.FileReader(); reader.onload = () => resolve(reader.result); reader.readAsText(downloads[1].blob); });
+  assert.match(playerYaml, /name: Daniel/); assert(!playerYaml.includes('game: Archipelago'));
+  names.value = 'Daniel\nFriend'; names.dispatchEvent(new window.Event('input', { bubbles: true }));
+  submit.click(); await until(() => downloads.length === 3 && !submit.disabled, 'Player ZIP missing');
+  assert.equal(downloads[2].name, 'Archipelago-Spieler-YAMLs.zip');
+  const files = readZip(Buffer.from(await downloads[2].blob.arrayBuffer())); assert.equal(files.length, 2); assert(!files.some(file => file.name === 'ADMIN.yaml'));
+  for (const request of requests.filter(request => request.method === 'POST' && /^\/api\/yaml\/(?:generate|bundle|preset)$/.test(request.path))) assert(!Object.hasOwn(JSON.parse(request.body), 'includeAdmin'));
+  assert(!Object.hasOwn(app.store.state.yamlPresets['UI Fixture'], 'includeAdmin'));
 });
