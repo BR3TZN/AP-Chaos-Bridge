@@ -65,6 +65,8 @@ jobs:
           git diff --exit-code -- assets/core-world-settings.json
       - name: Exportierte Core-YAMLs mit Archipelago prüfen
         run: npm run validate:core -- --archipelago .core-archipelago
+      - name: ADMIN-Zuschauer in echtem Seed mit parallelen Spielclients prüfen
+        run: python scripts/validate_admin_slot.py --archipelago .core-archipelago
       - name: Große Nutzer-Worlds vorbereiten
         run: python scripts/prepare_large_apworlds.py
       - name: Neue Nutzer-YAMLs mit originalen Optionstypen prüfen

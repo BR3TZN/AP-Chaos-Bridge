@@ -1,4 +1,4 @@
-# Prüfung der Version 0.7.6
+# Prüfung der Version 0.7.7
 
 Ausgeführt unter Linux mit Node.js 24.22.1 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
@@ -10,7 +10,7 @@ Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. E
 
 ## Automatisierte Prüfungen
 
-**201 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**209 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -166,3 +166,11 @@ Zwölf zusätzliche Prüfungen führen Sprachpersistenz, technische Platzhalter,
 Das Mozilla-Modell Englisch → Deutsch 2.1 und Bergamot 0.4.9 sind fest gepinnt. Drei Modelldateien werden vor dem Packen und unter beiden Testsystemen anhand von Größe und SHA256 geprüft. Die Engine läuft im lokalen Node-Worker und liest nur mitgelieferte Modelldateien. Die vollständigen 47 Factorio-Einstellungen wurden lokal übersetzt; dieser Durchlauf dauerte rund sechs Sekunden. Dies ist eine automatische Anzeigeübersetzung, keine fachliche Einzelprüfung sämtlicher Spieltexte.
 
 Der echte Windows-Fenstertest wartet auf vollständig geladene deutsche Factorio-Beschreibungen und prüft anschließend wieder drei unveränderte Statusabfragen ohne Inhaltsmutation. Der Installationspfad enthält Leerzeichen und einen Umlaut; Downloads, Tray und Programmupdate werden im selben Pfad geprüft.
+
+## ADMIN-Dummy und Spielbegriffe 0.7.7
+
+Acht zusätzliche Tests decken neue und migrierte Anmeldungen, die feste ADMIN-Identität, den einzelnen YAML-Download und das optionale Mehrspieler-ZIP, unveränderte Spielerdateien, doppelte Namen, belegte Spielslots sowie fehlende oder falsch erzeugte Dummys ab. UI-Tests halten den gewählten Anmeldemodus und einen ungespeicherten Slotnamen über Statusabfragen, wechseln zwischen ADMIN und Spielslot und prüfen das tatsächlich heruntergeladene ZIP. ADMIN wird nicht als Spielername vorgeschlagen.
+
+Das Glossar schützt Checkpoint/Checkpoints sowie Item, Seed und weitere technische Begriffe vor der lokalen Übersetzungs-Engine. Kuratierte, zuvor unbekannte und schon deutsche Beschreibungen sowie alte persistierte Übersetzungen werden geprüft. Die echte WASM-Engine übersetzt die Erklärungen und behält Fachbegriffe; englische Originale, wörtliche YAML-Werte, Links und Code bleiben erhalten.
+
+`python scripts/validate_admin_slot.py --archipelago <Core-Ordner>` führt zusätzlich einen vollständigen kleinen Seed mit der echten, unveränderten Archipelago-Version **0.6.8** aus Commit `54803be064fc7e80c4628777ed0b46a9390f255f` aus. Zwei ChecksFinder-Spieler und die mitgelieferte ADMIN.yaml werden generiert. Der erzeugte Server bestätigt den Dummy als Zuschauer mit null Fundorten und null zugeteilten Items. Zwei echte Spiel-WebSocket-Clients und die echte Bridge verbinden sich gleichzeitig mit dem originalen MultiServer; beide Spieler erhalten per Admin ein Map-Width-Item und eine DeathLink-Nachricht. Der Dummy erhält kein ReceivedItems-Paket. Dieser Test ist zusätzlich Voraussetzung für die Release-Veröffentlichung. Er prüft Protokoll und Generation, nicht die sichtbare Reaktion eines laufenden Spiels.

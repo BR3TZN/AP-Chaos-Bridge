@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.6
+# AP Chaos Bridge 0.7.7
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -16,11 +16,13 @@ Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.c
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.7.6
+## Update auf 0.7.7
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.7.6:** Unter **Einstellungen → Sprache der Spieleinstellungen** zwischen **Deutsch** (Standard) und **English · Originaltexte** wählen. Überschriften und Beschreibungen im YAML-Editor werden lokal übersetzt, auch für neu importierte Dateien. **Originaltext anzeigen** klappt die Quelle auf. Die erzeugten YAMLs und Optionswerte bleiben unverändert. Das vollständige Paket enthält das Modell; Quellcodekopien benötigen einmal `node scripts/prepare_translation_model.mjs` nach `npm ci --ignore-scripts`.
+**Neu in 0.7.7:** Ein eigener **ADMIN-Zuschauer-Dummy** hält eure Spielslots frei. Unter **Verbindungen → ADMIN.yaml herunterladen** die fertige Datei holen und einmal gemeinsam mit den Spieler-YAMLs zum Seed generieren. Im YAML-Editor kann sie auch direkt in das ZIP aufgenommen werden. Danach **Bridge-Anmeldung → ADMIN · separater Zuschauer-Dummy** wählen und das Server-Adminpasswort eintragen. Der Dummy erhält keine Items; bereits erzeugte Seeds benötigen weiterhin einen vorhandenen Slot im Textmodus. Deutsche Beschreibungen verwenden jetzt **Checkpoints** und behalten Fachbegriffe wie Item, Seed und DeathLink. Ältere Übersetzungen werden einmal neu berechnet.
+
+**Seit 0.7.6:** Unter **Einstellungen → Sprache der Spieleinstellungen** zwischen **Deutsch** (Standard) und **English · Originaltexte** wählen. Überschriften und Beschreibungen im YAML-Editor werden lokal übersetzt, auch für neu importierte Dateien. **Originaltext anzeigen** klappt die Quelle auf. Die erzeugten YAMLs und Optionswerte bleiben unverändert. Das vollständige Paket enthält das Modell; Quellcodekopien benötigen einmal `node scripts/prepare_translation_model.mjs` nach `npm ci --ignore-scripts`.
 
 **Seit 0.7.5:** Regeln direkt per Schalter auf ihren Karten aktivieren oder deaktivieren. Der Wechsel auf Live startet aktive Regeln unmittelbar. DeathLink ist in der Bridge standardmäßig freigegeben und bleibt pro Raum umschaltbar. YAMLs, ZIPs und JSON-Exporte landen im eigenen Windows-Fenster ohne Dialog oder Downloadverlauf im Downloads-Ordner; gleiche Dateinamen erhalten einen Zähler. Unveränderte Statusabfragen verursachen keine Änderungen am Seiteninhalt. Twitch steht vor Charity Royale.
 
@@ -77,8 +79,8 @@ Der Testmodus ist ein Ablauf-Test. Er bestätigt weder einen laufenden Spielclie
 
 ## Mit eurem echten Raum arbeiten
 
-1. Seed normal aus den Spieler-YAMLs generieren und den AP-Raum starten. Jeder Teilnehmer verbindet zusätzlich seinen üblichen Spielclient.
-2. Unter **Verbindungen → Archipelago-Raum** zwischen lokalem Server, archipelago.gg und eigener externer Adresse wählen. Port und einen existierenden Slotnamen aus diesem Raum eintragen. Die Bridge darf denselben Slot parallel als Text-Client verwenden. Sie empfängt keine `ReceivedItems` und prüft keine Spielorte ab.
+1. Einmal **ADMIN.yaml** zusammen mit euren Spieler-YAMLs zum Seed generieren und den AP-Raum starten. Jeder Teilnehmer verbindet zusätzlich seinen üblichen Spielclient.
+2. Unter **Verbindungen → Archipelago-Raum** zwischen lokalem Server, archipelago.gg und eigener externer Adresse wählen. Port eintragen und **ADMIN · separater Zuschauer-Dummy** wählen. Für bestehende Seeds ohne ADMIN steht **Vorhandener Spielslot · Textmodus** zur Verfügung; gespeicherte Verbindungen bleiben erhalten. Sie empfängt keine `ReceivedItems` und prüft keine Spielorte ab.
 3. Raumpasswort nur eintragen, wenn gesetzt. **Server-Adminpasswort ist eine andere Einstellung**: Der Host benötigt ein gesetztes `server_password`, damit die Bridge `!admin login …` und anschließend `!admin /send …` verwenden kann. Falls nötig, legt der Host dieses in seiner Serverkonfiguration oder über seine Serverkonsole mit `/option server_password <eigenes Passwort>` fest. Ohne Host-Zugriff ist zusätzlicher Itemversand über diese Bridge nicht möglich.
 4. Bei normalen AP-Adressen `ws://host:port` verwenden. Ein eingefügter Host ohne Schema wird wie im AP-Client als `ws://` behandelt, ohne Port mit Standardport 38281. Für einen Server mit TLS explizit `wss://host:port` angeben; es gibt keinen automatischen Wechsel auf unverschlüsselte Übertragung. `archipelago://` wird ebenfalls erkannt. Zugangsdaten separat eintragen, nicht in die URL.
 5. Unter **Spieler & Effekte → Items & Fallen auswählen** passende Items aus dem geladenen Raumkatalog auswählen. **Erlaubt** gestattet gezielten Versand und gemischte Zufallsitems; **Falle** nimmt das Item zusätzlich in den Pool für „Zufällige Falle“ auf. Der Slot muss ebenfalls freigegeben sein. „Alle Katalogitems für Zufallsaktionen erlauben“ nimmt auch hilfreiche Items auf. Ein Vorschlag ist noch kein bestätigter Spieleffekt.

@@ -1,0 +1,7 @@
+# Einmal zusammen mit den Spieler-YAMLs in Archipelago generieren.
+# Archipelago ist die eingebaute Zuschauer-World: keine Checkpoints und keine Items.
+# ADMIN ist nur der Slotname. Adminrechte erteilt erst das Server-Adminpasswort.
+name: ADMIN
+game: Archipelago
+description: Separater Zuschauerslot für die AP Chaos Bridge
+Archipelago: {}

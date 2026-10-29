@@ -43,7 +43,7 @@ async function files(folder) {
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 try {
   await mkdir(root, { recursive: true });
-  for (const path of ['lib', 'public', 'scripts', 'node_modules', 'assets/windows', 'assets/translation-models']) await cp(join(source, path), join(root, path), { recursive: true });
+  for (const path of ['lib', 'public', 'scripts', 'examples', 'node_modules', 'assets/windows', 'assets/translation-models']) await cp(join(source, path), join(root, path), { recursive: true });
   for (const path of ['package.json', 'package-lock.json', 'server.mjs', 'assets/core-world-settings.json', 'assets/apworld-import-limits.json', 'assets/help-translation-model.json', 'assets/help-translations.de.json']) { await mkdir(dirname(join(root, path)), { recursive: true }); await cp(join(source, path), join(root, path)); }
   const canonical = join(root, 'assets/windows/AP-Chaos-Bridge.exe');
   const smoke = launch(canonical, ['--smoke-test']);

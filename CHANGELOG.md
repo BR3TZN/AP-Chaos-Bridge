@@ -1,3 +1,12 @@
+# 0.7.7 – Separater ADMIN-Dummy und Checkpoints
+
+- Eigener Zuschauer-Dummy mit festem Slotnamen **ADMIN**. Die integrierte Archipelago-World erzeugt keine Spielwelt, Checkpoints oder Items für den Dummy; die Bridge belegt damit keinen normalen Spielslot. Adminrechte kommen weiterhin vom Server-Adminpasswort.
+- **ADMIN.yaml** direkt unter Verbindungen und im YAML-Editor herunterladen oder einmal pro Multiworld zusammen mit Spieler-YAMLs in ein ZIP aufnehmen. Der Dummy muss beim Generieren des Seeds enthalten sein; vorhandene Seeds erhalten keinen nachträglichen Slot.
+- Neue Verbindungen verwenden den ADMIN-Dummy. Bestehende Spielslot-Anmeldungen bleiben erhalten und sind weiterhin als Textmodus auswählbar. Fehlender Dummy oder ein Spielslot mit Namen ADMIN werden vor der Admin-Anmeldung verständlich erklärt.
+- Der YAML-Editor schlägt ADMIN nicht als Spielernamen vor; doppelte ADMIN-Namen in einem Export mit Dummy werden abgefangen. Zuschauer stehen nicht als Aktionsziele zur Auswahl.
+- „Checks“ wird in deutschen Hilfetexten als **Checkpoints**, „Check“ als **Checkpoint** angezeigt. Fachbegriffe wie Item, Seed und DeathLink bleiben erhalten; die Erklärungen sind deutsch. Bereits zwischengespeicherte Übersetzungen aus älteren Versionen werden einmal neu erzeugt. Englische Originaltexte, YAML-Schlüssel, Werte und Codebeispiele bleiben unverändert.
+- Zusätzlich zu den Modul- und Oberflächentests wird ein echter Archipelago-0.6.8-Seed mit zwei Spielern und ADMIN erzeugt. Zwei normale Spielclients bleiben parallel mit der echten Bridge verbunden; beide erhalten ein zusätzliches Item und DeathLink, der Dummy erhält keine Items.
+
 # 0.7.6 – Deutsche Beschreibungen im YAML-Editor
 
 - Globale Sprachwahl unter Einstellungen: Deutsch ist der Standard; English zeigt die Originaltexte. Die Wahl bleibt nach Neustart und Raumwechsel erhalten.

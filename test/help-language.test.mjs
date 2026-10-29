@@ -5,7 +5,8 @@ import { readFile, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HelpLanguage, HelpTranslator, helpRevision, protectHelpText } from '../lib/help-language.mjs';
+import { createHash } from 'node:crypto';
+import { HelpLanguage, HelpTranslator, helpRevision, protectHelpText, HELP_GLOSSARY_REVISION } from '../lib/help-language.mjs';
 import { prepareTranslationModel, modelManifest } from '../scripts/prepare_translation_model.mjs';
 import { createApp } from '../server.mjs';
 
@@ -28,6 +29,33 @@ test('translation placeholders preserve literal values, URLs, quoted names and m
   assert.equal(protectedValue.restore(protectedValue.text), original);
   assert.throws(() => protectedValue.restore(protectedValue.text.replace('APKEEPA', 'missing')), /technischer Wert/);
   assert.throws(() => protectedValue.restore(protectedValue.text + ' APKEEPA'), /technischer Wert/);
+});
+
+test('game terminology uses Checkpoints in curated, unseen and already German prose while preserving literal values', async t => {
+  const translator = new HelpTranslator(temporary(t), root, { memory: true, runBatch: async texts => texts.map(text => 'Erklärung: ' + text.replace(/\bchecks?\b/gi, 'Überprüfs')) }); t.after(() => translator.close());
+  const curated = await translator.text('Enable Level Complete checks'); assert.equal(curated, 'Checkpoints für Levelabschlüsse aktivieren');
+  const unseen = await translator.text('Adds checks after every item in this seed. A check is required.');
+  for (const term of ['Checkpoints', 'Checkpoint', 'Item', 'Seed']) assert(unseen.includes(term), unseen);
+  assert(!unseen.includes('Überprüfs'));
+  const german = 'Diese Checks werden für jeden Spieler aktiviert.'; assert.equal(await translator.text(german), 'Diese Checkpoints werden für jeden Spieler aktiviert.');
+  const code = '\n```yaml\nchecks: false\nseed: 10\n```'; assert.equal(await translator.text(german + code), 'Diese Checkpoints werden für jeden Spieler aktiviert.' + code);
+  assert.equal(await translator.text('CHECKS'), 'Erklärung: Checkpoints');
+  const literal = '`checks: true` and "Item Checks" and item_check and https://example.test/checks';
+  const protectedValue = protectHelpText(literal); assert.equal(protectedValue.restore(protectedValue.text), literal);
+  const imperative = 'Check whether the game is connected.'; assert.equal(protectHelpText(imperative).restore(imperative), imperative);
+  const english = fixture('Adds checks after every item in this seed.'); assert.equal((await translator.translate(english, { language: 'en', indices: [0] })).options[0].description, english.options[0].description);
+});
+
+test('pre-glossary translations are recomputed once and the corrected terminology persists across restart', async t => {
+  const directory = temporary(t), source = 'Adds checks for previously unseen rooms.', key = createHash('sha256').update(source).digest('hex');
+  writeFileSync(join(directory, 'help-translations.json'), JSON.stringify({ schema: 1, model: modelManifest.id, entries: [[key, 'Fügt Überprüfs hinzu.']] }));
+  let batches = 0;
+  const translator = new HelpTranslator(directory, root, { runBatch: async texts => { batches++; return texts.map(text => 'Erklärung: ' + text); } }); t.after(() => translator.close());
+  const entry = fixture(source), result = await translator.translate(entry, { indices: [0] });
+  assert(batches > 0); assert(result.options[0].description.includes('Checkpoints')); assert(!result.options[0].description.includes('Überprüfs'));
+  assert.equal(JSON.parse(readFileSync(join(directory, 'help-translations.json'), 'utf8')).glossary, HELP_GLOSSARY_REVISION);
+  const restarted = new HelpTranslator(directory, root, { runBatch: () => { throw new Error('Corrected cache must be reused'); } }); t.after(() => restarted.close());
+  assert.deepEqual(await restarted.translate(entry, { indices: [0] }), result);
 });
 
 test('new help text is translated with paragraph and code preservation, cached by content and never changes options', async t => {
@@ -70,6 +98,9 @@ test('the actual offline model translates previously unseen English while preser
   assert.notEqual(output, description); assert.match(output, /Gegner/i); assert.match(output, /(?:aktivieren|aktiviert)/i);
   assert(output.includes('`death_link: true`')); assert(output.includes('DeathLink')); assert(output.includes('10')); assert(!output.includes('APKEEP'));
   assert.equal(translator.status().local, true);
+  const terminology = await translator.text('This option adds checks when you collect enough items. Each check requires at least 10 items in this seed.');
+  for (const term of ['Checkpoints', 'Checkpoint', 'Items', 'Seed', '10']) assert(terminology.includes(term), terminology);
+  assert(!/Überprüfs|Überprüfungen/i.test(terminology), terminology);
 });
 
 test('language and help HTTP routes validate selected sources and leave imported and generated YAML byte-identical', async t => {

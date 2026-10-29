@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { JSDOM } from 'jsdom';
-import { writeZip } from '../lib/zip.mjs';
+import { readZip, writeZip } from '../lib/zip.mjs';
 import { createApp } from '../server.mjs';
 import { WebSocketServer } from 'ws';
 import { once } from 'node:events';
@@ -756,4 +756,34 @@ test('completed German help leaves a clean editor untouched on the very next per
   for (let index = 0; index < 3; index++) await window.__bridgeRefresh();
   await Promise.resolve(); observer.disconnect();
   assert.equal(mutations.length, 0, mutations.map(record => record.target.outerHTML?.slice(0, 100) || record.target.nodeName).join('\n'));
+});
+
+test('UI offers the fixed ADMIN spectator and retains an existing slot while switching login modes and refreshing', async t => {
+  const { app, window, document } = await ui(t);
+  window.location.hash = 'quellen'; await until(() => document.querySelector('#ap-login-mode'), 'ADMIN selection missing');
+  const form = document.querySelector('#ap-form'), mode = form.elements.namedItem('loginMode'), slot = form.elements.namedItem('slotName');
+  assert.equal(mode.value, 'admin'); assert.equal(slot.value, 'ADMIN'); assert.equal(slot.readOnly, true);
+  assert.equal(form.querySelector('a[download="ADMIN.yaml"]').getAttribute('href'), '/api/ap/admin-yaml');
+  assert(form.textContent.includes('zusammen mit euren Spieler-YAMLs generieren'));
+  mode.value = 'slot'; mode.dispatchEvent(new window.Event('change', { bubbles: true })); assert.equal(slot.readOnly, false); slot.value = 'Daniel'; slot.dispatchEvent(new window.Event('input', { bubbles: true }));
+  await window.__bridgeRefresh(); assert.equal(form, document.querySelector('#ap-form')); assert.equal(slot.value, 'Daniel');
+  mode.value = 'admin'; mode.dispatchEvent(new window.Event('change', { bubbles: true })); assert.equal(slot.value, 'ADMIN'); assert.equal(slot.readOnly, true);
+  mode.value = 'slot'; mode.dispatchEvent(new window.Event('change', { bubbles: true })); assert.equal(slot.value, 'Daniel');
+  assert.equal(app.store.state.config.ap.slotName, 'ADMIN');
+});
+
+test('UI never proposes ADMIN as a player and can download one player plus the spectator in a single ZIP', async t => {
+  const { app, window, document, requests } = await ui(t); let captured;
+  window.__captureDownload((blob, name) => { captured = { blob, name }; });
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#studio-yaml-form'), 'Generator missing');
+  const form = document.querySelector('#studio-yaml-form'), names = form.elements.namedItem('playerNames'), admin = form.elements.namedItem('includeAdmin');
+  assert.equal(names.value, 'Player1'); assert.equal(admin.checked, false);
+  names.value = 'Daniel'; admin.checked = true; admin.dispatchEvent(new window.Event('change', { bubbles: true }));
+  await window.__bridgeRefresh(); assert.equal(admin.checked, true); assert.equal(names.value, 'Daniel');
+  form.querySelector('[type=submit]').click(); await until(() => captured, 'ADMIN bundle was not downloaded');
+  assert.equal(captured.name, 'Archipelago-Spieler-YAMLs.zip');
+  const files = readZip(Buffer.from(await captured.blob.arrayBuffer())); assert.equal(files.length, 2); assert.equal(files.filter(file => file.name === 'ADMIN.yaml').length, 1);
+  assert(files.find(file => file.name !== 'ADMIN.yaml').text.includes('name: Daniel'));
+  const sent = JSON.parse(requests.findLast(request => request.path === '/api/yaml/bundle').body); assert.equal(sent.includeAdmin, true); assert.deepEqual(sent.players, ['Daniel']);
+  assert.equal(app.store.state.yamlPresets['UI Fixture'].includeAdmin, true);
 });

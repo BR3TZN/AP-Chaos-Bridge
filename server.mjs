@@ -6,6 +6,7 @@ import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { Store, VERSION, PROFILES, normalizeRule, parseYamlProfiles, text, number } from './lib/model.mjs';
 import { Engine } from './lib/engine.mjs';
 import { Archipelago } from './lib/archipelago.mjs';
+import { adminSlotFile, includeAdminSlot } from './lib/admin-slot.mjs';
 import { CharitySource, TWITCH_EVENTS, TWITCH_REWARDS_EVENT, twitchScopes, verifyCharity } from './lib/sources.mjs';
 import { TwitchChannels, normalizeTwitchChannel } from './lib/twitch-channels.mjs';
 import { Vault } from './lib/vault.mjs';
@@ -213,6 +214,10 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
       }
       if (req.method === 'GET' && path === '/api/game-library') return json(res, gameLibraryList());
       if (req.method === 'GET' && path === '/api/game-settings') { const entry = gameEntry(url.searchParams.get('game'), url.searchParams.get('sourceId') || undefined); return json(res, { ...entry, helpRevision: helpRevision(entry) }); }
+      if (req.method === 'GET' && path === '/api/ap/admin-yaml') {
+        const file = adminSlotFile();
+        res.writeHead(200, { 'Content-Type': 'application/yaml; charset=utf-8', 'Content-Disposition': 'attachment; filename="ADMIN.yaml"' }); res.end(file.content); return;
+      }
       if (req.method === 'GET' && path === '/api/twitch/rewards') return json(res, { rewards: await twitch.rewards(url.searchParams.get('channelId') || 'default') });
       if (req.method === 'GET' && path === '/api/rules/library') return json(res, { presets: ruleLibrary.list(), rooms: rooms.list().rooms.map(room => ({ ...room, count: ruleContext(room.id).rules.length })), maxImportBytes: RULE_IMPORT_LIMIT });
       if (req.method === 'GET' && path === '/api/rules/export') {
@@ -318,8 +323,9 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
           if (store.state.yamlSources[result.game] === data.sourceId) delete store.state.yamlSources[result.game];
           store.save(); changed(); return json(res, result);
         } else if (path === '/api/yaml/generate' || path === '/api/yaml/bundle' || path === '/api/yaml/preset') {
-          const entry = gameEntry(data.game, data.sourceId), files = library.generate({ ...data, sourceId: entry.sourceId });
-          if (path === '/api/yaml/preset') { store.state.yamlPresets[library.presetKey(data.game, entry.sourceId)] = { values: data.values || {}, players: data.players, extra: data.extra || '', sourceId: entry.sourceId }; store.save(); changed(); return json(res, { ok: true }); }
+          const entry = gameEntry(data.game, data.sourceId), playerFiles = library.generate({ ...data, sourceId: entry.sourceId });
+          const files = data.includeAdmin === true ? includeAdminSlot(playerFiles, data.players || []) : playerFiles;
+          if (path === '/api/yaml/preset') { store.state.yamlPresets[library.presetKey(data.game, entry.sourceId)] = { values: data.values || {}, players: data.players, extra: data.extra || '', sourceId: entry.sourceId, includeAdmin: data.includeAdmin === true }; store.save(); changed(); return json(res, { ok: true }); }
           if (path === '/api/yaml/generate') return json(res, { files });
           res.writeHead(200, { 'Content-Type': 'application/zip', 'Content-Disposition': 'attachment; filename="Archipelago-Spieler-YAMLs.zip"' }); res.end(writeZip(files)); return;
         } else if (path === '/api/credentials/forget') {

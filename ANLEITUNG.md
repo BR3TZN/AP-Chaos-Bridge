@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.6 · Einrichtung
+# AP Chaos Bridge 0.7.7 · Einrichtung
 
 ## Start und Update
 
@@ -88,7 +88,17 @@ Unter **Verbindungen → Archipelago-Raum**:
 | Extern · archipelago.gg | Raumport; Host ist automatisch `archipelago.gg` |
 | Extern · eigener Host / IP | Hostname oder IP und Raumport |
 
-Dann einen **bereits existierenden Slotnamen** wählen. Raumpasswort eintragen, falls gesetzt. Das **Server-Adminpasswort** ist separat und wird für zusätzliche Items benötigt. Der Host muss dafür `server_password` setzen. **Raum verbinden** klicken.
+Für neue Seeds unter **Bridge-Anmeldung → ADMIN · separater Zuschauer-Dummy** den eigenen Bridge-Slot verwenden:
+
+1. **ADMIN.yaml herunterladen** öffnen. Alternativ im YAML-Editor **ADMIN-Dummy in das YAML-ZIP aufnehmen** aktivieren.
+2. Die Datei **einmal pro Multiworld zusammen mit den Spieler-YAMLs** in Archipelagos `Players`-Ordner legen und den Seed generieren. Mehrere Export-ZIPs nicht mit mehreren ADMIN-Dokumenten zum gleichen Seed hinzufügen.
+3. Den erzeugten Raum starten. In der Bridge **ADMIN · separater Zuschauer-Dummy** wählen. Der Slotname bleibt fest **ADMIN**.
+
+Die Datei verwendet die eingebaute Zuschauer-World **Archipelago** und benötigt keine zusätzliche APworld. Der Dummy hat keine Spielwelt oder Checkpoints und bekommt keine Items. Er taucht nicht als Zielspieler für Regeln auf. Der Name ADMIN allein vergibt keine Rechte.
+
+**Bereits erzeugte Seeds ohne ADMIN:** Ein zusätzlicher Slot lässt sich nicht nachträglich einfügen. **Vorhandener Spielslot · Textmodus** wählen und einen existierenden Slotnamen eingeben. Gespeicherte Anmeldungen behalten ihren bisherigen Slot. Ein neuer Seed ist nur nötig, wenn ein separater ADMIN-Dummy gewünscht ist.
+
+ Raumpasswort eintragen, falls gesetzt. Das **Server-Adminpasswort** ist separat und wird für zusätzliche Items benötigt. Der Host muss dafür `server_password` setzen. **Raum verbinden** klicken.
 
 „AP verbunden“ und „Admin angemeldet“ sind getrennte Statusanzeigen. Passwörter bleiben maskiert im Formular und werden lokal gemerkt. Die Bridge meldet sich als zusätzlicher TextOnly-Client an; eure Spielclients bleiben weiterhin geöffnet. Ein solcher Bridge-Client kann mehrere freigegebene Zielslots im eigenen Team bedienen.
 
@@ -259,6 +269,6 @@ Unter **Einstellungen → Sprache der Spieleinstellungen** ist **Deutsch** vorau
 
 Im **Spielekatalog → Einstellungen & YAML** werden die vorhandenen Überschriften und Hilfetexte aus APworlds, Core-Worlds und importierten YAML-Kommentaren automatisch lokal übersetzt. Während der ersten Übersetzung kannst du weiter Werte einstellen. Der Fortschritt steht über der Einstellungssuche. Beim nächsten Öffnen werden gespeicherte Übersetzungen wiederverwendet. **Originaltext anzeigen** öffnet bei einer Einstellung ihre ursprüngliche Beschreibung. Die Suche findet deutsche und englische Begriffe.
 
-Die automatische Übersetzung kann spieltypische Formulierungen ungenau wiedergeben; das Original bleibt deshalb zugänglich. Technische YAML-Schlüssel, gewählte Werte und erzeugte Dateien ändern sich durch die Sprachwahl nicht. Enthält die Quelle keine Beschreibung, wird keine Spielinformation erfunden.
+Die automatische Übersetzung kann spieltypische Formulierungen ungenau wiedergeben; das Original bleibt deshalb zugänglich. „Checks“ erscheint als **Checkpoints**, „Check“ als **Checkpoint**. Fachbegriffe wie **Item**, **Seed** und **DeathLink** bleiben erhalten. Ältere gespeicherte Übersetzungen werden dafür beim ersten Öffnen neu erzeugt. Technische YAML-Schlüssel, gewählte Werte und erzeugte Dateien ändern sich durch die Sprachwahl nicht. Enthält die Quelle keine Beschreibung, wird keine Spielinformation erfunden.
 
 Das vollständige Release enthält die lokale Engine und das Deutsch-Modell. Für die Nutzung sind weder Python noch ein Übersetzungsdienst, API-Schlüssel oder Abonnement nötig. Deine Texte verlassen den PC nicht. Nur bei Quellcodeinstallationen wird das Modell einmal über `node scripts/prepare_translation_model.mjs` mit geprüften SHA256-Werten heruntergeladen.
