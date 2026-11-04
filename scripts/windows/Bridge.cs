@@ -306,6 +306,7 @@ internal sealed class BridgeForm : Form
                 {
                     var data = Program.Json.Deserialize<Dictionary<string, object>>(args.WebMessageAsJson);
                     if ((string)data["type"] == "openExternal") Program.External((string)data["url"]);
+                    if ((string)data["type"] == "choosePlayersDirectory") ChoosePlayersDirectory(data);
                     if ((string)data["type"] == "appearance" && System.Text.RegularExpressions.Regex.IsMatch((string)data["background"], "^#[a-fA-F0-9]{6}$"))
                     { Color background = ColorTranslator.FromHtml((string)data["background"]); if (BackColor != background) { BackColor = background; view.DefaultBackgroundColor = background; } }
                 } catch { }
@@ -342,6 +343,26 @@ internal sealed class BridgeForm : Form
         }
         catch (Exception error) { failure = error; }
         if (failure != null && !exiting) { Program.Fail(failure); await Quit(); }
+    }
+
+    private void ChoosePlayersDirectory(Dictionary<string, object> data)
+    {
+        string request = (string)data["requestId"];
+        try
+        {
+            string selected = null;
+            if (Program.Smoke) { selected = Path.Combine(Program.Root, "data", "smoke-Players"); Directory.CreateDirectory(selected); }
+            else using (FolderBrowserDialog picker = new FolderBrowserDialog())
+            {
+                picker.Description = "Players-Ordner deiner Archipelago-Installation auswählen";
+                picker.ShowNewFolderButton = true;
+                string initial = data.ContainsKey("path") ? data["path"] as string : null;
+                if (!String.IsNullOrEmpty(initial) && Directory.Exists(initial)) picker.SelectedPath = initial;
+                if (picker.ShowDialog(this) == DialogResult.OK) selected = picker.SelectedPath;
+            }
+            view.CoreWebView2.PostWebMessageAsJson(Program.Json.Serialize(new { type = "yamlExportFolder", requestId = request, path = selected }));
+        }
+        catch (Exception error) { view.CoreWebView2.PostWebMessageAsJson(Program.Json.Serialize(new { type = "yamlExportFolder", requestId = request, error = "Ordnerauswahl fehlgeschlagen: " + error.Message })); }
     }
 
     private string ReserveDownload(string suggested)
@@ -431,6 +452,7 @@ internal sealed class BridgeForm : Form
                 bool refreshStable = false;
                 for (int check = 0; check < 100; check++) { string stable = await view.ExecuteScriptAsync("window.__stableRefresh"); if (stable == "true") { refreshStable = true; break; } if (stable == "false") break; await Task.Delay(100); }
                 if (!refreshStable) throw new Exception("Unveränderte Datenabfragen haben die sichtbare Oberfläche verändert.");
+                string yamlExportDirectory = await SmokeYamlExport();
                 IntPtr originalHandle = Handle;
                 await view.ExecuteScriptAsync("window.__trayDraftMarker = 'draft-retained'");
                 for (int cycle = 0; cycle < 10; cycle++)
@@ -463,7 +485,7 @@ internal sealed class BridgeForm : Form
                 Close(); RestoreWindow();
                 if (!WindowIsUsable() || WindowState != FormWindowState.Maximized) throw new Exception("Maximiertes Fenster wurde aus dem Tray nicht wiederhergestellt.");
                 string bridgeRules = await view.ExecuteScriptAsync("S.rules.length");
-                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, minimizeCycles = 10, minimizeToTaskbar = true, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, adminDownload = true, appearanceSaved = true, gamePresetSaved = true, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, germanHelp = germanHelp, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
+                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, minimizeCycles = 10, minimizeToTaskbar = true, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, adminDownload = true, appearanceSaved = true, gamePresetSaved = true, yamlExportDirectory = yamlExportDirectory, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, germanHelp = germanHelp, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
                 await Quit(); return;
             }
             await Task.Delay(250);
@@ -514,6 +536,28 @@ internal sealed class BridgeForm : Form
         await view.ExecuteScriptAsync("const input = document.querySelector('[name=option-' + window.__presetSmoke.index + ']'); input.value = window.__presetSmoke.previous; input.dispatchEvent(new Event('change', { bubbles: true }))");
         await SmokeClick("[data-action=game-preset-load]");
         await SmokeWait("document.querySelector('[name=option-' + window.__presetSmoke.index + ']').value === window.__presetSmoke.value && !document.querySelector('[data-action=game-preset-load]').disabled", "Spiel-Preset wurde nicht geladen.");
+    }
+
+    private async Task<string> SmokeYamlExport()
+    {
+        await view.ExecuteScriptAsync("location.hash = 'einrichtung'");
+        await SmokeWait("document.querySelector('#studio-export-settings-form')", "YAML-Speicherort fehlt.");
+        await SmokeClick("[data-action=studio-export-folder]");
+        await SmokeWait("document.querySelector('#studio-export-settings-form [name=playersDirectory]').value.includes('smoke-Players')", "Native Ordnerauswahl wurde nicht übernommen.");
+        await SmokeClick("#studio-export-settings-form [type=submit]");
+        await SmokeWait("S.yamlExport.playersDirectory.includes('smoke-Players') && !document.querySelector('#studio-export-settings-form [type=submit]').disabled", "Players-Ordner wurde nicht gespeichert.");
+        await view.ExecuteScriptAsync("location.hash = 'spiel/Factorio'");
+        await SmokeWait("document.querySelector('#studio-yaml-form') && document.querySelector('#studio-yaml-form [type=submit]').textContent === 'YAMLs speichern'", "Direkter YAML-Export fehlt.");
+        await view.ExecuteScriptAsync("(() => { const field = document.querySelector('#studio-yaml-form [name=playerNames]'); field.value = 'SmokePlayer\\nFriend'; field.dispatchEvent(new Event('input', { bubbles: true })); })()");
+        await SmokeClick("#studio-yaml-form [type=submit]");
+        await SmokeWait("document.querySelector('[data-studio-message]').textContent.includes('2 YAML-Dateien gespeichert') && !document.querySelector('#studio-yaml-form [type=submit]').disabled", "Einzelne Spieler-YAMLs wurden nicht gespeichert.");
+        await view.ExecuteScriptAsync("(() => { const field = document.querySelector('#studio-yaml-form [name=playerNames]'); field.value = ''; field.dispatchEvent(new Event('input', { bubbles: true })); })()");
+        await SmokeClick("#studio-yaml-form [data-action=studio-admin-yaml]");
+        string folder = Path.Combine(Program.Root, "data", "smoke-Players", "Mein Multiworld");
+        for (int attempt = 0; attempt < 100 && !File.Exists(Path.Combine(folder, "ADMIN.yaml")); attempt++) await Task.Delay(100);
+        if (Directory.GetFiles(folder, "*.yaml").Length != 3 || !File.Exists(Path.Combine(folder, "ADMIN.yaml")) || downloadedPaths.Count != 3) throw new Exception("Raumexport enthält keine drei separaten YAMLs oder hat einen Download ausgelöst.");
+        if (await view.ExecuteScriptAsync("document.querySelector('#studio-yaml-form [name=playerNames]').value") != "\"\"") throw new Exception("ADMIN-Speichern hat den Spielerentwurf verändert.");
+        return folder;
     }
 
     private async Task SmokeDownload(bool admin = false)

@@ -1,3 +1,12 @@
+# 0.7.10 – YAMLs direkt im Archipelago-Players-Ordner speichern
+
+- Unter **Einstellungen → YAML-Speicherort** den vorhandenen Players-Ordner auswählen oder seinen vollständigen Pfad eintragen. Die Windows-Anwendung bietet eine native Ordnerauswahl. Der Speicherort bleibt unter `data/yaml-export.json` gespeichert und gilt für alle Räume.
+- **YAMLs speichern** legt pro Slot eine einzelne YAML in `Players/<Raumname>/` ab; mehrere Spieler benötigen dort kein ZIP. Erneutes Speichern aktualisiert die Datei desselben Slots. Exporte anderer Spieler und Spiele bleiben erhalten. **Einstellungen speichern** bleibt die Raumvorlage und schreibt keine Spielerdateien.
+- Der separate **ADMIN.yaml speichern**-Button nutzt denselben Raumordner, ohne offene Spielereinstellungen zu verändern. Ohne konfigurierten Players-Ordner bleiben die bisherigen Downloads verfügbar.
+- Raumwechsel werden beim Export geprüft. Ungültige Ordnernamen werden angepasst; gleichnamige Räume und bereits befüllte fremde Ordner werden getrennt. Verlinkte Ziele werden abgewiesen, Dateien vorab geprüft und zunächst temporär geschrieben. Schreibfehler werden angezeigt und lösen keinen ersatzweisen Download aus.
+- Der Editor zeigt den Zielordner und den passenden PowerShell-Befehl mit `--player_files_path`. Archipelago liest Unterordner nicht automatisch ein; bei der Generierung muss der jeweilige Raumordner verwendet werden.
+- Datei-, HTTP- und Oberflächentests sowie die native Windows-Prüfung um Ordnerauswahl, einzelne Spieler-YAMLs, ADMIN und den Erhalt des Speicherorts bei Updates ergänzt.
+
 # 0.7.9 – Gemeinsame Spiel-Presets und verlässliche Designübernahme
 
 - Im YAML-Editor benannte Spiel-Presets für alle Räume speichern, laden, aktualisieren und löschen. Presets behalten Spieleinstellungen und erweiterte Zusatzoptionen; Spielernamen und Verbindungen des Zielraums bleiben erhalten.

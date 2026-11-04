@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { JSDOM } from 'jsdom';
@@ -29,6 +29,8 @@ async function ui(t, options = {}) {
   // fetch runs in Node; use its AbortSignal implementation across the JSDOM boundary.
   window.AbortController = globalThis.AbortController; window.AbortSignal = globalThis.AbortSignal;
   const requests = [], intervals = [];
+  const nativeMessages = [], nativeListeners = [];
+  if (options.nativeFolderPicker) window.chrome = { webview: { postMessage: data => nativeMessages.push(data), addEventListener: (type, listener) => { if (type === 'message') nativeListeners.push(listener); } } };
   window.fetch = (path, init) => {
     requests.push({ path, method: init?.method || 'GET', body: init?.body });
     return fetch(new URL(path, app.url), init);
@@ -41,7 +43,7 @@ async function ui(t, options = {}) {
   window.eval(['appearance.js', 'alerts.js', 'language.js', 'studio.js', 'game-presets.js', 'rules.js', 'rewards.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__captureDownload = callback => { Studio.download = callback; }; window.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading; window.__bridgeIndexLoaded = () => Boolean(indexData) && !Studio.indexLoading;');
   await until(() => window.document.querySelector('[data-action="new-rule"]'), 'Regelseite wurde nicht geladen.');
   t.after(() => { dom.window.close(); app.close(); rmSync(directory, { recursive: true, force: true }); });
-  return { app, window, document: window.document, requests, directory, intervals };
+  return { app, window, document: window.document, requests, directory, intervals, nativeMessages, nativeListeners };
 }
 
 function emulateNamedId(form) {
@@ -903,4 +905,59 @@ test('failed design saves retain the selected preview without changing persisted
   const form = document.querySelector('#appearance-form'), input = form.elements.namedItem('accent'); input.value = '#123456'; input.dispatchEvent(new window.Event('input', { bubbles: true }));
   form.querySelector('[type=submit]').click(); await until(() => form.querySelector('[data-form-error]')?.textContent.includes('fehlgeschlagen'), 'Save error missing');
   await window.__bridgeRefresh(); assert.equal(input.value, '#123456'); assert.equal(document.documentElement.style.getPropertyValue('--accent'), '#123456'); assert.equal(app.snapshot().appearance.accent, '#a3bffa'); assert.equal(JSON.parse(window.localStorage.getItem('ap-bridge-appearance')).accent, '#a3bffa');
+});
+
+test('YAML exports use the configured Players room folder as separate files and keep ADMIN independent of unfinished settings', async t => {
+  const { app, window, document, directory } = await ui(t, { memory: true }), downloads = [];
+  const players = join(directory, 'Players'); mkdirSync(players);
+  window.__captureDownload((blob, name) => downloads.push(name));
+  window.location.hash = 'einrichtung'; await until(() => document.querySelector('#studio-export-settings-form'), 'Export settings missing');
+  const settings = document.querySelector('#studio-export-settings-form'), input = settings.elements.namedItem('playersDirectory');
+  input.value = players; input.dispatchEvent(new window.Event('input', { bubbles: true }));
+  await window.__bridgeRefresh(); assert.equal(document.querySelector('#studio-export-settings-form'), settings); assert.equal(input.value, players);
+  settings.querySelector('[type=submit]').click();
+  await until(() => app.snapshot().yamlExport.playersDirectory === players && !settings.querySelector('[type=submit]').disabled, 'Export settings not saved');
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#studio-yaml-form'), 'YAML editor missing');
+  const form = document.querySelector('#studio-yaml-form'), submit = form.querySelector('[type=submit]'), names = form.elements.namedItem('playerNames');
+  assert.equal(submit.textContent, 'YAMLs speichern'); assert(form.textContent.includes('Unterordner nicht automatisch')); assert(form.textContent.includes('ArchipelagoGenerate.exe --player_files_path'));
+  names.value = 'Daniel\nFriend'; names.dispatchEvent(new window.Event('input', { bubbles: true }));
+  const health = form.querySelector('[data-option-search="health health"] select'); health.value = '8'; health.dispatchEvent(new window.Event('change', { bubbles: true })); submit.click();
+  const folder = join(players, 'Mein Multiworld');
+  await until(() => existsSync(join(folder, 'Friend.yaml')) && !submit.disabled, 'Player YAMLs not saved');
+  assert.deepEqual(readdirSync(folder).filter(name => name.endsWith('.yaml')).sort(), ['Daniel.yaml', 'Friend.yaml']);
+  assert.equal(parse(readFileSync(join(folder, 'Daniel.yaml'), 'utf8'))['UI Fixture'].health, 8); assert.equal(downloads.length, 0);
+  names.value = ''; names.dispatchEvent(new window.Event('input', { bubbles: true }));
+  health.value = '2'; health.dispatchEvent(new window.Event('change', { bubbles: true }));
+  const admin = form.querySelector('[data-action=studio-admin-yaml]'); assert.equal(admin.textContent, 'ADMIN.yaml speichern'); admin.click();
+  await until(() => existsSync(join(folder, 'ADMIN.yaml')) && !admin.disabled, 'ADMIN YAML not saved');
+  assert.equal(names.value, ''); assert.equal(health.value, '2');
+  assert.equal(app.store.state.yamlPresets['UI Fixture'].values.health, 8); assert.equal(parse(readFileSync(join(folder, 'ADMIN.yaml'), 'utf8')).game, 'Archipelago');
+  assert.equal(downloads.length, 0); await window.__bridgeRefresh(); assert.equal(names.value, '');
+});
+
+test('an unavailable Players folder leaves the YAML draft intact and reports a save error without downloading', async t => {
+  const { app, window, document, directory } = await ui(t, { memory: true }), downloads = [];
+  const players = join(directory, 'Players'); mkdirSync(players); app.yamlExport.update({ playersDirectory: players }); await window.__bridgeRefresh();
+  window.__captureDownload((blob, name) => downloads.push(name)); window.location.hash = 'spiel/UI%20Fixture';
+  await until(() => document.querySelector('#studio-yaml-form'), 'Editor missing');
+  const form = document.querySelector('#studio-yaml-form'), names = form.elements.namedItem('playerNames'), submit = form.querySelector('[type=submit]');
+  names.value = 'Daniel'; names.dispatchEvent(new window.Event('input', { bubbles: true }));
+  rmSync(players, { recursive: true }); submit.click();
+  await until(() => form.querySelector('[data-form-error]')?.textContent.includes('nicht erreichbar') && !submit.disabled, 'Save error missing');
+  assert.equal(document.querySelector('#studio-yaml-form'), form); assert.equal(names.value, 'Daniel'); assert.equal(downloads.length, 0); assert.equal(Object.keys(app.store.state.yamlPresets).length, 0);
+});
+
+test('native folder selection only updates its matching form and requires an explicit settings save', async t => {
+  const { app, window, document, directory, nativeMessages, nativeListeners } = await ui(t, { memory: true, nativeFolderPicker: true });
+  const players = join(directory, 'Players'); mkdirSync(players);
+  window.location.hash = 'einrichtung'; await until(() => document.querySelector('[data-action=studio-export-folder]'), 'Folder picker button missing');
+  const form = document.querySelector('#studio-export-settings-form'), input = form.elements.namedItem('playersDirectory');
+  document.querySelector('[data-action=studio-export-folder]').click();
+  const request = nativeMessages.find(message => message.type === 'choosePlayersDirectory'); assert(request);
+  const receive = data => nativeListeners.forEach(listener => listener({ data }));
+  receive({ type: 'yamlExportFolder', requestId: 'stale', path: players }); assert.equal(input.value, '');
+  receive({ type: 'yamlExportFolder', requestId: request.requestId, path: null }); assert.equal(input.value, '');
+  receive({ type: 'yamlExportFolder', requestId: request.requestId, path: players }); assert.equal(input.value, players); assert.equal(app.yamlExport.settings.playersDirectory, '');
+  await window.__bridgeRefresh(); assert.equal(document.querySelector('#studio-export-settings-form'), form); assert.equal(input.value, players);
+  form.querySelector('[type=submit]').click(); await until(() => app.yamlExport.settings.playersDirectory === players && !form.querySelector('[type=submit]').disabled, 'Selected folder not saved');
 });

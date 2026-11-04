@@ -12,6 +12,36 @@ const Studio = {
     }
   },
   knownGames() { return [...new Set([...(S.gameLibrary?.games || []).map(g => g.game), ...(indexData?.games || []).map(g => g.game), ...S.players.map(p => p.game)])].sort(); },
+  yamlExportSettings() {
+    return `<section class="panel panel-pad section-gap"><h2>YAML-Speicherort</h2><p class="help">Den Players-Ordner deiner Archipelago-Installation einmal auswählen. Spieler-YAMLs werden anschließend einzeln in einem Unterordner mit dem Raumnamen gespeichert. Der Speicherort gilt für alle Räume.</p><form id="studio-export-settings-form"><label class="section-gap">Archipelago-Players-Ordner<input name="playersDirectory" value="${esc(S.yamlExport?.playersDirectory || '')}" placeholder="C:\\Archipelago\\Players" autocomplete="off"><span class="help">Leer lassen, um YAMLs weiterhin herunterzuladen.</span></label><div class="button-row section-gap">${window.chrome?.webview?.postMessage ? '<button type="button" data-action="studio-export-folder">Ordner auswählen …</button>' : ''}<button type="submit">Speicherort speichern</button></div></form></section>`;
+  },
+  yamlExportNotice() {
+    const config = S.yamlExport;
+    if (!config?.playersDirectory) return '<p class="help">YAMLs direkt in Archipelago ablegen: Unter <a href="#einrichtung">Einstellungen → YAML-Speicherort</a> den Players-Ordner auswählen.</p>';
+    return `<div class="section-gap" id="studio-export-destination"><b>Speicherort für diesen Raum</b><p class="help mono">${esc(config.roomDirectory || config.error)}</p><p class="help">Mehrere Spieler werden als einzelne YAML-Dateien gespeichert. Erneutes Speichern aktualisiert die Datei desselben Slots; andere Spielerdateien bleiben erhalten. Bei der Generierung diesen Raumordner als <code>player_files_path</code> verwenden: Archipelago liest Unterordner nicht automatisch ein.</p>${config.roomDirectory ? `<p class="help">PowerShell im Archipelago-Ordner:</p><pre class="option-values">${esc('.\\ArchipelagoGenerate.exe --player_files_path ' + "'" + config.roomDirectory.replace(/'/g, "''") + "'")}</pre>` : ''}<a class="text-link" href="#einrichtung">Speicherort ändern</a></div>`;
+  },
+  chooseExportFolder(button) {
+    const form = button.closest('form'), path = form.elements.namedItem('playersDirectory').value;
+    form.dataset.folderRequest = String(Date.now()) + '-' + String(this.folderRequest = (this.folderRequest || 0) + 1);
+    window.chrome.webview.postMessage({ type: 'choosePlayersDirectory', requestId: form.dataset.folderRequest, path });
+  },
+  exportFolderChosen(data) {
+    const form = $('#studio-export-settings-form');
+    if (!form || data.requestId !== form.dataset.folderRequest) return;
+    if (data.error) { toast(data.error, true); return; }
+    if (typeof data.path !== 'string' || !data.path) return;
+    const input = form.elements.namedItem('playersDirectory'); input.value = data.path;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  },
+  savedYaml(result) {
+    const message = result.files.length + ' YAML-Datei' + (result.files.length === 1 ? '' : 'en') + ' gespeichert: ' + result.directory;
+    toast(message); return message;
+  },
+  yamlStatus(data, text) {
+    if (text !== undefined) this.yamlStatusMessage = { roomId: data.roomId, game: data.game, sourceId: data.sourceId, text };
+    const message = this.yamlStatusMessage;
+    return message?.roomId === S.rooms.active && message.game === data.game && message.sourceId === data.sourceId ? message.text : '';
+  },
   async loadIndex() {
     if (indexData || this.indexLoading) return;
     this.indexLoading = true;
@@ -132,8 +162,8 @@ const Studio = {
     const gameFields = fields.filter(f => !this.commonKeys.has(f.option.key)), commonFields = fields.filter(f => this.commonKeys.has(f.option.key));
     const playerNames = preset?.players || (S.playerProfiles || []).filter(p => !p.game || p.game === game).map(p => p.name);
     if (!playerNames.length) playerNames.push(entry.kind === 'yaml' && typeof entry.base.name === 'string' && entry.base.name.length <= 16 && !/[{}]/.test(entry.base.name) ? entry.base.name : (S.config.ap.slotName !== 'ADMIN' && S.config.ap.slotName) || 'Player1');
-    return head + `<form id="studio-yaml-form" data-game="${esc(game)}"><section class="panel panel-pad"><div class="section-title"><h2>Spieler & Vorlage</h2>${badge(entry.kind === 'core' ? 'Core ' + entry.coreVersion : entry.kind === 'yaml' ? 'YAML-Vorlage' : 'APworld-Optionen', 'good')}</div><p class="help">Quelle: ${esc(entry.source)}${entry.worldVersion ? ` · World-Version ${esc(entry.worldVersion)}` : ''}${entry.minimumAPVersion ? ` · Archipelago ab ${esc(entry.minimumAPVersion)}` : ''}</p>${entry.kind === 'yaml' ? '<button type="button" class="small ghost section-gap" data-action="studio-yaml-remove">YAML-Vorlage entfernen</button>' : ''}${entry.sources?.length > 1 ? `<label class="section-gap">Einstellungsquelle<select id="studio-source">${options(Object.fromEntries(entry.sources.map(source => [source.id, source.label])), entry.sourceId)}</select><span class="tiny">Jede Quelle behält ihre eigenen Werte und gespeicherten Einstellungen.</span></label>` : ''}${entry.kind === 'core' ? `<p class="help">Für Archipelago ${esc(entry.coreVersion)} vorbereitet. Diese World ist dort bereits enthalten; keine zusätzliche APworld installieren. Die YAML enthält die erforderliche Archipelago-Version. <a href="${esc(entry.sourceURL)}" target="_blank" rel="noreferrer">Offizielle World-Quelle</a></p>` : ''}<div class="form-grid"><label>Slotnamen · ein Name pro Zeile<textarea name="playerNames" rows="3" required placeholder="Br3tzn&#10;Spieler2">${esc(playerNames.join('\n'))}</textarea><span class="tiny">1–16 Zeichen pro Name. Für jeden Namen wird eine eigene YAML exportiert.</span></label><div><h3>Deine Konfiguration</h3><p class="help">Speichern behält Einstellungen und Namen in diesem Raum. Die YAML-Dateien gehören anschließend in die Archipelago-Generierung.</p><div class="button-row section-gap"><button type="button" class="ghost" data-action="studio-use-players">Gespeicherte Spielernamen übernehmen</button></div></div></div>${entry.unresolved?.length ? `<details class="disclosure"><summary>${entry.unresolved.length} dynamische Angaben nicht automatisch aufgelöst</summary><p class="help">${entry.unresolved.map(esc).join(' · ')}</p><p class="help">Diese Angaben kannst du unten als Zusatzoptionen setzen oder die Standards der APworld übernehmen. Ohne eigenen Wert gelten die Defaults des APworlds.</p></details>` : ''}</section>${GamePresetUI.panel(entry)}
-      <section class="panel panel-pad section-gap">${entry.yamlNotice ? `<p class="help" role="note">${esc(entry.yamlNotice)} ${entry.setupURL ? `<a href="${esc(entry.setupURL)}" target="_blank" rel="noreferrer">Anleitung des Entwicklers</a>` : ''}</p>` : ''}<div class="section-title"><h2>Spieleinstellungen</h2><span class="tiny">${entry.options.length} Felder</span></div>${HelpText.bar()}<input id="studio-option-search" type="search" placeholder="Einstellung suchen …" aria-label="Spieleinstellungen durchsuchen"><div class="form-grid option-grid">${gameFields.map(f => this.field(f.option, f.index, values)).join('')}</div>${commonFields.length ? `<details class="disclosure studio-common"><summary>Allgemeine Archipelago-Optionen · ${commonFields.length} Felder</summary><div class="form-grid option-grid">${commonFields.map(f => this.field(f.option, f.index, values)).join('')}</div></details>` : ''}<details class="disclosure"><summary>Erweiterte Zusatzoptionen als YAML</summary><p class="help">Zusätzliche oder dynamische Spieloptionen. Hier gesetzte Werte überschreiben gleichnamige Formularwerte.</p><textarea name="extra" rows="8" spellcheck="false" placeholder="option_name: value">${esc(preset?.extra || '')}</textarea></details><div class="button-row section-gap"><button type="button" data-action="studio-yaml-save">Einstellungen speichern</button><button type="button" class="ghost" data-action="studio-yaml-preview">YAML-Vorschau</button><button type="button" class="ghost" data-action="studio-admin-yaml">ADMIN.yaml herunterladen</button><button class="primary" type="submit">YAMLs herunterladen</button></div><p class="help">Für den Bridge-Login die ADMIN.yaml einmal zusammen mit den Spieler-YAMLs zum Seed generieren.</p><p data-studio-message class="help" role="status"></p><pre id="studio-yaml-preview" class="hidden"></pre></section></form>`;
+    return head + `<form id="studio-yaml-form" data-game="${esc(game)}" data-room-id="${esc(S.rooms.active)}"><section class="panel panel-pad"><div class="section-title"><h2>Spieler & Vorlage</h2>${badge(entry.kind === 'core' ? 'Core ' + entry.coreVersion : entry.kind === 'yaml' ? 'YAML-Vorlage' : 'APworld-Optionen', 'good')}</div><p class="help">Quelle: ${esc(entry.source)}${entry.worldVersion ? ` · World-Version ${esc(entry.worldVersion)}` : ''}${entry.minimumAPVersion ? ` · Archipelago ab ${esc(entry.minimumAPVersion)}` : ''}</p>${entry.kind === 'yaml' ? '<button type="button" class="small ghost section-gap" data-action="studio-yaml-remove">YAML-Vorlage entfernen</button>' : ''}${entry.sources?.length > 1 ? `<label class="section-gap">Einstellungsquelle<select id="studio-source">${options(Object.fromEntries(entry.sources.map(source => [source.id, source.label])), entry.sourceId)}</select><span class="tiny">Jede Quelle behält ihre eigenen Werte und gespeicherten Einstellungen.</span></label>` : ''}${entry.kind === 'core' ? `<p class="help">Für Archipelago ${esc(entry.coreVersion)} vorbereitet. Diese World ist dort bereits enthalten; keine zusätzliche APworld installieren. Die YAML enthält die erforderliche Archipelago-Version. <a href="${esc(entry.sourceURL)}" target="_blank" rel="noreferrer">Offizielle World-Quelle</a></p>` : ''}<div class="form-grid"><label>Slotnamen · ein Name pro Zeile<textarea name="playerNames" rows="3" required placeholder="Br3tzn&#10;Spieler2">${esc(playerNames.join('\n'))}</textarea><span class="tiny">1–16 Zeichen pro Name. Für jeden Namen wird eine eigene YAML exportiert.</span></label><div><h3>Deine Konfiguration</h3><p class="help">Speichern behält Einstellungen und Namen in diesem Raum. Die YAML-Dateien gehören anschließend in die Archipelago-Generierung.</p><div class="button-row section-gap"><button type="button" class="ghost" data-action="studio-use-players">Gespeicherte Spielernamen übernehmen</button></div></div></div>${entry.unresolved?.length ? `<details class="disclosure"><summary>${entry.unresolved.length} dynamische Angaben nicht automatisch aufgelöst</summary><p class="help">${entry.unresolved.map(esc).join(' · ')}</p><p class="help">Diese Angaben kannst du unten als Zusatzoptionen setzen oder die Standards der APworld übernehmen. Ohne eigenen Wert gelten die Defaults des APworlds.</p></details>` : ''}</section>${GamePresetUI.panel(entry)}
+      <section class="panel panel-pad section-gap">${entry.yamlNotice ? `<p class="help" role="note">${esc(entry.yamlNotice)} ${entry.setupURL ? `<a href="${esc(entry.setupURL)}" target="_blank" rel="noreferrer">Anleitung des Entwicklers</a>` : ''}</p>` : ''}<div class="section-title"><h2>Spieleinstellungen</h2><span class="tiny">${entry.options.length} Felder</span></div>${HelpText.bar()}<input id="studio-option-search" type="search" placeholder="Einstellung suchen …" aria-label="Spieleinstellungen durchsuchen"><div class="form-grid option-grid">${gameFields.map(f => this.field(f.option, f.index, values)).join('')}</div>${commonFields.length ? `<details class="disclosure studio-common"><summary>Allgemeine Archipelago-Optionen · ${commonFields.length} Felder</summary><div class="form-grid option-grid">${commonFields.map(f => this.field(f.option, f.index, values)).join('')}</div></details>` : ''}<details class="disclosure"><summary>Erweiterte Zusatzoptionen als YAML</summary><p class="help">Zusätzliche oder dynamische Spieloptionen. Hier gesetzte Werte überschreiben gleichnamige Formularwerte.</p><textarea name="extra" rows="8" spellcheck="false" placeholder="option_name: value">${esc(preset?.extra || '')}</textarea></details><div class="button-row section-gap"><button type="button" data-action="studio-yaml-save">Einstellungen speichern</button><button type="button" class="ghost" data-action="studio-yaml-preview">YAML-Vorschau</button><button type="button" class="ghost" data-action="studio-admin-yaml">${S.yamlExport?.playersDirectory ? 'ADMIN.yaml speichern' : 'ADMIN.yaml herunterladen'}</button><button class="primary" type="submit">${S.yamlExport?.playersDirectory ? 'YAMLs speichern' : 'YAMLs herunterladen'}</button></div><p class="help">Für den Bridge-Login die ADMIN.yaml einmal zusammen mit den Spieler-YAMLs zum Seed generieren.</p>${this.yamlExportNotice()}<p data-studio-message class="help" role="status">${esc(this.yamlStatus(entry))}</p><pre id="studio-yaml-preview" class="hidden"></pre></section></form>`;
   },
   yamlData() {
     const form = $('#studio-yaml-form'), entry = this.entry, values = {};
@@ -152,7 +182,7 @@ const Studio = {
       else if (['dict', 'set', 'list', 'json'].includes(option.kind)) { try { value = JSON.parse(raw); } catch { throw new Error(option.label + ': gültiges JSON eingeben.'); } }
       values[option.key] = value;
     }
-    return { game: entry.game, sourceId: entry.sourceId, values, players: form.elements.namedItem('playerNames').value.split(/\r?\n/).map(x => x.trim()).filter(Boolean), extra: form.elements.namedItem('extra').value };
+    return { roomId: form.dataset.roomId, game: entry.game, sourceId: entry.sourceId, values, players: form.elements.namedItem('playerNames').value.split(/\r?\n/).map(x => x.trim()).filter(Boolean), extra: form.elements.namedItem('extra').value };
   },
   teamPlayers() { return S.players.filter(p => p.team === S.ap.team && p.type === 1); },
   playerStatus(player) {
@@ -351,6 +381,7 @@ const Studio = {
     else { slot.readOnly = false; slot.value = form.dataset.playerSlot || (S.config.ap.loginMode === 'slot' ? S.config.ap.slotName : ''); slot.focus(); }
   },
   async click(action, id, button) {
+    if (action === 'studio-export-folder') return this.chooseExportFolder(button);
     if (action === 'studio-twitch-add') return this.twitchAdd();
     if (action === 'studio-twitch-auth') return this.authorizeTwitch(document.getElementById('studio-twitch-form-' + id));
     if (action === 'studio-player-add') { const form = button.closest('form[data-player-prefix]'); if (form) this.addPlayerRow(form); else this.playersDrawer(true); return; }
@@ -376,9 +407,12 @@ const Studio = {
     button.dataset.busy = 'true';
     try {
       if (action === 'studio-admin-yaml') {
-        const response = await fetch('/api/ap/admin-yaml');
-        if (!response.ok) throw new Error((await response.json()).error);
-        this.download(await response.blob(), 'ADMIN.yaml');
+        if (S.yamlExport?.playersDirectory) this.savedYaml(await api('yaml/save-admin', { roomId: button.closest('form').dataset.roomId }));
+        else {
+          const response = await fetch('/api/ap/admin-yaml');
+          if (!response.ok) throw new Error((await response.json()).error);
+          this.download(await response.blob(), 'ADMIN.yaml');
+        }
       }
       else if (action === 'studio-twitch-connect') { await api('twitch/connect', { channelId: id }); await refresh(true); }
       else if (action === 'studio-twitch-disconnect') { await api('twitch/disconnect', { channelId: id }); await refresh(true); }
@@ -393,7 +427,10 @@ const Studio = {
   },
   async submit(form) {
     const id = form.getAttribute('id'), data = new FormData(form);
-    if (id === 'studio-twitch-add-form') { await this.authorizeTwitch(form); }
+    if (id === 'studio-export-settings-form') {
+      await api('yaml/export-settings', { playersDirectory: data.get('playersDirectory') });
+      await refresh(); toast('YAML-Speicherort gespeichert.');
+    } else if (id === 'studio-twitch-add-form') { await this.authorizeTwitch(form); }
     else if (form.hasAttribute('data-twitch-channel')) {
       const saved = await this.saveTwitchChannel(form); if (saved.token) await api('twitch/connect', { channelId: saved.id, token: saved.token });
       await refresh(true); toast('Twitch-Kanal gespeichert.');
@@ -431,7 +468,14 @@ const Studio = {
     } else if (id === 'studio-yaml-remove-form') {
       await api('yaml/remove', { sourceId: data.get('sourceId') }); $('#drawer').close(); this.entry = null; this.loadingGame = ''; this.loadRequest = (this.loadRequest || 0) + 1; location.hash = 'katalog'; await refresh(true);
     } else if (id === 'studio-yaml-form') {
-      const value = this.yamlData(); await api('yaml/preset', value);
+      const value = this.yamlData();
+      if (S.yamlExport?.playersDirectory) {
+        const result = await api('yaml/save', value), message = this.savedYaml(result);
+        this.yamlStatus(value, message);
+        await refresh(); if ($('#studio-yaml-form') === form) setText(form.querySelector('[data-studio-message]'), message);
+        return;
+      }
+      await api('yaml/preset', value);
       if (value.players.length === 1) { const result = await api('yaml/generate', value); this.download(new Blob([result.files[0].content], { type: 'application/yaml' }), result.files[0].name); }
       else {
         const response = await fetch('/api/yaml/bundle', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Bridge-Session': S.session }, body: JSON.stringify(value) });
@@ -443,3 +487,6 @@ const Studio = {
   },
   download(blob, name) { const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); },
 };
+window.chrome?.webview?.addEventListener?.('message', event => {
+  if (event.data?.type === 'yamlExportFolder') Studio.exportFolderChosen(event.data);
+});

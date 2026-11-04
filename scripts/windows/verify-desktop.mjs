@@ -57,6 +57,10 @@ try {
   assert.equal(result.minimizeCycles, 10); assert.equal(result.minimizeToTaskbar, true); assert.equal(result.adminDownload, true);
   assert.equal(result.appearanceSaved, true);
   assert.equal(result.gamePresetSaved, true);
+  assert.equal((await realpath(result.yamlExportDirectory)).toLowerCase(), (await realpath(join(root, 'data/smoke-Players/Mein Multiworld'))).toLowerCase());
+  assert.deepEqual((await readdir(result.yamlExportDirectory)).filter(name => name.endsWith('.yaml')).sort(), ['ADMIN.yaml', 'Friend.yaml', 'SmokePlayer.yaml']);
+  for (const name of ['ADMIN', 'Friend', 'SmokePlayer']) { const yaml = parse(await readFile(join(result.yamlExportDirectory, name + '.yaml'), 'utf8')); assert.equal(yaml.name, name); assert.equal(yaml.game, name === 'ADMIN' ? 'Archipelago' : 'Factorio'); }
+  const yamlExport = JSON.parse(await readFile(join(root, 'data/yaml-export.json'), 'utf8')); assert.equal(yamlExport.playersDirectory, dirname(result.yamlExportDirectory));
   const appearance = JSON.parse(await readFile(join(root, 'data/appearance.json'), 'utf8')); assert.equal(appearance.mode, 'dark'); assert.equal(appearance.accent, '#a3bffa');
   const presets = JSON.parse(await readFile(join(root, 'data/game-presets.json'), 'utf8')); assert(presets.presets.some(preset => preset.name === 'Smoke Preset' && preset.game === 'Factorio')); assert(!presets.presets.some(preset => Object.hasOwn(preset, 'players')));
   assert.equal(result.germanHelp, true); assert.equal(result.refreshStable, true); assert.equal(result.downloadUiHidden, true); assert.equal(result.downloadPaths.length, 3); assert.notEqual(result.downloadPaths[0], result.downloadPaths[1]);
@@ -94,6 +98,7 @@ try {
   const newDesktop = await state('/api/desktop'); assert(newDesktop.desktopPid > 0); processes.push({ pid: newDesktop.desktopPid });
   await windowReady(newDesktop.desktopPid);
   assert.equal(updated.rules[0].name, 'Preserved rule'); assert.equal(await readFile(join(root, 'data/preserved-test.txt'), 'utf8'), 'my room data');
+  assert.equal(updated.yamlExport.playersDirectory, yamlExport.playersDirectory);
   assert.equal(hash(await readFile(join(root, 'assets/windows/node.exe'))), manifest.files.find(file => file.path === 'assets/windows/node.exe').sha256);
   await post('shutdown'); await until(async () => !alive(newDesktop.desktopPid) && !await state('/api/desktop'), 'Das aktualisierte Fenster wurde nicht beendet.', 15000);
   console.log('Desktop-Update ersetzt laufende EXE und portable Node-Laufzeit; Fenster, Regeln und Daten starten korrekt neu.');
