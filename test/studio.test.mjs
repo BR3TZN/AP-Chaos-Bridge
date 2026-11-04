@@ -60,6 +60,8 @@ const worldZip = () => writeZip([{ name: 'fixture/__init__.py', content: world }
 test('local, archipelago.gg and custom server inputs construct precise addresses', () => {
   assert.equal(connectionConfig({}, { addressMode: 'local', port: 12345, slotName: 'A' }).url, 'ws://127.0.0.1:12345/');
   assert.equal(connectionConfig({}, { addressMode: 'hosted', port: 23456 }).url, 'ws://archipelago.gg:23456/');
+  assert.equal(connectionConfig({}, { addressMode: 'hosted', port: 23456, secure: 'on' }).url, 'wss://archipelago.gg:23456/');
+  assert.equal(connectionConfig({ secure: true }, { addressMode: 'hosted', port: 23456, secure: false }).url, 'ws://archipelago.gg:23456/');
   assert.equal(connectionConfig({}, { addressMode: 'custom', host: 'ap.example.com', port: 443, secure: true }).url, 'wss://ap.example.com/');
   for (const raw of [{ addressMode: 'custom', host: 'evil@host', port: 5 }, { addressMode: 'local', port: 0 }, { addressMode: 'hosted', port: 1.5 }]) assert.throws(() => connectionConfig({}, raw));
 });

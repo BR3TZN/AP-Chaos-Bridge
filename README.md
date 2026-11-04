@@ -20,7 +20,9 @@ Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scr
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.7.10:** Unter **Einstellungen → YAML-Speicherort** den Archipelago-Players-Ordner einmal auswählen. **YAMLs speichern** legt anschließend einzelne Dateien in `Players/<Raumname>/` ab. Auch der separate ADMIN-Button nutzt diesen Ordner. Der Editor zeigt den passenden Generierungsbefehl: Archipelago liest Raum-Unterordner nicht automatisch ein; der konkrete Raumordner muss als `player_files_path` verwendet werden. Ein leerer Speicherort stellt die bisherigen Downloads wieder her.
+**Neu in 0.7.11:** **TLS / wss verwenden** ist bei neuen Räumen und bisher unkonfigurierten Verbindungen vorausgewählt. Deine Auswahl wird pro Raum gespeichert.
+
+**Seit 0.7.10:** Unter **Einstellungen → YAML-Speicherort** den Archipelago-Players-Ordner einmal auswählen. **YAMLs speichern** legt anschließend einzelne Dateien in `Players/<Raumname>/` ab. Auch der separate ADMIN-Button nutzt diesen Ordner. Der Editor zeigt den passenden Generierungsbefehl: Archipelago liest Raum-Unterordner nicht automatisch ein; der konkrete Raumordner muss als `player_files_path` verwendet werden. Ein leerer Speicherort stellt die bisherigen Downloads wieder her.
 
 **Seit 0.7.9:** Im YAML-Editor unter **Spiel-Presets · für alle Räume** benannte Einstellungen speichern, laden, aktualisieren und löschen. Die Presets gelten raumübergreifend und enthalten keine Spielernamen. **Einstellungen speichern** bleibt die zusätzliche Raumvorlage. Die Übernahme von Designmodus und Akzentfarbe ist korrigiert: fokussierte Buttons, eigene Farben, Hintergrundupdates und langsame Speicherantworten behalten die richtige Auswahl.
 

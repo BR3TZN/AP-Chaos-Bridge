@@ -130,3 +130,15 @@ test('room defaults enable DeathLink and processing once, while explicit choices
     migrated.state.config.deathLinkArmed = false; migrated.save(); assert.equal(new Store(directory).state.config.deathLinkArmed, false);
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
+
+test('TLS defaults on for unconfigured rooms and preserves explicit choices and legacy URL protocols', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'ap-chaos-tls-'));
+  try {
+    let store = new Store(directory); assert.equal(store.state.config.ap.secure, true);
+    for (const [ap, secure] of [[{ url: '' }, true], [{ url: 'ws://127.0.0.1:38281' }, false], [{ url: 'wss://archipelago.gg:38281' }, true], [{ url: '', secure: false }, false], [{ url: 'wss://archipelago.gg:38281', secure: false }, false]]) {
+      store.state.config.ap = { ...ap, slotName: 'Player', loginMode: 'slot' }; store.save();
+      store = new Store(directory); assert.equal(store.state.config.ap.secure, secure); assert.equal(store.state.config.ap.url, ap.url);
+      assert.equal(new Store(directory).state.config.ap.secure, secure);
+    }
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+});

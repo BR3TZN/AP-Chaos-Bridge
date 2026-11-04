@@ -1,3 +1,9 @@
+# 0.7.11 – TLS als Standard für neue Verbindungen
+
+- **TLS / wss verwenden** ist für neue Räume und bislang unkonfigurierte Verbindungen vorausgewählt.
+- Die gespeicherte Auswahl bleibt pro Raum erhalten. Vorhandene Verbindungsadressen behalten ihr Protokoll; ein ausdrücklich deaktivierter Schalter bleibt nach einem Neustart deaktiviert.
+- Formular und Verbindung verwenden dieselbe Auswahl. Hintergrundaktualisierungen behalten eine gerade bearbeitete TLS-Auswahl bei.
+
 # 0.7.10 – YAMLs direkt im Archipelago-Players-Ordner speichern
 
 - Unter **Einstellungen → YAML-Speicherort** den vorhandenen Players-Ordner auswählen oder seinen vollständigen Pfad eintragen. Die Windows-Anwendung bietet eine native Ordnerauswahl. Der Speicherort bleibt unter `data/yaml-export.json` gespeichert und gilt für alle Räume.

@@ -766,6 +766,9 @@ test('UI offers the fixed ADMIN spectator and retains an existing slot while swi
   window.location.hash = 'quellen'; await until(() => document.querySelector('#ap-login-mode'), 'ADMIN selection missing');
   const form = document.querySelector('#ap-form'), mode = form.elements.namedItem('loginMode'), slot = form.elements.namedItem('slotName');
   assert.equal(mode.value, 'admin'); assert.equal(slot.value, 'ADMIN'); assert.equal(slot.readOnly, true);
+  const tls = form.elements.namedItem('secure'); assert.equal(tls.checked, true);
+  tls.checked = false; tls.dispatchEvent(new window.Event('change', { bubbles: true }));
+  await window.__bridgeRefresh(); assert.equal(form.elements.namedItem('secure'), tls); assert.equal(tls.checked, false);
   assert.equal(form.querySelector('a[download="ADMIN.yaml"]').getAttribute('href'), '/api/ap/admin-yaml');
   assert(form.textContent.includes('zusammen mit euren Spieler-YAMLs generieren'));
   mode.value = 'slot'; mode.dispatchEvent(new window.Event('change', { bubbles: true })); assert.equal(slot.readOnly, false); slot.value = 'Daniel'; slot.dispatchEvent(new window.Event('input', { bubbles: true }));

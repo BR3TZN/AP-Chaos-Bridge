@@ -17,7 +17,7 @@ async function until(predicate) { const end = Date.now() + 2500; while (!predica
 function temporary(t) { const directory = mkdtempSync(join(tmpdir(), 'ap-admin-')); t.after(() => rmSync(directory, { recursive: true, force: true })); return directory; }
 
 test('new rooms use ADMIN while saved player-slot logins and passwords remain usable', t => {
-  assert.deepEqual(initialState().config.ap, { url: '', slotName: 'ADMIN', loginMode: 'admin', expectedSeed: '' });
+  assert.deepEqual(initialState().config.ap, { url: '', secure: true, slotName: 'ADMIN', loginMode: 'admin', expectedSeed: '' });
   const directory = temporary(t), state = initialState(); delete state.config.ap.loginMode; state.config.ap.slotName = 'Daniel';
   writeFileSync(join(directory, 'state.json'), JSON.stringify(state));
   const existing = new Store(directory); assert.equal(existing.state.config.ap.slotName, 'Daniel'); assert.equal(existing.state.config.ap.loginMode, 'slot');
