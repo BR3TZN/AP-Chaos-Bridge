@@ -174,7 +174,7 @@ function render(force = false) {
   if (searchSelection) {
     const next = $('#studio-search'); next.focus({ preventScroll: true }); next.setSelectionRange(...searchSelection);
   }
-  Updates.sync(); Rewards.sync(); HelpText.sync();
+  Updates.sync(); Rewards.sync(); HelpText.sync(); Appearance.controls(); GamePresetUI.sync();
 }
 function showDrawer(content) { $('#drawer-content').innerHTML = content; if (!$('#drawer').open) $('#drawer').showModal(); }
 const drawerHead = (title, description) => `<div class="drawer-head"><div><h2>${esc(title)}</h2><p>${esc(description)}</p></div><button type="button" class="icon-button" data-action="close-drawer" aria-label="Schließen">×</button></div>`;
@@ -235,6 +235,7 @@ document.addEventListener('click', async event => {
   const action = button.dataset.action, id = button.dataset.id;
   try {
     if (action === 'help-retry') return HelpText.retry();
+    if (action.startsWith('game-preset-')) return await GamePresetUI.click(action, button);
     if (action.startsWith('appearance-')) return await Appearance.click(action, id);
     if (action.startsWith('alerts-')) return await Alerts.click(action);
     if (action.startsWith('update-')) return await Updates.click(action, button);
@@ -283,6 +284,7 @@ document.addEventListener('submit', async event => {
   let succeeded = true;
   try {
     if (formId === 'language-form') { await HelpText.submit(form); return; }
+    if (formId.startsWith('game-preset-')) { await GamePresetUI.submit(form); return; }
     if (formId === 'appearance-form') { await Appearance.submit(); return; }
     if (formId === 'alerts-form' || formId === 'alerts-media-form') { await Alerts.submit(form); return; }
     if (formId === 'update-token-form') { await Updates.submit(form); return; }
@@ -332,11 +334,13 @@ document.addEventListener('change', async event => {
     if (t.dataset.optionCustom !== undefined) { const input = document.querySelector('[data-custom-input="' + t.dataset.optionCustom + '"]'); Studio.reveal(input, t.value === '__custom__'); input.disabled = t.value !== '__custom__'; }
     if (t.dataset.optionEnable !== undefined) document.querySelector('[data-option-fieldset="' + t.dataset.optionEnable + '"]').disabled = !t.checked;
     if (t.dataset.optionList !== undefined) Studio.listSummary(t.dataset.optionList);
+    if (t.closest('#appearance-form')) Appearance.preview();
     if (t.id === 'room-select') { await api('rooms/activate', { id: t.value }); Studio.entry = null; Studio.loadingGame = ''; Studio.logGame = ''; await refresh(true); }
     if (t.id === 'studio-log-game') { Studio.logGame = t.value; render(true); }
     if (t.id === 'ap-address-mode') Studio.reveal($('#ap-host-label'), t.value === 'custom');
     if (t.id === 'ap-login-mode') Studio.apLogin(t.value);
     if (t.closest('#rule-form')) Studio.ruleVisibility();
+    if (t.id === 'game-preset-select') GamePresetUI.changed(t);
     if (t.id === 'studio-source') { t.disabled = true; await Studio.selectSource(t.value); }
     if (t.id === 'mode') { await api('mode', { mode: t.value }); await refresh(true); }
     if (t.id === 'deathlink-armed') { await api('config', { deathLinkArmed: t.checked }); await refresh(); }
@@ -353,7 +357,7 @@ document.addEventListener('change', async event => {
   } catch (error) { toast(error.message, true); await refresh(); }
 });
 document.addEventListener('input', async event => {
-  if (event.target.closest('#appearance-form')) { Appearance.draft = Appearance.read(); Appearance.apply(Appearance.draft, false); }
+  if (event.target.closest('#appearance-form')) Appearance.preview();
   if (event.target.closest('#rule-form')) Studio.ruleVisibility();
   if (event.target.id === 'studio-search') $('#studio-catalog-results').innerHTML = Studio.catalogCards(event.target.value);
   if (event.target.id === 'studio-option-search') {

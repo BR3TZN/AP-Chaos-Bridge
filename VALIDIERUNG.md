@@ -1,4 +1,4 @@
-# Prüfung der Version 0.7.8
+# Prüfung der Version 0.7.9
 
 Ausgeführt unter Linux mit Node.js 24.22.1 und Python 3.12.14. Node.js ab 22 ist erforderlich. Vorbereitete APworld-Versionen funktionieren ohne Python; die statische Analyse bisher unbekannter Versionen benötigt Python ab 3.10.
 
@@ -10,7 +10,7 @@ Der Integrationstest startet ein echtes WebView2-Fenster und lädt die Bridge. E
 
 ## Automatisierte Prüfungen
 
-**209 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
+**222 Tests** über `npm test` führen die echten Module, HTTP-Routen, Formularhandler in JSDOM und lokale WebSocket-Gegenstellen aus.
 
 | Bereich | Prüfumfang |
 |---|---|
@@ -180,3 +180,11 @@ Das Glossar schützt Checkpoint/Checkpoints sowie Item, Seed und weitere technis
 Der Windows-Test verlangt für minimierte Fenster weiterhin einen sichtbaren nativen Fenster-Handle, IsIconic, ShowInTaskbar und einen laufenden Hintergrunddienst. Er verwendet SW_RESTORE für die Wiederherstellung aus der Taskleiste und prüft danach Schließen und Wiederöffnen aus dem Tray. Maximierte Fenster werden über beide Wege wieder maximiert dargestellt.
 
 Zwei gleichnamige Spieler-YAMLs und eine separate ADMIN.yaml müssen als drei Dateien ohne Downloadverlauf erscheinen. Die ADMIN-Datei wird als YAML mit `name: ADMIN` und `game: Archipelago` gelesen. Die UI-Prüfung lädt den Dummy bei leerem Pflichtfeld für Spielernamen herunter und hält Feldwerte und Formularinstanz fest. Anschließende normale Exporte bleiben eine einzelne Spieler-YAML beziehungsweise ein ZIP mit genau zwei Spielern; veraltete includeAdmin-Flags werden nicht weiter gespeichert oder ausgewertet.
+
+## Gemeinsame Spiel-Presets und Designübernahme 0.7.9
+
+Dreizehn zusätzliche Tests decken benannte Presets, Neustart, defensive Kopien, Aktualisieren und Löschen, parallele Änderungen, gleiche Namen, Quell- und Versionsprüfung, gültige APworld-, Core- und YAML-Einstellungen, Ursprungraum-Löschung und untrusted HTTP-Schreibversuche ab. UI-Prüfungen speichern und laden zwischen zwei Räumen, erhalten Namen, Suche und Zusatzoptionen und blockieren eine verspätete Antwort bei neueren Entwürfen. Alte Raumvorlagen bleiben getrennt.
+
+Die Designregression wurde vor der Korrektur mit fokussierten Farb- und Modusbuttons reproduziert: Die Vorschau änderte sich, der gespeicherte Formularwert blieb auf dem alten Stand. Weitere Tests halten eine Speicheranfrage zurück und ändern währenddessen die Farbe. Die neuere Vorschau bleibt bestehen, während nur der bestätigte Wert im Startcache liegt. Fehlerhafte HTTP-Speicherung und ein echter Dateisystem-Schreibfehler dürfen kein ungespeichertes Design als bestätigt ausgeben. Auch alleinige change-Ereignisse des Farbwählers werden geprüft.
+
+Der native Windows-Test verwendet echte Browser-Mausereignisse, wählt den getönten Modus und die rote Akzentfarbe, speichert, setzt zurück und prüft erneut die gespeicherten Werte. Er speichert danach ein benanntes Factorio-Preset mit geänderter Toggle-Einstellung, ändert das Formular zurück und lädt die gespeicherte Einstellung wieder. appearance.json und game-presets.json werden anschließend geprüft. Die vorhandenen Prüfungen für Downloads, unveränderte DOM-Knoten, Taskleiste, Tray, maximierte Fenster und Updates laufen weiter.

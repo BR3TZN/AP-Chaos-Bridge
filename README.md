@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.8
+# AP Chaos Bridge 0.7.9
 
 Lokales Tool für Zuschaueraktionen in Archipelago-Multiworlds. Charity-Royale-Spenden, Twitch-Ereignisse und externe Trigger laufen durch dieselbe Regel-Engine und können zusätzliche AP-Items, Hinweise, Chatnachrichten, Stream-Alerts oder DeathLink auslösen.
 
@@ -16,11 +16,13 @@ Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.c
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.7.8
+## Update auf 0.7.9
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.7.8:** Minimieren bleibt ein normales Windows-Minimieren in die Taskleiste; Schließen legt die laufende Bridge in den Tray. Im YAML-Editor lädt **ADMIN.yaml herunterladen** nur den Dummy herunter und erhält offene Eingaben. Spieler-YAMLs und Spieler-ZIPs enthalten ausschließlich die gewählten Spieler. Die frühere Zusatzoption entfällt, auch bei alten gespeicherten Vorlagen.
+**Neu in 0.7.9:** Im YAML-Editor unter **Spiel-Presets · für alle Räume** benannte Einstellungen speichern, laden, aktualisieren und löschen. Die Presets gelten raumübergreifend und enthalten keine Spielernamen. **Einstellungen speichern** bleibt die zusätzliche Raumvorlage. Die Übernahme von Designmodus und Akzentfarbe ist korrigiert: fokussierte Buttons, eigene Farben, Hintergrundupdates und langsame Speicherantworten behalten die richtige Auswahl.
+
+**Seit 0.7.8:** Minimieren bleibt ein normales Windows-Minimieren in die Taskleiste; Schließen legt die laufende Bridge in den Tray. Im YAML-Editor lädt **ADMIN.yaml herunterladen** nur den Dummy herunter und erhält offene Eingaben. Spieler-YAMLs und Spieler-ZIPs enthalten ausschließlich die gewählten Spieler. Die frühere Zusatzoption entfällt, auch bei alten gespeicherten Vorlagen.
 
 **Seit 0.7.7:** Ein eigener **ADMIN-Zuschauer-Dummy** hält eure Spielslots frei. Unter **Verbindungen → ADMIN.yaml herunterladen** die fertige Datei holen und einmal gemeinsam mit den Spieler-YAMLs zum Seed generieren. Im YAML-Editor hat sie einen eigenen Downloadbutton. Danach **Bridge-Anmeldung → ADMIN · separater Zuschauer-Dummy** wählen und das Server-Adminpasswort eintragen. Der Dummy erhält keine Items; bereits erzeugte Seeds benötigen weiterhin einen vorhandenen Slot im Textmodus. Deutsche Beschreibungen verwenden jetzt **Checkpoints** und behalten Fachbegriffe wie Item, Seed und DeathLink. Ältere Übersetzungen werden einmal neu berechnet.
 

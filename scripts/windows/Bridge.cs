@@ -410,7 +410,9 @@ internal sealed class BridgeForm : Form
             string result = await view.ExecuteScriptAsync("Boolean(document.querySelector('#main [data-action]') && document.querySelector('#breadcrumb').textContent)");
             if (result == "true")
             {
+                await SmokeAppearance();
                 await SmokeDownload();
+                await SmokeGamePreset();
                 string firstDownload = downloadedPaths[0], firstContents = File.ReadAllText(firstDownload);
                 downloaded = false; await SmokeDownload();
                 if (downloadedPaths.Count != 2 || downloadedPaths[0] == downloadedPaths[1] || File.ReadAllText(firstDownload) != firstContents) throw new Exception("Gleichnamige Downloads wurden überschrieben.");
@@ -461,12 +463,57 @@ internal sealed class BridgeForm : Form
                 Close(); RestoreWindow();
                 if (!WindowIsUsable() || WindowState != FormWindowState.Maximized) throw new Exception("Maximiertes Fenster wurde aus dem Tray nicht wiederhergestellt.");
                 string bridgeRules = await view.ExecuteScriptAsync("S.rules.length");
-                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, minimizeCycles = 10, minimizeToTaskbar = true, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, adminDownload = true, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, germanHelp = germanHelp, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
+                File.WriteAllText(Path.Combine(Program.Root, "data", "desktop-smoke.json"), Program.Json.Serialize(new { ready = true, tray = tray.Visible, trayCycles = 10, minimizeCycles = 10, minimizeToTaskbar = true, restoredVisible = WindowIsUsable(), handlePreserved = Handle == originalHandle, nativeWindow = true, download = downloaded, adminDownload = true, appearanceSaved = true, gamePresetSaved = true, downloadPaths = downloadedPaths, downloadUiHidden = !view.CoreWebView2.IsDefaultDownloadDialogOpen, germanHelp = germanHelp, refreshStable = refreshStable, noConsole = backend == null || backend.StartInfo.CreateNoWindow, rules = bridgeRules, runtime = view.CoreWebView2.Environment.BrowserVersionString }));
                 await Quit(); return;
             }
             await Task.Delay(250);
         }
         throw new Exception("Die eingebettete Oberfläche wurde nicht rechtzeitig geladen.");
+    }
+
+    private async Task SmokeWait(string expression, string error)
+    {
+        for (int attempt = 0; attempt < 100; attempt++) { if (await view.ExecuteScriptAsync("Boolean(" + expression + ")") == "true") return; await Task.Delay(100); }
+        throw new Exception(error);
+    }
+
+    private async Task SmokeClick(string selector)
+    {
+        string encoded = Program.Json.Serialize(selector);
+        await view.ExecuteScriptAsync("document.querySelector(" + encoded + ").scrollIntoView({ block: 'center', behavior: 'instant' })");
+        string pointJson = await view.ExecuteScriptAsync("(() => { const rect = document.querySelector(" + encoded + ").getBoundingClientRect(); return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; })()");
+        var point = Program.Json.Deserialize<Dictionary<string, object>>(pointJson);
+        // Real browser input preserves focus and user activation, including the
+        // color-button behavior that programmatic HTMLElement.click() misses.
+        await view.CoreWebView2.CallDevToolsProtocolMethodAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mousePressed", buttons = 1, x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
+        await view.CoreWebView2.CallDevToolsProtocolMethodAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mouseReleased", buttons = 0, x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
+    }
+
+    private async Task SmokeAppearance()
+    {
+        await view.ExecuteScriptAsync("location.hash = 'design'");
+        await SmokeWait("document.querySelector('#appearance-form')", "Designseite fehlt.");
+        await SmokeClick("[data-action=appearance-mode][data-id=classic]");
+        await SmokeClick("[data-action=appearance-accent][data-id='#fb7185']");
+        await SmokeWait("document.querySelector('#appearance-form [name=mode]').value === 'classic' && document.querySelector('#appearance-form [name=accent]').value === '#fb7185' && document.documentElement.style.getPropertyValue('--accent') === '#fb7185'", "Design-Vorschau und Eingabewerte stimmen nicht überein.");
+        await SmokeClick("#appearance-form [type=submit]");
+        await SmokeWait("S.appearance.mode === 'classic' && S.appearance.accent === '#fb7185' && !document.querySelector('#appearance-form [type=submit]').disabled", "Akzentfarbe wurde im eigenen Fenster nicht gespeichert.");
+        await SmokeClick("[data-action=appearance-reset]"); await SmokeClick("#appearance-form [type=submit]");
+        await SmokeWait("S.appearance.mode === 'dark' && S.appearance.accent === '#a3bffa' && !document.querySelector('#appearance-form [type=submit]').disabled", "Design ließ sich nicht zurücksetzen und speichern.");
+    }
+
+    private async Task SmokeGamePreset()
+    {
+        await SmokeWait("document.querySelector('#game-presets-panel') && !document.querySelector('#studio-yaml-form [type=submit]').disabled", "Spiel-Presets fehlen im Editor.");
+        await view.ExecuteScriptAsync("(() => { const index = Studio.entry.options.findIndex(option => option.kind === 'toggle'); if (index < 0) throw new Error('Toggle fehlt'); const input = document.querySelector('[name=option-' + index + ']'); window.__presetSmoke = { index, previous: input.value, value: input.value === 'true' ? 'false' : 'true' }; input.value = window.__presetSmoke.value; input.dispatchEvent(new Event('change', { bubbles: true })); })()");
+        await SmokeClick("[data-action=game-preset-new]");
+        await SmokeWait("document.querySelector('#game-preset-save-form')", "Preset-Speicherformular fehlt.");
+        await view.ExecuteScriptAsync("document.querySelector('#game-preset-save-form [name=presetName]').value = 'Smoke Preset'");
+        await SmokeClick("#game-preset-save-form [type=submit]");
+        await SmokeWait("S.gamePresets.some(preset => preset.name === 'Smoke Preset') && !document.querySelector('#drawer').open && !document.querySelector('[data-action=game-preset-load]').disabled", "Spiel-Preset wurde nicht gespeichert.");
+        await view.ExecuteScriptAsync("const input = document.querySelector('[name=option-' + window.__presetSmoke.index + ']'); input.value = window.__presetSmoke.previous; input.dispatchEvent(new Event('change', { bubbles: true }))");
+        await SmokeClick("[data-action=game-preset-load]");
+        await SmokeWait("document.querySelector('[name=option-' + window.__presetSmoke.index + ']').value === window.__presetSmoke.value && !document.querySelector('[data-action=game-preset-load]').disabled", "Spiel-Preset wurde nicht geladen.");
     }
 
     private async Task SmokeDownload(bool admin = false)
@@ -482,12 +529,7 @@ internal sealed class BridgeForm : Form
         }
         if (!formReady) throw new Exception("YAML-Editor im eigenen Fenster fehlt.");
         await view.ExecuteScriptAsync("document.querySelector('#studio-yaml-form [name=playerNames]').value = " + Program.Json.Serialize(admin ? "DraftOnly" : "SmokePlayer") + "; document.querySelector('#studio-yaml-form [name=playerNames]').dispatchEvent(new Event('input', { bubbles: true })); document.querySelector(" + selector + ").scrollIntoView({ block: 'center' })");
-        string pointJson = await view.ExecuteScriptAsync("(() => { const rect = document.querySelector(" + selector + ").getBoundingClientRect(); return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; })()");
-        var point = Program.Json.Deserialize<Dictionary<string, object>>(pointJson);
-        // Use a real browser input gesture. HTMLElement.click() has no user
-        // activation and Chromium can block a second automatic download.
-        await view.CoreWebView2.CallDevToolsProtocolMethodAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mousePressed", buttons = 1, x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
-        await view.CoreWebView2.CallDevToolsProtocolMethodAsync("Input.dispatchMouseEvent", Program.Json.Serialize(new { type = "mouseReleased", buttons = 0, x = Convert.ToDouble(point["x"]), y = Convert.ToDouble(point["y"]), button = "left", clickCount = 1 }));
+        await SmokeClick(admin ? "#studio-yaml-form [data-action=studio-admin-yaml]" : "#studio-yaml-form [type=submit]");
         for (int i = 0; i < 100 && !downloaded; i++) await Task.Delay(200);
         if (!downloaded) throw new Exception("YAML-Download im eigenen Fenster fehlgeschlagen.");
     }

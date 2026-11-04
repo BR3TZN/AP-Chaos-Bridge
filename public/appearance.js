@@ -1,6 +1,6 @@
 'use strict';
 const Appearance = {
-  defaults: { mode: 'dark', accent: '#a3bffa', motion: true }, draft: null,
+  defaults: { mode: 'dark', accent: '#a3bffa', motion: true }, draft: null, revision: 0,
   presets: { '#a3bffa': 'Blau', '#fb7185': 'Rot', '#c8eea1': 'Grün', '#f7c66b': 'Gold', '#c2a3ff': 'Violett', '#66d6d0': 'Türkis' },
   rgb(hex) { return [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)); },
   hex(rgb) { return '#' + rgb.map(n => Math.round(n).toString(16).padStart(2, '0')).join(''); },
@@ -29,7 +29,7 @@ const Appearance = {
     const value = { ...this.defaults, ...raw };
     if (!['dark', 'light', 'classic'].includes(value.mode) || !/^#[a-f0-9]{6}$/i.test(value.accent)) return;
     const signature = JSON.stringify(value);
-    if (persist && signature !== this.persisted) try { localStorage.setItem('ap-bridge-appearance', signature); this.persisted = signature; } catch {}
+    if (persist) this.cache(value);
     if (signature === this.applied) return; this.applied = signature;
     const element = document.documentElement; element.dataset.theme = value.mode; element.dataset.motion = value.motion ? 'on' : 'off';
     element.style.colorScheme = value.mode === 'light' ? 'light' : 'dark';
@@ -37,7 +37,21 @@ const Appearance = {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', this.palette(value).bg);
     window.chrome?.webview?.postMessage({ type: 'appearance', background: this.palette(value).bg });
   },
-  sync(value) { this.apply(this.draft && currentPage === 'design' ? this.draft : value); },
+  cache(value) { const signature = JSON.stringify(value); if (signature !== this.persisted) try { localStorage.setItem('ap-bridge-appearance', signature); this.persisted = signature; } catch {} },
+  sync(value) { this.saved = value; this.cache(value); this.apply(this.draft && currentPage === 'design' ? this.draft : value, false); },
+  controls() {
+    const form = document.querySelector('#appearance-form'); if (!form) return;
+    const value = this.draft || S.appearance || this.defaults;
+    for (const key of ['mode', 'accent']) if (form.elements.namedItem(key).value !== value[key]) form.elements.namedItem(key).value = value[key];
+    if (form.elements.namedItem('motion').checked !== value.motion) form.elements.namedItem('motion').checked = value.motion;
+    for (const button of form.querySelectorAll('[data-action="appearance-mode"], [data-action="appearance-accent"]')) {
+      const selected = button.dataset.id === value[button.dataset.action === 'appearance-mode' ? 'mode' : 'accent'];
+      if (button.classList.contains('selected') !== selected) button.classList.toggle('selected', selected);
+      if (button.getAttribute('aria-pressed') !== String(selected)) button.setAttribute('aria-pressed', String(selected));
+    }
+    setText(form.querySelector('#appearance-status'), this.draft ? 'Vorschau · „Design speichern“ übernimmt diese Einstellungen dauerhaft.' : 'Design gespeichert. Änderungen werden sofort als Vorschau gezeigt.');
+  },
+  preview(value = this.read()) { this.revision++; this.draft = { ...value, accent: value.accent.toLowerCase() }; this.apply(this.draft, false); this.controls(); },
   page() {
     const value = this.draft || S.appearance || this.defaults;
     return pageHead('DEIN WORKSPACE', 'Design', 'Wähle die Oberfläche, in der du dich wohlfühlst. Dein Design gilt für alle Räume.')
@@ -45,14 +59,27 @@ const Appearance = {
   },
   read() { const form = document.querySelector('#appearance-form'); return form ? { mode: form.elements.namedItem('mode').value, accent: form.elements.namedItem('accent').value, motion: form.elements.namedItem('motion').checked } : { ...S.appearance }; },
   async click(action, id) {
-    if (action === 'appearance-toggle') { await api('appearance', { ...S.appearance, mode: S.appearance?.mode === 'light' ? 'dark' : 'light' }); this.draft = null; await refresh(true); return; }
-    this.draft = this.read();
-    if (action === 'appearance-mode') this.draft.mode = id;
-    if (action === 'appearance-accent') this.draft.accent = id;
-    if (action === 'appearance-original') this.draft = { mode: 'classic', accent: '#c8eea1', motion: true };
-    if (action === 'appearance-reset') this.draft = { ...this.defaults };
-    this.apply(this.draft, false); render(true);
+    if (action === 'appearance-toggle') {
+      const value = currentPage === 'design' ? this.read() : S.appearance;
+      const next = { ...value, mode: value.mode === 'light' ? 'dark' : 'light' };
+      if (currentPage === 'design') this.preview(next); else { this.revision++; this.draft = null; }
+      await this.save(next); return;
+    }
+    let value = this.read();
+    if (action === 'appearance-mode') value.mode = id;
+    if (action === 'appearance-accent') value.accent = id;
+    if (action === 'appearance-original') value = { mode: 'classic', accent: '#c8eea1', motion: true };
+    if (action === 'appearance-reset') value = { ...this.defaults };
+    this.preview(value);
   },
-  async submit() { await api('appearance', this.read()); this.draft = null; await refresh(true); toast('Design gespeichert.'); },
+  async save(value) {
+    const revision = this.revision;
+    const request = (this.writes || Promise.resolve()).catch(() => {}).then(() => api('appearance', value)); this.writes = request;
+    const saved = await request;
+    S.appearance = saved; this.cache(saved);
+    if (revision === this.revision) this.draft = null;
+    this.sync(saved); this.controls(); await refresh(true); toast(this.draft ? 'Design gespeichert. Neuere Änderungen sind noch Vorschau.' : 'Design gespeichert.');
+  },
+  async submit() { await this.save(this.read()); },
 };
 try { Appearance.apply(JSON.parse(localStorage.getItem('ap-bridge-appearance') || 'null') || Appearance.defaults); } catch { Appearance.apply(Appearance.defaults); }

@@ -1,3 +1,13 @@
+# 0.7.9 – Gemeinsame Spiel-Presets und verlässliche Designübernahme
+
+- Im YAML-Editor benannte Spiel-Presets für alle Räume speichern, laden, aktualisieren und löschen. Presets behalten Spieleinstellungen und erweiterte Zusatzoptionen; Spielernamen und Verbindungen des Zielraums bleiben erhalten.
+- Gemeinsame Speicherung unter data/game-presets.json, unabhängig von Raumarchiv und Löschen des Ursprungsraums. Vorhandene Raumvorlagen bleiben getrennt. Beim Laden wird zunächst der Editor befüllt; „Einstellungen speichern“ übernimmt die Werte für den geöffneten Raum.
+- Einstellungen werden mit den vorhandenen Optionstypen geprüft. Abweichende Quellen, World-Versionen und geänderte Optionsschemata werden erkannt; inkompatible Presets bleiben sichtbar und löschbar, lassen sich aber nicht unbemerkt anwenden. Gleichnamige neue Presets und veraltete Überschreibversuche werden abgefangen.
+- Design- und Farbbuttons aktualisieren jetzt die tatsächlichen Formularwerte und Auswahlmarkierungen auch bei fokussierten Buttons. Der Formularschutz gegen Hintergrundupdates blockiert die Übernahme nicht mehr.
+- Eigene Farben funktionieren über input und change. Vorschauen bleiben vom gespeicherten Startdesign getrennt. Eine ältere Speicherantwort überschreibt keine neueren Änderungen; fehlgeschlagene Speicherung lässt Vorschau und bestätigtes Design getrennt. Schreibfehler ändern auch im Backend keinen nur scheinbar gespeicherten Wert.
+- Native Windows-Prüfung um echte Mausaktionen für Designwahl, Speichern, Zurücksetzen sowie Speichern und Laden eines Spiel-Presets erweitert. Tray, Taskleiste, Downloads und Programmupdates bleiben Teil der Prüfung.
+- Anmeldung erneut am offiziellen Archipelago-Protokoll geprüft: Eine slotlose Admin-Verbindung gibt es nicht. Ohne zusätzlichen ADMIN-Zuschauerslot ist nur die bereits angebotene zweite Text-Verbindung zu einem vorhandenen Slot möglich. Die Anmeldung bleibt unverändert.
+
 # 0.7.8 – Normales Minimieren und eigener ADMIN-Download
 
 - Minimieren bleibt in der Windows-Taskleiste und lässt sich von dort normal wiederherstellen. Schließen blendet das Programm weiterhin in den Tray aus; der Hintergrunddienst läuft weiter.

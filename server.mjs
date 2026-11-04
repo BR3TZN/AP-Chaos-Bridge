@@ -7,6 +7,7 @@ import { Store, VERSION, PROFILES, normalizeRule, parseYamlProfiles, text, numbe
 import { Engine } from './lib/engine.mjs';
 import { Archipelago } from './lib/archipelago.mjs';
 import { adminSlotFile } from './lib/admin-slot.mjs';
+import { GamePresets, gamePresetRevision, GAME_PRESET_LIMIT } from './lib/game-presets.mjs';
 import { CharitySource, TWITCH_EVENTS, TWITCH_REWARDS_EVENT, twitchScopes, verifyCharity } from './lib/sources.mjs';
 import { TwitchChannels, normalizeTwitchChannel } from './lib/twitch-channels.mjs';
 import { Vault } from './lib/vault.mjs';
@@ -64,6 +65,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   const presentation = new Presentation(directory, { memory }); let alertPreview;
   const helpLanguage = new HelpLanguage(directory, { memory }), helpTranslator = new HelpTranslator(directory, root, { memory, runBatch: translationRunner, ...(translationModelFolder ? { modelFolder: translationModelFolder } : {}) });
   const ruleLibrary = new RuleLibrary(directory, { memory });
+  const gamePresets = new GamePresets(directory, { memory });
   const library = new GameLibrary(directory, root, { memory, core, folder: worldsDirectory });
   if (worldsDirectory) library.data.folder = worldsDirectory;
   const keyFile = join(directory, 'integration-key.txt');
@@ -156,7 +158,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     const s = store.state;
     return { name: 'AP Chaos Bridge', version: VERSION, session, config: s.config, ap: ap.status(), charity: charity.status(), twitch: twitch.status(),
       appearance: presentation.appearance, language: helpLanguage.language, translation: helpTranslator.status(), updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
-      rooms: rooms.list(), savedCredentials: vault.status(rooms.id), playerProfiles: s.players, yamlPresets: s.yamlPresets,
+      rooms: rooms.list(), savedCredentials: vault.status(rooms.id), playerProfiles: s.players, yamlPresets: s.yamlPresets, gamePresets: gamePresets.list(),
       gameLibrary: { importLimits: { ...APWORLD_LIMITS, maxYamlBytes: YAML_IMPORT_LIMIT }, folder: library.data.folder, coreVersion: library.coreVersion || '', games: catalogEntries().map(g => ({ game: g.game, kind: g.kind, source: g.source, sourceId: g.sourceId, sources: g.sources, coreVersion: g.coreVersion, aliases: g.aliases, optionCount: g.options.length, unresolved: g.unresolved })) },
       queue: s.queue, events: s.events, logs: s.logs, profiles: PROFILES, yamlProfiles: s.yamlProfiles, twitchEvents: TWITCH_EVENTS,
       stats: { queued: s.queue.filter(j => j.status === 'queued').length, confirmed: s.queue.filter(j => j.status === 'confirmed').length, uncertain: s.queue.filter(j => j.status === 'uncertain').length, simulated: s.queue.filter(j => j.status === 'simulated').length },
@@ -213,7 +215,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         return json(res, { ...gameIndex, games: catalogEntries().filter(game => ['apworld', 'core', 'yaml'].includes(game.kind)).map(game => ({ ...references.get(game.game), game: game.game, kind: game.kind, source: game.source, sourceId: game.sourceId, sources: game.sources, coreVersion: game.coreVersion, aliases: game.aliases })) });
       }
       if (req.method === 'GET' && path === '/api/game-library') return json(res, gameLibraryList());
-      if (req.method === 'GET' && path === '/api/game-settings') { const entry = gameEntry(url.searchParams.get('game'), url.searchParams.get('sourceId') || undefined); return json(res, { ...entry, helpRevision: helpRevision(entry) }); }
+      if (req.method === 'GET' && path === '/api/game-settings') { const entry = gameEntry(url.searchParams.get('game'), url.searchParams.get('sourceId') || undefined); return json(res, { ...entry, helpRevision: helpRevision(entry), presetRevision: gamePresetRevision(entry) }); }
       if (req.method === 'GET' && path === '/api/ap/admin-yaml') {
         const file = adminSlotFile();
         res.writeHead(200, { 'Content-Type': 'application/yaml; charset=utf-8', 'Content-Disposition': 'attachment; filename="ADMIN.yaml"' }); res.end(file.content); return;
@@ -237,7 +239,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (isExternal) {
           if (!secretEquals(req.headers.authorization, 'Bearer ' + integrationKey)) return json(res, { error: 'Integration-Token ungültig.' }, 401);
         } else if (!isCharityHook && !secretEquals(req.headers['x-bridge-session'], session)) return json(res, { error: 'Sitzung fehlt. Seite neu laden.' }, 403);
-        const raw = await body(req, path === '/api/worlds/upload' ? APWORLD_BASE64_LIMIT + 2048 : path.startsWith('/api/rules/') ? RULE_IMPORT_LIMIT : ['/api/yaml/import', '/api/yaml/generate', '/api/yaml/bundle', '/api/yaml/preset'].includes(path) ? YAML_IMPORT_LIMIT * 6 + 2048 : path === '/api/alerts/media' ? 14 * 1024 * 1024 : 800000);
+        const raw = await body(req, path === '/api/worlds/upload' ? APWORLD_BASE64_LIMIT + 2048 : path.startsWith('/api/rules/') ? RULE_IMPORT_LIMIT : path.startsWith('/api/game-presets/') ? GAME_PRESET_LIMIT + 4096 : ['/api/yaml/import', '/api/yaml/generate', '/api/yaml/bundle', '/api/yaml/preset'].includes(path) ? YAML_IMPORT_LIMIT * 6 + 2048 : path === '/api/alerts/media' ? 14 * 1024 * 1024 : 800000);
         if (isCharityHook && !verifyCharity(raw, req.headers['x-signature'])) return json(res, { error: 'Charity-Signatur ungültig.' }, 401);
         let data; try { data = JSON.parse(raw.toString('utf8') || '{}'); } catch { throw new Error('Ungültiges JSON.'); }
         if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('JSON-Objekt erwartet.');
@@ -245,6 +247,19 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         if (isExternal) {
           if (!data.id || !Number.isFinite(data.timestamp)) throw new Error('Externe Ereignisse benötigen id und timestamp (Unix-Millisekunden).');
           return json(res, engine.ingest({ ...data, source: 'external' }));
+        }
+        if (path === '/api/game-presets/delete') { gamePresets.remove(data); changed(); return json(res, { ok: true }); }
+        if (path === '/api/game-presets/save' || path === '/api/game-presets/load') {
+          if (data.roomId !== rooms.id) throw new Error('Der Raum wurde gewechselt. Das Spiel-Preset erneut öffnen.');
+          const entry = gameEntry(data.game, data.sourceId);
+          if (data.sourceRevision !== gamePresetRevision(entry)) throw new Error('Die Einstellungsquelle wurde inzwischen geändert. Spielseite neu öffnen.');
+          if (path === '/api/game-presets/save') {
+            library.generate({ game: entry.game, sourceId: entry.sourceId, values: data.values, extra: data.extra, players: ['PresetCheck'] });
+            const preset = gamePresets.save(data, entry); changed(); return json(res, { id: preset.id, revision: preset.revision });
+          }
+          const preset = gamePresets.get(data.id, entry.game); gamePresets.compatible(preset, entry);
+          library.generate({ game: entry.game, sourceId: entry.sourceId, values: preset.values, extra: preset.extra, players: ['PresetCheck'] });
+          return json(res, { id: preset.id, name: preset.name, values: preset.values, extra: preset.extra, sourceRevision: preset.sourceRevision });
         }
         if (path === '/api/rules/preview') return json(res, ruleImportPlan(data));
         if (path === '/api/rules/import') {
@@ -452,7 +467,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
         store.save(); changed(); return json(res, { ok: true });
       }
       if (req.method === 'GET') {
-        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/language.js': 'public/language.js', '/studio.js': 'public/studio.js', '/rules.js': 'public/rules.js', '/rewards.js': 'public/rewards.js', '/appearance.js': 'public/appearance.js', '/alerts.js': 'public/alerts.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
+        const staticFiles = { '/': 'public/index.html', '/app.js': 'public/app.js', '/language.js': 'public/language.js', '/studio.js': 'public/studio.js', '/game-presets.js': 'public/game-presets.js', '/rules.js': 'public/rules.js', '/rewards.js': 'public/rewards.js', '/appearance.js': 'public/appearance.js', '/alerts.js': 'public/alerts.js', '/updates.js': 'public/updates.js', '/style.css': 'public/style.css', '/icon.svg': 'public/icon.svg', '/overlay': 'public/overlay.html', '/overlay.js': 'public/overlay.js', '/overlay.css': 'public/overlay.css', '/oauth/callback': 'public/oauth.html', '/oauth.js': 'public/oauth.js' };
         const file = staticFiles[path];
         if (file) { if (path === '/overlay') res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'"); const type = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml' }[extname(file)]; res.writeHead(200, { 'Content-Type': type }); res.end(readFileSync(join(root, file))); return; }
       }
@@ -476,7 +491,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
     void resumeConnections();
     void library.scan().then(report => { for (const e of report.errors) log('warn', 'Spielekatalog · ' + e.file + ': ' + e.error); if (report.skipped?.length) log('info', `Spielekatalog: ${report.skipped.length} nicht auswertbare Pakete übersprungen. Details im Spielekatalog.`); changed(); }).catch(e => log('warn', 'Spielekatalog: ' + e.message));
   }
-  return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, ruleLibrary, updater, helpLanguage, helpTranslator, url: `http://127.0.0.1:${server.address().port}` };
+  return { server, store, engine, ap, charity, twitch, snapshot, close, integrationKey, rooms, vault, library, ruleLibrary, gamePresets, updater, helpLanguage, helpTranslator, url: `http://127.0.0.1:${server.address().port}` };
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

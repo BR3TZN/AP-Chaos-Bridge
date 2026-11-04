@@ -55,6 +55,10 @@ try {
   assert.equal(result.ready, true); assert.equal(result.tray, true); assert.equal(result.noConsole, true); assert.equal(result.rules, '0'); assert.equal(result.download, true);
   assert.equal(result.trayCycles, 10); assert.equal(result.restoredVisible, true); assert.equal(result.handlePreserved, true);
   assert.equal(result.minimizeCycles, 10); assert.equal(result.minimizeToTaskbar, true); assert.equal(result.adminDownload, true);
+  assert.equal(result.appearanceSaved, true);
+  assert.equal(result.gamePresetSaved, true);
+  const appearance = JSON.parse(await readFile(join(root, 'data/appearance.json'), 'utf8')); assert.equal(appearance.mode, 'dark'); assert.equal(appearance.accent, '#a3bffa');
+  const presets = JSON.parse(await readFile(join(root, 'data/game-presets.json'), 'utf8')); assert(presets.presets.some(preset => preset.name === 'Smoke Preset' && preset.game === 'Factorio')); assert(!presets.presets.some(preset => Object.hasOwn(preset, 'players')));
   assert.equal(result.germanHelp, true); assert.equal(result.refreshStable, true); assert.equal(result.downloadUiHidden, true); assert.equal(result.downloadPaths.length, 3); assert.notEqual(result.downloadPaths[0], result.downloadPaths[1]);
   for (const [index, path] of result.downloadPaths.entries()) { assert.equal((await realpath(dirname(path))).toLowerCase(), (await realpath(join(root, 'data/smoke-downloads'))).toLowerCase()); const yaml = parse(await readFile(path, 'utf8')); assert.equal(yaml.game, index === 2 ? 'Archipelago' : 'Factorio'); assert.equal(yaml.name, index === 2 ? 'ADMIN' : 'SmokePlayer'); }
   assert((await readFile(join(root, 'AP-Chaos-Bridge.exe'))).length > 10000);

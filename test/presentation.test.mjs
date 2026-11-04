@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { JSDOM } from 'jsdom';
@@ -18,6 +18,13 @@ test('appearance and alert preferences validate colors, choices and limits', () 
   assert.equal(normalizeAppearance({ mode: 'light', accent: '#FA1234' }).accent, '#fa1234');
   for (const raw of [{ mode: 'script' }, { accent: 'red' }, { accent: '#fff; color:red' }]) assert.throws(() => normalizeAppearance(raw));
   for (const raw of [{ durationSec: 60 }, { mediaSize: 20 }, { animation: 'url(x)' }, { media: '../other.txt' }]) assert.throws(() => normalizeAlerts(raw));
+});
+
+test('failed appearance writes keep the acknowledged design until it can be saved on disk', t => {
+  const directory = temp(t), blocked = join(directory, 'blocked'); writeFileSync(blocked, 'not a directory');
+  const presentation = new Presentation(blocked), original = structuredClone(presentation.appearance);
+  assert.throws(() => presentation.update({ mode: 'classic', accent: '#fb7185' })); assert.deepEqual(presentation.appearance, original);
+  rmSync(blocked); presentation.update({ mode: 'classic', accent: '#fb7185' }); assert.equal(new Presentation(blocked).appearance.accent, '#fb7185');
 });
 
 test('neutral, light and tinted palettes keep text and custom accent labels readable', t => {

@@ -38,7 +38,7 @@ async function ui(t, options = {}) {
   window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
   window.HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   window.scrollTo = () => {};
-  window.eval(['appearance.js', 'alerts.js', 'language.js', 'studio.js', 'rules.js', 'rewards.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__captureDownload = callback => { Studio.download = callback; }; window.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading; window.__bridgeIndexLoaded = () => Boolean(indexData) && !Studio.indexLoading;');
+  window.eval(['appearance.js', 'alerts.js', 'language.js', 'studio.js', 'game-presets.js', 'rules.js', 'rewards.js', 'updates.js', 'app.js'].map(file => readFileSync(new URL('../public/' + file, import.meta.url), 'utf8')).join('\n') + '\nwindow.__captureDownload = callback => { Studio.download = callback; }; window.__bridgeRefresh = refresh; window.__bridgeIndexReady = () => Boolean(indexData) && !Studio.indexLoading; window.__bridgeIndexLoaded = () => Boolean(indexData) && !Studio.indexLoading;');
   await until(() => window.document.querySelector('[data-action="new-rule"]'), 'Regelseite wurde nicht geladen.');
   t.after(() => { dom.window.close(); app.close(); rmSync(directory, { recursive: true, force: true }); });
   return { app, window, document: window.document, requests, directory, intervals };
@@ -802,4 +802,105 @@ test('the standalone ADMIN button preserves an unfinished YAML form and player e
   const files = readZip(Buffer.from(await downloads[2].blob.arrayBuffer())); assert.equal(files.length, 2); assert(!files.some(file => file.name === 'ADMIN.yaml'));
   for (const request of requests.filter(request => request.method === 'POST' && /^\/api\/yaml\/(?:generate|bundle|preset)$/.test(request.path))) assert(!Object.hasOwn(JSON.parse(request.body), 'includeAdmin'));
   assert(!Object.hasOwn(app.store.state.yamlPresets['UI Fixture'], 'includeAdmin'));
+});
+
+test('focused design buttons update real fields, swatches and the saved accent across live refreshes', async t => {
+  const { app, window, document } = await ui(t);
+  window.location.hash = 'design'; await until(() => document.querySelector('#appearance-form'), 'Design missing');
+  const form = document.querySelector('#appearance-form'), mode = form.elements.namedItem('mode'), accent = form.elements.namedItem('accent');
+  const classic = form.querySelector('[data-action="appearance-mode"][data-id="classic"]'); classic.focus(); classic.click();
+  assert.equal(mode.value, 'classic'); assert.equal(classic.getAttribute('aria-pressed'), 'true');
+  const red = form.querySelector('[data-action="appearance-accent"][data-id="#fb7185"]'); red.focus(); red.click();
+  assert.equal(accent.value, '#fb7185'); assert.equal(red.getAttribute('aria-pressed'), 'true');
+  await window.__bridgeRefresh(); assert.equal(accent.value, '#fb7185'); assert.equal(document.documentElement.style.getPropertyValue('--accent'), '#fb7185');
+  form.querySelector('[type=submit]').click(); await until(() => app.snapshot().appearance.accent === '#fb7185', 'Selected swatch was not saved');
+  await until(() => !form.querySelector('[type=submit]').disabled, 'Save did not complete');
+  assert.equal(app.snapshot().appearance.mode, 'classic');
+  accent.value = '#123456'; accent.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert.equal(document.documentElement.style.getPropertyValue('--accent'), '#123456');
+  assert.equal(form.querySelector('[data-action="appearance-accent"][aria-pressed="true"]'), null);
+  assert.equal(JSON.parse(window.localStorage.getItem('ap-bridge-appearance')).accent, '#fb7185');
+});
+
+test('a slow design save retains newer edits and never persists a preview in the local startup cache', async t => {
+  const { app, window, document } = await ui(t);
+  window.location.hash = 'design'; await until(() => document.querySelector('#appearance-form'), 'Design missing');
+  const form = document.querySelector('#appearance-form'), originalFetch = window.fetch; let release;
+  window.fetch = (path, init) => path === '/api/appearance' && init?.method === 'POST' && !release ? new Promise(resolve => { release = () => originalFetch(path, init).then(resolve); }) : originalFetch(path, init);
+  const choose = color => { const button = form.querySelector(`[data-action="appearance-accent"][data-id="${color}"]`); button.focus(); button.click(); };
+  choose('#fb7185'); form.querySelector('[type=submit]').click(); await until(() => release, 'Save request missing');
+  choose('#f7c66b'); await window.__bridgeRefresh();
+  assert.equal(form.elements.namedItem('accent').value, '#f7c66b');
+  assert.equal(JSON.parse(window.localStorage.getItem('ap-bridge-appearance')).accent, '#a3bffa');
+  release(); await until(() => app.snapshot().appearance.accent === '#fb7185' && !form.querySelector('[type=submit]').disabled, 'Save response missing');
+  await window.__bridgeRefresh();
+  assert.equal(form.elements.namedItem('accent').value, '#f7c66b'); assert.equal(document.documentElement.style.getPropertyValue('--accent'), '#f7c66b');
+  assert.equal(JSON.parse(window.localStorage.getItem('ap-bridge-appearance')).accent, '#fb7185');
+  form.querySelector('[type=submit]').click(); await until(() => app.snapshot().appearance.accent === '#f7c66b' && !form.querySelector('[type=submit]').disabled, 'Newer design not saved');
+  assert.equal(JSON.parse(window.localStorage.getItem('ap-bridge-appearance')).accent, '#f7c66b');
+});
+
+test('named game presets save globally and load in another room while keeping names, search and extra settings', async t => {
+  const { app, window, document, requests } = await ui(t);
+  window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#game-presets-panel'), 'Preset panel missing');
+  let form = document.querySelector('#studio-yaml-form');
+  form.querySelector('[data-option-search="health health"] select').value = '7'; form.elements.namedItem('playerNames').value = 'Original'; form.elements.namedItem('extra').value = 'trap_weight: 20\n';
+  form.querySelector('[data-action="game-preset-new"]').click();
+  const save = document.querySelector('#game-preset-save-form'); assert(save); save.elements.namedItem('presetName').value = 'Charity Weekend'; save.querySelector('[type=submit]').click();
+  await until(() => app.snapshot().gamePresets.length === 1 && !document.querySelector('#drawer').open, 'Global preset was not saved');
+  const id = app.snapshot().gamePresets[0].id; assert(!JSON.stringify(app.gamePresets.get(id, 'UI Fixture')).includes('Original'));
+  const room = app.rooms.create({ name: 'Another Run' }); await window.__bridgeRefresh();
+  const oldForm = form, picker = document.querySelector('#room-select'); picker.value = room.id; picker.dispatchEvent(new window.Event('change', { bubbles: true }));
+  await until(() => app.rooms.id === room.id && document.querySelector('#studio-yaml-form') !== oldForm && document.querySelector('#game-preset-select')?.options.length === 2, 'Preset missing in second room');
+  form = document.querySelector('#studio-yaml-form'); const names = form.elements.namedItem('playerNames'); names.value = 'Friend'; names.dispatchEvent(new window.Event('input', { bubbles: true }));
+  const search = document.querySelector('#studio-option-search'); search.value = 'health'; search.dispatchEvent(new window.Event('input', { bubbles: true }));
+  const select = document.querySelector('#game-preset-select'); select.value = id; select.dispatchEvent(new window.Event('change', { bubbles: true }));
+  const load = form.querySelector('[data-action="game-preset-load"]'); assert.equal(load.disabled, false); load.focus(); load.click();
+  await until(() => form.querySelector('[data-option-search="health health"] select').value === '7' && !load.disabled, 'Preset values missing');
+  assert.equal(names.value, 'Friend'); assert.equal(form.elements.namedItem('extra').value, 'trap_weight: 20\n'); assert.equal(search.value, 'health'); assert.equal(Object.keys(app.store.state.yamlPresets).length, 0);
+  await window.__bridgeRefresh(); assert.equal(document.querySelector('#studio-yaml-form'), form); assert.equal(form.querySelector('[data-option-search="health health"] select').value, '7'); assert.equal(names.value, 'Friend');
+  form.querySelector('[data-action="studio-yaml-save"]').click(); await until(() => app.store.state.yamlPresets['UI Fixture']?.values.health === 7, 'Loaded preset not usable as room settings');
+  window.__captureDownload(() => {}); form.querySelector('[type=submit]').click();
+  await until(() => !form.querySelector('[type=submit]').disabled, 'YAML export did not complete');
+  assert.equal(document.querySelector('#game-preset-select').value, id); assert.equal(document.querySelector('#game-preset-select').options.length, 2);
+  assert(!requests.filter(request => request.path === '/api/game-presets/save').some(request => Object.hasOwn(JSON.parse(request.body), 'players')));
+});
+
+test('game preset update and delete use the selected preset and preserve the current editor', async t => {
+  const { app, window, document } = await ui(t);
+  const entry = app.library.get('UI Fixture'), preset = app.gamePresets.save({ name: 'Initial', values: { health: 5 }, extra: '' }, entry);
+  await window.__bridgeRefresh(); window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#game-preset-select')?.options.length === 2, 'Preset picker missing');
+  const form = document.querySelector('#studio-yaml-form'), select = document.querySelector('#game-preset-select'); select.value = preset.id; select.dispatchEvent(new window.Event('change', { bubbles: true }));
+  form.querySelector('[data-option-search="health health"] select').value = '8'; form.querySelector('[data-action="game-preset-update"]').click();
+  const save = document.querySelector('#game-preset-save-form'); assert.equal(save.elements.namedItem('presetName').value, 'Initial'); save.elements.namedItem('presetName').value = 'Updated'; save.querySelector('[type=submit]').click();
+  await until(() => app.snapshot().gamePresets[0]?.name === 'Updated' && !document.querySelector('#drawer').open, 'Preset not updated');
+  assert.equal(app.snapshot().gamePresets[0].id, preset.id); assert.equal(app.gamePresets.get(preset.id, entry.game).values.health, 8);
+  document.querySelector('[data-action="game-preset-delete"]').click(); document.querySelector('#game-preset-delete-form [type=submit]').click();
+  await until(() => app.snapshot().gamePresets.length === 0 && !document.querySelector('#drawer').open, 'Preset not deleted');
+  assert.equal(document.querySelector('#studio-yaml-form'), form); assert.equal(form.querySelector('[data-option-search="health health"] select').value, '8');
+});
+
+test('a delayed preset response cannot overwrite newer YAML edits and incompatible versions stay disabled', async t => {
+  const { app, window, document } = await ui(t);
+  const entry = app.library.get('UI Fixture'), preset = app.gamePresets.save({ name: 'Good', values: { health: 7 }, extra: '' }, entry);
+  app.gamePresets.save({ name: 'Older version', values: { health: 4 }, extra: '' }, { ...entry, worldVersion: 'older' });
+  await window.__bridgeRefresh(); window.location.hash = 'spiel/UI%20Fixture'; await until(() => document.querySelector('#game-preset-select')?.options.length === 3, 'Presets missing');
+  const form = document.querySelector('#studio-yaml-form'), select = document.querySelector('#game-preset-select');
+  const incompatible = app.snapshot().gamePresets.find(value => value.name === 'Older version'); select.value = incompatible.id; select.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert.equal(form.querySelector('[data-action="game-preset-load"]').disabled, true); assert.equal(form.querySelector('[data-action="game-preset-delete"]').disabled, false);
+  select.value = preset.id; select.dispatchEvent(new window.Event('change', { bubbles: true }));
+  const originalFetch = window.fetch; let release;
+  window.fetch = async (path, init) => { const response = await originalFetch(path, init); return path === '/api/game-presets/load' ? new Promise(resolve => { release = () => resolve(response); }) : response; };
+  const load = form.querySelector('[data-action="game-preset-load"]'); load.click(); await until(() => release, 'Preset load missing');
+  form.querySelector('[data-option-search="health health"] select').value = '6'; form.querySelector('[data-option-search="health health"] select').dispatchEvent(new window.Event('change', { bubbles: true }));
+  release(); await until(() => !load.disabled && document.querySelector('#toast').textContent.includes('Entwurf'), 'Newer draft not protected');
+  assert.equal(form.querySelector('[data-option-search="health health"] select').value, '6');
+});
+
+test('failed design saves retain the selected preview without changing persisted preferences', async t => {
+  const { app, window, document } = await ui(t); window.location.hash = 'design'; await until(() => document.querySelector('#appearance-form'), 'Design missing');
+  const originalFetch = window.fetch; window.fetch = (path, init) => path === '/api/appearance' ? Promise.resolve(Response.json({ error: 'Test: Speichern fehlgeschlagen' }, { status: 400 })) : originalFetch(path, init);
+  const form = document.querySelector('#appearance-form'), input = form.elements.namedItem('accent'); input.value = '#123456'; input.dispatchEvent(new window.Event('input', { bubbles: true }));
+  form.querySelector('[type=submit]').click(); await until(() => form.querySelector('[data-form-error]')?.textContent.includes('fehlgeschlagen'), 'Save error missing');
+  await window.__bridgeRefresh(); assert.equal(input.value, '#123456'); assert.equal(document.documentElement.style.getPropertyValue('--accent'), '#123456'); assert.equal(app.snapshot().appearance.accent, '#a3bffa'); assert.equal(JSON.parse(window.localStorage.getItem('ap-bridge-appearance')).accent, '#a3bffa');
 });

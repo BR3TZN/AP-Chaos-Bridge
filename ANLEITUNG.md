@@ -1,4 +1,4 @@
-# AP Chaos Bridge 0.7.8 · Einrichtung
+# AP Chaos Bridge 0.7.9 · Einrichtung
 
 ## Start und Update
 
@@ -32,6 +32,16 @@ Ein Bridge-Raum ist der gespeicherte Arbeitsbereich für euren Run: Dort bleiben
 **Eingaben im Editor:** Ja/Nein und bekannte Einzelwerte sind Dropdowns. Kleine Zahlenbereiche sind auswählbar; größere Bereiche zeigen Grenzen und erlauben eigene Werte. Bei bekannten Listen **Werte auswählen** öffnen und die gewünschten Einträge einzeln ankreuzen. **Weitere Werte** ergänzt eigene Texte, einen pro Zeile. Eine leere Auswahl bleibt eine leere Liste. Freie Felder zeigen Datentyp, Vorlagenwert und dokumentierte Schlüssel; die vollständige Beschreibung bleibt darunter erhalten. Wenn die Quelle keinen verbindlichen Wertebereich enthält, wird das ausdrücklich kenntlich gemacht.
 
 Die APworld liefert die technischen Definitionen; eine zur verwendeten Version passende Spieler-YAML kann ausführlichere Beschreibungen bieten. Beide bleiben getrennte Einstellungsquellen. Eine andere World mit ähnlichem Spielnamen wird nicht automatisch dazu gemischt.
+
+### Spiel-Presets für alle Räume
+
+1. Im **Spielekatalog → Einstellungen & YAML** das Spiel und die gewünschte Einstellungsquelle öffnen.
+2. Die Optionen einstellen und unter **Spiel-Presets · für alle Räume → Als neues Preset speichern** einen Namen vergeben, etwa „Charity Weekend“.
+3. Im selben oder einem anderen Raum das Spiel öffnen, das Preset auswählen und **Preset laden** klicken. Das befüllt die Spieleinstellungen und die erweiterten Zusatzoptionen. Spielernamen bleiben die des aktuellen Editors.
+4. **Einstellungen speichern** behält die geladenen Werte zusätzlich als Vorlage im geöffneten Raum. **YAMLs herunterladen** exportiert wie bisher eure Spielerdateien.
+5. Für Änderungen am benannten Preset **Preset aktualisieren** verwenden. **Preset löschen** entfernt es aus der gemeinsamen Liste; bereits in Räumen gespeicherte Werte bleiben erhalten.
+
+Presets bleiben bei Neustarts und beim Archivieren oder Löschen ihres Ursprungsraums erhalten. Sie gehören zur jeweiligen Einstellungsquelle und zum Optionsschema. Bei einer inkompatiblen YAML-Vorlage oder World-Version zeigt die Liste den Unterschied und sperrt das Laden; die passende Quelle auswählen oder ein neues Preset erstellen. Je Spiel sind bis zu 50 Presets möglich, insgesamt 200.
 
 ### Eigene YAMLs, etwa Elden Ring / Peliarch
 
@@ -101,6 +111,8 @@ Die Datei verwendet die eingebaute Zuschauer-World **Archipelago** und benötigt
  Raumpasswort eintragen, falls gesetzt. Das **Server-Adminpasswort** ist separat und wird für zusätzliche Items benötigt. Der Host muss dafür `server_password` setzen. **Raum verbinden** klicken.
 
 „AP verbunden“ und „Admin angemeldet“ sind getrennte Statusanzeigen. Passwörter bleiben maskiert im Formular und werden lokal gemerkt. Die Bridge meldet sich als zusätzlicher TextOnly-Client an; eure Spielclients bleiben weiterhin geöffnet. Ein solcher Bridge-Client kann mehrere freigegebene Zielslots im eigenen Team bedienen.
+
+Eine Bridge-Verbindung ohne Dummy und ohne zusätzliche Anmeldung bei einem vorhandenen Slot wird vom Standard-AP-Server nicht unterstützt. Auch TextOnly-Clients müssen sich mit einem bereits im Seed vorhandenen Slotnamen authentifizieren. Für eine separate Bridge-Identität bleibt deshalb ADMIN nötig; eine zweite Text-Verbindung zu einem Spielslot ist weiterhin verfügbar. Quellen: [offizielles Connect-Protokoll](https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/network%20protocol.md#connect), [Serverprüfung des Slotnamens](https://github.com/ArchipelagoMW/Archipelago/blob/main/MultiServer.py).
 
 ## Twitch verbinden
 
@@ -272,3 +284,7 @@ Im **Spielekatalog → Einstellungen & YAML** werden die vorhandenen Überschrif
 Die automatische Übersetzung kann spieltypische Formulierungen ungenau wiedergeben; das Original bleibt deshalb zugänglich. „Checks“ erscheint als **Checkpoints**, „Check“ als **Checkpoint**. Fachbegriffe wie **Item**, **Seed** und **DeathLink** bleiben erhalten. Ältere gespeicherte Übersetzungen werden dafür beim ersten Öffnen neu erzeugt. Technische YAML-Schlüssel, gewählte Werte und erzeugte Dateien ändern sich durch die Sprachwahl nicht. Enthält die Quelle keine Beschreibung, wird keine Spielinformation erfunden.
 
 Das vollständige Release enthält die lokale Engine und das Deutsch-Modell. Für die Nutzung sind weder Python noch ein Übersetzungsdienst, API-Schlüssel oder Abonnement nötig. Deine Texte verlassen den PC nicht. Nur bei Quellcodeinstallationen wird das Modell einmal über `node scripts/prepare_translation_model.mjs` mit geprüften SHA256-Werten heruntergeladen.
+
+## Designmodus und Akzentfarbe übernehmen
+
+Unter **Design** den Modus und eine Akzentfarbe wählen oder **Eigene Farbe** einstellen. Auswahlmarkierung, Farbfeld und Vorschau zeigen dieselben Werte. **Design speichern** übernimmt sie dauerhaft für alle Räume. Ohne Speichern bleibt die Auswahl eine Vorschau auf der Designseite; beim Programmstart gilt das zuletzt gespeicherte Design. Weitere Änderungen während einer laufenden Speicherung bleiben als neuer Entwurf erhalten und können anschließend gespeichert werden. Bei einem Fehler bleiben sie im Formular, während die zuletzt bestätigten Einstellungen weiter gespeichert sind.
