@@ -39,6 +39,15 @@ test('unknown recipients and missing channels never silently become the same slo
   assert(!matches({ ...imported, enabled: true }, { source: 'twitch', type: 'sub', amountCents: 0, units: 1, channelId: imported.twitchChannelId }));
   const engine = new Engine(new Store('', { memory: true }), {}); assert.throws(() => engine.plan(imported, {}), /Zuordnungen/);
 });
+test('rule templates retain the chosen trap separately from a named item in a mix', () => {
+  const original = rule({ effect: 'random_action', randomEffects: ['trap', 'item'], trap: 'Bomb Trap', item: 'Potion' });
+  const bundle = JSON.parse(JSON.stringify(exportRules({ rules: [original] })));
+  const [{ rule: imported }] = planRules(bundle);
+  assert.equal(imported.trap, 'Bomb Trap'); assert.equal(imported.item, 'Potion');
+  assert.deepEqual(imported.randomEffects, ['trap', 'item']);
+  assert.throws(() => rule({ effect: 'trap', trap: '' }), /Falle auswählen/);
+  assert.throws(() => rule({ effect: 'random_action', randomEffects: ['trap'] }), /Falle auswählen/);
+});
 
 test('legacy full configuration exports are accepted as rule sources without importing settings or approvals', () => {
   const legacy = { schema: 1, config, approvals: { source: { enabled: true } }, rules: [rule({ effect: 'alert', twitchChannelId: 'source-channel' })] };

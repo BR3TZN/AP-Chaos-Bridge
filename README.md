@@ -16,11 +16,13 @@ Das native Fenster wird beim Release unter Windows aus `scripts/windows/Bridge.c
 
 Bei einer reinen Quellcode-Kopie ohne `node_modules` zuerst `npm ci --ignore-scripts` ausführen. Für einen anderen lokalen Port die Umgebungsvariable `AP_BRIDGE_PORT` setzen; dann auch die Twitch-Redirect-URL und externe Integrationen anpassen.
 
-## Update auf 0.7.9
+## Update auf 0.7.12
 
 Ab Version 0.3.1 unter **Einstellungen → Programmupdates** prüfen, herunterladen und **Installieren & neu starten** wählen. Das Repository ist öffentlich; ein GitHub-Token ist nicht erforderlich. Für ältere Versionen: Bridge beenden, neue Dateien über den bisherigen Programmordner kopieren und **`data` beibehalten**. Anschließend `Start.cmd` öffnen. Das Update-Paket enthält keine persönlichen Daten.
 
-**Neu in 0.7.11:** **TLS / wss verwenden** ist bei neuen Räumen und bisher unkonfigurierten Verbindungen vorausgewählt. Deine Auswahl wird pro Raum gespeichert.
+**Neu in 0.7.12:** Unter **Regeln → Aktion → Bestimmte Falle senden** eine freigegebene Falle für die gewählten Empfänger auswählen, z. B. für eine Charity-Royale-Spende ab 25 € netto. Der Name bleibt in der Regel und in exportierten Vorlagen gespeichert.
+
+**Seit 0.7.11:** **TLS / wss verwenden** ist bei neuen Räumen und bisher unkonfigurierten Verbindungen vorausgewählt. Deine Auswahl wird pro Raum gespeichert.
 
 **Seit 0.7.10:** Unter **Einstellungen → YAML-Speicherort** den Archipelago-Players-Ordner einmal auswählen. **YAMLs speichern** legt anschließend einzelne Dateien in `Players/<Raumname>/` ab. Auch der separate ADMIN-Button nutzt diesen Ordner. Der Editor zeigt den passenden Generierungsbefehl: Archipelago liest Raum-Unterordner nicht automatisch ein; der konkrete Raumordner muss als `player_files_path` verwendet werden. Ein leerer Speicherort stellt die bisherigen Downloads wieder her.
 
@@ -212,6 +214,7 @@ Die aufklappbare Namensliste unter **Optional: Namen für YAMLs und Spielerauswa
 | Regelaktion | Verhalten |
 | --- | --- |
 | Zufällige Falle | Erlaubte Items, die beim Zielspieler als **Falle** markiert sind |
+| Bestimmte Falle senden | Genau die gewählte Falle, sofern sie beim jeweiligen Zielspieler freigegeben und als **Falle** markiert ist |
 | Zufälliges Item ohne markierte Fallen | Erlaubte Items ohne eure Fallenmarkierung; keine automatische Garantie für einen hilfreichen Effekt |
 | Zufälliges Item aus allen erlaubten | Alle erlaubten Katalogitems, einschließlich markierter Fallen |
 | Zufälliges Item aus eigener Liste | Exakte Namen aus eurer Liste, begrenzt durch Raumkatalog und Freigaben des Zielspielers |

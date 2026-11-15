@@ -59,6 +59,23 @@ test('old, future and malformed events cannot enter the queue', () => {
 test('random pool excludes approved useful items', () => {
   const { engine, event, store } = fixture(); engine.ingest(event); assert.equal(store.state.queue[0].item, 'Darkness Trap');
 });
+test('a named trap is queued only for eligible recipients and is blocked if its marking is revoked', async () => {
+  const { store, ap, rule, engine, event, executions } = fixture();
+  Object.assign(rule, normalizeRule({ ...rule, effect: 'trap', trap: 'Darkness Trap', target: 'all', minimumCents: 2500 }));
+  store.state.config.mode = 'live';
+  const approvals = store.state.approvals[ap.roomKey];
+  approvals['0:2'] = { enabled: true, items: ['Darkness Trap'], traps: [] };
+  ap.players.push({ ...ap.players[0], team: 1, name: 'Other team' });
+  approvals['1:1'] = { ...approvals['0:1'] };
+  assert.equal(engine.ingest({ ...event, amountCents: 2499 }).receipt.jobs, 0);
+  assert.equal(engine.ingest({ ...event, id: 'threshold', amountCents: 2500 }).receipt.jobs, 1);
+  const [job] = store.state.queue;
+  assert.equal(job.targetKey, '0:1'); assert.equal(job.item, 'Darkness Trap'); assert.equal(job.effect, 'trap');
+  approvals['0:1'].traps = [];
+  await engine.tick();
+  assert.equal(job.status, 'failed'); assert.match(job.detail, /Falle/); assert.equal(executions.length, 0);
+  assert.equal(engine.ingest({ ...event, id: 'no-fallback', amountCents: 2500 }).receipt.jobs, 0);
+});
 test('test event remains a simulation after switching mode to live', async () => {
   const { engine, event, store, executions } = fixture(); engine.ingest(event); store.state.config.mode = 'live';
   await engine.tick(); assert.equal(store.state.queue[0].status, 'simulated'); assert.equal(executions.length, 0);

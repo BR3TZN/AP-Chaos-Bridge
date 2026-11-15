@@ -159,7 +159,7 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
   function snapshot() {
     const s = store.state;
     return { name: 'AP Chaos Bridge', version: VERSION, session, config: s.config, ap: ap.status(), charity: charity.status(), twitch: twitch.status(),
-      appearance: presentation.appearance, language: helpLanguage.language, translation: helpTranslator.status(), updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), itemCount: Object.keys(ap.items(p.game)).length })),
+      appearance: presentation.appearance, language: helpLanguage.language, translation: helpTranslator.status(), updates: updater.snapshot(), rules: s.rules, players: ap.players.map(p => ({ ...p, approval: engine.approval(p), availableTraps: engine.availableTraps(p), itemCount: Object.keys(ap.items(p.game)).length })),
       rooms: rooms.list(), savedCredentials: vault.status(rooms.id), playerProfiles: s.players, yamlPresets: s.yamlPresets, gamePresets: gamePresets.list(),
       yamlExport: yamlExport.status(rooms.require(rooms.id)),
       gameLibrary: { importLimits: { ...APWORLD_LIMITS, maxYamlBytes: YAML_IMPORT_LIMIT }, folder: library.data.folder, coreVersion: library.coreVersion || '', games: catalogEntries().map(g => ({ game: g.game, kind: g.kind, source: g.source, sourceId: g.sourceId, sources: g.sources, coreVersion: g.coreVersion, aliases: g.aliases, optionCount: g.options.length, unresolved: g.unresolved })) },

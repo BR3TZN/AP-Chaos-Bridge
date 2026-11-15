@@ -54,7 +54,7 @@ test('untrusted charity webhook payload cannot enter the engine', async t => {
   const r = await fetch(app.url + '/hooks/charity', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{"id":12,"amount_net":1000}' });
   assert.equal(r.status, 401); assert.equal(app.store.state.events.length, 0);
 });
-test('real HTTP → event → durable queue → AP websocket → server confirmation workflow', async t => {
+test('a paid event sends the specified trap through the HTTP, queue and AP websocket workflow', async t => {
   const wss = new WebSocketServer({ port: 0, host: '127.0.0.1' }); await once(wss, 'listening');
   t.after(() => { for (const ws of wss.clients) ws.terminate(); wss.close(); });
   let sentItems = 0;
@@ -63,7 +63,7 @@ test('real HTTP → event → durable queue → AP websocket → server confirma
     send({ cmd: 'RoomInfo', seed_name: 'E2E', time: Date.now() / 1000, version: { major: 0, minor: 6, build: 8 } });
     ws.on('message', raw => { for (const p of JSON.parse(raw.toString())) {
       if (p.cmd === 'Connect') send({ cmd: 'Connected', team: 0, slot: 1, players: [{ team: 0, slot: 1, name: 'Daniel', alias: 'Daniel' }], slot_info: { '1': { game: 'Stardew Valley', type: 1 } } });
-      if (p.cmd === 'GetDataPackage') send({ cmd: 'DataPackage', data: { games: { 'Stardew Valley': { item_name_to_id: { 'Darkness Trap': 123 } } } } });
+      if (p.cmd === 'GetDataPackage') send({ cmd: 'DataPackage', data: { games: { 'Stardew Valley': { item_name_to_id: { 'Darkness Trap': 123, 'Bomb Trap': 124 } } } } });
       if (p.cmd === 'Say' && p.text.startsWith('!admin login')) send({ cmd: 'PrintJSON', type: 'CommandResult', data: [{ text: 'Login successful.' }] });
       if (p.cmd === 'Say' && p.text === '!admin /send "Daniel" "Darkness Trap"') { sentItems++; send({ cmd: 'PrintJSON', data: [{ text: 'Cheat console: sending "Darkness Trap" to Daniel' }] }); }
     } });
@@ -72,8 +72,9 @@ test('real HTTP → event → durable queue → AP websocket → server confirma
   assert.equal((await post('ap/connect', { url: `ws://127.0.0.1:${wss.address().port}`, slotName: 'Daniel', expectedSeed: 'E2E', roomPassword: 'room-private', adminPassword: 'admin-private' })).status, 200);
   await until(() => app.ap.admin && app.ap.items('Stardew Valley')['Darkness Trap']);
   assert.equal(app.store.state.config.paused, false);
-  const rule = { ...app.store.state.rules[0], enabled: true, source: 'external', action: 'trap', effect: 'random_trap' }; await post('rule', rule);
-  assert.equal((await post('approval', { targetKey: '0:1', enabled: true, items: ['Darkness Trap'], traps: ['Darkness Trap'] })).status, 200);
+  const rule = { ...app.store.state.rules[0], enabled: true, source: 'external', action: 'trap', effect: 'trap', trap: 'Darkness Trap' };
+  assert.equal((await post('rule', rule)).status, 200);
+  assert.equal((await post('approval', { targetKey: '0:1', enabled: true, items: ['Bomb Trap', 'Darkness Trap'], traps: ['Bomb Trap', 'Darkness Trap'] })).status, 200);
   await post('mode', { mode: 'live' }); assert.equal(app.store.state.config.paused, false);
   const incoming = { id: 'paid-event', type: 'donation', user: 'Viewer', amountCents: 1000, units: 0, action: 'trap', timestamp: Date.now() };
   const response = await post('ingest', incoming, { Authorization: 'Bearer ' + app.integrationKey }); assert.equal(response.status, 200);

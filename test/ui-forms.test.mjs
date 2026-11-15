@@ -332,13 +332,48 @@ test('guided rules get their game filters from connected slots and save custom i
   assert(![...game.options].some(o => o.value === 'UI Fixture'));
   game.value = 'Factorio'; game.dispatchEvent(new window.Event('change', { bubbles: true }));
   const recipients = document.querySelector('#rule-recipient-preview'); assert(recipients.textContent.includes('Factorio-Demo')); assert(!recipients.textContent.includes('Stardew-Demo'));
-  const effect = document.querySelector('#rule-effect'); assert.equal(effect.options.length, 11);
+  const effect = document.querySelector('#rule-effect'); assert.equal(effect.options.length, 12);
   effect.value = 'random_choice'; effect.dispatchEvent(new window.Event('change', { bubbles: true }));
   assert(!document.querySelector('#rule-pool-field').hidden);
   const form = document.querySelector('#rule-form'); form.elements.namedItem('name').value = 'Custom Pool'; form.elements.namedItem('itemPool').value = 'Attack Trap\nTeleport Trap'; form.querySelector('[type="submit"]').click();
   await until(() => app.store.state.rules.some(r => r.name === 'Custom Pool'), 'Eigene Zufallsliste wurde nicht gespeichert.');
   await until(() => !document.querySelector('#drawer').open && !form.querySelector('[type=submit]').disabled, 'Regel-Handler wurde nicht abgeschlossen.');
   assert.deepEqual(app.store.state.rules.at(-1).itemPool, ['Attack Trap', 'Teleport Trap']);
+});
+
+test('specific trap rules display the approved trap names for their selected targets and preserve the choice across refreshes', async t => {
+  const { app, window, document } = await ui(t, { memory: true, seedRules: false });
+  app.ap.loadDemo();
+  const approvals = app.store.state.approvals[app.ap.roomKey] = {
+    '0:1': { enabled: true, items: ['Bomb Trap', 'Burnt Trap', 'Old Trap'], traps: ['Bomb Trap', 'Old Trap'] },
+    '0:2': { enabled: true, items: ['Attack Trap'], traps: ['Attack Trap'] },
+  };
+  await window.__bridgeRefresh();
+  document.querySelector('[data-action="new-rule"]').click();
+  const form = document.querySelector('#rule-form'), trap = form.elements.namedItem('trap');
+  const change = (name, value) => {
+    const control = form.elements.namedItem(name);
+    control.value = value; control.dispatchEvent(new window.Event('change', { bubbles: true }));
+  };
+  const choices = () => [...trap.options].map(option => option.value).filter(Boolean);
+  change('effect', 'trap');
+  assert(trap.required); assert(!form.checkValidity());
+  assert.deepEqual(choices(), ['Attack Trap', 'Bomb Trap']);
+  change('target', '0:1'); assert.deepEqual(choices(), ['Bomb Trap']);
+  change('trap', 'Bomb Trap');
+  const preview = document.querySelector('#rule-recipient-preview');
+  assert.match(preview.textContent, /Stardew-Demo/); assert(!preview.textContent.includes('Factorio-Demo'));
+  const selected = trap.selectedOptions[0]; await window.__bridgeRefresh();
+  assert.equal(trap.selectedOptions[0], selected);
+  approvals['0:1'].traps = []; await window.__bridgeRefresh();
+  assert.equal(trap.value, 'Bomb Trap'); assert.match(trap.selectedOptions[0].textContent, /nicht verfügbar/);
+  assert.match(preview.textContent, /keinem passenden Spieler/);
+  approvals['0:1'].traps = ['Bomb Trap']; await window.__bridgeRefresh();
+  form.elements.namedItem('euros').value = '25';
+  form.querySelector('[type=submit]').click();
+  await until(() => !document.querySelector('#drawer').open && document.querySelector('.rule-card')?.textContent.includes('Falle: Bomb Trap'), 'Fallenregel wurde nicht gespeichert und angezeigt.');
+  const [rule] = app.store.state.rules;
+  assert.equal(rule.minimumCents, 2500); assert.equal(rule.trap, 'Bomb Trap'); assert.equal(rule.effect, 'trap');
 });
 
 test('alert preview button calls only the visual preview endpoint', async t => {

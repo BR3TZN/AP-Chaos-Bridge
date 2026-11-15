@@ -343,12 +343,16 @@ const Studio = {
     this.reveal($('#rule-quantity-field'), !group && !['hint', 'random_hint'].includes(effect), animate);
     this.reveal($('#rule-action-mix'), effect === 'random_action', animate);
     this.reveal($('#rule-item-field'), has('item') || has('hint'), animate);
+    this.reveal($('#rule-trap-field'), has('trap'), animate);
     this.reveal($('#rule-pool-field'), has('random_choice'), animate);
     this.reveal($('#rule-message-field'), has('message') || has('alert'), animate);
     form.elements.namedItem('item').required = has('item') || has('hint');
+    form.elements.namedItem('trap').required = has('trap');
+    form.elements.namedItem('trap').disabled = !has('trap');
     form.elements.namedItem('message').required = has('message');
     const descriptions = {
       random_trap: 'Wählt für jeden getroffenen Spieler zufällig ein erlaubtes Item, das bei ihm als Falle markiert ist.',
+      trap: 'Sendet genau die gewählte Falle. Getroffen werden nur Spieler, bei denen sie freigegeben und im Raumkatalog verfügbar ist.',
       random_nontrap: 'Wählt aus den erlaubten Items, die du nicht als Falle markiert hast. Die Markierung legst du unter Spieler & Effekte fest; die Bridge kann nicht jedes Item automatisch als gut oder schlecht erkennen.',
       random_item: 'Wählt aus allen erlaubten Items des getroffenen Spielers. Fallen können dabei sein.',
       random_choice: 'Wählt aus deiner unten eingetragenen Itemliste. Erlaubte Items und der Raumkatalog des jeweiligen Spielers begrenzen die Auswahl.',
@@ -361,12 +365,34 @@ const Studio = {
       random_action: 'Wählt zuerst eine der unten aktivierten, aktuell möglichen Aktionsarten. Danach wird die Aktion für die passenden Empfänger ausgeführt.',
     };
     $('#rule-effect-description').textContent = descriptions[effect] || '';
+    this.syncRuleRecipients(form);
+  },
+  syncRuleRecipients(form) {
+    const effect = form.elements.namedItem('effect').value, target = form.elements.namedItem('target').value;
+    const mixed = [...form.querySelectorAll('[name="randomEffects"]:checked')].map(input => input.value);
+    const group = ['deathlink', 'message', 'alert'].includes(effect);
     const game = form.elements.namedItem('game').value;
     let players = this.teamPlayers().filter(p => p.approval.enabled && (!game || p.game === game));
-    if (['selected', 'random_selected'].includes(target.value)) { const keys = [...form.querySelectorAll('[name="targetKeys"]:checked')].map(e => e.value); players = players.filter(p => keys.includes(`${p.team}:${p.slot}`)); }
-    else if (!['random', 'all', 'group'].includes(target.value)) players = players.filter(p => `${p.team}:${p.slot}` === target.value);
+    if (['selected', 'random_selected'].includes(target)) { const keys = [...form.querySelectorAll('[name="targetKeys"]:checked')].map(e => e.value); players = players.filter(p => keys.includes(`${p.team}:${p.slot}`)); }
+    else if (!['random', 'all', 'group'].includes(target)) players = players.filter(p => `${p.team}:${p.slot}` === target);
+    const trap = form.elements.namedItem('trap');
+    if (!trap.disabled) {
+      const names = new Set(players.flatMap(p => p.availableTraps || [])), selected = trap.value;
+      const unavailable = selected && !names.has(selected);
+      const choices = '<option value="">Falle auswählen</option>' + [...names].sort((a, b) => a.localeCompare(b)).map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('')
+        + (unavailable ? `<option value="${esc(selected)}">${esc(selected)} · aktuell nicht verfügbar</option>` : '');
+      if (trap._choices !== choices) { trap.innerHTML = choices; trap.value = selected; trap._choices = choices; }
+      setText($('#rule-trap-help'), unavailable ? 'Die gewählte Falle ist für die aktuellen Empfänger nicht verfügbar.'
+        : !S.ap.connected ? 'Verbinde zuerst den Archipelago-Raum, um freigegebene Fallen auszuwählen.'
+        : !names.size ? 'Für diese Empfänger ist keine Falle freigegeben. Markiere sie unter Spieler & Effekte → Items & Fallen auswählen.'
+        : 'Nur freigegebene Fallen für die unten gewählten Empfänger werden angezeigt.');
+      if (effect === 'trap') players = players.filter(p => p.availableTraps?.includes(selected));
+    }
     const groupDescription = effect === 'deathlink' ? 'Alle verbundenen DeathLink-Teilnehmer deines AP-Teams; nur mit Gruppenfreigabe.' : effect === 'message' ? 'Einmal im AP-Raumchat, unabhängig vom Spiel der Teilnehmer.' : 'Einmal als Stream-Alert; kein Empfänger im Spiel.';
-    $('#rule-recipient-preview').innerHTML = group ? `<strong>Wirkung</strong>${esc(groupDescription)}` : `<strong>${players.length} passende freigegebene Spieler</strong>${players.length ? players.map(p => esc(p.name) + ' · ' + esc(p.game)).join('<br>') : 'Noch kein passender Spieler. Raum verbinden, Spielfilter prüfen und Effekte für einen Spieler freigeben.'}${['random', 'random_selected'].includes(target.value) && players.length ? '<br>Pro Ereignis wird eine dieser Personen zufällig gewählt.' : ''}${effect === 'random_action' && mixed.includes('deathlink') ? '<br>Bei DeathLink ist die ganze teilnehmende AP-Teamgruppe betroffen.' : ''}${effect === 'random_action' && mixed.some(e => ['message', 'alert'].includes(e)) ? '<br>Chatnachricht und Stream-Alert werden einmal ausgelöst; die Spielerauswahl begrenzt diese Aktionen nicht.' : ''}`;
+    const empty = effect === 'trap' ? (trap.value ? 'Diese Falle ist bei keinem passenden Spieler freigegeben.' : 'Wähle oben eine Falle aus.') : 'Noch kein passender Spieler. Raum verbinden, Spielfilter prüfen und Effekte für einen Spieler freigeben.';
+    const content = group ? `<strong>Wirkung</strong>${esc(groupDescription)}` : `<strong>${players.length} passende freigegebene Spieler</strong>${players.length ? players.map(p => esc(p.name) + ' · ' + esc(p.game)).join('<br>') : empty}${['random', 'random_selected'].includes(target) && players.length ? '<br>Pro Ereignis wird eine dieser Personen zufällig gewählt.' : ''}${effect === 'random_action' && mixed.includes('deathlink') ? '<br>Bei DeathLink ist die ganze teilnehmende AP-Teamgruppe betroffen.' : ''}${effect === 'random_action' && mixed.some(e => ['message', 'alert'].includes(e)) ? '<br>Chatnachricht und Stream-Alert werden einmal ausgelöst; die Spielerauswahl begrenzt diese Aktionen nicht.' : ''}`;
+    const preview = $('#rule-recipient-preview');
+    if (preview._content !== content) { preview.innerHTML = content; preview._content = content; }
   },
   eventsPage(renderEvents) {
     const original = S;

@@ -1,3 +1,9 @@
+# 0.7.12 – Gezielt eine Falle auslösen
+
+- **Bestimmte Falle senden** ergänzt die Regelaktionen. Wähle für Spenden, Twitch-Ereignisse oder andere Auslöser eine namentlich festgelegte Falle. Das Dropdown berücksichtigt Spielfilter, Empfänger, Freigaben und den aktuellen Archipelago-Katalog.
+- Nur Spieler mit genau dieser freigegebenen Falle kommen als Ziele infrage. Wird die Freigabe vor dem Versand entzogen, wird die Aktion gestoppt.
+- Die Auswahl bleibt beim Bearbeiten und in Regelvorlagen erhalten. Im Zufallsmix lassen sich Falle und Item getrennt wählen.
+
 # 0.7.11 – TLS als Standard für neue Verbindungen
 
 - **TLS / wss verwenden** ist für neue Räume und bislang unkonfigurierte Verbindungen vorausgewählt.
