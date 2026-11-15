@@ -49,6 +49,20 @@ test('rule templates retain the chosen trap separately from a named item in a mi
   assert.throws(() => rule({ effect: 'random_action', randomEffects: ['trap'] }), /Falle auswählen/);
 });
 
+test('rule templates remap each player’s individual trap choices to their new slot', () => {
+  const original = rule({ effect: 'trap', trapTargets: [
+    { key: '0:1', traps: ['Trap: Blackout', 'Trap: Burn'] },
+    { key: '0:2', traps: ['Trap: Blackout'] },
+  ] });
+  const bundle = exportRules({ rules: [original], players });
+  const [{ rule: imported, notes }] = planRules(bundle, { players: [{ ...players[0], slot: 8 }, { ...players[1], slot: 3 }] });
+  assert.deepEqual(notes, []);
+  assert.deepEqual(imported.trapTargets, [
+    { key: '0:8', traps: ['Trap: Blackout', 'Trap: Burn'] },
+    { key: '0:3', traps: ['Trap: Blackout'] },
+  ]);
+});
+
 test('legacy full configuration exports are accepted as rule sources without importing settings or approvals', () => {
   const legacy = { schema: 1, config, approvals: { source: { enabled: true } }, rules: [rule({ effect: 'alert', twitchChannelId: 'source-channel' })] };
   const bundle = parseRules(legacy); assert.equal(bundle.channels[0].channelName, 'alice'); assert.equal(bundle.config, undefined); assert.equal(bundle.approvals, undefined);

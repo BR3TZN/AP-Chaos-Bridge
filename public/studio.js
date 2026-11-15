@@ -266,10 +266,57 @@ const Studio = {
   extendRule(rule) {
     const form = $('#rule-form'), target = form.elements.namedItem('target');
     target.add(new Option('Mehrere ausgewählte Spieler', 'selected')); target.add(new Option('Eine zufällige Person aus der Auswahl', 'random_selected'));
+    target.add(new Option('Fallen je Spieler auswählen', 'trap_selection'));
     if (['selected', 'random_selected'].includes(rule.target)) target.value = rule.target;
     const panel = document.createElement('div'); panel.className = 'full'; panel.id = 'rule-selected-targets';
     panel.innerHTML = `<b class="tiny">Spieler auswählen</b><button type="button" class="small ghost" data-action="studio-rule-players">Gespeicherte Spieler auswählen</button>${S.players.filter(p => p.team === S.ap.team && p.type === 1).map(p => `<label class="check-label"><input name="targetKeys" type="checkbox" value="${p.team}:${p.slot}" ${rule.targetKeys?.includes(`${p.team}:${p.slot}`) ? 'checked' : ''}><span>${esc(p.name)} · ${esc(p.game)}${p.approval.enabled ? '' : ' · noch nicht freigegeben'}</span></label>`).join('') || '<p class="help">Zuerst deinen AP-Raum verbinden.</p>'}`;
-    form.querySelector('#rule-recipient-fields').append(panel); this.ruleVisibility(false); form.dataset.ready = 'true';
+    const trapPanel = document.createElement('div');
+    trapPanel.className = 'full';
+    trapPanel.id = 'rule-trap-selection';
+    trapPanel.hidden = true;
+    trapPanel._initial = rule.trapTargets || [];
+    trapPanel._savedPlayers = new Map((rule.targetPlayers || []).map(player => [player.key, player]));
+    if (rule.trapTargets?.length) target.value = 'trap_selection';
+    form.querySelector('#rule-recipient-fields').append(panel, trapPanel);
+    this.ruleVisibility(false); form.dataset.ready = 'true';
+  },
+  ruleTrapTargets(form) {
+    const targets = new Map();
+    for (const input of form.querySelectorAll('[data-trap-slot]:checked')) {
+      const traps = targets.get(input.dataset.trapSlot) || [];
+      traps.push(input.value);
+      targets.set(input.dataset.trapSlot, traps);
+    }
+    return [...targets].map(([key, traps]) => ({ key, traps }));
+  },
+  syncRuleTrapTargets(form) {
+    const panel = form.querySelector('#rule-trap-selection');
+    const assigned = new Map((panel._initial || this.ruleTrapTargets(form)).map(row => [row.key, row.traps]));
+    const players = new Map(this.teamPlayers().map(player => [`${player.team}:${player.slot}`, player]));
+    const groups = [...new Set([...players.keys(), ...assigned.keys()])].map(key => {
+      const player = players.get(key), saved = assigned.has(key) && panel._savedPlayers.get(key);
+      const available = player && (!saved?.name || player.name === saved.name && (!saved.game || player.game === saved.game)) && S.ap.connected
+        ? player.availableTraps || [] : [];
+      const selected = assigned.get(key) || [], label = saved?.name ? saved : player;
+      const traps = [...new Set([...available, ...selected])]
+        .sort((a, b) => trapLabel(a).localeCompare(trapLabel(b)))
+        .map(name => ({ name, available: available.includes(name) }));
+      return { key, name: label?.name || 'Slot ' + key, game: label?.game, traps };
+    });
+    const signature = JSON.stringify(groups);
+    if (panel._signature !== signature) {
+      const opened = new Map([...panel.querySelectorAll('details')].map(details => [details.dataset.slot, details.open]));
+      const firstAvailable = groups.find(group => group.traps.some(trap => trap.available))?.key;
+      panel.innerHTML = groups.map(({ key, name, game, traps }) => `<details class="disclosure" data-slot="${esc(key)}" ${(opened.get(key) ?? (assigned.has(key) || !assigned.size && key === firstAvailable)) ? 'open' : ''}><summary>${esc(name)}${game ? ' · ' + esc(game) : ''}</summary><div class="option-list-options">${traps.map(trap => `<label class="check-label"><input type="checkbox" data-trap-slot="${esc(key)}" data-available="${trap.available}" value="${esc(trap.name)}" ${assigned.get(key)?.includes(trap.name) ? 'checked' : ''}><span>${esc(trapLabel(trap.name))}${trap.available ? '' : ' · aktuell nicht verfügbar'}</span></label>`).join('') || '<p class="help">Für diesen Spieler ist keine Falle freigegeben.</p>'}</div></details>`).join('') || '<p class="help">Zuerst deinen Archipelago-Raum verbinden.</p>';
+      panel._signature = signature;
+    }
+    delete panel._initial;
+    const count = [...assigned.values()].reduce((sum, traps) => sum + traps.length, 0);
+    const preview = $('#rule-recipient-preview');
+    const content = count
+      ? `<strong>${count} ${count === 1 ? 'Falle' : 'Fallen'} für ${assigned.size} Spieler</strong>${groups.filter(group => assigned.has(group.key)).map(group => esc(group.name) + ' · ' + assigned.get(group.key).map(name => esc(trapLabel(name))).join(', ')).join('<br>')}`
+      : '<strong>Fallen je Spieler auswählen</strong>Markiere für jeden Empfänger die Fallen, die diese Regel senden soll.';
+    if (preview._content !== content) { preview.innerHTML = content; preview._content = content; }
   },
   triggerFields(rule) {
     const channels = Object.fromEntries((S.twitch.channels || []).map(channel => [channel.id, channel.channelName ? '@' + channel.channelName : 'Mein Twitch-Kanal']));
@@ -338,21 +385,28 @@ const Studio = {
     const target = form.elements.namedItem('target');
     if (group) target.value = 'group'; else if (target.value === 'group') target.value = 'random';
     const groupOption = [...target.options].find(o => o.value === 'group'); groupOption.hidden = !group;
+    const trapOption = [...target.options].find(o => o.value === 'trap_selection');
+    trapOption.hidden = effect !== 'trap'; trapOption.disabled = effect !== 'trap';
+    if (effect !== 'trap' && target.value === 'trap_selection') target.value = 'selected';
+    const individualTraps = effect === 'trap' && target.value === 'trap_selection';
     this.reveal($('#rule-selected-targets'), !group && ['selected', 'random_selected'].includes(target.value), animate);
-    for (const id of ['rule-game-field', 'rule-target-field']) this.reveal($('#' + id), !group, animate);
+    this.reveal($('#rule-trap-selection'), individualTraps, animate);
+    this.reveal($('#rule-target-field'), !group, animate);
+    this.reveal($('#rule-game-field'), !group && !individualTraps, animate);
     this.reveal($('#rule-quantity-field'), !group && !['hint', 'random_hint'].includes(effect), animate);
+    setText($('#rule-quantity-label'), individualTraps ? 'Anzahl je gewählter Falle' : 'Items je getroffenem Spieler');
     this.reveal($('#rule-action-mix'), effect === 'random_action', animate);
     this.reveal($('#rule-item-field'), has('item') || has('hint'), animate);
-    this.reveal($('#rule-trap-field'), has('trap'), animate);
+    this.reveal($('#rule-trap-field'), has('trap') && !individualTraps, animate);
     this.reveal($('#rule-pool-field'), has('random_choice'), animate);
     this.reveal($('#rule-message-field'), has('message') || has('alert'), animate);
     form.elements.namedItem('item').required = has('item') || has('hint');
-    form.elements.namedItem('trap').required = has('trap');
-    form.elements.namedItem('trap').disabled = !has('trap');
+    form.elements.namedItem('trap').required = has('trap') && !individualTraps;
+    form.elements.namedItem('trap').disabled = !form.elements.namedItem('trap').required;
     form.elements.namedItem('message').required = has('message');
     const descriptions = {
       random_trap: 'Wählt für jeden getroffenen Spieler zufällig ein erlaubtes Item, das bei ihm als Falle markiert ist.',
-      trap: 'Sendet genau die gewählte Falle. Getroffen werden nur Spieler, bei denen sie freigegeben und im Raumkatalog verfügbar ist.',
+      trap: 'Sendet freigegebene Fallen aus dem Raumkatalog. Unter Empfänger kann jeder Spieler eine eigene Fallenauswahl bekommen.',
       random_nontrap: 'Wählt aus den erlaubten Items, die du nicht als Falle markiert hast. Die Markierung legst du unter Spieler & Effekte fest; die Bridge kann nicht jedes Item automatisch als gut oder schlecht erkennen.',
       random_item: 'Wählt aus allen erlaubten Items des getroffenen Spielers. Fallen können dabei sein.',
       random_choice: 'Wählt aus deiner unten eingetragenen Itemliste. Erlaubte Items und der Raumkatalog des jeweiligen Spielers begrenzen die Auswahl.',
@@ -369,6 +423,10 @@ const Studio = {
   },
   syncRuleRecipients(form) {
     const effect = form.elements.namedItem('effect').value, target = form.elements.namedItem('target').value;
+    if (effect === 'trap' && target === 'trap_selection') {
+      this.syncRuleTrapTargets(form);
+      return;
+    }
     const mixed = [...form.querySelectorAll('[name="randomEffects"]:checked')].map(input => input.value);
     const group = ['deathlink', 'message', 'alert'].includes(effect);
     const game = form.elements.namedItem('game').value;
@@ -379,8 +437,8 @@ const Studio = {
     if (!trap.disabled) {
       const names = new Set(players.flatMap(p => p.availableTraps || [])), selected = trap.value;
       const unavailable = selected && !names.has(selected);
-      const choices = '<option value="">Falle auswählen</option>' + [...names].sort((a, b) => a.localeCompare(b)).map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('')
-        + (unavailable ? `<option value="${esc(selected)}">${esc(selected)} · aktuell nicht verfügbar</option>` : '');
+      const choices = '<option value="">Falle auswählen</option>' + [...names].sort((a, b) => trapLabel(a).localeCompare(trapLabel(b))).map(name => `<option value="${esc(name)}">${esc(trapLabel(name))}</option>`).join('')
+        + (unavailable ? `<option value="${esc(selected)}">${esc(trapLabel(selected))} · aktuell nicht verfügbar</option>` : '');
       if (trap._choices !== choices) { trap.innerHTML = choices; trap.value = selected; trap._choices = choices; }
       setText($('#rule-trap-help'), unavailable ? 'Die gewählte Falle ist für die aktuellen Empfänger nicht verfügbar.'
         : !S.ap.connected ? 'Verbinde zuerst den Archipelago-Raum, um freigegebene Fallen auszuwählen.'

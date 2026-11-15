@@ -76,6 +76,33 @@ test('a named trap is queued only for eligible recipients and is blocked if its 
   assert.equal(job.status, 'failed'); assert.match(job.detail, /Falle/); assert.equal(executions.length, 0);
   assert.equal(engine.ingest({ ...event, id: 'no-fallback', amountCents: 2500 }).receipt.jobs, 0);
 });
+test('one donation sends all chosen traps for each assigned player before the rule cooldown blocks another donation', async () => {
+  const { store, ap, rule, engine, event, executions, advance } = fixture();
+  ap.items = game => game === 'Factorio' ? { 'Trap: Blackout': 200 } : { 'Trap: Blackout': 100, 'Darkness Trap': 101 };
+  store.state.approvals[ap.roomKey] = {
+    '0:1': { enabled: true, items: ['Trap: Blackout', 'Darkness Trap'], traps: ['Trap: Blackout', 'Darkness Trap'] },
+    '0:2': { enabled: true, items: ['Trap: Blackout'], traps: ['Trap: Blackout'] },
+  };
+  store.state.rules = [normalizeRule({ ...rule, effect: 'trap', target: 'trap_selection', trapTargets: [
+    { key: '0:1', traps: ['Trap: Blackout', 'Darkness Trap', 'Trap: Blackout'] },
+    { key: '0:2', traps: ['Trap: Blackout'] },
+  ] })];
+  store.state.config.mode = 'live';
+  assert.equal(engine.ingest(event).receipt.jobs, 3);
+  assert.equal(engine.ingest({ ...event, id: 'next' }).receipt.jobs, 3);
+  for (let i = 0; i < 4; i++) await engine.tick();
+  assert.deepEqual(executions.map(job => [job.slot, job.item]), [
+    [1, 'Trap: Blackout'], [1, 'Darkness Trap'], [2, 'Trap: Blackout'],
+  ]);
+  assert.equal(store.state.queue.filter(job => job.status === 'queued').length, 3);
+  advance(20000);
+  await engine.tick();
+  assert.equal(executions.length, 4);
+  store.state.approvals[ap.roomKey]['0:2'].traps = [];
+  const blocked = engine.ingest({ ...event, id: 'revoked' }).receipt;
+  assert.equal(blocked.jobs, 0);
+  assert.match(blocked.errors[0], /Another/);
+});
 test('test event remains a simulation after switching mode to live', async () => {
   const { engine, event, store, executions } = fixture(); engine.ingest(event); store.state.config.mode = 'live';
   await engine.tick(); assert.equal(store.state.queue[0].status, 'simulated'); assert.equal(executions.length, 0);

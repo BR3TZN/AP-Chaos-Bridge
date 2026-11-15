@@ -1,3 +1,9 @@
+# 0.7.13 – Fallen je Spieler auswählen
+
+- Eine Regel kann mehrere festgelegte Fallen je Spieler senden. Eine Charity-Spende kann beispielsweise bei zwei Spielern jeweils Blackout und bei einem zusätzlich eine weitere Falle auslösen.
+- Die Regelpause läuft zwischen den Ereignissen. Die globale Versandpause gilt weiterhin zwischen einzelnen AP-Aufträgen.
+- Regelvorlagen übernehmen die Zuordnungen und gleichen sie im Zielraum mit den Spielernamen ab. Die Anzeige verwendet `Trap: Name`. Der Versand verwendet die Itemnamen aus dem Raumkatalog.
+
 # 0.7.12 – Gezielt eine Falle auslösen
 
 - **Bestimmte Falle senden** ergänzt die Regelaktionen. Wähle für Spenden, Twitch-Ereignisse oder andere Auslöser eine namentlich festgelegte Falle. Das Dropdown berücksichtigt Spielfilter, Empfänger, Freigaben und den aktuellen Archipelago-Katalog.

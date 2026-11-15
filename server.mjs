@@ -209,8 +209,9 @@ export async function createApp({ directory = join(root, 'data'), port = 17381, 
       }
       if (req.method === 'GET' && path === '/api/catalog') {
         const game = url.searchParams.get('game');
-        const candidates = [...new Set([...(PROFILES[game]?.traps || []), ...(library.data.games[game]?.traps || []), ...store.state.yamlProfiles.filter(p => p.game === game).flatMap(p => p.traps)])];
-        return json(res, { game, items: Object.keys(ap.items(game)).sort(), candidates, demo: ap.demo });
+        const items = Object.keys(ap.items(game)).sort();
+        const candidates = [...new Set([...(PROFILES[game]?.traps || []), ...(library.data.games[game]?.traps || []), ...store.state.yamlProfiles.filter(p => p.game === game).flatMap(p => p.traps), ...items.filter(name => /^Trap:\s*\S/.test(name))])];
+        return json(res, { game, items, candidates, demo: ap.demo });
       }
       if (req.method === 'GET' && path === '/apworlds-manual') { res.writeHead(200, { 'Content-Type': 'text/markdown; charset=utf-8', 'Content-Disposition': 'attachment; filename=APWORLDS-MANUELL.md' }); res.end(readFileSync(join(root, 'APWORLDS-MANUELL.md'))); return; }
       if (req.method === 'GET' && path === '/api/game-index') {

@@ -371,9 +371,48 @@ test('specific trap rules display the approved trap names for their selected tar
   approvals['0:1'].traps = ['Bomb Trap']; await window.__bridgeRefresh();
   form.elements.namedItem('euros').value = '25';
   form.querySelector('[type=submit]').click();
-  await until(() => !document.querySelector('#drawer').open && document.querySelector('.rule-card')?.textContent.includes('Falle: Bomb Trap'), 'Fallenregel wurde nicht gespeichert und angezeigt.');
+  await until(() => !document.querySelector('#drawer').open && document.querySelector('.rule-card')?.textContent.includes('Trap: Bomb'), 'Fallenregel wurde nicht gespeichert und angezeigt.');
   const [rule] = app.store.state.rules;
   assert.equal(rule.minimumCents, 2500); assert.equal(rule.trap, 'Bomb Trap'); assert.equal(rule.effect, 'trap');
+});
+
+test('the rule editor saves and reopens different traps for each player across live refreshes', async t => {
+  const { app, window, document } = await ui(t, { memory: true, seedRules: false });
+  app.ap.loadDemo();
+  app.store.state.approvals[app.ap.roomKey] = {
+    '0:1': { enabled: true, items: ['Bomb Trap', 'Burnt Trap'], traps: ['Bomb Trap', 'Burnt Trap'] },
+    '0:2': { enabled: true, items: ['Attack Trap'], traps: ['Attack Trap'] },
+  };
+  await window.__bridgeRefresh();
+  document.querySelector('[data-action="new-rule"]').click();
+  const form = document.querySelector('#rule-form');
+  for (const [name, value] of [['effect', 'trap'], ['target', 'trap_selection']]) {
+    const select = form.elements.namedItem(name);
+    select.value = value;
+    select.dispatchEvent(new window.Event('input', { bubbles: true }));
+  }
+  const inputs = [...form.querySelectorAll('[data-trap-slot]')];
+  assert.equal(inputs.length, 3);
+  for (const input of inputs) {
+    input.closest('details').open = true;
+    input.click();
+  }
+  inputs[0].focus();
+  await window.__bridgeRefresh();
+  assert.equal(document.activeElement, inputs[0]);
+  assert.match(document.querySelector('#rule-recipient-preview').textContent, /3 Fallen für 2 Spieler/);
+  assert.match(document.querySelector('#rule-recipient-preview').textContent, /Trap: Bomb/);
+  assert.equal(form.elements.namedItem('trap').disabled, true);
+  form.querySelector('[type=submit]').click();
+  await until(() => !document.querySelector('#drawer').open && app.store.state.rules.length === 1, 'Fallenauswahl wurde nicht gespeichert.');
+  const [rule] = app.store.state.rules;
+  assert.deepEqual(rule.trapTargets, [
+    { key: '0:1', traps: ['Bomb Trap', 'Burnt Trap'] },
+    { key: '0:2', traps: ['Attack Trap'] },
+  ]);
+  document.querySelector(`[data-action="edit-rule"][data-id="${rule.id}"]`).click();
+  assert.equal(document.querySelector('#rule-target').value, 'trap_selection');
+  assert.equal(document.querySelectorAll('[data-trap-slot]:checked').length, 3);
 });
 
 test('alert preview button calls only the visual preview endpoint', async t => {
